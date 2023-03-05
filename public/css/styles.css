@@ -1,14 +1,37 @@
-/* We'll put overrides here */
-
-
-.show-border {
-    border: 1px solid pink;
-}
-
-.add-to-top {
-    margin-top: 100px;
-}
-
 body {
-    padding-bottom: 100px;
+  padding: 0 !important;
+}
+.navbar div {
+  padding: 1rem;
+}
+#calendar-div {
+  width: 60vw;
+}
+#calendar-div table tbody tr td {
+  text-align: center;
+  vertical-align: top;
+  width: 10vw;
+  height: 15vh;
+}
+#calendar-div table tbody tr td:hover {
+  border: grey;
+  border-style: inherit;
+}
+
+#left-menu-div {
+  width: 20vw;
+  margin-left: 5%;
+  margin-right: 5%;
+  padding: 0;
+}
+
+#right-menu-div {
+  width: 20vw;
+  margin-left: 5%;
+  margin-right: 5%;
+  padding: 0;
+}
+
+#main_page {
+  width: 100%;
 }
