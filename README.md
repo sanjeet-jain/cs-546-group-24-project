@@ -1,6 +1,6 @@
 # Group project for cs 546 Stevens Institute of Technology
 
-## Better Calendar 1.0
+## TimeWise 1.0
 
 ### Code owners :
 
