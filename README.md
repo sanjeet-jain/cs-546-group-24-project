@@ -24,3 +24,117 @@ Sunderamurthy
 - allow collaborations with other users if permitt optional?
 - integration with amazon, walmart, etc for estimated delivery dates ? and notify about the same
 - Integration of canvas calendar to our web app
+
+types of events :
+events ( generic term ), TODO items / Tasks , reminders, and notes, meeting
+
+types =["task","reminder","note","meeting"]
+
+Task Collection Fields : {
+title : string
+type : string
+DateCreated : Date time stamp
+
+dateAddedTo:
+monthAddedTo:
+yearAddedTo:
+timeAddedTo:
+
+dateDueOn:
+monthDueOn:
+yearDueOn:
+timeDueOn:
+
+priority :
+
+textBody: string
+
+tag: string treat as a custom type for filter
+
+checked/ done/ completed flag ? : boolean
+}
+
+Reminder Collection Fields : {
+title : string
+type : string
+DateCreated : Date time stamp
+
+dateAddedTo:
+monthAddedTo:
+yearAddedTo:
+timeAddedTo:
+
+dateDueOn:
+monthDueOn:
+yearDueOn:
+timeDueOn:
+
+priority :
+
+textBody: string
+
+tag: string treat as a custom type for filter
+
+repeating : boolean
+repeatingCounter? increment? : increments in days, weekly , monthly, yearly
+
+}
+
+Notes Collection Fields : {
+title : string
+type : string
+DateCreated : Date time stamp
+
+dateAddedTo:
+monthAddedTo:
+yearAddedTo:
+timeAddedTo:
+
+textBody: string
+
+tag: string treat as a custom type for filter
+
+documentLink : (used by notes)
+
+}
+
+Meeting Collection Fields : {
+title : string
+type : string
+DateCreated : Date time stamp
+
+dateAddedTo:
+monthAddedTo:
+yearAddedTo:
+timeAddedTo:
+
+date :
+month :
+year:
+timeStart :
+duration :
+
+priority :
+
+textBody: string
+
+tag: string treat as a custom type for filter
+
+repeating : boolean
+repeatingCounter? increment? : increments in days, weekly , monthly, yearly
+}
+
+Display Attributes for each object type {
+color =
+badge =
+type/tag =
+}
+
+User Collection {
+first name
+last name
+email id
+date of birth
+consent to data collection
+disabilities :boolean  
+}
