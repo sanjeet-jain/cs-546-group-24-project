@@ -1,13 +1,15 @@
 let nav = 0;
 let oldNav = nav;
+let prevSelectedValue;
 const calendar = document.getElementById("calendar");
 const dt = new Date();
 
 function load() {
-  if (nav !== 0) {
+  if (nav !== oldNav) {
     dt.setMonth(new Date().getMonth() + nav);
   }
-
+  const monthDropDown = document.getElementById("monthDropwDown");
+  monthDropDown.selectedIndex = dt.getMonth();
   if (nav !== oldNav) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -86,10 +88,14 @@ function navigationButtons() {
 function dropDownMonth() {
   const monthDropDown = document.getElementById("monthDropwDown");
   monthDropDown.selectedIndex = dt.getMonth();
+  prevSelectedMonth = monthDropDown.value;
   monthDropDown.addEventListener("change", (event) => {
     const selectedMonth = event.target.value;
-    console.log(`Selected month: ${selectedMonth}`);
-    // Do something with the selected month value here
+    nav = selectedMonth - prevSelectedMonth;
+
+    console.log(`nav: ${nav}`);
+    console.log(`oldNav: ${oldNav}`);
+    load();
   });
 }
 dropDownMonth();
