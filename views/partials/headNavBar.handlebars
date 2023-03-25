@@ -18,12 +18,11 @@
 
       <li class="nav-item">
         <select
-          id="monthDropwDown"
+          id="monthDropDown"
           class="form-select h-100"
           aria-label="Month Select">
           {{#each months}}
-
-          <option value="{{@index}}" {{#if (eq @index
+          <option value="{{@index}}"{{#if (eq this
             ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>
@@ -32,6 +31,38 @@
       <li class="nav-item">
         <button
           id="nextMonth"
+          class="btn btn-outline-dark"
+          style="border: none">
+          <i
+            class="bi-arrow-right-circle"
+            style="font-size: 1.5rem; border: none"></i>
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <button
+          id="prevYear"
+          class="btn btn-outline-dark"
+          style="border: none">
+          <i
+            class="bi bi-arrow-left-circle"
+            style="font-size: 1.5rem; border: none"></i>
+        </button>
+      </li>
+
+      <li class="nav-item">
+        <select id="yearDropdown"
+          class="form-select h-100"
+          aria-label="Year Select">
+          {{#each yearRange}}
+          <option value="{{this}}" {{#if (eq this ../currYear)}}selected{{/if}}>{{this}}</option>
+          {{/each}}
+        </select>
+      </li>
+
+      <li class="nav-item">
+        <button
+          id="nextYear"
           class="btn btn-outline-dark"
           style="border: none">
           <i

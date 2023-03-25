@@ -1,11 +1,21 @@
 import { Router } from "express";
 const router = Router();
 import constants from "./../constants/constants.js";
+const dt = new Date();
 
 router.route("/:nav?").get((req, res) => {
   const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
+  let yeaRangeRef = dt.getFullYear();
+  const yearRange = [
+    yeaRangeRef - 2,
+    yeaRangeRef - 1,
+    yeaRangeRef,
+    yeaRangeRef + 1,
+    yeaRangeRef + 2,
+  ];
 
-  const { dateString, calendarHTML, currentMonth } = getData(nav);
+  const { dateString, calendarHTML, currentMonth, currYear } = getData(nav);
+
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
     partial: "calendar-script",
@@ -14,12 +24,22 @@ router.route("/:nav?").get((req, res) => {
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
     months: constants.months,
     currentMonth: currentMonth,
+    yearRange: yearRange,
+    currYear: currYear,
   });
 });
 router.get("/api/:nav?", (req, res) => {
   const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
 
-  const { dateString, calendarHTML, currentMonth } = getData(nav);
+  const { dateString, calendarHTML, currentMonth, currYear } = getData(nav);
+  let yeaRangeRef = dt.getFullYear();
+  const yearRange = [
+    yeaRangeRef - 2,
+    yeaRangeRef - 1,
+    yeaRangeRef,
+    yeaRangeRef + 1,
+    yeaRangeRef + 2,
+  ];
 
   // Send the JSON response
   res.setHeader("Content-Type", "application/json");
@@ -27,13 +47,15 @@ router.get("/api/:nav?", (req, res) => {
     dateString: dateString,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
     currentMonth: currentMonth,
+    yearRange: yearRange,
+    currYear: currYear,
   });
 });
 
-function getData(nav = 0) {
+function getData(monthNav = 0, yearNav = 0) {
   const dt = new Date();
-  if (nav !== 0) {
-    dt.setMonth(new Date().getMonth() + nav);
+  if (monthNav !== 0) {
+    dt.setMonth(new Date().getMonth() + monthNav);
   }
   const day = dt.getDay();
   const month = dt.getMonth();
@@ -92,7 +114,9 @@ function getData(nav = 0) {
       }
     }
   }
+  const currYear = dt.getFullYear();
+
   let currentMonth = dt.getMonth();
-  return { dateString, calendarHTML, currentMonth };
+  return { dateString, calendarHTML, currentMonth, currYear };
 }
 export default router;

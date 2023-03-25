@@ -8,8 +8,12 @@ function load() {
   if (nav !== oldNav) {
     dt.setMonth(new Date().getMonth() + nav);
   }
-  const monthDropDown = document.getElementById("monthDropwDown");
+  const monthDropDown = document.getElementById("monthDropDown");
   monthDropDown.selectedIndex = dt.getMonth();
+
+  // const yearDropdown = document.getElementById("yearDropdown");
+  // yearDropdown.selectedIndex = dt.getFullYear();
+
   if (nav !== oldNav) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -35,7 +39,7 @@ function navigationButtons() {
 }
 
 function dropDownMonth() {
-  const monthDropDown = document.getElementById("monthDropwDown");
+  const monthDropDown = document.getElementById("monthDropDown");
   monthDropDown.selectedIndex = dt.getMonth();
   prevSelectedMonth = monthDropDown.value;
   monthDropDown.addEventListener("change", (event) => {
