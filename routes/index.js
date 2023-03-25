@@ -8,7 +8,8 @@ const constructorMethod = (app) => {
   app.use("/calendar", calendarRoutes);
 
   app.use("*", (req, res) => {
-    res.sendStatus(404);
+    // we can set this to check for authorization and then send back to correct page !
+    res.redirect("/calendar");
   });
 };
 
