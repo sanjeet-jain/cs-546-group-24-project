@@ -3,10 +3,26 @@ let nav = 0;
 const calendar = document.getElementById("calendar");
 
 function load() {
-  // const dt = new Date();
-  // if (nav !== 0) {
-  //   dt.setMonth(new Date().getMonth() + nav);
-  // }
+  const dt = new Date();
+  if (nav !== 0) {
+    dt.setMonth(new Date().getMonth() + nav);
+  }
+  const monthDropwDown = document.getElementById("monthDropwDown");
+
+  monthDropwDown.selectedIndex = dt.getMonth();
+
+  if (nav > 0) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        const data = JSON.parse(this.response);
+        document.getElementById("header").innerText = data.dateString;
+        document.getElementById("calendar").innerHTML = data.calendarHTML;
+      }
+    };
+    xhttp.open("GET", `/calendar/api/${nav}`, true);
+    xhttp.send();
+  }
   // const day = dt.getDay();
   // const month = dt.getMonth();
   // const year = dt.getFullYear();

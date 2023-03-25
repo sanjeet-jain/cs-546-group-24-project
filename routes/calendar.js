@@ -2,9 +2,36 @@ import { Router } from "express";
 const router = Router();
 import constants from "./../constants/constants.js";
 
-router.get("/", (req, res) => {
+router.route("/:nav?").get((req, res) => {
+  const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
+
+  const { dateString, calendarHTML, currentMonth } = getData(nav);
+  res.setHeader("Content-Type", "text/html");
+  res.render("calendar/calendar", {
+    partial: "calendar-script",
+    dateString: dateString,
+    weekdays: constants.weekdays,
+    calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
+    months: constants.months,
+    currentMonth: currentMonth,
+  });
+});
+router.get("/api/:nav?", (req, res) => {
+  const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
+
+  const { dateString, calendarHTML, currentMonth } = getData(nav);
+
+  // Send the JSON response
+  res.setHeader("Content-Type", "application/json");
+  res.json({
+    dateString: dateString,
+    calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
+    currentMonth: currentMonth,
+  });
+});
+
+function getData(nav = 0) {
   const dt = new Date();
-  const nav = 0; // add nav variable with a value of 0 since it's not defined in the code
   if (nav !== 0) {
     dt.setMonth(new Date().getMonth() + nav);
   }
@@ -65,16 +92,7 @@ router.get("/", (req, res) => {
       }
     }
   }
-
-  res.setHeader("Content-Type", "text/html");
-  res.render("calendar/calendar", {
-    partial: "calendar-script",
-    dateString: dateString,
-    weekdays: constants.weekdays,
-    calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
-    months: constants.months,
-    currentMonth: dt.getMonth(),
-  });
-});
-
+  let currentMonth = dt.getMonth();
+  return { dateString, calendarHTML, currentMonth };
+}
 export default router;
