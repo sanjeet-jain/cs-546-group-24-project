@@ -1,22 +1,37 @@
 import express from "express";
 const app = express();
-import configRoutes from "./src/routes/index.js";
-configRoutes(app);
-import * as path from "path";
+import configRoutes from "./routes/index.js";
+
+import exphbs from "express-handlebars";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-app.use("/public", express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "index.html"));
+const handlebarsInstance = exphbs.create({
+  defaultLayout: "main",
+  // Specify helpers which are only registered on this instance.
+  // helpers: {
+  //   asJSON: (obj, spacing) => {
+  //     if (typeof spacing === "number")
+  //       return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
+  //     return new Handlebars.SafeString(JSON.stringify(obj));
+  //   },
+  // },
+  partialsDir: ["views/partials/"],
 });
 
+app.use("/public", express.static(__dirname + "/public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.engine("handlebars", handlebarsInstance.engine);
+app.set("view engine", "handlebars");
+
+configRoutes(app);
+
 app.listen(3000, () => {
-  console.log(
-    "Your server is now listening on port 3000! Navigate to http://localhost:3000 to access it"
-  );
+  console.log("We've now got a server!");
+  console.log("Your routes will be running on http://localhost:3000");
 });
