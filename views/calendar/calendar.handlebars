@@ -2,7 +2,7 @@
   <div id="left-menu-div" class="col">{{>leftPane}}</div>
   <div id="calendar-div" class="col-md-auto">
     <table class="table table-bordered">
-      <caption id="header"></caption>
+      <caption id="header">{{ dateString }}</caption>
       <thead>
         <tr id="weekdays">
           {{#each weekdays}}
@@ -10,7 +10,9 @@
           {{/each}}
         </tr>
       </thead>
-      <tbody id="calendar"></tbody>
+      <tbody id="calendar">
+        {{{ calendarHTML }}}
+      </tbody>
     </table>
   </div>
   <div id="right-menu-div" class="col">{{>rightPane}}</div>
