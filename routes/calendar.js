@@ -69,8 +69,11 @@ router.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
     partial: "calendar-script",
+    dateString: dateString,
     weekdays: constants.weekdays,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
+    months: constants.months,
+    currentMonth: dt.getMonth(),
   });
 });
 

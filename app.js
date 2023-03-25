@@ -5,7 +5,6 @@ import configRoutes from "./routes/index.js";
 import exphbs from "express-handlebars";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -20,6 +19,11 @@ const handlebarsInstance = exphbs.create({
   //   },
   // },
   partialsDir: ["views/partials/"],
+  helpers: {
+    eq: function (a, b) {
+      return a === b;
+    },
+  },
 });
 
 app.use("/public", express.static(__dirname + "/public"));

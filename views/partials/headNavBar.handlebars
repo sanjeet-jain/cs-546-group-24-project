@@ -9,12 +9,10 @@
         <button
           id="prevMonth"
           class="btn btn-outline-dark"
-          style="border: none"
-        >
+          style="border: none">
           <i
             class="bi bi-arrow-left-circle"
-            style="font-size: 1.5rem; border: none"
-          ></i>
+            style="font-size: 1.5rem; border: none"></i>
         </button>
       </li>
 
@@ -22,20 +20,23 @@
         <select
           id="monthDropwDown"
           class="form-select h-100"
-          aria-label="Month Select"
-        ></select>
+          aria-label="Month Select">
+          {{#each months}}
+
+          <option value="{{this}}" {{#if (eq @index
+            ../currentMonth)}}selected{{/if}}>{{this}}</option>
+          {{/each}}
+        </select>
       </li>
 
       <li class="nav-item">
         <button
           id="nextMonth"
           class="btn btn-outline-dark"
-          style="border: none"
-        >
+          style="border: none">
           <i
             class="bi-arrow-right-circle"
-            style="font-size: 1.5rem; border: none"
-          ></i>
+            style="font-size: 1.5rem; border: none"></i>
         </button>
       </li>
     </ul>
@@ -47,16 +48,14 @@
       type="button"
       data-bs-toggle="offcanvas"
       data-bs-target="#offcanvasNavbar"
-      aria-controls="offcanvasNavbar"
-    >
+      aria-controls="offcanvasNavbar">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
     <div
       class="offcanvas offcanvas-end"
       tabindex="-1"
       id="offcanvasNavbar"
-      aria-labelledby="offcanvasNavbarLabel"
-    >
+      aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
           Hi UserNameHere
@@ -65,8 +64,7 @@
           type="button"
           class="btn-close"
           data-bs-dismiss="offcanvas"
-          aria-label="Close"
-        ></button>
+          aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
@@ -82,8 +80,7 @@
               href="#"
               role="button"
               data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               Support
             </a>
             <ul class="dropdown-menu">
