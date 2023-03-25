@@ -23,7 +23,7 @@
           aria-label="Month Select">
           {{#each months}}
 
-          <option value="{{this}}" {{#if (eq @index
+          <option value="{{@index}}" {{#if (eq @index
             ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>

@@ -1,17 +1,14 @@
 let nav = 0;
-
+let oldNav = nav;
 const calendar = document.getElementById("calendar");
+const dt = new Date();
 
 function load() {
-  const dt = new Date();
   if (nav !== 0) {
     dt.setMonth(new Date().getMonth() + nav);
   }
-  const monthDropwDown = document.getElementById("monthDropwDown");
 
-  monthDropwDown.selectedIndex = dt.getMonth();
-
-  if (nav > 0) {
+  if (nav !== oldNav) {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
@@ -78,12 +75,23 @@ function load() {
 
 function navigationButtons() {
   document.getElementById("prevMonth").addEventListener("click", () => {
-    nav--, load();
+    oldNav = nav--;
+    load();
   });
   document.getElementById("nextMonth").addEventListener("click", () => {
-    nav++, load();
+    (oldNav = nav++), load();
   });
 }
 
+function dropDownMonth() {
+  const monthDropDown = document.getElementById("monthDropwDown");
+  monthDropDown.selectedIndex = dt.getMonth();
+  monthDropDown.addEventListener("change", (event) => {
+    const selectedMonth = event.target.value;
+    console.log(`Selected month: ${selectedMonth}`);
+    // Do something with the selected month value here
+  });
+}
+dropDownMonth();
 navigationButtons();
 load();
