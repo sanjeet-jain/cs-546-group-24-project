@@ -109,6 +109,18 @@ function dropDownYear() {
   });
 }
 
+function modalInitialiser() {
+  const clickableTds = document.querySelectorAll(".clickable-td");
+  clickableTds.forEach((td) => {
+    td.addEventListener("click", () => {
+      const modalTarget = td.dataset.bsTarget;
+      const modal = document.querySelector(modalTarget);
+      const bsModal = new bootstrap.Modal(modal);
+      bsModal.show();
+    });
+  });
+}
+modalInitialiser();
 dropDownYear();
 dropDownMonth();
 navigationButtonsMonth();
