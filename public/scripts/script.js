@@ -109,6 +109,23 @@ function dropDownYear() {
   });
 }
 
+$(document).on("click", ".active", function () {
+  const [month, date, year] = this.id.split("-");
+  const modalContent = `<h2>${month} ${date}, ${year}</h2><p>Modal content goes here.</p>`;
+  $("#modal .modal-content").html(modalContent);
+  $("#modal").show();
+});
+
+$(document).on("click", ".close", function () {
+  $("#modal").hide();
+});
+
+$(document).on("click", function (event) {
+  if (event.target == $("#modal")[0]) {
+    $("#modal").hide();
+  }
+});
+
 dropDownYear();
 dropDownMonth();
 navigationButtonsMonth();

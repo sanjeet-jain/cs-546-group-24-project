@@ -65,38 +65,33 @@ function getData(monthNav = 0, yearNav = 0) {
   const paddingDays = firstDayOfMonth.getDay();
 
   let calendarHTML = "";
-  let weekrowHTML = '<tr class="table-row table-bordered">';
-  const daySquare = (day, date, active) => {
-    return `<td class="table-cell table-bordered${
-      active ? "" : " table-active"
+  let weekNum = 0;
+  let weekrowHTML = `<tr id="${month}-weekrow-${weekNum}" class="table-row table-bordered">`;
+  const daySquare = (month, date, active) => {
+    const id = `${month}-${date}-${year}`;
+    return `<td ${active ? `id="${id}"` : ""} class="table-cell table-bordered${
+      active ? " active" : " table-active"
     }">${date}</td>`;
   };
 
   for (let i = 1; i <= daysInMonth + paddingDays; i++) {
     if (i > paddingDays) {
-      weekrowHTML += daySquare(day, i - paddingDays, true);
+      weekrowHTML += daySquare(month, i - paddingDays, true);
     } else {
-      weekrowHTML += daySquare(
-        day,
-        new Date(year, month, 0).getDate() - paddingDays + i,
-        false
-      );
+      weekrowHTML += daySquare(month - 1, "", false);
     }
     if (i % 7 === 0 || i === daysInMonth + paddingDays) {
       const weekrowlen = weekrowHTML.match(/<td/g).length; // Count the number of table cells in the row
       if (i === daysInMonth + paddingDays && weekrowlen !== 7) {
         for (let j = 0; j < 7 - weekrowlen; j++) {
-          weekrowHTML += daySquare(
-            day,
-            new Date(year, month, 1 + j).getDate(),
-            false
-          );
+          weekrowHTML += daySquare(month + 1, "", false);
         }
       }
       weekrowHTML += "</tr>";
       calendarHTML += weekrowHTML;
       if (i / 7 > 0) {
-        weekrowHTML = '<tr class="table-row table-bordered">';
+        weekNum++;
+        weekrowHTML = `<tr id="${month}-weekrow-${weekNum}" class="table-row table-bordered">`;
       }
     }
   }
