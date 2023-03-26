@@ -10,14 +10,6 @@ const __dirname = dirname(__filename);
 
 const handlebarsInstance = exphbs.create({
   defaultLayout: "main",
-  // Specify helpers which are only registered on this instance.
-  // helpers: {
-  //   asJSON: (obj, spacing) => {
-  //     if (typeof spacing === "number")
-  //       return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
-  //     return new Handlebars.SafeString(JSON.stringify(obj));
-  //   },
-  // },
   partialsDir: ["views/partials/"],
   helpers: {
     eq: function (a, b) {
