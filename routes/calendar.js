@@ -62,42 +62,35 @@ function getData(monthNav = 0, yearNav = 0) {
     year: "numeric",
   });
 
-  // Remove the client-side code that manipulates the DOM,
-  // as it will not work in the server-side code
-
   const paddingDays = firstDayOfMonth.getDay();
 
-  // Initialize the HTML string for the calendar table
   let calendarHTML = "";
-
-  // Add the weekdays row to the HTML string
-  // calendarHTML += '<tr id="weekdays">';
-  // constants.weekdays.forEach((weekday) => {
-  //   calendarHTML += `<th scope="col">${weekday}</th>`;
-  // });
-  // calendarHTML += "</tr>";
-
-  // Add the calendar days to the HTML string
   let weekrowHTML = '<tr class="table-row table-bordered">';
+  const daySquare = (day, date, active) => {
+    return `<td class="table-cell table-bordered${
+      active ? "" : " table-active"
+    }">${date}</td>`;
+  };
+
   for (let i = 1; i <= daysInMonth + paddingDays; i++) {
     if (i > paddingDays) {
-      weekrowHTML += `<td class="table-cell table-bordered">${
-        i - paddingDays
-      }</td>`;
+      weekrowHTML += daySquare(day, i - paddingDays, true);
     } else {
-      weekrowHTML += `<td class="table-cell table-bordered table-active">${
-        new Date(year, month, 0).getDate() - paddingDays + i
-      }</td>`;
+      weekrowHTML += daySquare(
+        day,
+        new Date(year, month, 0).getDate() - paddingDays + i,
+        false
+      );
     }
     if (i % 7 === 0 || i === daysInMonth + paddingDays) {
       const weekrowlen = weekrowHTML.match(/<td/g).length; // Count the number of table cells in the row
       if (i === daysInMonth + paddingDays && weekrowlen !== 7) {
         for (let j = 0; j < 7 - weekrowlen; j++) {
-          weekrowHTML += `<td class="table-cell table-bordered table-active">${new Date(
-            year,
-            month,
-            1 + j
-          ).getDate()}</td>`;
+          weekrowHTML += daySquare(
+            day,
+            new Date(year, month, 1 + j).getDate(),
+            false
+          );
         }
       }
       weekrowHTML += "</tr>";
