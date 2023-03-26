@@ -52,26 +52,18 @@ function navigationButtonsMonth() {
     currentSelectedMonth = monthDropDown.value;
     const yearDropDown = document.getElementById("yearDropDown");
     currentSelectedYear = yearDropDown.value;
-    if (
-      currentSelectedYear > 2021 ||
-      (currentSelectedYear == 2021 && currentSelectedMonth > 0)
-    ) {
-      oldMonthNav = monthNav--;
-      load();
-    }
+
+    oldMonthNav = monthNav--;
+    load();
   });
   document.getElementById("nextMonth").addEventListener("click", () => {
     const monthDropDown = document.getElementById("monthDropDown");
     currentSelectedMonth = monthDropDown.value;
     const yearDropDown = document.getElementById("yearDropDown");
     currentSelectedYear = yearDropDown.value;
-    if (
-      currentSelectedYear < 2025 ||
-      (currentSelectedYear == 2025 && currentSelectedMonth < 11)
-    ) {
-      oldMonthNav = monthNav++;
-      load();
-    }
+
+    oldMonthNav = monthNav++;
+    load();
   });
 }
 
@@ -79,18 +71,14 @@ function navigationButtonsYear() {
   document.getElementById("prevYear").addEventListener("click", () => {
     const yearDropDown = document.getElementById("yearDropDown");
     currentSelectedYear = parseInt(yearDropDown.value);
-    if (currentSelectedYear > 2021) {
-      oldYearNav = yearNav--;
-      load();
-    }
+    oldYearNav = yearNav--;
+    load();
   });
   document.getElementById("nextYear").addEventListener("click", () => {
     const yearDropDown = document.getElementById("yearDropDown");
     currentSelectedYear = parseInt(yearDropDown.value);
-    if (currentSelectedYear < 2025) {
-      oldYearNav = yearNav++;
-      load();
-    }
+    oldYearNav = yearNav++;
+    load();
   });
 }
 
