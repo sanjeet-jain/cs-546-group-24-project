@@ -1,101 +1,113 @@
-const weekdays = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-let nav = 0;
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
+let monthNav = 0;
+let oldMonthNav = monthNav;
+let yearNav = 0;
+let oldYearNav = yearNav;
+let prevSelectedMonth;
+let prevSelectedYear;
+let currentSelectedMonth;
+let currentSelectedYear;
 const calendar = document.getElementById("calendar");
-
+const dt = new Date();
+let yeaRangeRef = new Date().getFullYear();
+const yearRange = [
+  yeaRangeRef - 2,
+  yeaRangeRef - 1,
+  yeaRangeRef,
+  yeaRangeRef + 1,
+  yeaRangeRef + 2,
+];
 function load() {
-  const dt = new Date();
-  if (nav !== 0) {
-    dt.setMonth(new Date().getMonth() + nav);
-  }
-  const day = dt.getDay();
-  const month = dt.getMonth();
-  const year = dt.getFullYear();
-  const firstDayOfMonth = new Date(year, month, 1);
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const dateString = firstDayOfMonth.toLocaleDateString("en-us", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  const monthDropwDown = document.getElementById("monthDropwDown");
-  months.forEach((monthName) => {
-    let el = document.createElement("option");
-    el.textContent = monthName;
-    el.value = monthName;
-    monthDropwDown.appendChild(el);
-  });
-  monthDropwDown.selectedIndex = firstDayOfMonth.getMonth();
-
-  const paddingDays = firstDayOfMonth.getDay();
-
-  let weekrow = document.createElement("tr");
-  weekrow.classList.add("table-row", "table-bordered");
-
-  calendar.innerHTML = "";
-  for (let i = 1; i <= daysInMonth + paddingDays; i++) {
-    const daySquare = document.createElement("td");
-    daySquare.classList.add("table-cell", "table-bordered");
-    if (i > paddingDays) {
-      daySquare.innerText = i - paddingDays;
-    } else {
-      daySquare.innerText =
-        new Date(year, month, 0).getDate() - paddingDays + i;
-      daySquare.classList.add("table-active");
-    }
-    weekrow.appendChild(daySquare);
-    if (i % 7 === 0 || i === daysInMonth + paddingDays) {
-      const weekrowlen = weekrow.cells.length;
-      if (i === daysInMonth + paddingDays && weekrowlen !== 7) {
-        for (let j = 0; j < 7 - weekrowlen; j++) {
-          const temp = document.createElement("td");
-          temp.classList.add("table-cell", "table-bordered", "table-active");
-          temp.innerText = new Date(year, month, 1 + j).getDate();
-          weekrow.appendChild(temp);
-        }
+  if (monthNav !== oldMonthNav || yearNav !== oldYearNav) {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        const data = JSON.parse(this.response);
+        document.getElementById("header").innerText = data.dateString;
+        document.getElementById("calendar").innerHTML = data.calendarHTML;
+        const monthDropDown = document.getElementById("monthDropDown");
+        monthDropDown.selectedIndex = data.currentMonth;
+        const yearDropDown = document.getElementById("yearDropDown");
+        yearDropDown.selectedIndex = yearRange.findIndex(
+          (x) => x === data.currYear
+        );
+        // // Update modal data
+        // const cellIds = data.cellIds;
+        // for (let i = 0; i < cellIds.length; i++) {
+        //   const cellId = cellIds[i];
+        //   const modalTitle = `New Title ${i}`;
+        //   const modalDescription = `New Description ${i}`;
+        //   $(`#modal-${cellId} .modal-title`).text(modalTitle);
+        //   $(`#modal-${cellId} .modal-body`).text(modalDescription);
+        // }
       }
-      calendar.appendChild(weekrow);
-      if (i / 7 > 0) {
-        weekrow = document.createElement("tr");
-        weekrow.classList.add("table-row", "table-bordered");
-      }
-    }
+    };
+    xhttp.open("GET", `/calendar/api/${monthNav}/${yearNav}`, true);
+    xhttp.send();
   }
 }
 
-function navigationButtons() {
+function navigationButtonsMonth() {
   document.getElementById("prevMonth").addEventListener("click", () => {
-    nav--, load();
+    const monthDropDown = document.getElementById("monthDropDown");
+    currentSelectedMonth = monthDropDown.value;
+    const yearDropDown = document.getElementById("yearDropDown");
+    currentSelectedYear = yearDropDown.value;
+
+    oldMonthNav = monthNav--;
+    load();
   });
   document.getElementById("nextMonth").addEventListener("click", () => {
-    nav++, load();
+    const monthDropDown = document.getElementById("monthDropDown");
+    currentSelectedMonth = monthDropDown.value;
+    const yearDropDown = document.getElementById("yearDropDown");
+    currentSelectedYear = yearDropDown.value;
+
+    oldMonthNav = monthNav++;
+    load();
   });
 }
 
-navigationButtons();
+function navigationButtonsYear() {
+  document.getElementById("prevYear").addEventListener("click", () => {
+    const yearDropDown = document.getElementById("yearDropDown");
+    currentSelectedYear = parseInt(yearDropDown.value);
+    oldYearNav = yearNav--;
+    load();
+  });
+  document.getElementById("nextYear").addEventListener("click", () => {
+    const yearDropDown = document.getElementById("yearDropDown");
+    currentSelectedYear = parseInt(yearDropDown.value);
+    oldYearNav = yearNav++;
+    load();
+  });
+}
+
+function dropDownMonth() {
+  const monthDropDown = document.getElementById("monthDropDown");
+  monthDropDown.selectedIndex = dt.getMonth();
+  prevSelectedMonth = monthDropDown.value;
+  currentSelectedMonth = monthDropDown.value;
+  monthDropDown.addEventListener("change", (event) => {
+    currentSelectedMonth = event.target.value;
+    monthNav = currentSelectedMonth - prevSelectedMonth;
+    load();
+  });
+}
+
+function dropDownYear() {
+  const yearDropDown = document.getElementById("yearDropDown");
+  yearDropDown.selectedIndex = yearRange.indexOf(dt.getFullYear());
+  prevSelectedYear = yearDropDown.value;
+  currentSelectedYear = yearDropDown.value;
+  yearDropDown.addEventListener("change", (event) => {
+    currentSelectedYear = event.target.value;
+    yearNav = currentSelectedYear - prevSelectedYear;
+    load();
+  });
+}
+
+dropDownYear();
+dropDownMonth();
+navigationButtonsMonth();
+navigationButtonsYear();
 load();
