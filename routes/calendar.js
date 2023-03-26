@@ -7,7 +7,7 @@ router.route("/:monthNav?/:yearNav?").get((req, res) => {
   const monthNav = Number(req.params.monthNav) || 0;
   const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, dt } = getData(monthNav, yearNav);
+  const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
 
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
@@ -19,13 +19,14 @@ router.route("/:monthNav?/:yearNav?").get((req, res) => {
     currentMonth: dt.getMonth(),
     yearRange: constants.yearRange,
     currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
+    cellIds: cellIds,
   });
 });
 router.get("/api/:monthNav?/:yearNav?", (req, res) => {
   const monthNav = Number(req.params.monthNav) || 0;
   const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, dt } = getData(monthNav, yearNav);
+  const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
 
   // Send the JSON response
   res.setHeader("Content-Type", "application/json");
@@ -36,6 +37,7 @@ router.get("/api/:monthNav?/:yearNav?", (req, res) => {
     yearRange: constants.yearRange,
     currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
     dt: dt,
+    cellIds: cellIds,
   });
 });
 
@@ -69,11 +71,12 @@ function getData(monthNav = 0, yearNav = 0) {
   let weekrowHTML = `<tr id="${month}-weekrow-${weekNum}" class="table-row table-bordered">`;
   const daySquare = (month, date, active) => {
     const id = `${month}-${date}-${year}`;
+    if (active) cellIds.push(id);
     return `<td ${active ? `id="${id}"` : ""} class="table-cell table-bordered${
-      active ? " active" : " table-active"
-    }">${date}</td>`;
+      active ? " clickable-td" : " table-active"
+    }" data-bs-toggle="modal" data-bs-target="#modal-${id}">${date}</td>`;
   };
-
+  const cellIds = [];
   for (let i = 1; i <= daysInMonth + paddingDays; i++) {
     if (i > paddingDays) {
       weekrowHTML += daySquare(month, i - paddingDays, true);
@@ -96,6 +99,6 @@ function getData(monthNav = 0, yearNav = 0) {
     }
   }
 
-  return { dateString, calendarHTML, dt };
+  return { dateString, calendarHTML, dt, cellIds };
 }
 export default router;
