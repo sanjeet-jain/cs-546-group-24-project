@@ -1,6 +1,9 @@
 <div id="main_page" class="row">
   <div id="left-menu-div" class="col">{{>leftPane}}</div>
   <div id="calendar-div" class="col-md-auto">
+    <div id="modal-div">
+      {{>(lookup . 'calendarModal') cellIds=cellIds}}
+    </div>
     <table class="table table-bordered">
       <caption id="header">{{ dateString }}</caption>
       <thead>
@@ -11,7 +14,7 @@
         </tr>
       </thead>
       <tbody id="calendar">
-        {{>calendarModal cellIds=cellIds}}
+
         {{{ calendarHTML }}}
       </tbody>
     </table>

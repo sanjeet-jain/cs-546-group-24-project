@@ -30,6 +30,15 @@ function load() {
         yearDropDown.selectedIndex = yearRange.findIndex(
           (x) => x === data.currYear
         );
+        // // Update modal data
+        // const cellIds = data.cellIds;
+        // for (let i = 0; i < cellIds.length; i++) {
+        //   const cellId = cellIds[i];
+        //   const modalTitle = `New Title ${i}`;
+        //   const modalDescription = `New Description ${i}`;
+        //   $(`#modal-${cellId} .modal-title`).text(modalTitle);
+        //   $(`#modal-${cellId} .modal-body`).text(modalDescription);
+        // }
       }
     };
     xhttp.open("GET", `/calendar/api/${monthNav}/${yearNav}`, true);
