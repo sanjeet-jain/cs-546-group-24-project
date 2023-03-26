@@ -3,18 +3,11 @@ const router = Router();
 import constants from "./../constants/constants.js";
 const dt = new Date();
 
-router.route("/:nav?").get((req, res) => {
-  const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
-  let yeaRangeRef = dt.getFullYear();
-  const yearRange = [
-    yeaRangeRef - 2,
-    yeaRangeRef - 1,
-    yeaRangeRef,
-    yeaRangeRef + 1,
-    yeaRangeRef + 2,
-  ];
+router.route("/:monthNav?/:yearNav?").get((req, res) => {
+  const monthNav = Number(req.params.monthNav) || 0;
+  const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, currentMonth, currYear } = getData(nav);
+  const { dateString, calendarHTML, dt } = getData(monthNav, yearNav);
 
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
@@ -23,32 +16,26 @@ router.route("/:nav?").get((req, res) => {
     weekdays: constants.weekdays,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
     months: constants.months,
-    currentMonth: currentMonth,
-    yearRange: yearRange,
-    currYear: currYear,
+    currentMonth: dt.getMonth(),
+    yearRange: constants.yearRange,
+    currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
   });
 });
-router.get("/api/:nav?", (req, res) => {
-  const nav = Number(req.params.nav) || 0; // add nav variable with a value of 0 since it's not defined in the code
+router.get("/api/:monthNav?/:yearNav?", (req, res) => {
+  const monthNav = Number(req.params.monthNav) || 0;
+  const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, currentMonth, currYear } = getData(nav);
-  let yeaRangeRef = dt.getFullYear();
-  const yearRange = [
-    yeaRangeRef - 2,
-    yeaRangeRef - 1,
-    yeaRangeRef,
-    yeaRangeRef + 1,
-    yeaRangeRef + 2,
-  ];
+  const { dateString, calendarHTML, dt } = getData(monthNav, yearNav);
 
   // Send the JSON response
   res.setHeader("Content-Type", "application/json");
   res.json({
     dateString: dateString,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
-    currentMonth: currentMonth,
-    yearRange: yearRange,
-    currYear: currYear,
+    currentMonth: dt.getMonth(),
+    yearRange: constants.yearRange,
+    currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
+    dt: dt,
   });
 });
 
@@ -56,6 +43,12 @@ function getData(monthNav = 0, yearNav = 0) {
   const dt = new Date();
   if (monthNav !== 0) {
     dt.setMonth(new Date().getMonth() + monthNav);
+  }
+  if (yearNav !== 0) {
+    const newYear = new Date().getFullYear() + yearNav;
+    if (newYear >= dt.getFullYear() - 2 && newYear <= dt.getFullYear() + 2) {
+      dt.setFullYear(newYear);
+    }
   }
   const day = dt.getDay();
   const month = dt.getMonth();
@@ -114,9 +107,7 @@ function getData(monthNav = 0, yearNav = 0) {
       }
     }
   }
-  const currYear = dt.getFullYear();
 
-  let currentMonth = dt.getMonth();
-  return { dateString, calendarHTML, currentMonth, currYear };
+  return { dateString, calendarHTML, dt };
 }
 export default router;

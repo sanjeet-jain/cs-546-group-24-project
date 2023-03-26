@@ -1,3 +1,6 @@
+// same array in public/scripts/scripts.js
+let yeaRangeRef = new Date().getFullYear();
+
 const constants = {
   weekdays: [
     "Sunday",
@@ -21,6 +24,13 @@ const constants = {
     "October",
     "November",
     "December",
+  ],
+  yearRange: [
+    yeaRangeRef - 2,
+    yeaRangeRef - 1,
+    yeaRangeRef,
+    yeaRangeRef + 1,
+    yeaRangeRef + 2,
   ],
 };
 

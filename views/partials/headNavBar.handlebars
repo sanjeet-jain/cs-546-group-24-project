@@ -22,7 +22,7 @@
           class="form-select h-100"
           aria-label="Month Select">
           {{#each months}}
-          <option value="{{@index}}"{{#if (eq this
+          <option value="{{@index}}"{{#if (eq @index
             ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>
@@ -51,11 +51,11 @@
       </li>
 
       <li class="nav-item">
-        <select id="yearDropdown"
+        <select id="yearDropDown"
           class="form-select h-100"
           aria-label="Year Select">
           {{#each yearRange}}
-          <option value="{{this}}" {{#if (eq this ../currYear)}}selected{{/if}}>{{this}}</option>
+          <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>
       </li>
