@@ -17,7 +17,7 @@ Meeting Collection {
 */
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
-import { meetingsColllection } from "../config/mongoCollections.js";
+import { meetingsCollection } from "../config/mongoCollections.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
@@ -28,7 +28,7 @@ const meetingsDataFunctions = {
     }
 
     const meetings = await meetingsCollection();
-    const meeting = await meetings.findOne({ _id: ObjectId(meetingId) });
+    const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
     // if the meeting exists in collection then return it else throw an error
     if (meeting) {
@@ -37,18 +37,47 @@ const meetingsDataFunctions = {
       throw new Error("Meeting not found");
     }
   },
-  update(
+  async update(
     meetingId,
     title,
     dateAddedTo,
     dateDueOn,
     priority,
     textBody,
-    tag,
-    repeating,
-    repeatingCounterIncrement,
-    repeatingIncrementBy
-  ) {},
+    tag
+  ) {
+    // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
+    if (!utils.checkObjectIdString(meetingId)) {
+      throw new Error("Invalid meeting ID");
+    }
+    //validate other fields
+
+    const meetings = await meetingsCollection();
+    const updatedMeeting = {};
+
+    // only update the fields that have been provided as input
+    if (title) updatedMeeting.title = title;
+    if (dateAddedTo) updatedMeeting.dateAddedTo = dateAddedTo;
+    if (dateDueOn) updatedMeeting.dateDueOn = dateDueOn;
+    if (priority) updatedMeeting.priority = priority;
+    if (textBody) updatedMeeting.textBody = textBody;
+    if (tag) updatedMeeting.tag = tag;
+
+    const result = await meetings.updateOne(
+      { _id: new ObjectId(meetingId) },
+      { $set: updatedMeeting }
+    );
+
+    // if the meeting was successfully updated, return the updated meeting
+    if (result.modifiedCount === 1) {
+      const updatedMeeting = await meetings.findOne({
+        _id: new ObjectId(meetingId),
+      });
+      return updatedMeeting;
+    } else {
+      throw new Error("Meeting not found");
+    }
+  },
   delete(meetingId) {},
 
   // userId needed

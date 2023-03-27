@@ -1,7 +1,7 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
-import { meetingsColllection } from "../config/mongoCollections.js";
+import { meetingsCollection } from "../config/mongoCollections.js";
 export async function runSetup() {
   /*
   UsersCollection
@@ -32,8 +32,8 @@ export async function runSetup() {
     repeatingGroup: null,
     expired: false,
   };
-  const meetings = await meetingsColllection();
-  let insertInfo = await meetings.insertOne(sampleUser);
+  const meetings = await meetingsCollection();
+  let insertInfo = await meetings.insertOne(sampleMeeting);
 
   const sampleUser = {
     first_name: "Sample",
@@ -46,7 +46,7 @@ export async function runSetup() {
     dob: new Date("01/01/1996"),
     consent: true,
     //initially an empty array
-    taskIds: [],
+    taskIds: [insertInfo.insertedId],
     reminderIds: [],
     noteIds: [],
     meetingIds: [],

@@ -8,15 +8,18 @@ router
   .get(async (req, res) => {
     let meetingId = "";
     try {
-      meetingId = helpers.validateId(req.params.meetingId);
+      if (!utils.checkObjectIdString(req.params.meetingId)) {
+        throw new Error("meeting id wasnt a string");
+      }
+      meetingId = req.params.meetingId.trim();
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
     try {
       let meeting = await meetingsDataFunctions.get(meetingId);
       return res.status(200).json(meeting);
     } catch (e) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: e.message });
     }
   })
   .delete(async (req, res) => {
