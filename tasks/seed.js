@@ -1,5 +1,6 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
-import usersCollection from "./config/mongoCollection.js";
+import ObjectId from "mongodb";
+import { usersCollection } from "../config/mongoCollections.js";
 
 export async function runSetup() {
   /*
@@ -36,7 +37,9 @@ export async function runSetup() {
 
   // need to call the data/create function for users here
   // for now inserting it directly
-  const insertInfo = await usersCollection.insertOne(sampleUser);
+  const users = await usersCollection();
+  const insertInfo = await users.insertOne(sampleUser);
+  console.log(insertInfo);
   console.log("seeding done!");
 
   // ideally use the CRUD functions in data/ to initialise and seed all the data we have !
