@@ -14,3 +14,4 @@ const getCollectionFn = (collection) => {
 };
 
 // NOTE: YOU WILL NEED TO CHANGE THE CODE BELOW TO HAVE THE COLLECTION(S) REQUIRED BY THE ASSIGNMENT
+const usersCollection = db.getCollectionFn("users");
