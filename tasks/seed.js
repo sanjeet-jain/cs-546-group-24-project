@@ -1,7 +1,7 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
-
+import { meetingsColllection } from "../config/mongoCollections.js";
 export async function runSetup() {
   /*
   UsersCollection
@@ -18,6 +18,23 @@ export async function runSetup() {
  noteIds: [ObjectId],
  meetingIds: [ObjectId]
 */
+  const sampleMeeting = {
+    title: "Weekly Team Meeting",
+    dateCreated: new Date(),
+    dateAddedTo: new Date(),
+    dateDueOn: new Date().setHours(new Date().getHours() + 1),
+    priority: 2,
+    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
+    tag: "team",
+    repeating: false,
+    repeatingCounterIncrement: 0,
+    repeatingIncrementBy: "",
+    repeatingGroup: null,
+    expired: false,
+  };
+  const meetings = await meetingsColllection();
+  let insertInfo = await meetings.insertOne(sampleUser);
+
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
@@ -38,7 +55,7 @@ export async function runSetup() {
   // need to call the data/create function for users here
   // for now inserting it directly
   const users = await usersCollection();
-  const insertInfo = await users.insertOne(sampleUser);
+  insertInfo = await users.insertOne(sampleUser);
   console.log(insertInfo);
   console.log("seeding done!");
 

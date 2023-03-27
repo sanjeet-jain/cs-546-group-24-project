@@ -5,7 +5,6 @@ Meeting Collection {
     dateCreated: DateTimeStamp,
     dateAddedTo: DateTimeStamp,
     dateDueOn: DateTimeStamp,
-    duration: String,
     priority: Number,
     textBody: String,
     tag: String,
@@ -16,9 +15,9 @@ Meeting Collection {
     expired:Boolean
     }
 */
-import utils from "../utils/utils";
+import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
-import meetingsCollection from "../config/mongoCollections";
+import { meetingsColllection } from "../config/mongoCollections.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
@@ -43,7 +42,6 @@ const meetingsDataFunctions = {
     title,
     dateAddedTo,
     dateDueOn,
-    // duration,
     priority,
     textBody,
     tag,
