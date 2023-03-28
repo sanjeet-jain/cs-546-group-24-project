@@ -140,3 +140,47 @@ disabilities :boolean
 }
 
 <!-- **/node_modules, **/bootstrap , **/bootstrap-icons, **/jquery -->
+
+# Route: /meeting/:meetingId
+
+HTTP Method: GET
+
+Functionality: Retrieves a meeting by its ID
+
+Input: meetingId as a URL parameter
+
+Output: Returns a JSON object containing the meeting details, or an error message if the meeting ID is invalid or not found.
+
+HTTP Method: DELETE
+
+Functionality: Deletes a meeting by its ID
+
+Input: meetingId as a URL parameter
+
+Output: Returns a JSON object containing the deleted meeting details, or an error message if the meeting ID is invalid or not found.
+
+HTTP Method: PUT
+
+Functionality: Updates a meeting by its ID
+
+Input: meetingId as a URL parameter, and the updated meeting data in the request body as a JSON object.
+
+Output: Returns a JSON object containing the updated meeting details, or an error message if the meeting ID is invalid, the request body is empty, or the update input fields are invalid.
+
+# Route: /user/meetings/:userId
+
+HTTP Method: GET
+
+Functionality: Retrieves all meetings belonging to a user
+
+Input: userId as a URL parameter
+
+Output: Returns a JSON array containing all meetings belonging to the user, or an error message if the user ID is invalid or if there is a server error.
+
+HTTP Method: POST
+
+Functionality: Creates a new meeting for a user
+
+Input: userId as a URL parameter, and the meeting data in the request body as a JSON object.
+
+Output: Returns a JSON object containing the new meeting details, or an error message if the user ID is invalid, the request body is empty, or the input fields are invalid.
