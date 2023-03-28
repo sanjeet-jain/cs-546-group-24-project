@@ -295,7 +295,28 @@ const meetingsDataFunctions = {
   },
 
   // userId and repeatingGroup needed
-  getAllRecurrences(userId, repeatingGroup) {},
+  async getAllRecurrences(userId, repeatingGroup) {
+    if (!utils.checkObjectIdString(userId)) {
+      throw new Error("Invalid meeting ID");
+    }
+
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (user) {
+      const meetingIdList = user.meetingIds;
+      const meetings = await meetingsCollection();
+      const recurringMeetingsList = await meetings
+        //i also want to add a parameter repeatingGroup which is an objectId to the search param
+        .find({
+          _id: { $in: meetingIdList },
+          repeatingGroup: new ObjectId(repeatingGroup),
+        })
+        .toArray();
+      return recurringMeetingsList;
+    } else {
+      throw new Error("user not found");
+    }
+  },
   updateAllRecurrences(
     userId,
     title,

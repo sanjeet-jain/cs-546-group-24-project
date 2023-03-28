@@ -97,7 +97,7 @@ router
     let userId = "";
     try {
       if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("meeting id wasnt a string");
+        throw new Error("user id wasnt a valid object Id string");
       }
       userId = req.params.userId.trim();
     } catch (e) {
@@ -172,6 +172,34 @@ router
       if (e === "Error: same object passed for update with no changes") {
         return res.status(400).json({ error: e.message });
       }
+      return res.status(500).json({ error: e.message });
+    }
+  });
+
+router
+  .route("/user/meetings/:userId/repeating/:repeatingGroup")
+  .get(async (req, res) => {
+    let userId = "";
+    let repeatingGroup = "";
+    try {
+      if (!utils.checkObjectIdString(req.params.userId)) {
+        throw new Error("user id wasnt a valid objectId string");
+      }
+      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
+        throw new Error("repeatingGroup id wasnt a valid objectId string");
+      }
+      userId = req.params.userId.trim();
+      repeatingGroup = req.params.repeatingGroup.trim();
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    try {
+      let meetingsRecurring = await meetingsDataFunctions.getAllRecurrences(
+        userId,
+        repeatingGroup
+      );
+      return res.status(200).json(meetingsRecurring);
+    } catch (e) {
       return res.status(500).json({ error: e.message });
     }
   });
