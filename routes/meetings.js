@@ -259,6 +259,37 @@ router
       }
       return res.status(500).json({ error: e.message });
     }
-  });
+  })
+  .delete(async (req, res) => {
+    let userId = "";
+    let repeatingGroup = "";
+    try {
+      if (!utils.checkObjectIdString(req.params.userId)) {
+        throw new Error("user id wasnt a valid objectId string");
+      }
+      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
+        throw new Error("repeatingGroup id wasnt a valid objectId string");
+      }
+      userId = req.params.userId.trim();
+      repeatingGroup = req.params.repeatingGroup.trim();
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
 
+    try {
+      const result = await meetingsDataFunctions.deleteAllRecurrences(
+        userId,
+        repeatingGroup
+      );
+      if (result.deletedCount > 0) {
+        return res
+          .status(200)
+          .json({ message: "Meetings deleted successfully" });
+      } else {
+        return res.status(404).json({ error: "No meetings found to delete" });
+      }
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+  });
 export default router;

@@ -398,6 +398,34 @@ const meetingsDataFunctions = {
         throw new Error("Meetings update wasnt successfull");
     }
   },
-  deleteAllRecurrences(userId, repeatingGroup) {},
+  async deleteAllRecurrences(userId, repeatingGroup) {
+    if (!utils.checkObjectIdString(userId.trim())) {
+      throw new Error("Invalid meeting ID");
+    }
+    if (!utils.checkObjectIdString(repeatingGroup.trim())) {
+      throw new Error("Invalid repeatingGroup ID");
+    }
+
+    userId = userId.trim();
+    repeatingGroup = repeatingGroup.trim();
+
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    const meetingIdList = user.meetingIds;
+    const meetings = await meetingsCollection();
+
+    const result = await meetings.deleteMany({
+      _id: { $in: meetingIdList },
+      repeatingGroup: new ObjectId(repeatingGroup),
+    });
+
+    if (result.deletedCount > 0 && result.acknowledged === true) {
+      return result;
+    } else {
+      if (result.deletedCount == 0) throw new Error("Meetings not found");
+      if (result.acknowledged !== true)
+        throw new Error("Meetings delete was not successful");
+    }
+  },
 };
 export default meetingsDataFunctions;
