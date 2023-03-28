@@ -57,9 +57,9 @@ const utils = {
 
   validateRepeatingCounterIncrement(repeatingCounterIncrement) {
     if (
-      repeatingCounterIncrement &&
-      (typeof repeatingCounterIncrement !== "number" ||
-        repeatingCounterIncrement <= 0)
+      isNaN(repeatingCounterIncrement) ||
+      typeof repeatingCounterIncrement !== "number" ||
+      repeatingCounterIncrement <= 0
     ) {
       throw new Error(
         "RepeatingCounterIncrement must be a positive number greater than 0"
@@ -69,13 +69,22 @@ const utils = {
 
   validateRepeatingIncrementBy(repeatingIncrementBy) {
     if (
-      repeatingIncrementBy &&
-      (typeof repeatingIncrementBy !== "string" ||
-        !/^(day|week|month|year)$/.test(repeatingIncrementBy))
+      typeof repeatingIncrementBy !== "string" ||
+      repeatingIncrementBy.trim().length === 0 ||
+      !/^(day|week|month|year)$/.test(repeatingIncrementBy.trim())
     ) {
       throw new Error(
         "RepeatingIncrementBy must be a string with value 'day', 'week', 'month' or 'year'"
       );
+    }
+  },
+  validateDateRange(dateAddedTo, dateDueOn) {
+    if (
+      dateAddedTo &&
+      dateDueOn &&
+      new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()
+    ) {
+      throw new Error("DateDueOn must be after DateAddedTo");
     }
   },
   validateMeetingCreateInputs(
@@ -98,13 +107,7 @@ const utils = {
     this.validateBooleanInput(repeating, "repeating");
     this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
     this.validateRepeatingIncrementBy(repeatingIncrementBy);
-    if (
-      dateAddedTo &&
-      dateDueOn &&
-      dateAddedTo.getTime() >= dateDueOn.getTime()
-    ) {
-      throw new Error("DateDueOn must be after DateAddedTo");
-    }
+    this.validateDateRange(dateAddedTo, dateDueOn);
     return true;
   },
 
@@ -122,13 +125,8 @@ const utils = {
     this.validatePriority(priority);
     this.validateStringInput(textBody, "textBody", 200);
     this.validateStringInput(tag, "tag", 20);
-    if (
-      dateAddedTo &&
-      dateDueOn &&
-      new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()
-    ) {
-      throw new Error("DateDueOn must be after DateAddedTo");
-    }
+    this.validateDateRange(dateAddedTo, dateDueOn);
+
     return true;
   },
 };

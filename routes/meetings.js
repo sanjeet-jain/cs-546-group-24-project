@@ -51,30 +51,29 @@ router
       return res.status(400).json({ error: e.message });
     }
 
-    const meetingsPutData = req.body;
-    if (!meetingsPutData || Object.keys(meetingsPutData).length === 0) {
+    const meetingPutData = req.body;
+    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
       return res
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
-    let validObject = {};
     try {
       //validation
       utils.validateMeetingUpdateInputs(
-        meetingsPutData.title,
-        meetingsPutData.dateAddedTo,
-        meetingsPutData.dateDueOn,
-        meetingsPutData.priority,
-        meetingsPutData.textBody,
-        meetingsPutData.tag
+        meetingPutData.title,
+        meetingPutData.dateAddedTo,
+        meetingPutData.dateDueOn,
+        meetingPutData.priority,
+        meetingPutData.textBody,
+        meetingPutData.tag
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
       const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
-        meetingsPutData;
-      const newBand = await meetingsDataFunctions.update(
+        meetingPutData;
+      const updatedMeeting = await meetingsDataFunctions.update(
         meetingId,
         title,
         dateAddedTo,
@@ -83,7 +82,7 @@ router
         textBody,
         tag
       );
-      return res.status(200).json(newBand);
+      return res.status(200).json(updatedMeeting);
     } catch (e) {
       if (e === "Error: same object passed for update with no changes") {
         return res.status(400).json({ error: e.message });
@@ -111,6 +110,70 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .post();
+  .post(async (req, res) => {
+    let userId = "";
+    try {
+      if (!utils.checkObjectIdString(req.params.userId)) {
+        throw new Error("meeting id wasnt a string");
+      }
+      userId = req.params.userId.trim();
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    const meetingPostData = req.body;
+    if (!meetingPostData || Object.keys(meetingPostData).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "There are no fields in the request body" });
+    }
+    try {
+      //validation
+      utils.validateMeetingCreateInputs(
+        meetingPostData.title,
+        meetingPostData.dateAddedTo,
+        meetingPostData.dateDueOn,
+        meetingPostData.priority,
+        meetingPostData.textBody,
+        meetingPostData.tag,
+        meetingPostData.repeating,
+        meetingPostData.repeatingCounterIncrement,
+        meetingPostData.repeatingIncrementBy
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+
+    try {
+      const {
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag,
+        repeating,
+        repeatingCounterIncrement,
+        repeatingIncrementBy,
+      } = meetingPostData;
+      const newMeeting = await meetingsDataFunctions.create(
+        userId,
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag,
+        repeating,
+        repeatingCounterIncrement,
+        repeatingIncrementBy
+      );
+      return res.status(200).json(newMeeting);
+    } catch (e) {
+      if (e === "Error: same object passed for update with no changes") {
+        return res.status(400).json({ error: e.message });
+      }
+      return res.status(500).json({ error: e.message });
+    }
+  });
 
 export default router;

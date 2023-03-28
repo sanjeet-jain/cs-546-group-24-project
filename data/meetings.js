@@ -142,7 +142,6 @@ const meetingsDataFunctions = {
     title,
     dateAddedTo,
     dateDueOn,
-    // duration,
     priority,
     textBody,
     tag,
@@ -167,9 +166,18 @@ const meetingsDataFunctions = {
     if (!isValid) {
       throw new Error("Invalid meeting inputs.");
     }
+    title = title.trim();
+    dateAddedTo = dateAddedTo.trim();
+    let dateAddedToObject = new Date(dateAddedTo);
+    dateDueOn = dateDueOn.trim();
+    let dateDueOnObject = new Date(dateDueOn);
+
+    textBody = textBody.trim();
+    tag = tag.trim();
+    repeatingIncrementBy = repeatingIncrementBy.trim();
 
     const users = await usersCollection();
-    const user = await users.findOne({ _id: ObjectId(userId) });
+    const user = await users.findOne({ _id: new ObjectId(userId) });
     if (!user) {
       throw new Error("User not found.");
     }
@@ -191,10 +199,10 @@ const meetingsDataFunctions = {
       });
       const insertedId = result.insertedId;
       await users.updateOne(
-        { _id: ObjectId(userId) },
+        { _id: new ObjectId(userId) },
         { $push: { meetingIds: insertedId } }
       );
-      return insertedId;
+      return this.get(insertedId.toString());
     } else {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];
@@ -204,31 +212,35 @@ const meetingsDataFunctions = {
         let newDateAddedTo;
         switch (repeatingIncrementBy) {
           case "day":
-            newDateDueOn = new Date(dateDueOn.setDate(dateDueOn.getDate() + 1));
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 1)
+            );
             newDateAddedTo = new Date(
-              dateAddedTo.setDate(dateAddedTo.getDate() + 1)
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 1)
             );
             break;
           case "week":
-            newDateDueOn = new Date(dateDueOn.setDate(dateDueOn.getDate() + 7));
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 7)
+            );
             newDateAddedTo = new Date(
-              dateAddedTo.setDate(dateAddedTo.getDate() + 7)
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 7)
             );
             break;
           case "month":
             newDateDueOn = new Date(
-              dateDueOn.setMonth(dateDueOn.getMonth() + 1)
+              dateDueOnObject.setMonth(dateDueOnObject.getMonth() + 1)
             );
             newDateAddedTo = new Date(
-              dateAddedTo.setMonth(dateAddedTo.getMonth() + 1)
+              dateAddedToObject.setMonth(dateAddedToObject.getMonth() + 1)
             );
             break;
           case "year":
             newDateDueOn = new Date(
-              dateDueOn.setFullYear(dateDueOn.getFullYear() + 1)
+              dateDueOnObject.setFullYear(dateDueOnObject.getFullYear() + 1)
             );
             newDateAddedTo = new Date(
-              dateAddedTo.setFullYear(dateAddedTo.getFullYear() + 1)
+              dateAddedToObject.setFullYear(dateAddedToObject.getFullYear() + 1)
             );
             break;
           default:
@@ -237,8 +249,8 @@ const meetingsDataFunctions = {
 
         const meeting = {
           title,
-          dateAddedTo: newDateAddedTo,
-          dateDueOn: newDateDueOn,
+          dateAddedTo: newDateAddedTo.toString(),
+          dateDueOn: newDateDueOn.toString(),
           priority,
           textBody,
           tag,
@@ -254,12 +266,12 @@ const meetingsDataFunctions = {
       }
 
       const result = await meetings.insertMany(meetingObjects);
-      const insertedIds = result.insertedIds;
+      const insertedIds = Object.values(result.insertedIds);
       await users.updateOne(
-        { _id: ObjectId(userId) },
+        { _id: new ObjectId(userId) },
         { $push: { meetingIds: { $each: insertedIds } } }
       );
-      return insertedIds;
+      return this.getAll(userId);
     }
   },
   //TODO
