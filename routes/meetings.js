@@ -202,6 +202,63 @@ router
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
+  })
+  .put(async (req, res) => {
+    //code here for PUT
+    let userId = "";
+    let repeatingGroup = "";
+    try {
+      if (!utils.checkObjectIdString(req.params.userId)) {
+        throw new Error("user id wasnt a valid objectId string");
+      }
+      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
+        throw new Error("repeatingGroup id wasnt a valid objectId string");
+      }
+      userId = req.params.userId.trim();
+      repeatingGroup = req.params.repeatingGroup.trim();
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+
+    const meetingPutData = req.body;
+    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "There are no fields in the request body" });
+    }
+    try {
+      //validation
+      utils.validateMeetingUpdateAllRecurrencesInputs(
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag
+      );
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    try {
+      const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
+        meetingPutData;
+      const updatedMeeting = await meetingsDataFunctions.updateAllRecurrences(
+        userId,
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag,
+        repeatingGroup
+      );
+      return res.status(200).json(updatedMeeting);
+    } catch (e) {
+      if (e === "Error: same object passed for update with no changes") {
+        return res.status(400).json({ error: e.message });
+      }
+      return res.status(500).json({ error: e.message });
+    }
   });
 
 export default router;

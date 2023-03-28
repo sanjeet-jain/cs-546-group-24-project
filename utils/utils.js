@@ -131,6 +131,23 @@ const utils = {
 
     return true;
   },
+  validateMeetingUpdateAllRecurrencesInputs(
+    title,
+    dateAddedTo,
+    dateDueOn,
+    priority,
+    textBody,
+    tag
+  ) {
+    this.validateStringInput(title, "title", 100);
+    this.validateDate(dateAddedTo, "DateAddedTo");
+    this.validateDate(dateDueOn, "DateDueOn");
+    this.validatePriority(priority);
+    this.validateStringInput(textBody, "textBody", 200);
+    this.validateStringInput(tag, "tag", 20);
+
+    return true;
+  },
 };
 
 export default utils;

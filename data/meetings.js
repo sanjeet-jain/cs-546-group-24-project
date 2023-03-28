@@ -181,11 +181,12 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-
+    let dateCreated = new Date().toString();
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
         title,
+        dateCreated,
         dateAddedTo,
         dateDueOn,
         priority,
@@ -250,6 +251,7 @@ const meetingsDataFunctions = {
 
         const meeting = {
           title,
+          dateCreated,
           dateAddedTo: newDateAddedTo.toString(),
           dateDueOn: newDateDueOn.toString(),
           priority,
@@ -276,7 +278,7 @@ const meetingsDataFunctions = {
       return this.getAll(userId);
     }
   },
-  //TODO
+
   async getAll(userId) {
     if (!utils.checkObjectIdString(userId)) {
       throw new Error("Invalid meeting ID");
@@ -311,7 +313,6 @@ const meetingsDataFunctions = {
       const meetingIdList = user.meetingIds;
       const meetings = await meetingsCollection();
       const recurringMeetingsList = await meetings
-        //i also want to add a parameter repeatingGroup which is an objectId to the search param
         .find({
           _id: { $in: meetingIdList },
           repeatingGroup: new ObjectId(repeatingGroup),
@@ -322,18 +323,62 @@ const meetingsDataFunctions = {
       throw new Error("repeatingGroup of meetings not found");
     }
   },
-  updateAllRecurrences(
+  async updateAllRecurrences(
     userId,
     title,
-    dateCreated,
     dateAddedTo,
     dateDueOn,
-    duration,
     priority,
     textBody,
     tag,
     repeatingGroup
-  ) {},
+  ) {
+    if (!utils.checkObjectIdString(userId.trim())) {
+      throw new Error("Invalid meeting ID");
+    }
+    if (!utils.checkObjectIdString(repeatingGroup.trim())) {
+      throw new Error("Invalid repeatingGroup ID");
+    }
+
+    const isValid = utils.validateMeetingUpdateAllRecurrencesInputs(
+      title,
+      dateAddedTo,
+      dateDueOn,
+      priority,
+      textBody,
+      tag
+    );
+    if (!isValid) {
+      throw new Error("Invalid meeting inputs.");
+    }
+
+    userId = userId.trim();
+    title = title.trim();
+    dateAddedTo = dateAddedTo.trim();
+    dateDueOn = dateDueOn.trim();
+    textBody = textBody.trim();
+    tag = tag.trim();
+    repeatingGroup = repeatingGroup.trim();
+
+    const meetingIdList = user.meetingIds;
+    const meetings = await meetingsCollection();
+    const recurringMeetingsList = await meetings
+      .updateMany({
+        _id: { $in: meetingIdList },
+        repeatingGroup: new ObjectId(repeatingGroup),
+        $set: {
+          title: title,
+          dateAddedTo: dateAddedTo,
+          dateDueOn: dateDueOn,
+          duration: duration,
+          priority: priority,
+          textBody: textBody,
+          tag: tag,
+        },
+      })
+      .toArray();
+    return recurringMeetingsList;
+  },
   deleteAllRecurrences(userId, repeatingGroup) {},
 };
 export default meetingsDataFunctions;
