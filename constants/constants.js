@@ -32,6 +32,12 @@ const constants = {
     yeaRangeRef + 1,
     yeaRangeRef + 2,
   ],
+  eventTypes: {
+    task: "task",
+    meeting: "meeting",
+    notes: "notes",
+    reminder: "reminder",
+  },
 };
 
 export default constants;

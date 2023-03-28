@@ -50,7 +50,7 @@ const utils = {
   },
 
   validateBooleanInput(input, inputName) {
-    if (input && typeof input !== "boolean") {
+    if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }
   },
@@ -105,8 +105,10 @@ const utils = {
     this.validateStringInput(textBody, "textBody", 200);
     this.validateStringInput(tag, "tag", 20);
     this.validateBooleanInput(repeating, "repeating");
-    this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
-    this.validateRepeatingIncrementBy(repeatingIncrementBy);
+    if (repeating) {
+      this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
+      this.validateRepeatingIncrementBy(repeatingIncrementBy);
+    }
     this.validateDateRange(dateAddedTo, dateDueOn);
     return true;
   },

@@ -196,6 +196,7 @@ const meetingsDataFunctions = {
         repeatingIncrementBy,
         repeatingGroup: null,
         expired: false,
+        type: "meeting",
       });
       const insertedId = result.insertedId;
       await users.updateOne(
@@ -259,6 +260,7 @@ const meetingsDataFunctions = {
           repeatingIncrementBy,
           repeatingGroup,
           expired: false,
+          type: "meeting",
         };
         meetingObjects.push(meeting);
         dateDueOn = newDateDueOn;

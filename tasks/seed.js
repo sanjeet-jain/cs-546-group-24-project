@@ -33,6 +33,7 @@ export async function runSetup() {
     repeatingIncrementBy: "",
     repeatingGroup: null,
     expired: false,
+    type: "meeting",
   };
   const meetings = await meetingsCollection();
   const insert1 = await meetings.insertOne(sampleMeeting);
@@ -49,6 +50,7 @@ export async function runSetup() {
     repeatingIncrementBy: "",
     repeatingGroup: null,
     expired: false,
+    type: "meeting",
   };
   const insert2 = await meetings.insertOne(sampleMeeting2);
 
