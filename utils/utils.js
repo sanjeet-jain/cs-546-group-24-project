@@ -1,23 +1,34 @@
 // this is where all common helper files will go
 import { ObjectId } from "mongodb";
+
 const utils = {
   checkObjectIdString(stringObjectId) {
-    if (typeof stringObjectId !== "string") {
-      return false;
+    this.validateStringInput(stringObjectId, "objectID");
+    stringObjectId = stringObjectId.trim();
+    if (!ObjectId.isValid(stringObjectId)) {
+      throw new Error("object id is not valid");
     }
-
-    try {
-      new ObjectId(stringObjectId);
-      return true;
-    } catch (error) {
-      return false;
+  },
+  validateStringInput(input, inputName) {
+    if (input && typeof input !== "string") {
+      throw new Error(`${inputName} must be a string`);
+    } else if (input && input.trim().length === 0) {
+      throw new Error(`${inputName} cannot be an empty string`);
+    }
+  },
+  validateStringInputWithMaxLength(input, inputName, maxLength) {
+    this.validateStringInput(input, inputName);
+    if (input.trim().length > maxLength) {
+      throw new Error(
+        `${inputName} cannot be longer than ${maxLength} characters`
+      );
     }
   },
 
   validateDate(date, paramName) {
-    if (typeof date === "string") {
-      date = new Date(date);
-    }
+    this.validateStringInput(date, paramName);
+    date = date.trim();
+    date = new Date(date);
 
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       throw new Error(
@@ -25,27 +36,16 @@ const utils = {
       );
     }
   },
-
-  validatePriority(priority) {
-    if (
-      !priority ||
-      typeof priority !== "number" ||
-      priority < 1 ||
-      priority > 3
-    ) {
-      throw new Error("Priority must be a number between 1 and 3");
+  validateInputIsNumber(input, inputName) {
+    if (typeof input !== "number" || isNaN(input)) {
+      throw new Error(`${inputName} is not a number `);
     }
   },
 
-  validateStringInput(input, inputName, maxLength) {
-    if (input && typeof input !== "string") {
-      throw new Error(`${inputName} must be a string`);
-    } else if (input && input.trim().length === 0) {
-      throw new Error(`${inputName} cannot be an empty string`);
-    } else if (input && maxLength && input.trim().length > maxLength) {
-      throw new Error(
-        `${inputName} cannot be longer than ${maxLength} characters`
-      );
+  validatePriority(priority) {
+    this.validateInputIsNumber(priority, "priority");
+    if (!priority || priority < 1 || priority > 3) {
+      throw new Error("Priority must be a number between 1 and 3");
     }
   },
 
@@ -56,11 +56,11 @@ const utils = {
   },
 
   validateRepeatingCounterIncrement(repeatingCounterIncrement) {
-    if (
-      isNaN(repeatingCounterIncrement) ||
-      typeof repeatingCounterIncrement !== "number" ||
-      repeatingCounterIncrement <= 0
-    ) {
+    this.validateInputIsNumber(
+      repeatingCounterIncrement,
+      "repeatingCounterIncrement"
+    );
+    if (repeatingCounterIncrement <= 0) {
       throw new Error(
         "RepeatingCounterIncrement must be a positive number greater than 0"
       );
@@ -68,22 +68,23 @@ const utils = {
   },
 
   validateRepeatingIncrementBy(repeatingIncrementBy) {
-    if (
-      typeof repeatingIncrementBy !== "string" ||
-      repeatingIncrementBy.trim().length === 0 ||
-      !/^(day|week|month|year)$/.test(repeatingIncrementBy.trim())
-    ) {
+    this.validateStringInput(repeatingIncrementBy, "repeatingIncrementBy");
+    repeatingIncrementBy = repeatingIncrementBy.trim();
+    if (!/^(day|week|month|year)$/.test(repeatingIncrementBy)) {
       throw new Error(
         "RepeatingIncrementBy must be a string with value 'day', 'week', 'month' or 'year'"
       );
     }
   },
   validateDateRange(dateAddedTo, dateDueOn) {
-    if (
-      dateAddedTo &&
-      dateDueOn &&
-      new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()
-    ) {
+    this.validateStringInput(dateAddedTo, "dateAddedTo");
+    this.validateStringInput(dateDueOn, "dateDueOn");
+
+    dateAddedTo = dateAddedTo.trim();
+    dateDueOn = dateDueOn.trim();
+    this.validateDate(dateAddedTo, "dateAddedTo");
+    this.validateDate(dateDueOn, "dateDueOn");
+    if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }
   },

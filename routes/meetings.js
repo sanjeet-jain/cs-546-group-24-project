@@ -8,9 +8,7 @@ router
   .get(async (req, res) => {
     let meetingId = "";
     try {
-      if (!utils.checkObjectIdString(req.params.meetingId)) {
-        throw new Error("meeting id wasnt a string");
-      }
+      utils.checkObjectIdString(req.params.meetingId);
       meetingId = req.params.meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -25,9 +23,7 @@ router
   .delete(async (req, res) => {
     let meetingId = "";
     try {
-      if (!utils.checkObjectIdString(req.params.meetingId)) {
-        throw new Error("meeting id wasnt a string");
-      }
+      utils.checkObjectIdString(req.params.meetingId);
       meetingId = req.params.meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -43,9 +39,7 @@ router
     //code here for PUT
     let meetingId = "";
     try {
-      if (!utils.checkObjectIdString(req.params.meetingId)) {
-        throw new Error("meeting id wasnt a string");
-      }
+      utils.checkObjectIdString(req.params.meetingId);
       meetingId = req.params.meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -96,9 +90,7 @@ router
   .get(async (req, res) => {
     let userId = "";
     try {
-      if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("user id wasnt a valid object Id string");
-      }
+      utils.checkObjectIdString(req.params.userId);
       userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -113,9 +105,7 @@ router
   .post(async (req, res) => {
     let userId = "";
     try {
-      if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("meeting id wasnt a string");
-      }
+      utils.checkObjectIdString(req.params.userId);
       userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -182,12 +172,8 @@ router
     let userId = "";
     let repeatingGroup = "";
     try {
-      if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("user id wasnt a valid objectId string");
-      }
-      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
-        throw new Error("repeatingGroup id wasnt a valid objectId string");
-      }
+      utils.checkObjectIdString(req.params.userId);
+      utils.checkObjectIdString(req.params.repeatingGroup);
       userId = req.params.userId.trim();
       repeatingGroup = req.params.repeatingGroup.trim();
     } catch (e) {
@@ -208,12 +194,8 @@ router
     let userId = "";
     let repeatingGroup = "";
     try {
-      if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("user id wasnt a valid objectId string");
-      }
-      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
-        throw new Error("repeatingGroup id wasnt a valid objectId string");
-      }
+      utils.checkObjectIdString(req.params.userId);
+      utils.checkObjectIdString(req.params.repeatingGroup);
       userId = req.params.userId.trim();
       repeatingGroup = req.params.repeatingGroup.trim();
     } catch (e) {
@@ -264,12 +246,8 @@ router
     let userId = "";
     let repeatingGroup = "";
     try {
-      if (!utils.checkObjectIdString(req.params.userId)) {
-        throw new Error("user id wasnt a valid objectId string");
-      }
-      if (!utils.checkObjectIdString(req.params.repeatingGroup)) {
-        throw new Error("repeatingGroup id wasnt a valid objectId string");
-      }
+      utils.checkObjectIdString(req.params.userId);
+      utils.checkObjectIdString(req.params.repeatingGroup);
       userId = req.params.userId.trim();
       repeatingGroup = req.params.repeatingGroup.trim();
     } catch (e) {

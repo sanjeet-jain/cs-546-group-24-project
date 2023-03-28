@@ -24,9 +24,7 @@ const meetingsDataFunctions = {
   //meetingId only needed
   async get(meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
-    if (!utils.checkObjectIdString(meetingId)) {
-      throw new Error("Invalid meeting ID");
-    }
+    utils.checkObjectIdString(meetingId);
 
     const meetings = await meetingsCollection();
     const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
@@ -48,9 +46,7 @@ const meetingsDataFunctions = {
     tag
   ) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
-    if (!utils.checkObjectIdString(meetingId)) {
-      throw new Error("Invalid meeting ID");
-    }
+    utils.checkObjectIdString(meetingId);
     //validate other fields
     if (
       !utils.validateMeetingUpdateInputs(
@@ -99,9 +95,7 @@ const meetingsDataFunctions = {
     }
   },
   async delete(meetingId) {
-    if (!utils.checkObjectIdString(meetingId)) {
-      throw new Error("Invalid meeting ID");
-    }
+    utils.checkObjectIdString(meetingId);
 
     const meetings = await meetingsCollection();
     const deletionInfo = await meetings.findOneAndDelete({
@@ -149,9 +143,7 @@ const meetingsDataFunctions = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    if (!utils.checkObjectIdString(userId)) {
-      throw new Error("Invalid user id.");
-    }
+    utils.checkObjectIdString(userId);
     const isValid = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
@@ -280,9 +272,7 @@ const meetingsDataFunctions = {
   },
 
   async getAll(userId) {
-    if (!utils.checkObjectIdString(userId)) {
-      throw new Error("Invalid meeting ID");
-    }
+    utils.checkObjectIdString(userId);
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -300,12 +290,8 @@ const meetingsDataFunctions = {
 
   // userId and repeatingGroup needed
   async getAllRecurrences(userId, repeatingGroup) {
-    if (!utils.checkObjectIdString(userId)) {
-      throw new Error("Invalid meeting ID");
-    }
-    if (!utils.checkObjectIdString(repeatingGroup)) {
-      throw new Error("Invalid repeatingGroup ID");
-    }
+    utils.checkObjectIdString(userId);
+    utils.checkObjectIdString(repeatingGroup);
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -333,12 +319,8 @@ const meetingsDataFunctions = {
     tag,
     repeatingGroup
   ) {
-    if (!utils.checkObjectIdString(userId.trim())) {
-      throw new Error("Invalid meeting ID");
-    }
-    if (!utils.checkObjectIdString(repeatingGroup.trim())) {
-      throw new Error("Invalid repeatingGroup ID");
-    }
+    utils.checkObjectIdString(userId.trim());
+    utils.checkObjectIdString(repeatingGroup.trim());
 
     const isValid = utils.validateMeetingUpdateAllRecurrencesInputs(
       title,
@@ -399,12 +381,8 @@ const meetingsDataFunctions = {
     }
   },
   async deleteAllRecurrences(userId, repeatingGroup) {
-    if (!utils.checkObjectIdString(userId.trim())) {
-      throw new Error("Invalid meeting ID");
-    }
-    if (!utils.checkObjectIdString(repeatingGroup.trim())) {
-      throw new Error("Invalid repeatingGroup ID");
-    }
+    utils.checkObjectIdString(userId.trim());
+    utils.checkObjectIdString(repeatingGroup.trim());
 
     userId = userId.trim();
     repeatingGroup = repeatingGroup.trim();
