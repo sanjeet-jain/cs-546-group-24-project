@@ -15,8 +15,14 @@ const utils = {
   },
 
   validateDate(date, paramName) {
-    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(`${paramName} must be a valid Date object`);
+    if (typeof date === "string") {
+      date = new Date(date);
+    }
+
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
     }
   },
 
@@ -72,7 +78,7 @@ const utils = {
       );
     }
   },
-  validateMeetingInputs(
+  validateMeetingCreateInputs(
     title,
     dateAddedTo,
     dateDueOn,
@@ -96,6 +102,30 @@ const utils = {
       dateAddedTo &&
       dateDueOn &&
       dateAddedTo.getTime() >= dateDueOn.getTime()
+    ) {
+      throw new Error("DateDueOn must be after DateAddedTo");
+    }
+    return true;
+  },
+
+  validateMeetingUpdateInputs(
+    title,
+    dateAddedTo,
+    dateDueOn,
+    priority,
+    textBody,
+    tag
+  ) {
+    this.validateStringInput(title, "title", 100);
+    this.validateDate(dateAddedTo, "DateAddedTo");
+    this.validateDate(dateDueOn, "DateDueOn");
+    this.validatePriority(priority);
+    this.validateStringInput(textBody, "textBody", 200);
+    this.validateStringInput(tag, "tag", 20);
+    if (
+      dateAddedTo &&
+      dateDueOn &&
+      new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()
     ) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }

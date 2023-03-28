@@ -52,17 +52,28 @@ const meetingsDataFunctions = {
       throw new Error("Invalid meeting ID");
     }
     //validate other fields
-
+    if (
+      !utils.validateMeetingUpdateInputs(
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag
+      )
+    ) {
+      throw new Error("Invalid update inputs for meeting");
+    }
     const meetings = await meetingsCollection();
     const updatedMeeting = {};
 
     // only update the fields that have been provided as input
-    if (title) updatedMeeting.title = title;
-    if (dateAddedTo) updatedMeeting.dateAddedTo = dateAddedTo;
-    if (dateDueOn) updatedMeeting.dateDueOn = dateDueOn;
-    if (priority) updatedMeeting.priority = priority;
-    if (textBody) updatedMeeting.textBody = textBody;
-    if (tag) updatedMeeting.tag = tag;
+    updatedMeeting.title = title.trim();
+    updatedMeeting.dateAddedTo = dateAddedTo;
+    updatedMeeting.dateDueOn = dateDueOn;
+    updatedMeeting.priority = priority;
+    updatedMeeting.textBody = textBody.trim();
+    updatedMeeting.tag = tag.trim();
 
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
@@ -70,13 +81,21 @@ const meetingsDataFunctions = {
     );
 
     // if the meeting was successfully updated, return the updated meeting
-    if (result.modifiedCount === 1) {
+    if (
+      result.modifiedCount === 1 &&
+      result.matchedCount == 1 &&
+      result.acknowledged === true
+    ) {
       const updatedMeeting = await meetings.findOne({
         _id: new ObjectId(meetingId),
       });
       return updatedMeeting;
     } else {
-      throw new Error("Meeting not found");
+      if (result.matchedCount !== 1) throw new Error("Meeting not found");
+      if (result.modifiedCount !== 1)
+        throw new Error("Meeting Details havent Changed");
+      if (result.acknowledged !== true)
+        throw new Error("Meeting update wasnt successfull");
     }
   },
   async delete(meetingId) {
@@ -134,7 +153,7 @@ const meetingsDataFunctions = {
     if (!utils.checkObjectIdString(userId)) {
       throw new Error("Invalid user id.");
     }
-    const isValid = utils.validateMeetingInputs(
+    const isValid = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,

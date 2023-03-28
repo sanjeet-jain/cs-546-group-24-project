@@ -18,11 +18,13 @@ export async function runSetup() {
  noteIds: [ObjectId],
  meetingIds: [ObjectId]
 */
+  let dt = new Date();
+
   const sampleMeeting = {
     title: "Weekly Team Meeting",
-    dateCreated: new Date(),
-    dateAddedTo: new Date(),
-    dateDueOn: new Date().setHours(new Date().getHours() + 1),
+    dateCreated: dt,
+    dateAddedTo: dt,
+    dateDueOn: new Date(new Date().setHours(new Date().getHours() + 1)),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",

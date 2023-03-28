@@ -1,5 +1,5 @@
 import calendarRoutes from "./calendar.js";
-import meetingRoutes from "./meeting.js";
+import meetingRoutes from "./meetings.js";
 import sampleRoutes from "./sample.js";
 import * as path from "path";
 import { dirname } from "path";
