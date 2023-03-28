@@ -138,3 +138,5 @@ date of birth
 consent to data collection
 disabilities :boolean  
 }
+
+<!-- **/node_modules, **/bootstrap , **/bootstrap-icons, **/jquery -->

@@ -18,6 +18,7 @@ Meeting Collection {
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import { meetingsCollection } from "../config/mongoCollections.js";
+import { usersCollection } from "../config/mongoCollections.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
@@ -78,7 +79,29 @@ const meetingsDataFunctions = {
       throw new Error("Meeting not found");
     }
   },
-  delete(meetingId) {},
+  async delete(meetingId) {
+    if (!utils.checkObjectIdString(meetingId)) {
+      throw new Error("Invalid meeting ID");
+    }
+
+    const meetings = await meetingsCollection();
+    const deletionInfo = await meetings.findOneAndDelete({
+      _id: new ObjectId(meetingId),
+    });
+    if (deletionInfo.lastErrorObject.n === 0) {
+      throw new Error(`${meetingId} not found for deletion`);
+    }
+    const users = await usersCollection();
+
+    //update the userCollection by removing the same id from the meetingIds array in user collection
+    await users.updateOne(
+      { meetingIds: new ObjectId(meetingId) },
+      { $pull: { meetingIds: new ObjectId(meetingId) } }
+    );
+
+    // if the meeting exists in collection then return it else throw an error
+    return `${deletionInfo.value.id} has been successfully deleted!`;
+  },
 
   // userId needed
 
@@ -216,7 +239,7 @@ const meetingsDataFunctions = {
       const insertedIds = result.insertedIds;
       await users.updateOne(
         { _id: ObjectId(userId) },
-        { $push: { meetings: { $each: insertedIds } } }
+        { $push: { meetingIds: { $each: insertedIds } } }
       );
       return insertedIds;
     }

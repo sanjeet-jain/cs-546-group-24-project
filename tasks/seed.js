@@ -46,10 +46,10 @@ export async function runSetup() {
     dob: new Date("01/01/1996"),
     consent: true,
     //initially an empty array
-    taskIds: [insertInfo.insertedId],
+    taskIds: [],
     reminderIds: [],
     noteIds: [],
-    meetingIds: [],
+    meetingIds: [insertInfo.insertedId],
   };
 
   // need to call the data/create function for users here
