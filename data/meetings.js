@@ -360,24 +360,43 @@ const meetingsDataFunctions = {
     tag = tag.trim();
     repeatingGroup = repeatingGroup.trim();
 
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
     const meetingIdList = user.meetingIds;
     const meetings = await meetingsCollection();
-    const recurringMeetingsList = await meetings
-      .updateMany({
+    const result = await meetings.updateMany(
+      {
         _id: { $in: meetingIdList },
         repeatingGroup: new ObjectId(repeatingGroup),
+      },
+      {
         $set: {
           title: title,
           dateAddedTo: dateAddedTo,
           dateDueOn: dateDueOn,
-          duration: duration,
           priority: priority,
           textBody: textBody,
           tag: tag,
         },
-      })
-      .toArray();
-    return recurringMeetingsList;
+      }
+    );
+    if (
+      result.modifiedCount > 0 &&
+      result.matchedCount > 0 &&
+      result.acknowledged === true
+    ) {
+      const updatedMeetings = await this.getAllRecurrences(
+        userId,
+        repeatingGroup
+      );
+      return updatedMeetings;
+    } else {
+      if (result.matchedCount == 0) throw new Error("Meetings not found");
+      if (result.modifiedCount == 0)
+        throw new Error("Meetings Details havent Changed");
+      if (result.acknowledged !== true)
+        throw new Error("Meetings update wasnt successfull");
+    }
   },
   deleteAllRecurrences(userId, repeatingGroup) {},
 };

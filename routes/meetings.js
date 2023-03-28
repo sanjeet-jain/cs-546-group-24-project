@@ -229,12 +229,12 @@ router
     try {
       //validation
       utils.validateMeetingUpdateAllRecurrencesInputs(
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag
+        meetingPutData.title,
+        meetingPutData.dateAddedTo,
+        meetingPutData.dateDueOn,
+        meetingPutData.priority,
+        meetingPutData.textBody,
+        meetingPutData.tag
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
