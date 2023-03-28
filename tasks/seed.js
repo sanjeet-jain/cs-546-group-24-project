@@ -2,6 +2,8 @@ import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
 import { meetingsCollection } from "../config/mongoCollections.js";
+import meetingsDataFunctions from "../data/meetings.js";
+
 export async function runSetup() {
   /*
   UsersCollection
@@ -20,40 +22,6 @@ export async function runSetup() {
 */
   let dt = new Date();
 
-  const sampleMeeting = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt,
-    dateAddedTo: dt,
-    dateDueOn: new Date(new Date().setHours(new Date().getHours() + 1)),
-    priority: 2,
-    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
-    tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
-    repeatingGroup: null,
-    expired: false,
-    type: "meeting",
-  };
-  const meetings = await meetingsCollection();
-  const insert1 = await meetings.insertOne(sampleMeeting);
-  const sampleMeeting2 = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt,
-    dateAddedTo: dt,
-    dateDueOn: new Date(new Date().setHours(new Date().getHours() + 1)),
-    priority: 2,
-    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
-    tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
-    repeatingGroup: null,
-    expired: false,
-    type: "meeting",
-  };
-  const insert2 = await meetings.insertOne(sampleMeeting2);
-
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
@@ -68,7 +36,7 @@ export async function runSetup() {
     taskIds: [],
     reminderIds: [],
     noteIds: [],
-    meetingIds: [insert1.insertedId, insert2.insertedId],
+    meetingIds: [],
   };
 
   // need to call the data/create function for users here
@@ -76,9 +44,77 @@ export async function runSetup() {
   const users = await usersCollection();
   const insertInfo = await users.insertOne(sampleUser);
   console.log(insertInfo);
-  console.log("seeding done!");
 
   // ideally use the CRUD functions in data/ to initialise and seed all the data we have !
+
+  // Seed Meetings
+  const sampleMeeting = {
+    title: "Weekly Team Meeting",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 2,
+    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
+    tag: "team",
+    repeating: false,
+    repeatingCounterIncrement: 0,
+    repeatingIncrementBy: "",
+    repeatingGroup: null,
+    expired: false,
+    type: "meeting",
+  };
+  const sampleMeeting2 = {
+    title: "Weekly Team Meeting",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 2,
+    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
+    tag: "team",
+    repeating: false,
+    repeatingCounterIncrement: 0,
+    repeatingIncrementBy: "",
+    repeatingGroup: null,
+    expired: false,
+    type: "meeting",
+  };
+  await meetingsDataFunctions.create(
+    insertInfo.insertedId.toString(),
+    sampleMeeting.title,
+    sampleMeeting.dateAddedTo,
+    sampleMeeting.dateDueOn,
+    sampleMeeting.priority,
+    sampleMeeting.textBody,
+    sampleMeeting.tag,
+    sampleMeeting.repeating,
+    sampleMeeting.repeatingCounterIncrement,
+    sampleMeeting.repeatingIncrementBy
+  );
+
+  await meetingsDataFunctions.create(
+    insertInfo.insertedId.toString(),
+    sampleMeeting2.title,
+    sampleMeeting2.dateAddedTo,
+    sampleMeeting2.dateDueOn,
+    sampleMeeting2.priority,
+    sampleMeeting2.textBody,
+    sampleMeeting2.tag,
+    sampleMeeting2.repeating,
+    sampleMeeting2.repeatingCounterIncrement,
+    sampleMeeting2.repeatingIncrementBy
+  );
+
+  // Seed tasks
+
+  // Seed reminders
+
+  // Seed notes
+
+  console.log("seeding done!");
 }
 
 export async function seed() {
