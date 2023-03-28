@@ -299,6 +299,9 @@ const meetingsDataFunctions = {
     if (!utils.checkObjectIdString(userId)) {
       throw new Error("Invalid meeting ID");
     }
+    if (!utils.checkObjectIdString(repeatingGroup)) {
+      throw new Error("Invalid repeatingGroup ID");
+    }
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -314,7 +317,7 @@ const meetingsDataFunctions = {
         .toArray();
       return recurringMeetingsList;
     } else {
-      throw new Error("user not found");
+      throw new Error("repeatingGroup of meetings not found");
     }
   },
   updateAllRecurrences(
