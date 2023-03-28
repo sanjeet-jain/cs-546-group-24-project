@@ -4,7 +4,7 @@ import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
 
 router
-  .route("/:meetingId")
+  .route("/meeting/:meetingId")
   .get(async (req, res) => {
     let meetingId = "";
     try {
@@ -91,5 +91,26 @@ router
       return res.status(500).json({ error: e.message });
     }
   });
+
+router
+  .route("/user/meetings/:userId")
+  .get(async (req, res) => {
+    let userId = "";
+    try {
+      if (!utils.checkObjectIdString(req.params.userId)) {
+        throw new Error("meeting id wasnt a string");
+      }
+      userId = req.params.userId.trim();
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    try {
+      let meetings = await meetingsDataFunctions.getAll(userId);
+      return res.status(200).json(meetings);
+    } catch (e) {
+      return res.status(500).json({ error: e.message });
+    }
+  })
+  .post();
 
 export default router;

@@ -35,7 +35,22 @@ export async function runSetup() {
     expired: false,
   };
   const meetings = await meetingsCollection();
-  let insertInfo = await meetings.insertOne(sampleMeeting);
+  const insert1 = await meetings.insertOne(sampleMeeting);
+  const sampleMeeting2 = {
+    title: "Weekly Team Meeting",
+    dateCreated: dt,
+    dateAddedTo: dt,
+    dateDueOn: new Date(new Date().setHours(new Date().getHours() + 1)),
+    priority: 2,
+    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
+    tag: "team",
+    repeating: false,
+    repeatingCounterIncrement: 0,
+    repeatingIncrementBy: "",
+    repeatingGroup: null,
+    expired: false,
+  };
+  const insert2 = await meetings.insertOne(sampleMeeting2);
 
   const sampleUser = {
     first_name: "Sample",
@@ -51,13 +66,13 @@ export async function runSetup() {
     taskIds: [],
     reminderIds: [],
     noteIds: [],
-    meetingIds: [insertInfo.insertedId],
+    meetingIds: [insert1.insertedId, insert2.insertedId],
   };
 
   // need to call the data/create function for users here
   // for now inserting it directly
   const users = await usersCollection();
-  insertInfo = await users.insertOne(sampleUser);
+  const insertInfo = await users.insertOne(sampleUser);
   console.log(insertInfo);
   console.log("seeding done!");
 

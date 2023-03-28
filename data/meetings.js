@@ -122,7 +122,7 @@ const meetingsDataFunctions = {
     return `${deletionInfo.value.id} has been successfully deleted!`;
   },
 
-  // userId needed
+  // only userId needed
 
   /**
    * @param {string} userId userId of which the meeting is being created for
@@ -157,7 +157,6 @@ const meetingsDataFunctions = {
       title,
       dateAddedTo,
       dateDueOn,
-      //   duration,
       priority,
       textBody,
       tag,
@@ -264,8 +263,27 @@ const meetingsDataFunctions = {
     }
   },
   //TODO
-  getAll(userId) {},
+  async getAll(userId) {
+    if (!utils.checkObjectIdString(userId)) {
+      throw new Error("Invalid meeting ID");
+    }
 
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (user) {
+      const meetingIdList = user.meetingIds;
+      const meetings = await meetingsCollection();
+      const meetingsList = await meetings
+        .find({ _id: { $in: meetingIdList } })
+        .toArray();
+      return meetingsList;
+    } else {
+      throw new Error("user not found");
+    }
+  },
+
+  // userId and repeatingGroup needed
+  getAllRecurrences(userId, repeatingGroup) {},
   updateAllRecurrences(
     userId,
     title,
