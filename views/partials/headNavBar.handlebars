@@ -1,8 +1,9 @@
 <nav class="navbar justify-content-between">
   <div class="navbar-brand">
     <i class="bi-calendar-check-fill"></i>
-    <span>TimeWise</span>
+    <a class="navbar-brand" href="/calendar">TimeWise</a>
   </div>
+  {{#if months}}
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
@@ -72,6 +73,7 @@
       </li>
     </ul>
   </div>
+  {{/if}}
   <div>
     <button
       class="btn btn-outline-dark"

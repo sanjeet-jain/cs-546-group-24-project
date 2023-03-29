@@ -1,23 +1,19 @@
-<div id="main_page" class="row">
-  <div id="left-menu-div" class="col">{{>leftPane}}</div>
-  <div id="calendar-div" class="col-md-auto">
-    <div id="modal-div">
-      {{>(lookup . 'calendarModal') cellIds=cellIds}}
-    </div>
-    <table class="table table-bordered">
-      <caption id="header">{{ dateString }}</caption>
-      <thead>
-        <tr id="weekdays">
-          {{#each weekdays}}
-          <th scope="col">{{this}}</th>
-          {{/each}}
-        </tr>
-      </thead>
-      <tbody id="calendar">
-
-        {{{ calendarHTML }}}
-      </tbody>
-    </table>
+<div id="calendar-div" class="col-md-auto center-div">
+  <div id="modal-div">
+    {{>(lookup . 'calendarModal') cellIds=cellIds}}
   </div>
-  <div id="right-menu-div" class="col">{{>rightPane}}</div>
+  <table class="table table-bordered">
+    <caption id="header">{{ dateString }}</caption>
+    <thead>
+      <tr id="weekdays">
+        {{#each weekdays}}
+        <th scope="col">{{this}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody id="calendar">
+
+      {{{ calendarHTML }}}
+    </tbody>
+  </table>
 </div>
