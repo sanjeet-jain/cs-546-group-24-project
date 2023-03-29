@@ -1,12 +1,38 @@
-<div class="mb-3">
-  <label for="email" class="form-label">Email</label>
-  <input
-    type="email"
-    class="form-control"
-    name="email"
-    id="email"
-    aria-describedby="emailHelpId"
-    placeholder="abc@mail.com"
-  />
-  <small id="emailHelpId" class="form-text text-muted">Help text</small>
+<div id="sign-in-form-div" class="text-center container w-50">
+  <div class="form-signin w-100 m-auto">
+    <form
+      action="/login"
+      id="login-form"
+      method="POST"
+      onsubmit="validatelogin(event)"
+    >
+      <h1 class="h3 mb-3 fw-normal">
+        <i class="bi-calendar-check-fill"></i>
+        Please sign in</h1>
+      <div class="form-floating">
+        <input
+          type="email"
+          class="form-control"
+          name="emailId"
+          id="emailId"
+          aria-describedby="emailHelpId"
+          placeholder="abc@mail.com"
+        />
+        <label for="emailId">Email address</label>
+      </div>
+      <div class="form-floating">
+        <input
+          type="password"
+          class="form-control"
+          name="password"
+          id="password"
+          placeholder="Password"
+        />
+        <label for="floatingPassword">Password</label>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    </form>
+  </div>
+
 </div>
