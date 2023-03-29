@@ -1,5 +1,6 @@
 // this is where all common helper files will go
 import { ObjectId } from "mongodb";
+import constants from "./../constants/constants.js";
 
 const utils = {
   checkObjectIdString(stringObjectId) {
@@ -44,6 +45,9 @@ const utils = {
 
   validatePriority(priority) {
     this.validateInputIsNumber(priority, "priority");
+    if (!Number.isInteger(priority)) {
+      throw new Error("priority cant be a float");
+    }
     if (!priority || priority < 1 || priority > 3) {
       throw new Error("Priority must be a number between 1 and 3");
     }
@@ -99,12 +103,16 @@ const utils = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    this.validateStringInput(title, "title", 100);
+    this.validateStringInput(title, "title", constants.stringLimits["title"]);
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(textBody, "textBody", 200);
-    this.validateStringInput(tag, "tag", 20);
+    this.validateStringInput(
+      textBody,
+      "textBody",
+      constants.stringLimits["textBody"]
+    );
+    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
     this.validateBooleanInput(repeating, "repeating");
     if (repeating) {
       this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
@@ -122,12 +130,16 @@ const utils = {
     textBody,
     tag
   ) {
-    this.validateStringInput(title, "title", 100);
+    this.validateStringInput(title, "title", constants.stringLimits["title"]);
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(textBody, "textBody", 200);
-    this.validateStringInput(tag, "tag", 20);
+    this.validateStringInput(
+      textBody,
+      "textBody",
+      constants.stringLimits["textBody"]
+    );
+    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
     this.validateDateRange(dateAddedTo, dateDueOn);
 
     return true;
@@ -140,12 +152,16 @@ const utils = {
     textBody,
     tag
   ) {
-    this.validateStringInput(title, "title", 100);
+    this.validateStringInput(title, "title", constants.stringLimits["title"]);
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(textBody, "textBody", 200);
-    this.validateStringInput(tag, "tag", 20);
+    this.validateStringInput(
+      textBody,
+      "textBody",
+      constants.stringLimits["textBody"]
+    );
+    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
 
     return true;
   },

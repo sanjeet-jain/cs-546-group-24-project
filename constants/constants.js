@@ -38,6 +38,11 @@ const constants = {
     notes: "notes",
     reminder: "reminder",
   },
+  stringLimits: {
+    title: 100,
+    textBody: 200,
+    tag: 20,
+  },
 };
 
 export default constants;
