@@ -128,7 +128,7 @@ const meetingsDataFunctions = {
    * @param {string} textBody description of meeting
    * @param {string} tag custom tag
    * @param {boolean} repeating whether it repeats
-   * @param {number} repeatingCounterIncrement how many times
+   * @param {number} repeatingCounterIncrement how many times the meeting repeats.. calculated using a start and end date of repetations from the UI .. it casues the function to repeatedly create the meeting for those many consecutive day monht or year
    * @param {string} repeatingIncrementBy mode of repeating "day" "month" or "year"
    */
   async create(
