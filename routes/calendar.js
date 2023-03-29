@@ -11,7 +11,6 @@ router.route("/:monthNav?/:yearNav?").get((req, res) => {
 
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
-    scripts: "calendar-script",
     calendarModal: "calendarModal",
     dateString: dateString,
     weekdays: constants.weekdays,
