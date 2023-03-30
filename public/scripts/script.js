@@ -22,7 +22,7 @@ function load() {
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         const data = JSON.parse(this.response);
-        document.getElementById("header").innerText = data.dateString;
+        // document.getElementById("header").innerText = data.dateString;
         document.getElementById("calendar").innerHTML = data.calendarHTML;
         const monthDropDown = document.getElementById("monthDropDown");
         monthDropDown.selectedIndex = data.currentMonth;
@@ -30,6 +30,10 @@ function load() {
         yearDropDown.selectedIndex = yearRange.findIndex(
           (x) => x === data.currYear
         );
+        monthNav = 0;
+        oldMonthNav = 0;
+        yearNav = 0;
+        oldYearNav = 0;
         // // Update modal data
         // const cellIds = data.cellIds;
         // for (let i = 0; i < cellIds.length; i++) {
@@ -61,9 +65,13 @@ function navigationButtonsMonth() {
     currentSelectedMonth = monthDropDown.value;
     const yearDropDown = document.getElementById("yearDropDown");
     currentSelectedYear = yearDropDown.value;
-
-    oldMonthNav = monthNav++;
-    load();
+    if (
+      currentSelectedYear <= yearRange[yearRange.length - 1] &&
+      currentSelectedYear >= yearRange[0]
+    ) {
+      oldMonthNav = monthNav++;
+      load();
+    }
   });
 }
 

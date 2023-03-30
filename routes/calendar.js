@@ -1,18 +1,19 @@
 import { Router } from "express";
 const router = Router();
 import constants from "./../constants/constants.js";
-const dt = new Date();
+let dt = new Date();
 
 router.route("/:monthNav?/:yearNav?").get((req, res) => {
   const monthNav = Number(req.params.monthNav) || 0;
   const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
+  // const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
+  const { calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
 
   res.setHeader("Content-Type", "text/html");
   res.render("calendar/calendar", {
     calendarModal: "calendarModal",
-    dateString: dateString,
+    // dateString: dateString,
     weekdays: constants.weekdays,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
     months: constants.months,
@@ -26,12 +27,13 @@ router.get("/api/:monthNav?/:yearNav?", (req, res) => {
   const monthNav = Number(req.params.monthNav) || 0;
   const yearNav = Number(req.params.yearNav) || 0;
 
-  const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
+  // const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
+  const { calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
 
   // Send the JSON response
   res.setHeader("Content-Type", "application/json");
   res.json({
-    dateString: dateString,
+    // dateString: dateString,
     calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
     currentMonth: dt.getMonth(),
     yearRange: constants.yearRange,
@@ -42,13 +44,16 @@ router.get("/api/:monthNav?/:yearNav?", (req, res) => {
 });
 
 function getData(monthNav = 0, yearNav = 0) {
-  let dt = new Date();
+  // let dt = new Date();
   if (monthNav !== 0) {
     dt = new Date(dt.getFullYear(), dt.getMonth() + monthNav);
   }
   if (yearNav !== 0) {
-    const newYear = new Date().getFullYear() + yearNav;
-    if (newYear >= dt.getFullYear() - 2 && newYear <= dt.getFullYear() + 2) {
+    const newYear = dt.getFullYear() + yearNav;
+    if (
+      newYear <= constants.yearRange[constants.yearRange.length - 1] &&
+      newYear >= constants.yearRange[0]
+    ) {
       dt.setFullYear(newYear);
     }
   }
@@ -57,12 +62,12 @@ function getData(monthNav = 0, yearNav = 0) {
   const year = dt.getFullYear();
   const firstDayOfMonth = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const dateString = firstDayOfMonth.toLocaleDateString("en-us", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  // const dateString = dt.toLocaleDateString("en-us", {
+  //   weekday: "long",
+  //   day: "numeric",
+  //   month: "long",
+  //   year: "numeric",
+  // });
 
   const paddingDays = firstDayOfMonth.getDay();
 
@@ -103,6 +108,7 @@ function getData(monthNav = 0, yearNav = 0) {
     }
   }
 
-  return { dateString, calendarHTML, dt, cellIds };
+  // return { dateString, calendarHTML, dt, cellIds };
+  return { calendarHTML, dt, cellIds };
 }
 export default router;
