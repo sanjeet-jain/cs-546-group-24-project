@@ -4,9 +4,7 @@ const router = Router();
 router
   .route("/")
   .get((req, res) => {
-    res.render("calendar/sample", {
-      partial: "calendar-script",
-    });
+    res.render("login", {});
   })
   .post((req, res) => {});
 
