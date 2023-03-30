@@ -80,12 +80,44 @@
     </div>
     <br />
 
-    <button
-      class="w-100 btn btn-lg btn-primary"
-      type="submit"
-      onclick="validateregister(event)"
-    >
-      Sign in
+    <div class="form-floating mb-3">
+      <input
+        required
+        type="date"
+        class="form-control"
+        name="dob"
+        id="dob"
+        aria-describedby="dob_help_id"
+        placeholder="MM/DD/YYYY"
+        value=""
+        max="{{minDobDate}}"
+        min="{{maxDobDate}}"
+      />
+      <label for="dob" class="form-label">Date Of Birth</label>
+      <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
+        Birth</small>
+      <div id="date_error" class="invalid-feedback">
+        You must be atleast 14 years old to register!
+      </div>
+    </div>
+
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="disability"
+        aria-describedby="disability_help_id"
+      />
+      <label class="form-check-label" for="disability">
+        Disability CheckBox
+      </label>
+      <small id="disability_help_id" class="form-text text-muted">
+        Please Check if you need accesibilty Features</small>
+    </div>
+    <br />
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">
+      Register
     </button>
   </form>
   <br />

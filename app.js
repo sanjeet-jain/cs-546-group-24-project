@@ -15,6 +15,19 @@ const handlebarsInstance = exphbs.create({
     eq: function (a, b) {
       return a === b;
     },
+    currDate: function () {
+      return new Date().toISOString().slice(0, 10);
+    },
+    minDobDate: function () {
+      return new Date(new Date().getFullYear() - 14, 0, 1)
+        .toISOString()
+        .slice(0, 10);
+    },
+    maxDobDate: function () {
+      return new Date(new Date().getFullYear() - 100, 0, 1)
+        .toISOString()
+        .slice(0, 10);
+    },
   },
 });
 
