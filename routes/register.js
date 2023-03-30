@@ -5,7 +5,7 @@ router
   .route("/")
   .get((req, res) => {
     //if first time then send userName as blank
-    res.render("login", { userName: "" });
+    res.render("register", { userName: "" });
   })
   //do login post here
   .post((req, res) => {});

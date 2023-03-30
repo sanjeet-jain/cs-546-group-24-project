@@ -1,60 +1,47 @@
 <nav class="navbar justify-content-between">
   <div class="navbar-brand">
     <i class="bi-calendar-check-fill"></i>
-    <a class="navbar-brand" href="/calendar">TimeWise</a>
+    <a class="navbar-brand" href="/">TimeWise</a>
   </div>
   {{#if months}}
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <button
-          id="prevMonth"
-          class="btn btn-outline-dark"
-          style="border: none">
-          <i
-            class="bi bi-arrow-left-circle"
-            style="font-size: 1.5rem; border: none"></i>
+        <button id="prevMonth" class="btn btn-outline-dark" style="border:
+          none">
+          <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
+            none"></i>
         </button>
       </li>
 
       <li class="nav-item">
-        <select
-          id="monthDropDown"
-          class="form-select h-100"
-          aria-label="Month Select">
+        <select id="monthDropDown" class="form-select h-100" aria-label="Month
+          Select">
           {{#each months}}
-          <option value="{{@index}}"{{#if (eq @index
+          <option value="{{@index}}" {{#if (eq @index
             ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>
       </li>
 
       <li class="nav-item">
-        <button
-          id="nextMonth"
-          class="btn btn-outline-dark"
-          style="border: none">
-          <i
-            class="bi-arrow-right-circle"
-            style="font-size: 1.5rem; border: none"></i>
+        <button id="nextMonth" class="btn btn-outline-dark" style="border:
+          none">
+          <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+            none"></i>
         </button>
       </li>
 
       <li class="nav-item">
-        <button
-          id="prevYear"
-          class="btn btn-outline-dark"
-          style="border: none">
-          <i
-            class="bi bi-arrow-left-circle"
-            style="font-size: 1.5rem; border: none"></i>
+        <button id="prevYear" class="btn btn-outline-dark" style="border: none">
+          <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
+            none"></i>
         </button>
       </li>
 
       <li class="nav-item">
-        <select id="yearDropDown"
-          class="form-select h-100"
-          aria-label="Year Select">
+        <select id="yearDropDown" class="form-select h-100" aria-label="Year
+          Select">
           {{#each yearRange}}
           <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
           {{/each}}
@@ -62,44 +49,35 @@
       </li>
 
       <li class="nav-item">
-        <button
-          id="nextYear"
-          class="btn btn-outline-dark"
-          style="border: none">
-          <i
-            class="bi-arrow-right-circle"
-            style="font-size: 1.5rem; border: none"></i>
+        <button id="nextYear" class="btn btn-outline-dark" style="border: none">
+          <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+            none"></i>
         </button>
       </li>
     </ul>
   </div>
   {{/if}}
   <div>
-    <button
-      class="btn btn-outline-dark"
-      style="border: none"
-      type="button"
+    <button class="btn btn-outline-dark" style="border: none" type="button"
       data-bs-toggle="offcanvas"
-      data-bs-target="#offcanvasNavbar"
-      aria-controls="offcanvasNavbar">
+      data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
-    <div
-      class="offcanvas offcanvas-end"
-      tabindex="-1"
-      id="offcanvasNavbar"
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
       aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
-          Hi UserNameHere
+          {{#if userName}}
+          Hi {{userName}}
+          {{else}}
+          Hi Guest
+          {{/if}}
         </h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="offcanvas"
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
           aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
+        {{#if userName}}
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="#">Change Password</a>
@@ -108,12 +86,8 @@
             <a class="nav-link" href="#">Change Personal Details</a>
           </li>
           <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
               Support
             </a>
             <ul class="dropdown-menu">
@@ -128,6 +102,31 @@
             </ul>
           </li>
         </ul>
+        {{else}}
+        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link" aria-current="page" href="/login">Log In</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              Support
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="/calendar">Contact Us</a></li>
+              <li>
+                <hr class="dropdown-divider" />
+              </li>
+              <li>
+                <li><a class="dropdown-item" href="/about">About Us</a></li>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        {{/if}}
         <!-- <form class="d-flex mt-3" role="search">
               <input
                 class="form-control me-2"
