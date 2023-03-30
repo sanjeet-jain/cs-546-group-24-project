@@ -42,9 +42,9 @@ router.get("/api/:monthNav?/:yearNav?", (req, res) => {
 });
 
 function getData(monthNav = 0, yearNav = 0) {
-  const dt = new Date();
+  let dt = new Date();
   if (monthNav !== 0) {
-    dt.setMonth(new Date().getMonth() + monthNav);
+    dt = new Date(dt.getFullYear(), dt.getMonth() + monthNav);
   }
   if (yearNav !== 0) {
     const newYear = new Date().getFullYear() + yearNav;
@@ -81,13 +81,17 @@ function getData(monthNav = 0, yearNav = 0) {
     if (i > paddingDays) {
       weekrowHTML += daySquare(month, i - paddingDays, true);
     } else {
-      weekrowHTML += daySquare(month - 1, "", false);
+      weekrowHTML += daySquare(
+        month - 1,
+        new Date(year, month, 0).getDate() - paddingDays + i,
+        false
+      );
     }
     if (i % 7 === 0 || i === daysInMonth + paddingDays) {
       const weekrowlen = weekrowHTML.match(/<td/g).length; // Count the number of table cells in the row
       if (i === daysInMonth + paddingDays && weekrowlen !== 7) {
         for (let j = 0; j < 7 - weekrowlen; j++) {
-          weekrowHTML += daySquare(month + 1, "", false);
+          weekrowHTML += daySquare(month + 1, 1 + j, false);
         }
       }
       weekrowHTML += "</tr>";
