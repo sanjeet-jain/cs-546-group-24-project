@@ -44,7 +44,7 @@ function checkValidations() {
   }
   dob.setCustomValidity(errorDiv.textContent);
 
-  return false;
+  return;
 }
 
 validateregister();

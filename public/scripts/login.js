@@ -1,6 +1,4 @@
 function validatelogin(event) {
-  event.stopPropagation();
-  event.preventDefault();
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   var forms = document.querySelectorAll(".needs-validation");
 
@@ -12,6 +10,7 @@ function validatelogin(event) {
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
+          checkValidations();
         }
 
         form.classList.add("was-validated");
@@ -19,6 +18,9 @@ function validatelogin(event) {
       false
     );
   });
+}
+
+function checkValidations() {
   let usernameVal = document.getElementById("emailId").value;
   let passwordVal = document.getElementById("password").value;
   let passForm = document.getElementById("login-form");
@@ -44,4 +46,6 @@ function validatelogin(event) {
   } else {
     passForm.submit();
   }
+  return;
 }
+validatelogin();
