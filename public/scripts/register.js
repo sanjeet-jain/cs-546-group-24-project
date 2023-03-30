@@ -20,15 +20,19 @@ function validateregister(event) {
   });
 }
 function checkValidations() {
+  //add firstname last name
   let usernameVal = document.getElementById("emailId").value;
   let passwordVal = document.getElementById("password").value;
   let passForm = document.getElementById("register-form");
+
+  //add firstname last name
   let password_error = document.getElementById("password_error");
   let email_error = document.getElementById("email_error");
   let dob = document.getElementById("dob");
-  //validations here
   const errorDiv = document.getElementById("date_error");
 
+  //validations here
+  //example validation for DOB
   if (dob.validity.valueMissing) {
     errorDiv.textContent = "Please enter a date of birth.";
   } else if (dob.validity.rangeUnderflow) {

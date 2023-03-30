@@ -24,6 +24,9 @@
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
+      <div id="first_name_error" class="invalid-feedback">
+
+      </div>
     </div>
     <div class="form-floating mb-3">
       <input
@@ -39,6 +42,9 @@
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
+      <div id="last_name_error" class="invalid-feedback">
+
+      </div>
     </div>
 
     <div class="form-floating mb-3">
@@ -50,13 +56,13 @@
         id="emailId"
         placeholder="abc@mail.com"
         aria-describedby="email_help_id"
-        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+        {{! pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" }}
       />
       <label for="emailId">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
       <div id="email_error" class="invalid-feedback">
-        Please enter an email.
+
       </div>
     </div>
 
@@ -68,14 +74,14 @@
         name="password"
         id="password"
         placeholder="Password"
-        minlength="10"
+        {{! minlength="10" }}
         aria-describedby="password_help_id"
       />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
       <div id="password_error" class="invalid-feedback">
-        Please enter a password.
+
       </div>
     </div>
     <br />
@@ -97,7 +103,7 @@
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">
-        You must be atleast 14 years old to register!
+
       </div>
     </div>
 
