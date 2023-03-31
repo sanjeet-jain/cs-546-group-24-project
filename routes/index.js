@@ -1,15 +1,14 @@
 import calendarRoutes from "./calendar.js";
 import meetingRoutes from "./meetings.js";
-import loginRoutes from "./login.js";
-import registerRoutes from "./register.js";
+import userRoutes from "./user.js";
+
 import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const constructorMethod = (app) => {
-  app.use("/login", loginRoutes);
-  app.use("/register", registerRoutes);
+  app.use("/users", userRoutes);
   app.use("/calendar", calendarRoutes);
   app.use("/meeting", meetingRoutes);
   app.get("/about", (req, res) => {

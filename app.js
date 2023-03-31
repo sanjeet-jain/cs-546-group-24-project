@@ -5,6 +5,8 @@ import configRoutes from "./routes/index.js";
 import exphbs from "express-handlebars";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import * as path from "path";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -32,6 +34,7 @@ const handlebarsInstance = exphbs.create({
 });
 
 app.use("/public", express.static(__dirname + "/public"));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
