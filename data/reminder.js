@@ -13,7 +13,8 @@ export const createReminder = async (
   priority,
   tag,
   isRepeating,
-  endDateTime /** TODO Add Counter if needed */,
+  endDateTime,
+  repeatingCounterIncrement,
   repeatType,
   dateTimeAddedTo
 ) => {
@@ -31,10 +32,10 @@ export const createReminder = async (
   tag = tag.trim();
   tag = tag.toLowerCase();
   let dateCreated = new Date();
-  utils.validateDate(dateTimeAddedTo);
+  utils.validateDateObj(dateTimeAddedTo);
   utils.validateBooleanInput(isRepeating);
   if (isRepeating) {
-    utils.validateDate(endDateTime);
+    utils.validateDateObj(endDateTime);
     utils.validateRepeatingIncrementBy(repeatType);
   } else {
     endDateTime = null;
@@ -124,6 +125,7 @@ export const updateReminder = async (
   dateTimeAddedTo,
   isRepeating,
   endDateTime,
+  repeatingCounterIncrement,
   repeatType,
   flagForUpdateSingleReminderUpdate
 ) => {
@@ -141,10 +143,10 @@ export const updateReminder = async (
   tag = tag.trim();
   tag = tag.toLowerCase();
   let dateCreated = new Date();
-  utils.validateDate(dateTimeAddedTo);
+  utils.validateDateObj(dateTimeAddedTo);
   utils.validateBooleanInput(isRepeating);
   if (!flagForUpdateSingleReminderUpdate) {
-    utils.validateDate(endDateTime);
+    utils.validateDateObj(endDateTime);
     utils.validateRepeatingIncrementBy(repeatType);
   } else {
     //repeatCounter = 0;
@@ -181,54 +183,43 @@ export const updateReminder = async (
      * If DateTime is same them you just have to update rest of records no new reminder needs to be created
      */
     if (
-      utils.isTwoDateEqual(reminder.dateTimeAddedTo, dateTimeAddedTo) &&
-      utils.isTwoDateEqual(reminder.endDateTime, endDateTime)
+      utils.isDateEqual(reminder.dateTimeAddedTo, dateTimeAddedTo) &&
+      utils.isDateEqual(reminder.endDateTime, endDateTime)
     ) {
       await updateAllRecurrencesDAO(user_id, reminder_id, reminderObj);
     } else {
       await deleteAllRecurrences(user_id, reminder_id);
-      await createReminder(); /**TODO  */
+      await createReminder(
+        user_id,
+        title,
+        textBody,
+        priority,
+        tag,
+        isRepeating,
+        endDateTime,
+        repeatingCounterIncrement,
+        repeatType,
+        dateTimeAddedTo
+      );
     }
   }
-
-  // if (reminder.isRepeating !== isRepeating) {
-  //   if (isRepeating) {
-  //     await deleteReminder(user_id, reminder_id);
-  //   } else {
-  //     await deleteAllRecurrences(user_id, reminder_id);
-  //   }
-  //   await createReminder(
-  //     user_id,
-  //     title,
-  //     textBody,
-  //     priority,
-  //     tag,
-  //     isRepeating,
-  //     endDateTime,
-  //     repeatType,
-  //     dateTimeAddedTo
-  //   );
-  // } else if (isRepeating) {
-  //   await updateReminderByGroupIdDAO(reminder_id, reminderObj);
-  // } else {
-  //   await updateReminderByReminderIdDAO(reminder_id, reminderObj);
-  // }
 };
 
-export const deleteReminder = async (user_id, reminder_id) => {
+export const deleteReminder = async (user_id, reminder_id, flag) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
   utils.checkObjectIdString(reminder_id);
   reminder_id = reminder_id.trim();
-  await deleteReminderEventDAO(reminder_id);
-  await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+  utils.validateBooleanInput(flag);
+  if (flag) {
+    await deleteReminderEventDAO(reminder_id);
+    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+  } else {
+    await deleteAllRecurrences(user_id, reminder_id);
+  }
 };
 
-export const updateAllRecurrencesDAO = async (
-  user_id,
-  reminder_id,
-  reminder
-) => {
+const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
   const reminderInstance = await reminderCollection();
   let user = await getUserDAO(user_id);
   let reminderEvent = await getReminder(reminder_id);
@@ -262,7 +253,7 @@ export const updateAllRecurrencesDAO = async (
   }
 };
 
-export const deleteAllRecurrences = async (user_id, reminder_id) => {
+const deleteAllRecurrences = async (user_id, reminder_id) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
   utils.checkObjectIdString(reminder_id);
@@ -276,32 +267,12 @@ export const deleteAllRecurrences = async (user_id, reminder_id) => {
     listOfIds.push(listOfReminderEvents[i]._id);
   }
   await deleteAllReminderEventsDAO(reminderEvent.groupId, listOfIds);
-  await deleteListedIdsFromUser(user_id, listOfIds);
+  await deleteListedIdsFromUserDAO(user_id, listOfIds);
 };
 
 /** API Reminder.js  END*/
 
 /** Supporting Functions  Start */
-const deleteListedIdsFromUser = async (user_id, listOfIds) => {
-  const reminderInstance = await reminderCollection();
-  const result = await reminderInstance.updateMany(
-    { _id: new ObjectId(user_id) },
-    { $pull: { reminderIds: { $each: listOfIds } } }
-  );
-  if (
-    !(
-      result.modifiedCount > 0 &&
-      result.matchedCount > 0 &&
-      result.acknowledged === true
-    )
-  ) {
-    if (result.matchedCount == 0) throw new Error("Meetings not found");
-    if (result.modifiedCount == 0)
-      throw new Error("Meetings Details havent Changed");
-    if (result.acknowledged !== true)
-      throw new Error("Meetings update wasnt successfull");
-  }
-};
 
 function duplicateReminderEvents(reminder) {
   let listOfEvents = [];
@@ -354,6 +325,27 @@ const deleteAllReminderEventsDAO = async (groupId, reminderIdList) => {
   });
 };
 
+const deleteListedIdsFromUserDAO = async (user_id, listOfIds) => {
+  const userInstance = await usersCollection();
+  const result = await userInstance.updateMany(
+    { _id: new ObjectId(user_id) },
+    { $pull: { reminderIds: { $in: listOfIds } } }
+  );
+  if (
+    !(
+      result.modifiedCount > 0 &&
+      result.matchedCount > 0 &&
+      result.acknowledged === true
+    )
+  ) {
+    if (result.matchedCount == 0) throw new Error("Meetings not found");
+    if (result.modifiedCount == 0)
+      throw new Error("Meetings Details havent Changed");
+    if (result.acknowledged !== true)
+      throw new Error("Meetings update wasnt successfull");
+  }
+};
+
 const addAllReminderIdsDAO = async (user_id, listOfReminderIds) => {
   const usersInstance = await usersCollection();
   const insertInfo = await usersInstance.updateOne(
@@ -378,11 +370,11 @@ const addAllReminderEventDAO = async (listOfReminderEvents) => {
 };
 
 const deleteReminderFromUserCollectionDAO = async (user_id, reminder_id) => {
-  const reminderCollections = await reminderCollection();
-  let obj = await reminderCollections.updateOne(
+  const userInstance = await usersCollection();
+  let obj = await userInstance.updateOne(
     { _id: new ObjectId(user_id) },
     {
-      $pull: { reminderIds: reminder_id },
+      $pull: { reminderIds: new ObjectId(reminder_id) },
     }
   );
   if (obj === null) {
@@ -392,9 +384,9 @@ const deleteReminderFromUserCollectionDAO = async (user_id, reminder_id) => {
   }
 };
 
-const deleteReminderEventDAO = async () => {
+const deleteReminderEventDAO = async (reminder_id) => {
   const reminderCollections = await reminderCollection();
-  const deletedReminderInfo = reminderCollections.findOneAndDelete({
+  const deletedReminderInfo = await reminderCollections.findOneAndDelete({
     _id: new ObjectId(reminder_id),
   });
   if (deletedReminderInfo.value === null) {

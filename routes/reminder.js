@@ -32,6 +32,7 @@ router
     let endDateTime = new Date(reminder.endDateTime);
     let repeatType = reminder.repeatType;
     let dateTimeAddedTo = new Date(reminder.dateTimeAddedTo);
+    let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       console.log(typeof user_id);
       utils.checkObjectIdString(user_id);
@@ -47,10 +48,10 @@ router
       utils.validateStringInput(tag, "tag");
       tag = tag.trim();
       tag = tag.toLowerCase();
-      utils.validateDate(dateTimeAddedTo);
+      utils.validateDateObj(dateTimeAddedTo);
       utils.validateBooleanInput(isRepeating);
       if (isRepeating) {
-        utils.validateDate(endDateTime);
+        utils.validateDateObj(endDateTime);
         utils.validateRepeatingIncrementBy(repeatType);
       }
     } catch (e) {
@@ -65,6 +66,7 @@ router
         tag,
         isRepeating,
         endDateTime,
+        repeatingCounterIncrement,
         repeatType,
         dateTimeAddedTo
       );
@@ -104,6 +106,7 @@ router
     let isRepeating = reminder.isRepeating;
     let endDateTime = new Date(reminder.endDateTime);
     let repeatType = reminder.repeatType;
+    let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
@@ -118,10 +121,10 @@ router
       utils.validateStringInput(tag, "tag");
       tag = tag.trim();
       tag = tag.toLowerCase();
-      utils.validateDate(dateTimeAddedTo);
+      utils.validateDateObj(dateTimeAddedTo);
       utils.validateBooleanInput(isRepeating);
       if (!flagForUpdateSingleReminderUpdate) {
-        utils.validateDate(endDateTime);
+        utils.validateDateObj(endDateTime);
         utils.validateRepeatingIncrementBy(repeatType);
       } else {
         repeatType = null;
@@ -140,14 +143,35 @@ router
         dateTimeAddedTo,
         isRepeating,
         endDateTime,
+        repeatingCounterIncrement,
         repeatType,
         flagForUpdateSingleReminderUpdate
       );
       res.status().json("The update of reminder event is sucessful");
     } catch (e) {
-      return res.status().json({ error: e });
+      return res.status(404).json({ error: e });
     }
   })
-  .delete(async (req, res) => {});
+  .delete(async (req, res) => {
+    let reminder_id = req.params.reminder_id;
+    let user_id = req.params.user_id;
+    let flagForDeleteAllRecurrence = req.params.flag === "true" ? true : false;
+    try {
+      utils.checkObjectIdString(reminder_id);
+      utils.checkObjectIdString(user_id);
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+    try {
+      reminderManager.deleteReminder(
+        user_id,
+        reminder_id,
+        flagForDeleteAllRecurrence
+      );
+      res.json("The Reminder Events were successfully deleted in the db");
+    } catch (e) {
+      return res.status(404).json({ error: e });
+    }
+  });
 
 export default router;
