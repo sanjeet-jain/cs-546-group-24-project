@@ -53,7 +53,6 @@ app.use(
 app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
-    console.log(res.locals.session);
   }
   next();
 });
