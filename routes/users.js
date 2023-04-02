@@ -86,7 +86,7 @@ router
     if (req.session.user) {
       return res.redirect("/calendar");
     }
-    res.render("user/login", { userName: "" });
+    res.render("user/login");
   });
 router.route("/profile").put(async (req, res) => {});
 //TODO
