@@ -3,6 +3,7 @@ import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
 import { meetingsCollection } from "../config/mongoCollections.js";
 import meetingsDataFunctions from "../data/meetings.js";
+import bcrypt from "bcrypt";
 
 export async function runSetup() {
   /*
@@ -21,13 +22,13 @@ export async function runSetup() {
  meetingIds: [ObjectId]
 */
   let dt = new Date();
-
+  const hashPW = await bcrypt.hash("abcDefgh2i", 16);
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
-    email: "sampleUser@gmail.com",
+    email: "sampleuser@gmail.com",
     // password will be hashed when being passed from UI to the API and then stored ( done by Jonathan)
-    password: "sampleUser",
+    password: hashPW,
     disability: false,
     // date string passed here is MM/DD/YYYY
     dob: new Date("01/01/1996"),
