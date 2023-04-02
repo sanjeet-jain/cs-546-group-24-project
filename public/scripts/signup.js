@@ -1,4 +1,4 @@
-function validateregister(event) {
+function validatesignup(event) {
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   var forms = document.querySelectorAll(".needs-validation");
 
@@ -21,9 +21,9 @@ function validateregister(event) {
 }
 function checkValidations() {
   //add firstname last name
-  let usernameVal = document.getElementById("emailId").value;
+  let usernameVal = document.getElementById("email").value;
   let passwordVal = document.getElementById("password").value;
-  let passForm = document.getElementById("register-form");
+  let passForm = document.getElementById("signup-form");
 
   //add firstname last name
   let password_error = document.getElementById("password_error");
@@ -36,9 +36,9 @@ function checkValidations() {
   if (dob.validity.valueMissing) {
     errorDiv.textContent = "Please enter a date of birth.";
   } else if (dob.validity.rangeUnderflow) {
-    errorDiv.textContent = "You cannot be more than 150 years old to register!";
+    errorDiv.textContent = "You cannot be more than 150 years old to signup!";
   } else if (dob.validity.rangeOverflow) {
-    errorDiv.textContent = "You must be at least 14 years old to register!";
+    errorDiv.textContent = "You must be at least 14 years old to signup!";
   } else {
     errorDiv.textContent = "";
   }
@@ -47,4 +47,4 @@ function checkValidations() {
   return;
 }
 
-validateregister();
+validatesignup();

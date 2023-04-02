@@ -21,7 +21,7 @@ function validatelogin(event) {
 }
 
 function checkValidations() {
-  let usernameVal = document.getElementById("emailId").value;
+  let usernameVal = document.getElementById("email").value;
   let passwordVal = document.getElementById("password").value;
   let passForm = document.getElementById("login-form");
   let password_error = document.getElementById("password_error");

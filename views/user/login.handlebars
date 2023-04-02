@@ -1,7 +1,7 @@
 <div id="log-in-form-div" class="text-center container w-50">
 
   <form
-    action="/login"
+    action="/user/login"
     id="login-form"
     method="POST"
     onsubmit="validatelogin(event)"
@@ -18,13 +18,13 @@
       <input
         type="email"
         class="form-control"
-        name="emailId"
-        id="emailId"
+        name="email"
+        id="email"
         placeholder="abc@mail.com"
         required
         pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
       />
-      <label for="emailId">Email address</label>
+      <label for="email">Email address</label>
       <div id="email_error" class="invalid-feedback">
 
       </div>
@@ -53,8 +53,8 @@
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
   <br />
 
-  <a id="register_link" class="link-secondary" href="/register">Not Registered?
-    Click here to register</a>
+  <a id="signup_link" class="link-secondary" href="/user/signup">Not Registered?
+    Click here to Signup</a>
 
 </div>
 
