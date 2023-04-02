@@ -26,7 +26,7 @@ router
     const Consent = req.body.Consent;
 
     if (req.session.user) {
-      console.log("test");
+      return res.redirect("/calendar");
     }
     try {
       const newUser = await usersFunctions.create(
@@ -48,6 +48,9 @@ router
     }
   })
   .get(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
     res.render("user/signup");
   });
 router
@@ -58,7 +61,7 @@ router
     const password = req.body.password;
 
     if (req.session.user) {
-      return res.status(400).json({ error: "already logged in" });
+      return res.redirect("/calendar");
     }
     try {
       utils.validateEmail(email);
@@ -80,6 +83,9 @@ router
     }
   })
   .get(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
     res.render("user/login", { userName: "" });
   });
 router.route("/profile").put(async (req, res) => {});
