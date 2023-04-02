@@ -59,6 +59,33 @@ const utils = {
     }
   },
 
+  validateName(name, inputName){
+    this.validateStringInput(name);
+    if (!(/^[a-zA-Z]+$/.test(name))){
+      throw new Error(`${inputName} can only contain letters`)
+    }
+  },
+  validateEmail(email,inputName){
+    this.validateStringInput(email);
+    if(!(email.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))){
+      throw new Error(`${inputName} is not an email`);
+    }
+  },
+  validatePassword(password){
+    if (!password){
+      throw new Error("Please enter a password");
+    }
+    this.validateStringInput(password, "Password");
+    if (password.length < 8){
+      throw new Error("Password must be at least 8 characters long");
+    }
+    if (!(/[A-Z]/.test(password))){
+      throw new Error("Password must contain at least one uppercase letter");
+    }
+    if (!(/[0-9]/.test(password))){
+      throw new Error("Password must contain at least one number");
+    }
+  },
   validateRepeatingCounterIncrement(repeatingCounterIncrement) {
     this.validateInputIsNumber(
       repeatingCounterIncrement,

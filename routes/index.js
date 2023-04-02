@@ -1,5 +1,6 @@
 import calendarRoutes from "./calendar.js";
 import meetingRoutes from "./meetings.js";
+import userRoutes from "./users.js";
 import sampleRoutes from "./sample.js";
 import * as path from "path";
 import { dirname } from "path";
@@ -10,6 +11,7 @@ const constructorMethod = (app) => {
   app.use("/calendar", calendarRoutes);
   // app.use("/sample", sampleRoutes);
   app.use("/meeting", meetingRoutes);
+  app.use("/user",userRoutes);
   app.use("*", (req, res) => {
     // we can set this to check for authorization and then send back to correct page !
     res.redirect("/calendar");
