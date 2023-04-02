@@ -36,19 +36,7 @@ const handlebarsInstance = exphbs.create({
 });
 
 app.use("/public", express.static(path.join(__dirname, "/public")));
-app.use(
-  "/bootstrap",
-  express.static(path.join(__dirname, "/node_modules/bootstrap/dist"))
-);
-app.use(
-  "/bootstrap-icons",
-  express.static(path.join(__dirname, "/node_modules/bootstrap-icons/"))
-);
 
-app.use(
-  "/jquery",
-  express.static(path.join(__dirname, "/node_modules/jquery/dist/"))
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
