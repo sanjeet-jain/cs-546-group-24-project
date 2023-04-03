@@ -2,8 +2,10 @@ import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import {
   usersCollection,
-  reminderCollection,
+  remindersCollection,
 } from "./../config/mongoCollections.js";
+
+import constants from "./../constants/constants.js";
 
 /** API Reminder.js */
 export const createReminder = async (
@@ -12,34 +14,37 @@ export const createReminder = async (
   textBody,
   priority,
   tag,
-  isRepeating,
+  repeating,
   endDateTime,
   repeatingCounterIncrement,
-  repeatType,
+  repeatingIncrementBy,
   dateTimeAddedTo
 ) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
-  utils.validateStringInput(title, "title");
+  utils.validateStringInput(title, "title", constants.stringLimits["title"]);
   title = title.trim();
-  utils.validateStringInput(textBody, "text body");
+  utils.validateStringInput(
+    textBody,
+    "text body",
+    constants.stringLimits["textBody"]
+  );
   textBody = textBody.trim();
   utils.validatePriority(priority, "priority");
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInput(tag, "tag");
-  tag = tag.trim();
-  tag = tag.toLowerCase();
+  utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+  tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
-  utils.validateDateObj(dateTimeAddedTo);
-  utils.validateBooleanInput(isRepeating);
-  if (isRepeating) {
-    utils.validateDateObj(endDateTime);
-    utils.validateRepeatingIncrementBy(repeatType);
+  utils.validateDateObj(dateTimeAddedTo,"date time value");
+  utils.validateBooleanInput(repeating);
+  if (repeating) {
+    utils.validateDateObj(endDateTime,"end date value");
+    utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     endDateTime = null;
-    repeatType = null;
+    repeatingIncrementBy = null;
   }
   /**
    * Check if two reminder titles be same or not meaning user passes same title tag and due date it ideally is a duplicate date
@@ -48,7 +53,7 @@ export const createReminder = async (
   for (let i = 0; i < reminderEvents.length; i++) {
     if (endDateTime === null) {
       if (
-        utils.isDateOverllaping(
+        utils.isDateObjOverllaping(
           dateTimeAddedTo,
           dateTimeAddedTo,
           reminderEvents.dateTimeAddedTo
@@ -60,7 +65,7 @@ export const createReminder = async (
       }
     } else {
       if (
-        utils.isDateOverllaping(
+        utils.isDateObjOverllaping(
           dateTimeAddedTo,
           endDateTime,
           reminderEvents.dateTimeAddedTo
@@ -77,14 +82,15 @@ export const createReminder = async (
     textBody: textBody,
     priority: priority,
     tag: tag,
-    isRepeating: isRepeating,
+    repeating: repeating,
     endDateTime: endDateTime /** TODO Add counter later */,
-    repeatType: repeatType,
-    isEventExpired: false,
+    repeatingIncrementBy: repeatingIncrementBy,
+    expired: false,
     dateTimeAddedTo: dateTimeAddedTo,
     dateCreated: dateCreated,
+    type: "reminder",
   };
-  if (!isRepeating) {
+  if (!repeating) {
     reminder.groupId = null;
     let reminder_id = await insertReminderEventDAO(reminder);
     await insertReminderIdToUserCollectionDAO(user_id, reminder_id);
@@ -92,10 +98,9 @@ export const createReminder = async (
     const listOfEvents = duplicateReminderEvents(reminder);
     const reminderIdObj = await addAllReminderEventDAO(listOfEvents);
     let reminderIdsList = [];
-    let i = 0;
-    while (i in reminderIdObj) {
-      reminderIdsList.push(reminderIdObj[i]);
-      i++;
+    let keySets = Object(reminderIdObj);
+    for (let i = 0; i < keySets.length; i++) {
+      reminderIdsList.push(reminderIdObj[keySets[i]]);
     }
     await addAllReminderIdsDAO(user_id, reminderIdsList); ///Add User
   }
@@ -123,34 +128,37 @@ export const updateReminder = async (
   priority,
   tag,
   dateTimeAddedTo,
-  isRepeating,
+  repeating,
   endDateTime,
   repeatingCounterIncrement,
-  repeatType,
+  repeatingIncrementBy,
   flagForUpdateSingleReminderUpdate
 ) => {
   utils.checkObjectIdString(reminder_id);
   reminder_id = reminder_id.trim();
-  utils.validateStringInput(title, "title");
+  utils.validateStringInput(title, "title", constants.stringLimits["title"]);
   title = title.trim();
-  utils.validateStringInput(textBody, "text body");
+  utils.validateStringInput(
+    textBody,
+    "text body",
+    constants.stringLimits["textBody"]
+  );
   textBody = textBody.trim();
   utils.validatePriority(priority, "priority");
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInput(tag, "tag");
-  tag = tag.trim();
-  tag = tag.toLowerCase();
+  utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+  tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
-  utils.validateDateObj(dateTimeAddedTo);
-  utils.validateBooleanInput(isRepeating);
+  utils.validateDateObj(dateTimeAddedTo,"date time value");
+  utils.validateBooleanInput(repeating);
   if (!flagForUpdateSingleReminderUpdate) {
-    utils.validateDateObj(endDateTime);
-    utils.validateRepeatingIncrementBy(repeatType);
+    utils.validateDateObj(endDateTime,"end time value");
+    utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     //repeatCounter = 0;
-    repeatType = null;
+    repeatingIncrementBy = null;
   }
   let reminder = await getReminder(reminder_id);
   const reminderObj = {
@@ -160,22 +168,20 @@ export const updateReminder = async (
     tag: tag,
     dateCreated: dateCreated,
     dateTimeAddedTo: dateTimeAddedTo,
-    isRepeating: isRepeating,
+    repeating: repeating,
     endDateTime: endDateTime,
-    repeatType: repeatType,
+    repeatingIncrementBy: repeatingIncrementBy,
   };
   /**
    * This code causes update for single recurrence and normal update
    */
   if (
-    (!isRepeating &&
-      !reminder.isRepeating &&
-      flagForUpdateSingleReminderUpdate) ||
-    (!isRepeating && reminder.isRepeating && flagForUpdateSingleReminderUpdate)
+    (!repeating && !reminder.repeating && flagForUpdateSingleReminderUpdate) ||
+    (!repeating && reminder.repeating && flagForUpdateSingleReminderUpdate)
   ) {
-    reminderObj.isRepeating = false;
+    reminderObj.repeating = false;
     reminderObj.endDateTime = null;
-    reminderObj.repeatType = null;
+    reminderObj.repeatingIncrementBy = null;
     reminderObj.groupId = null;
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else {
@@ -195,10 +201,10 @@ export const updateReminder = async (
         textBody,
         priority,
         tag,
-        isRepeating,
+        repeating,
         endDateTime,
         repeatingCounterIncrement,
-        repeatType,
+        repeatingIncrementBy,
         dateTimeAddedTo
       );
     }
@@ -220,14 +226,14 @@ export const deleteReminder = async (user_id, reminder_id, flag) => {
 };
 
 const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   let user = await getUserDAO(user_id);
   let reminderEvent = await getReminder(reminder_id);
   const result = await reminderInstance.updateMany(
     {
       _id: { $in: user.reminderIds },
       groupId: reminderEvent.groupId,
-      isEventExpired: false,
+      expired: false,
     },
     {
       $set: {
@@ -282,13 +288,13 @@ function duplicateReminderEvents(reminder) {
   while (endDateTime - currentDate >= 0) {
     reminder.dateTimeAddedTo = currentDate;
     listOfEvents.push(constructNewReminderObj(reminder));
-    if (reminder.repeatType === "day") {
+    if (reminder.repeatingIncrementBy === "day") {
       currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
-    } else if (reminder.repeatType === "week") {
+    } else if (reminder.repeatingIncrementBy === "week") {
       currentDate = new Date(currentDate.setDate(currentDate.getDate() + 7));
-    } else if (reminder.repeatType === "month") {
+    } else if (reminder.repeatingIncrementBy === "month") {
       currentDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
-    } else if (reminder.repeatType === "year") {
+    } else if (reminder.repeatingIncrementBy === "year") {
       currentDate = new Date(
         currentDate.setDate(currentDate.getFullYear() + 1)
       );
@@ -305,10 +311,10 @@ function constructNewReminderObj(reminderEvent) {
     tag: reminderEvent.tag,
     dateCreated: reminderEvent.dateCreated,
     dateTimeAddedTo: new Date(reminderEvent.dateTimeAddedTo.valueOf()),
-    isRepeating: reminderEvent.isRepeating,
+    repeating: reminderEvent.repeating,
     endDateTime: new Date(reminderEvent.endDateTime.valueOf()),
-    repeatType: reminderEvent.repeatType,
-    isEventExpired: reminderEvent.isEventExpired,
+    repeatingIncrementBy: reminderEvent.repeatingIncrementBy,
+    expired: reminderEvent.expired,
     groupId: reminderEvent.groupId,
   };
   return reminderObj;
@@ -318,7 +324,7 @@ function constructNewReminderObj(reminderEvent) {
 /**   DAO Layer Start  */
 
 const deleteAllReminderEventsDAO = async (groupId, reminderIdList) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const result = await reminderInstance.deleteMany({
     _id: { $in: reminderIdList },
     groupId: groupId,
@@ -358,7 +364,7 @@ const addAllReminderIdsDAO = async (user_id, listOfReminderIds) => {
 };
 
 const addAllReminderEventDAO = async (listOfReminderEvents) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const insertInfo = await reminderInstance.insertMany(listOfReminderEvents);
   if (
     insertInfo.insertIds === null ||
@@ -385,8 +391,8 @@ const deleteReminderFromUserCollectionDAO = async (user_id, reminder_id) => {
 };
 
 const deleteReminderEventDAO = async (reminder_id) => {
-  const reminderCollections = await reminderCollection();
-  const deletedReminderInfo = await reminderCollections.findOneAndDelete({
+  const remindersCollections = await remindersCollection();
+  const deletedReminderInfo = await remindersCollections.findOneAndDelete({
     _id: new ObjectId(reminder_id),
   });
   if (deletedReminderInfo.value === null) {
@@ -395,8 +401,8 @@ const deleteReminderEventDAO = async (reminder_id) => {
 };
 
 const updateReminderByReminderIdDAO = async (reminder_id, reminderEvent) => {
-  const reminderCollections = await reminderCollection();
-  reminderCollections.replaceOne(
+  const remindersCollections = await remindersCollection();
+  remindersCollections.replaceOne(
     {
       _id: new ObjectId(reminder_id),
     },
@@ -406,7 +412,7 @@ const updateReminderByReminderIdDAO = async (reminder_id, reminderEvent) => {
 };
 
 const insertReminderEventDAO = async (reminder) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const insertInfo = await reminderInstance.insertOne(reminder);
   if (insertInfo === null) {
     throw `Error : MongoDB Failure`;
@@ -437,7 +443,7 @@ const insertReminderIdToUserCollectionDAO = async (user_id, reminder_id) => {
 };
 
 const getSingleReminderEventDAO = async (reminder_id) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const reminder = await reminderInstance.findOne({
     _id: new ObjectId(reminder_id),
   });
@@ -458,7 +464,7 @@ const getUserDAO = async (user_id) => {
 
 const getAllReminderEventsDAO = async (user_id) => {
   let user = await getUserDAO(user_id);
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const reminderEvents = await reminderInstance
     .find({
       _id: { $in: user.reminderIds },
@@ -471,7 +477,7 @@ const getAllReminderEventsDAO = async (user_id) => {
 };
 
 const getReminderEventsByGroupDAO = async (group_id) => {
-  const reminderInstance = await reminderCollection();
+  const reminderInstance = await remindersCollection();
   const reminderEvents = await reminderInstance
     .find({
       groupId: new ObjectId(group_id),

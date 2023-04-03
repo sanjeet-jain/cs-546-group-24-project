@@ -28,31 +28,42 @@ router
     let textBody = reminder.textBody;
     let priority = reminder.priority;
     let tag = reminder.tag;
-    let isRepeating = reminder.isRepeating;
+    let repeating = reminder.repeating;
     let endDateTime = new Date(reminder.endDateTime);
-    let repeatType = reminder.repeatType;
-    let dateTimeAddedTo = new Date(reminder.dateTimeAddedTo);
+    let repeatingIncrementBy = reminder.repeatingIncrementBy;
+    let dateTimeAddedTo = utils.getNewDateObjectFromString();
     let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       console.log(typeof user_id);
       utils.checkObjectIdString(user_id);
       user_id = user_id.trim();
-      utils.validateStringInput(title, "title");
+      utils.validateStringInput(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
       title = title.trim();
-      utils.validateStringInput(textBody, "text body");
+      utils.validateStringInput(
+        textBody,
+        "text body",
+        constants.stringLimits["textBody"]
+      );
       textBody = textBody.trim();
-      utils.validatePriority(priority, "priority");
+      utils.validateStringInput(
+        priority,
+        "priority",
+        constants.stringLimits["priority"]
+      );
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInput(tag, "tag");
+      utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
       tag = tag.trim();
-      tag = tag.toLowerCase();
-      utils.validateDateObj(dateTimeAddedTo);
-      utils.validateBooleanInput(isRepeating);
-      if (isRepeating) {
-        utils.validateDateObj(endDateTime);
-        utils.validateRepeatingIncrementBy(repeatType);
+      utils.validateDateObj(dateTimeAddedTo,"date time value");
+      utils.validateBooleanInput(repeating);
+      if (repeating) {
+        utils.validateDateObj(endDateTime,"end time value");
+        utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -64,10 +75,10 @@ router
         textBody,
         priority,
         tag,
-        isRepeating,
+        repeating,
         endDateTime,
         repeatingCounterIncrement,
-        repeatType,
+        repeatingIncrementBy,
         dateTimeAddedTo
       );
       res.status(200).json("Reminder Event is successfully added to the DB");
@@ -103,31 +114,42 @@ router
     let priority = reminder.priority;
     let tag = reminder.tag;
     let dateTimeAddedTo = new Date(reminder.dateTimeAddedTo);
-    let isRepeating = reminder.isRepeating;
+    let repeating = reminder.repeating;
     let endDateTime = new Date(reminder.endDateTime);
-    let repeatType = reminder.repeatType;
+    let repeatingIncrementBy = reminder.repeatingIncrementBy;
     let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
-      utils.validateStringInput(title, "title");
+      utils.validateStringInput(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
       title = title.trim();
-      utils.validateStringInput(textBody, "text body");
+      utils.validateStringInput(
+        textBody,
+        "text body",
+        constants.stringLimits["textBody"]
+      );
       textBody = textBody.trim();
-      utils.validatePriority(priority, "priority");
+      utils.validateStringInput(
+        priority,
+        "priority",
+        constants.stringLimits["priority"]
+      );
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInput(tag, "tag");
+      utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
       tag = tag.trim();
-      tag = tag.toLowerCase();
-      utils.validateDateObj(dateTimeAddedTo);
-      utils.validateBooleanInput(isRepeating);
+      utils.validateDateObj(dateTimeAddedTo,"date time added to value");
+      utils.validateBooleanInput(repeating);
       if (!flagForUpdateSingleReminderUpdate) {
-        utils.validateDateObj(endDateTime);
-        utils.validateRepeatingIncrementBy(repeatType);
+        utils.validateDateObj(endDateTime,"end date value");
+        utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {
-        repeatType = null;
+        repeatingIncrementBy = null;
       }
     } catch (e) {
       return res.status(400).json({ error: e });
@@ -141,10 +163,10 @@ router
         priority,
         tag,
         dateTimeAddedTo,
-        isRepeating,
+        repeating,
         endDateTime,
         repeatingCounterIncrement,
-        repeatType,
+        repeatingIncrementBy,
         flagForUpdateSingleReminderUpdate
       );
       res.status().json("The update of reminder event is sucessful");

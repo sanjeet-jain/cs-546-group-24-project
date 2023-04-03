@@ -12,7 +12,7 @@ add back counter later when we do UI
 sanjeet 
 check for overlapping events 
 make tag lowercase
-check what repeatType does
+check what repeatingIncrementBy does
 make upsert false for all update functions
 
 

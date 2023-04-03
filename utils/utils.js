@@ -192,9 +192,9 @@ const utils = {
    * @param {date object} date1
    * @param {date object} date2
    */
-  isDateEqual(date1, date2) {
-    this.validateDate(date1);
-    this.validateDate(date2);
+  isDateObjEqual(date1, date2) {
+    this.validateDateObj(date1);
+    this.validateDateObj(date2);
     if (
       date1.getFullYear() === date2.getFullYear() &&
       date1.getMonth() === date2.getMonth() &&
@@ -213,7 +213,7 @@ const utils = {
    * @param {*} endDateTime
    * @param {*} dateTime
    */
-  isDateOverllaping(startDateTime, endDateTime, dateTime) {
+  isDateObjOverllaping(startDateTime, endDateTime, dateTime) {
     if (
       startDateTime.getMinutes() === dateTime.getMinutes() &&
       startDateTime.getHours() === dateTime.getHours() &&
@@ -263,12 +263,30 @@ const utils = {
 
   getNewDateObject(fullYear, month, date, hours, minutes) {
     let dateObj = new Date();
-    date.setFullYear(fullYear);
-    date.setMonth(month);
-    date.setDate(date);
-    date.setHours(hours);
-    date.setMinutes(minutes);
+    dateObj.setFullYear(fullYear);
+    dateObj.setMonth(month);
+    dateObj.setDate(date);
+    dateObj.setHours(hours);
+    dateObj.setMinutes(minutes);
     return dateObj;
+  },
+
+  /**
+   * MM/DD/YYYY 12:13
+   * @param {*} dateTimeString
+   */
+  getNewDateObjectFromString(dateTimeString) {
+    this.validateStringInput(dateTimeString);
+    let strList = dateTimeString.split(" ");
+    let timeStr = strList[1].split(":");
+    let dateStr = strList[0].split("/");
+    return this.getNewDateObject(
+      Number.parseInt(strList[dateStr[2]]),
+      Number.parseInt(strList[dateStr[0]]),
+      Number.parseInt(strList[dateStr[1]]),
+      Number.parseInt(timeStr[0]),
+      Number.parseInt(timeStr[1])
+    );
   },
 };
 
