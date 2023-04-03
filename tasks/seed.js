@@ -1,8 +1,8 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
-import { meetingsCollection } from "../config/mongoCollections.js";
 import meetingsDataFunctions from "../data/meetings.js";
+import usersDataFunctions from "../data/users.js";
 import bcrypt from "bcrypt";
 
 export async function runSetup() {
@@ -22,29 +22,33 @@ export async function runSetup() {
  meetingIds: [ObjectId]
 */
   let dt = new Date();
-  const hashPW = await bcrypt.hash("abcDefgh2i", 16);
+
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
     email: "sampleuser@gmail.com",
     // password will be hashed when being passed from UI to the API and then stored ( done by Jonathan)
-    password: hashPW,
+    password: "abcDefgh2i",
     disability: false,
     // date string passed here is MM/DD/YYYY
-    dob: new Date("01/01/1996"),
+    dob: new Date("01/01/1996").toDateString(),
     consent: true,
     //initially an empty array
-    taskIds: [],
-    reminderIds: [],
-    noteIds: [],
-    meetingIds: [],
+    // taskIds: [],
+    // reminderIds: [],
+    // noteIds: [],
+    // meetingIds: [],
   };
 
-  // need to call the data/create function for users here
-  // for now inserting it directly
-  const users = await usersCollection();
-  const insertInfo = await users.insertOne(sampleUser);
-  console.log(insertInfo);
+  const user = await usersDataFunctions.create(
+    sampleUser.first_name,
+    sampleUser.last_name,
+    sampleUser.email,
+    sampleUser.password,
+    sampleUser.disability,
+    sampleUser.dob,
+    sampleUser.consent
+  );
 
   // ideally use the CRUD functions in data/ to initialise and seed all the data we have !
 
@@ -84,7 +88,7 @@ export async function runSetup() {
     type: "meeting",
   };
   await meetingsDataFunctions.create(
-    insertInfo.insertedId.toString(),
+    user._id.toString(),
     sampleMeeting.title,
     sampleMeeting.dateAddedTo,
     sampleMeeting.dateDueOn,
@@ -97,7 +101,7 @@ export async function runSetup() {
   );
 
   await meetingsDataFunctions.create(
-    insertInfo.insertedId.toString(),
+    user._id.toString(),
     sampleMeeting2.title,
     sampleMeeting2.dateAddedTo,
     sampleMeeting2.dateDueOn,
@@ -114,7 +118,7 @@ export async function runSetup() {
   // Seed reminders
 
   // Seed notes
-
+  console.log("newly created user: ", user._id.toString());
   console.log("seeding done!");
 }
 

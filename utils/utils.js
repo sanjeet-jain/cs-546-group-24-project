@@ -56,13 +56,8 @@ const utils = {
   },
   validateEmail(email, inputName) {
     this.validateStringInput(email);
-    if (
-      !email
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        )
-    ) {
+    const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
     }
   },
@@ -71,7 +66,7 @@ const utils = {
       throw new Error("Please enter a password");
     }
     this.validateStringInput(password, "Password");
-    if (password.length < 8) {
+    if (password.length < constants.stringLimits.password) {
       throw new Error("Password must be at least 8 characters long");
     }
     if (!/[A-Z]/.test(password)) {
