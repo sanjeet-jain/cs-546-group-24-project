@@ -3,6 +3,7 @@ import ObjectId from "mongodb";
 import { usersCollection } from "../config/mongoCollections.js";
 import { meetingsCollection } from "../config/mongoCollections.js";
 import meetingsDataFunctions from "../data/meetings.js";
+import tasksDataFunctions from "../data/tasks.js";
 
 export async function runSetup() {
   /*
@@ -82,6 +83,36 @@ export async function runSetup() {
     expired: false,
     type: "meeting",
   };
+
+  const sampleTask = {
+    title: "Finish project report",
+    textBody:
+      "Complete the final report for the project and submit it to the manager.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setDate(new Date().getDate() + 7)
+    ).toString(),
+    priority: 1,
+    tag: "work",
+    checked: false,
+    type: "task",
+  };
+
+  const sampleTask2 = {
+    title: "Buy groceries",
+    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setDate(new Date().getDate() + 1)
+    ).toString(),
+    priority: 3,
+    tag: "personal",
+    checked: false,
+    type: "task",
+  };
+
   await meetingsDataFunctions.create(
     insertInfo.insertedId.toString(),
     sampleMeeting.title,
@@ -109,6 +140,26 @@ export async function runSetup() {
   );
 
   // Seed tasks
+
+  await tasksDataFunctions.createTask(
+    insertInfo.insertedId.toString(),
+    sampleTask.title,
+    sampleTask.textBody,
+    sampleTask.dateAddedTo,
+    sampleTask.dateDueOn,
+    sampleTask.priority,
+    sampleTask.tag
+  );
+
+  await tasksDataFunctions.createTask(
+    insertInfo.insertedId.toString(),
+    sampleTask2.title,
+    sampleTask2.textBody,
+    sampleTask2.dateAddedTo,
+    sampleTask2.dateDueOn,
+    sampleTask2.priority,
+    sampleTask2.tag
+  );
 
   // Seed reminders
 
