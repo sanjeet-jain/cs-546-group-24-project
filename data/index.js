@@ -6,5 +6,7 @@
 // export const postData = postDataFunctions;
 
 import meetingsDataFunctions from "./meetings";
+import usersDataFunctions from "./users";
+import notesDataFunctions from "./notes";
 
-export const meetingData = meetingsDataFunctions;
+//todo refactor code

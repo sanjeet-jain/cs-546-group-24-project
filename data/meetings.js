@@ -61,7 +61,7 @@ const meetingsDataFunctions = {
       throw new Error("Invalid update inputs for meeting");
     }
     const meetings = await meetingsCollection();
-    const updatedMeeting = {};
+    let updatedMeeting = {};
 
     // only update the fields that have been provided as input
     updatedMeeting.title = title.trim();
@@ -202,8 +202,29 @@ const meetingsDataFunctions = {
       const meetingObjects = [];
 
       for (let i = 0; i < repeatingCounterIncrement; i++) {
-        let newDateDueOn;
-        let newDateAddedTo;
+        let newDateDueOn = new Date(
+          dateDueOnObject.setDate(dateDueOnObject.getDate())
+        );
+        let newDateAddedTo = new Date(
+          dateAddedToObject.setDate(dateAddedToObject.getDate())
+        );
+
+        const meeting = {
+          title,
+          dateCreated,
+          dateAddedTo: newDateAddedTo.toString(),
+          dateDueOn: newDateDueOn.toString(),
+          priority,
+          textBody,
+          tag,
+          repeating,
+          repeatingCounterIncrement,
+          repeatingIncrementBy,
+          repeatingGroup,
+          expired: false,
+          type: "meeting",
+        };
+        meetingObjects.push(meeting);
         switch (repeatingIncrementBy) {
           case "day":
             newDateDueOn = new Date(
@@ -240,23 +261,6 @@ const meetingsDataFunctions = {
           default:
             throw new Error("Invalid repeatingIncrementBy value");
         }
-
-        const meeting = {
-          title,
-          dateCreated,
-          dateAddedTo: newDateAddedTo.toString(),
-          dateDueOn: newDateDueOn.toString(),
-          priority,
-          textBody,
-          tag,
-          repeating,
-          repeatingCounterIncrement,
-          repeatingIncrementBy,
-          repeatingGroup,
-          expired: false,
-          type: "meeting",
-        };
-        meetingObjects.push(meeting);
         dateDueOn = newDateDueOn;
         dateAddedTo = newDateAddedTo;
       }
