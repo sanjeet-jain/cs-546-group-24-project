@@ -18,7 +18,7 @@ export const createReminder = async (
   endDateTime,
   repeatingCounterIncrement,
   repeatingIncrementBy,
-  dateTimeAddedTo
+  dateAddedTo
 ) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
@@ -37,10 +37,10 @@ export const createReminder = async (
   utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
   tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
-  utils.validateDateObj(dateTimeAddedTo,"date time value");
+  utils.validateDateObj(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
   if (repeating) {
-    utils.validateDateObj(endDateTime,"end date value");
+    utils.validateDateObj(endDateTime, "end date value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     endDateTime = null;
@@ -54,26 +54,30 @@ export const createReminder = async (
     if (endDateTime === null) {
       if (
         utils.isDateObjOverllaping(
-          dateTimeAddedTo,
-          dateTimeAddedTo,
-          reminderEvents.dateTimeAddedTo
+          dateAddedTo,
+          dateAddedTo,
+          reminderEvents.dateAddedTo
         ) &&
         title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
         tag === reminderEvents[i].tag
       ) {
-        throw `Error : No Two reminders can have same title tag and time`;
+        throw new Error(
+          "Error : No Two reminders can have same title tag and time"
+        );
       }
     } else {
       if (
         utils.isDateObjOverllaping(
-          dateTimeAddedTo,
+          dateAddedTo,
           endDateTime,
-          reminderEvents.dateTimeAddedTo
+          reminderEvents.dateAddedTo
         ) &&
         title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
         tag === reminderEvents[i].tag
       ) {
-        throw `Error : No Two reminders can have same title tag and time`;
+        throw new Error(
+          "Error : No Two reminders can have same title tag and time"
+        );
       }
     }
   }
@@ -86,7 +90,7 @@ export const createReminder = async (
     endDateTime: endDateTime /** TODO Add counter later */,
     repeatingIncrementBy: repeatingIncrementBy,
     expired: false,
-    dateTimeAddedTo: dateTimeAddedTo,
+    dateAddedTo: dateAddedTo,
     dateCreated: dateCreated,
     type: "reminder",
   };
@@ -98,7 +102,7 @@ export const createReminder = async (
     const listOfEvents = duplicateReminderEvents(reminder);
     const reminderIdObj = await addAllReminderEventDAO(listOfEvents);
     let reminderIdsList = [];
-    let keySets = Object(reminderIdObj);
+    let keySets = Object.keys(reminderIdObj);
     for (let i = 0; i < keySets.length; i++) {
       reminderIdsList.push(reminderIdObj[keySets[i]]);
     }
@@ -127,7 +131,7 @@ export const updateReminder = async (
   textBody,
   priority,
   tag,
-  dateTimeAddedTo,
+  dateAddedTo,
   repeating,
   endDateTime,
   repeatingCounterIncrement,
@@ -151,10 +155,10 @@ export const updateReminder = async (
   utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
   tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
-  utils.validateDateObj(dateTimeAddedTo,"date time value");
+  utils.validateDateObj(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
   if (!flagForUpdateSingleReminderUpdate) {
-    utils.validateDateObj(endDateTime,"end time value");
+    utils.validateDateObj(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     //repeatCounter = 0;
@@ -167,7 +171,7 @@ export const updateReminder = async (
     priority: priority,
     tag: tag,
     dateCreated: dateCreated,
-    dateTimeAddedTo: dateTimeAddedTo,
+    dateAddedTo: dateAddedTo,
     repeating: repeating,
     endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
@@ -189,7 +193,7 @@ export const updateReminder = async (
      * If DateTime is same them you just have to update rest of records no new reminder needs to be created
      */
     if (
-      utils.isDateEqual(reminder.dateTimeAddedTo, dateTimeAddedTo) &&
+      utils.isDateEqual(reminder.dateAddedTo, dateAddedTo) &&
       utils.isDateEqual(reminder.endDateTime, endDateTime)
     ) {
       await updateAllRecurrencesDAO(user_id, reminder_id, reminderObj);
@@ -205,7 +209,7 @@ export const updateReminder = async (
         endDateTime,
         repeatingCounterIncrement,
         repeatingIncrementBy,
-        dateTimeAddedTo
+        dateAddedTo
       );
     }
   }
@@ -251,11 +255,11 @@ const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
       result.acknowledged === true
     )
   ) {
-    if (result.matchedCount == 0) throw new Error("Meetings not found");
+    if (result.matchedCount == 0) throw new Error("Reminder not found");
     if (result.modifiedCount == 0)
-      throw new Error("Meetings Details havent Changed");
+      throw new Error("Reminder Details havent Changed");
     if (result.acknowledged !== true)
-      throw new Error("Meetings update wasnt successfull");
+      throw new Error("Reminder update wasnt successfull");
   }
 };
 
@@ -282,11 +286,11 @@ const deleteAllRecurrences = async (user_id, reminder_id) => {
 
 function duplicateReminderEvents(reminder) {
   let listOfEvents = [];
-  let currentDate = reminder.dateTimeAddedTo;
+  let currentDate = reminder.dateAddedTo;
   let endDateTime = reminder.endDateTime;
   reminder.groupId = new ObjectId();
   while (endDateTime - currentDate >= 0) {
-    reminder.dateTimeAddedTo = currentDate;
+    reminder.dateAddedTo = currentDate;
     listOfEvents.push(constructNewReminderObj(reminder));
     if (reminder.repeatingIncrementBy === "day") {
       currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
@@ -310,7 +314,7 @@ function constructNewReminderObj(reminderEvent) {
     priority: reminderEvent.priority,
     tag: reminderEvent.tag,
     dateCreated: reminderEvent.dateCreated,
-    dateTimeAddedTo: new Date(reminderEvent.dateTimeAddedTo.valueOf()),
+    dateAddedTo: new Date(reminderEvent.dateAddedTo.valueOf()),
     repeating: reminderEvent.repeating,
     endDateTime: new Date(reminderEvent.endDateTime.valueOf()),
     repeatingIncrementBy: reminderEvent.repeatingIncrementBy,
@@ -346,9 +350,9 @@ const deleteListedIdsFromUserDAO = async (user_id, listOfIds) => {
   ) {
     if (result.matchedCount == 0) throw new Error("Meetings not found");
     if (result.modifiedCount == 0)
-      throw new Error("Meetings Details havent Changed");
+      throw new Error("Reminder Details havent Changed");
     if (result.acknowledged !== true)
-      throw new Error("Meetings update wasnt successfull");
+      throw new Error("Reminder update wasnt successfull");
   }
 };
 
@@ -359,7 +363,9 @@ const addAllReminderIdsDAO = async (user_id, listOfReminderIds) => {
     { $push: { reminderIds: { $each: listOfReminderIds } } }
   );
   if (insertInfo.modifiedCount === 0) {
-    throw `Error : ids were not successfully updated to the user collection`;
+    throw new Error(
+      "User Ids were not successfully updated to the user collection"
+    );
   }
 };
 
@@ -370,7 +376,7 @@ const addAllReminderEventDAO = async (listOfReminderEvents) => {
     insertInfo.insertIds === null ||
     insertInfo.insertedCount !== listOfReminderEvents.length
   ) {
-    throw `Error : list of reminder events was not successfully added to db`;
+    throw new Error("List of reminder events was not successfully added to db");
   }
   return insertInfo.insertedIds;
 };
@@ -384,9 +390,9 @@ const deleteReminderFromUserCollectionDAO = async (user_id, reminder_id) => {
     }
   );
   if (obj === null) {
-    throw `Error : while updating the document`;
+    throw new Error("Error while updating the document");
   } else if (!(obj.modifiedCount === 1)) {
-    throw `Error : album not found in the db`;
+    throw new Error("Album not found in the db");
   }
 };
 
@@ -396,7 +402,7 @@ const deleteReminderEventDAO = async (reminder_id) => {
     _id: new ObjectId(reminder_id),
   });
   if (deletedReminderInfo.value === null) {
-    throw `Error : could not delete the reminder event`;
+    throw new Error(`Could not delete the reminder event`);
   }
 };
 
@@ -415,14 +421,14 @@ const insertReminderEventDAO = async (reminder) => {
   const reminderInstance = await remindersCollection();
   const insertInfo = await reminderInstance.insertOne(reminder);
   if (insertInfo === null) {
-    throw `Error : MongoDB Failure`;
+    throw new Error("MongoDB Failure");
   } else if (
     !(
       insertInfo.acknowledged === true &&
       insertInfo.insertedId instanceof ObjectId
     )
   ) {
-    throw `Error : during insertion of reminders to db`;
+    throw new Error("Error : during insertion of reminders to db");
   }
   return insertInfo.insertedId;
 };
@@ -436,9 +442,9 @@ const insertReminderIdToUserCollectionDAO = async (user_id, reminder_id) => {
     }
   );
   if (updateInfo === null) {
-    throw `Error : while updating the document`;
+    throw new Error("Error while updating the document");
   } else if (!(updateInfo.modifiedCount === 1)) {
-    throw `Error : user not present in the db`;
+    throw new Error("Error : user not present in the db");
   }
 };
 
@@ -448,7 +454,7 @@ const getSingleReminderEventDAO = async (reminder_id) => {
     _id: new ObjectId(reminder_id),
   });
   if (!reminder) {
-    throw `Error : No band with that id`;
+    throw new Error("Error : No band with that id");
   }
   return reminder;
 };
@@ -457,7 +463,7 @@ const getUserDAO = async (user_id) => {
   const usersInstance = await usersCollection();
   let user = await usersInstance.findOne({ _id: new ObjectId(user_id) });
   if (user === null) {
-    throw `Error : user look up error`;
+    throw new Error("User look up error");
   }
   return user;
 };
@@ -471,7 +477,7 @@ const getAllReminderEventsDAO = async (user_id) => {
     })
     .toArray();
   if (reminderEvents === null) {
-    throw `Error : Unexpected DB crash while accessing database `;
+    throw new Error("Unexpected DB crash while accessing database");
   }
   return reminderEvents;
 };
@@ -484,7 +490,7 @@ const getReminderEventsByGroupDAO = async (group_id) => {
     })
     .toArray();
   if (reminderEvents === null) {
-    throw `Error : Unexpected DB crash while accessing database `;
+    throw new Error("Unexpected DB crash while accessing database");
   }
   return reminderEvents;
 };

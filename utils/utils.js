@@ -281,9 +281,9 @@ const utils = {
     let timeStr = strList[1].split(":");
     let dateStr = strList[0].split("/");
     return this.getNewDateObject(
-      Number.parseInt(strList[dateStr[2]]),
-      Number.parseInt(strList[dateStr[0]]),
-      Number.parseInt(strList[dateStr[1]]),
+      Number.parseInt(dateStr[2]),
+      Number.parseInt(dateStr[0]),
+      Number.parseInt(dateStr[1]),
       Number.parseInt(timeStr[0]),
       Number.parseInt(timeStr[1])
     );
