@@ -1,6 +1,5 @@
 import { Router } from "express";
 const router = Router();
-import { ObjectId } from "mongodb";
 
 import usersFunctions from "../data/users.js";
 import utils from "../utils/utils.js";
@@ -14,153 +13,166 @@ function createSessionObject(user) {
 }
 
 router
-    .route("/signup")
-    .post(async(req,res) => {
+  .route("/signup")
+  .post(async (req, res) => {
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const email = req.body.email;
+    const password = req.body.password;
+    const disability = req.body.disability;
+    const dob = req.body.dob;
+    const consent = req.body.consent;
+    try {
+      utils.validateName(first_name, "First name");
+      utils.validateName(last_name, "Last name");
+      utils.validateEmail(email, "Email");
+      utils.validatePassword(password, "Password");
+      utils.validateBooleanInput(disability, "Disability");
+      utils.validateDate(dob, "Date of Birth");
+      utils.validateBooleanInput(consent, "Consent");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
 
-        const first_name = req.body.first_name;
-        const last_name = req.body.last_name;
-        const email = req.body.email;
-        const password = req.body.password;
-        const disability = req.body.disability;
-        const dob = req.body.dob;
-        const consent = req.body.consent;
-        try{
-            utils.validateName(first_name, "First name");
-            utils.validateName(last_name, "Last name");
-            utils.validateEmail(email,"Email");
-            utils.validatePassword(password,"Password");
-            utils.validateBooleanInput(disability,"Disability");
-            utils.validateDate(dob,"Date of Birth");
-            utils.validateBooleanInput(consent,"Consent");
-        }
-        catch(e){
-            return res.status(400).json({error:e});
-        }
+    try {
+      const newUser = await usersFunctions.create(
+        first_name,
+        last_name,
+        email,
+        password,
+        disability,
+        dob,
+        consent
+      );
+      const user = await usersFunctions.loginUser(email, password);
+      if (user) {
+        req.session.user = createSessionObject(user);
+      }
+      return res.status(200).redirect("/calendar");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+  })
+  .get(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
+    res.render("user/signup");
+  });
 
-        if(req.session.user){
-            console.log("test");
-        }
-        try{
-            const newUser = await usersFunctions.create(first_name,last_name,email,password,disability,dob,consent);
-            const user = await usersFunctions.loginUser(email,password);
-            if (user){
-                req.session.user = {
-                    user_id: user._id.toString(),
-                    email: email
-                };
-            }
-            return res.status(200).redirect("/calendar");
-        }catch(e){
-            return res.status(400).json({error: e});
-        }
-    });
 router
-    .route("/login")
-    .post(async(req,res)=>{
-        const email = req.body.email;
-        const password = req.body.password;
+  .route("/login")
+  .post(async (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
 
-        utils.validateEmail(email);
-        utils.validatePassword(password);
-
-        if(req.session.user){
-            return res.status(400).json({error:"already logged in"});
-        }
-        try{
-            utils.validateEmail(email);
-            utils.validatePassword(password);
-        }catch(e){
-            return res.status(400).json({error: e.message});
-        }
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
+    try {
+      utils.validateEmail(email);
+      utils.validatePassword(password);
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
 
     //try checkuser
     try {
       const user = await usersFunctions.loginUser(email, password);
 
-            if (user){
-                req.session.user = {
-                    user_id: user._id.toString(),
-                    email: email
-                };
-                return res.redirect("/calendar");
-            }
-        }catch(e){
-            return res.status(500).json({error: e});
-        }  
-    });
-router
-    .route("/profile")
-    //TODO: choose how to display user details
-    .put(async(req,res) =>{
-    try{
-        if (req.session.user){
-            const users = await usersCollection();
-            const id = req.session.user.user_id;
-            return currUser = users.getUsers(id);
-        }
+      if (user) {
+        req.session.user = createSessionObject(user);
+        return res.redirect("/calendar");
+      }
+    } catch (e) {
+      return res.status(500).json({ error: e });
     }
-    catch(e){
-        return res.status(500).json({error: e});
-    }    
-    });
+  })
+  .get(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
+    res.render("user/login");
+  });
 router
-    .route("/profile/edit")
-    .get(async(req,res)=>{
+  .route("/profile")
+  //TODO: choose how to display user details
+  .put(async (req, res) => {
+    try {
+      if (req.session.user) {
+        const users = await usersCollection();
         const id = req.session.user.user_id;
-        try{
-            const currUser = await usersFunctions.getUser(id);
-            return res.status(200).json(currUser);
-        }
-        catch(e){
-            return res.status(400).json({error:e});
-        }
-
-
-    })
-    .put(async(req,res) =>{
-        const id = req.session.user.user_id;
-        const first_name = req.body.first_name;
-        const last_name = req.body.last_name;
-        const email = req.body.email;
-        const disability = req.body.disability;
-        const dob = req.body.dob;
-
-        try{
-            utils.checkObjectIdString(id);
-            utils.validateName(first_name);
-            utils.validateName(last_name);
-            utils.validateEmail(email);
-            utils.validateBooleanInput(disability);
-            utils.validateDate(dob);
-        }
-        catch(e){
-            return res(400).json({error:e});
-        }
-        try{
-            const updatedUser = usersFunctions.updateUser(id,{first_name,last_name,email,disability,dob});
-            return res.redirect("/profile");
-        }catch(e){
-            return res.status(400).json({error:e});
-        }
-
-    });
+        const currUser = users.getUsers(id);
+        //TODO render handlebar
+        return res.status(200).json(currUser);
+      }
+    } catch (e) {
+      return res.status(500).json({ error: e });
+    }
+  });
 router
-    .route("/profile/password")
-    .put(async(req,res)=>{
-        const id = req.session.user.user_id;
-        try{
-            const updated = usersFunctions.changePassword(id,req.body.password);
-            return res.redirect("/profile");
-        }
-        catch(e){
-            return res.status(400).json({error:e});
-        }
+  .route("/profile/edit")
+  .get(async (req, res) => {
+    const id = req.session.user.user_id;
+    try {
+      const currUser = await usersFunctions.getUser(id);
+      //TODO render handlebar
+      return res.status(200).json(currUser);
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+  })
+  .put(async (req, res) => {
+    const id = req.session.user.user_id;
+    const first_name = req.body.first_name;
+    const last_name = req.body.last_name;
+    const email = req.body.email;
+    const disability = req.body.disability;
+    const dob = req.body.dob;
 
-    });
+    try {
+      utils.checkObjectIdString(id);
+      utils.validateName(first_name);
+      utils.validateName(last_name);
+      utils.validateEmail(email);
+      utils.validateBooleanInput(disability);
+      utils.validateDate(dob);
+    } catch (e) {
+      return res(400).json({ error: e });
+    }
+    try {
+      const updatedUser = usersFunctions.updateUser(id, {
+        first_name,
+        last_name,
+        email,
+        disability,
+        dob,
+      });
+      return res.redirect("/profile");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+  });
 router
-    .route("/logout")
-    .post(async(req,res)=>{
-        req.session.destroy();
-        res.redirect("/");
-    });
+  .route("/profile/password")
+  .put(async (req, res) => {
+    const id = req.session.user.user_id;
+    try {
+      const updated = usersFunctions.changePassword(id, req.body.password);
+      return res.redirect("/profile");
+    } catch (e) {
+      return res.status(400).json({ error: e });
+    }
+  })
+  .get(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
+    //TODO password change UI
+    res.redirect("/");
+  });
+router.route("/logout").post(async (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
 export default router;
