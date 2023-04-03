@@ -1,0 +1,20 @@
+jonathan 
+needs to finish post logins
+
+mahesh 
+is finishing route validation and testing 
+check for overlapping events 
+make tag lowercase
+
+sundera 
+add back counter later when we do UI
+
+sanjeet 
+check for overlapping events 
+make tag lowercase
+check what repeatingIncrementBy does
+make upsert false for all update functions
+
+
+for all date strings we expect a format of "MM/DD/YYYY 12:23"
+in the UI we format and convert it to this way for the API 
