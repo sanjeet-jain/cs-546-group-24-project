@@ -129,3 +129,4 @@ dist
 .unotes/
 ~$ 546 HLD.docx
 .DS_Store
+package-lock.json

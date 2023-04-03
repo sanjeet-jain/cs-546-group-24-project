@@ -4,7 +4,7 @@ body {
 .navbar div {
   padding: 1rem;
 }
-#calendar-div {
+.center-div {
   width: 60vw;
 }
 #calendar-div table tbody tr td {
