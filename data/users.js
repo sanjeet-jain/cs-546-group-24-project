@@ -151,7 +151,7 @@ const exportedMethods = {
     utils.validatePassword(password);
     utils.validateEmail(email);
     email = email.trim().toLowerCase();
-    password = password.trim().toLowerCase();
+    password = password.trim();
 
     const hashPW = currUser.password;
     let validPassword = false;

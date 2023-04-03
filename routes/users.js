@@ -79,7 +79,7 @@ router
     //try checkuser
     try {
       email = email.trim().toLowerCase();
-      password = password.trim().toLowerCase();
+      password = password.trim();
       const user = await usersFunctions.loginUser(email, password);
       if (user) {
         req.session.user = createSessionObject(user);
