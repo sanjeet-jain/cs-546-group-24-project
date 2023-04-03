@@ -2,6 +2,8 @@
 let yeaRangeRef = new Date().getFullYear();
 
 const constants = {
+  pwRounds: 16,
+
   weekdays: [
     "Sunday",
     "Monday",
@@ -42,6 +44,7 @@ const constants = {
     title: 100,
     textBody: 200,
     tag: 20,
+    password: 8,
   },
 };
 
