@@ -26,17 +26,6 @@ const utils = {
     }
   },
 
-  validateDate(date, paramName) {
-    this.validateStringInput(date, paramName);
-    date = date.trim();
-    date = new Date(date);
-
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
-    }
-  },
   validateInputIsNumber(input, inputName) {
     if (typeof input !== "number" || isNaN(input)) {
       throw new Error(`${inputName} is not a number `);
@@ -192,6 +181,107 @@ const utils = {
     this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
 
     return true;
+  },
+
+  /**
+   * @param {date object} date1
+   * @param {date object} date2
+   */
+  isDateObjEqual(date1, date2) {
+    this.validateDateObj(date1);
+    this.validateDateObj(date2);
+    if (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate() &&
+      date1.getHours() === date2.getHours() &&
+      date1.getMinutes() === date2.getMinutes()
+    ) {
+      return true;
+    }
+    return false;
+  },
+
+  /**
+   * Created for reminders to find id there are reminders that are overlapping with eachother
+   * @param {*} startDateTime
+   * @param {*} endDateTime
+   * @param {*} dateTime
+   */
+  isDateObjOverllaping(startDateTime, endDateTime, dateTime) {
+    if (
+      startDateTime.getMinutes() === dateTime.getMinutes() &&
+      startDateTime.getHours() === dateTime.getHours() &&
+      dateTime.getDate() >= startDateTime.getDate() &&
+      dateTime.getDate() <= endDateTime.getDate() &&
+      dateTime.getMonth() >= startDateTime.getMonth() &&
+      dateTime.getMonth() <= endDateTime.getMonth() &&
+      dateTime.getFullYear() >= startDateTime.getFullYear() &&
+      dateTime.getFullYear() <= endDateTime.getFullYear()
+    ) {
+      return true;
+    }
+    return false;
+  },
+
+  dateObjPersistDB(dateTime) {
+    this.validateDate(dateTime);
+    let standardisedDate = new Date();
+    standardisedDate.setFullYear(dateTime.getFullYear());
+    standardisedDate.setMonth(dateTime.getMonth());
+    standardisedDate.setDate(dateTime.getDate());
+    standardisedDate.setHours(dateTime.getHours());
+    standardisedDate.setMinutes(dateTime.getMinutes());
+    return standardisedDate;
+  },
+
+  validateDate(date, paramName) {
+    this.validateStringInput(date, paramName);
+    date = date.trim();
+    date = new Date(date);
+
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
+    }
+  },
+
+  /**Changes Made to existing code */
+  validateDateObj(date, paramName) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
+    }
+  },
+
+  getNewDateObject(fullYear, month, date, hours, minutes) {
+    let dateObj = new Date();
+    dateObj.setFullYear(fullYear);
+    dateObj.setMonth(month);
+    dateObj.setDate(date);
+    dateObj.setHours(hours);
+    dateObj.setMinutes(minutes);
+    return dateObj;
+  },
+
+  /**
+   * MM/DD/YYYY 12:13
+   * @param {*} dateTimeString
+   */
+  getNewDateObjectFromString(dateTimeString) {
+    this.validateStringInput(dateTimeString);
+    let strList = dateTimeString.split(" ");
+    let timeStr = strList[1].split(":");
+    let dateStr = strList[0].split("/");
+    return this.getNewDateObject(
+      Number.parseInt(dateStr[2]),
+      Number.parseInt(dateStr[0]),
+      Number.parseInt(dateStr[1]),
+      Number.parseInt(timeStr[0]),
+      Number.parseInt(timeStr[1])
+    );
   },
 };
 

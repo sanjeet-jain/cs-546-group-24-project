@@ -1,5 +1,6 @@
 import calendarRoutes from "./calendar.js";
 import meetingRoutes from "./meetings.js";
+import reminderRoutes from "./reminder.js";
 import userRoutes from "./users.js";
 import * as path from "path";
 import { dirname } from "path";
@@ -10,6 +11,7 @@ const constructorMethod = (app) => {
   app.use("/user", userRoutes);
   app.use("/calendar", calendarRoutes);
   app.use("/meeting", meetingRoutes);
+  app.use("/reminder", reminderRoutes);
   app.get("/about", (req, res) => {
     res.render("aboutUs");
   });
