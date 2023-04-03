@@ -5,10 +5,10 @@ import utils from "../utils/utils.js";
 const router = Router();
 
 router
-  .route("/user/tasks/:userId")
+  .route("/tasks/:userId")
   .get(async (req, res) => {
     try {
-      userId = req.params.userId.trim();
+      const userId = req.params.userId.trim();
       utils.checkObjectIdString(userId);
       const tasks = await tasksDataFunctions.getAllTasks(userId);
       res.json(tasks);
@@ -18,7 +18,7 @@ router
   })
   .post(async (req, res) => {
     try {
-      userId = req.params.userId.trim();
+      const userId = req.params.userId.trim();
       utils.checkObjectIdString(userId);
       const { title, textBody, dateAddedTo, dateDueOn, priority, tag } =
         req.body;
@@ -45,10 +45,10 @@ router
   });
 
 router
-  .route("/task/:taskId")
+  .route("/:taskId")
   .get(async (req, res) => {
     try {
-      taskId = req.params.taskId.trim();
+      const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
       const task = await tasksDataFunctions.getTaskById(taskId);
       res.json(task);
@@ -59,9 +59,9 @@ router
 
   .put(async (req, res) => {
     try {
-      taskId = req.params.taskId.trim();
+      const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
-      taskPutData = req.body;
+      const taskPutData = req.body;
       const { title, textBody, dateAddedTo, dateDueOn, priority, tag } =
         taskPutData;
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
@@ -89,7 +89,7 @@ router
 
   .delete(async (req, res) => {
     try {
-      taskId = req.params.taskId.trim();
+      const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
       const removedTask = await tasksDataFunctions.removeTask(taskId);
       res.json(removedTask);
