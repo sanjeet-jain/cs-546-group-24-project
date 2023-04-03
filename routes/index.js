@@ -1,20 +1,25 @@
 import calendarRoutes from "./calendar.js";
 import meetingRoutes from "./meetings.js";
 import userRoutes from "./users.js";
-import sampleRoutes from "./sample.js";
 import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const constructorMethod = (app) => {
+  app.use("/user", userRoutes);
   app.use("/calendar", calendarRoutes);
-  // app.use("/sample", sampleRoutes);
   app.use("/meeting", meetingRoutes);
-  app.use("/user",userRoutes);
+  app.get("/about", (req, res) => {
+    res.render("aboutUs");
+  });
+  app.get("/", (req, res) => {
+    res.render("aboutUs");
+  });
   app.use("*", (req, res) => {
     // we can set this to check for authorization and then send back to correct page !
-    res.redirect("/calendar");
+    const error = { error: "The Requested Page was not Found!" };
+    res.status(404).render("errors/error", { error: error });
   });
 };
 

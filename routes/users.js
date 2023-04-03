@@ -1,11 +1,17 @@
-import { Router } from 'express';
+import { Router } from "express";
 const router = Router();
-import {ObjectId} from 'mongodb';
+import { ObjectId } from "mongodb";
 
 import usersFunctions from "../data/users.js";
 import utils from "../utils/utils.js";
 
-
+function createSessionObject(user) {
+  return {
+    user_id: user._id.toString(),
+    userFirstName: user.first_name,
+    email: user.email,
+  };
+}
 
 router
     .route("/signup")
@@ -67,9 +73,9 @@ router
             return res.status(400).json({error: e.message});
         }
 
-        //try checkuser
-        try{
-            const user = await usersFunctions.loginUser(email,password);
+    //try checkuser
+    try {
+      const user = await usersFunctions.loginUser(email, password);
 
             if (user){
                 req.session.user = {
