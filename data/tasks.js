@@ -61,11 +61,13 @@ const tasksDataFunctions = {
       dateDueOn: new Date(dateDueOn),
       priority: priority,
       tag: tag,
+      checked: false,
       type: "task",
     };
 
     const tasks = await tasksCollection();
     const taskExists = await tasks.findOne({ title: title });
+
     if (taskExists) {
       throw new Error(
         `Task title already exists for the User ${user.first_name}`
@@ -96,6 +98,7 @@ const tasksDataFunctions = {
     updatedTask.dateDueOn = updatedTask.dateDueOn;
     updatedTask.textBody = updatedTask.textBody.trim();
     updatedTask.tag = updatedTask.tag.trim();
+    updatedTask.checked = updatedTask.checked;
 
     if (updatedTask.title) {
       utils.validateStringInput(updatedTask.title, "title");
@@ -136,6 +139,13 @@ const tasksDataFunctions = {
       updatedTaskData.tag = updatedTask.tag;
     } else {
       throw new Error("You must provide a tag for the task.");
+    }
+
+    if (typeof updatedTask.checked !== "undefined") {
+      utils.validateBooleanInput(updatedTask.checked, "checked");
+      updatedTaskData.checked = updatedTask.checked;
+    } else {
+      throw new Error("You must provide a checked value for the task.");
     }
 
     const updateInfo = await tasks.updateOne(
