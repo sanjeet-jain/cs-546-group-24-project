@@ -36,8 +36,7 @@
         name="last_name"
         id="last_name"
         aria-describedby="last_name_help_id"
-        placeholder="Last
-                Name"
+        placeholder="Last Name"
       />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
@@ -56,7 +55,7 @@
         id="email"
         placeholder="abc@mail.com"
         aria-describedby="email_help_id"
-        {{! pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" }}
+        pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$"
       />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
