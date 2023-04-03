@@ -27,33 +27,33 @@ const exportedMethods = {
         last_name,
         email,
         password,
-        Disability,
-        Dob,
-        Consent
+        disability,
+        dob,
+        consent
     ){
        if (typeof first_name === "undefined" ||
         typeof last_name === "undefined" || 
         typeof email === "undefined" || 
         typeof password === "undefined" || 
-        typeof Disability === "undefined" || 
-        typeof Dob === "undefined" || 
-        typeof Consent === "undefined"){
-            throw new Error("Please fill in all fields");
+        typeof disability === "undefined" || 
+        typeof dob === "undefined" || 
+        typeof consent === "undefined"){
+            throw Error("Please fill in all fields");
         }
         //field validation
         utils.validateName(first_name, "First name");
         utils.validateName(last_name, "Last name");
         utils.validateEmail(email,"Email");
         utils.validatePassword(password,"Password");
-        utils.validateBooleanInput(Disability,"Disability");
-        utils.validateDate(Dob,"Date of Birth");
-        utils.validateBooleanInput(Consent,"Consent");
+        utils.validateBooleanInput(disability,"Disability");
+        utils.validateDate(dob,"Date of Birth");
+        utils.validateBooleanInput(consent,"Consent");
 
         const users = await usersCollection();
         
         //checking if email is registered
         const exist_email = await users.findOne({email: email});
-        if (exist_email) throw `Already a user registered with that email`;
+        if (exist_email) throw Error(`Already a user registered with that email`);
 
         //password hashing
 
@@ -66,9 +66,9 @@ const exportedMethods = {
             last_name: last_name.trim(),
             email: email.toLowerCase(),
             password: hashPW,
-            Disability: Disability,
-            Dob: Dob,
-            Consent: Consent,
+            disability: disability,
+            dob: dob,
+            consent: consent,
             taskIds: [],
             reminderIds: [],
             noteIds: [],
@@ -76,12 +76,12 @@ const exportedMethods = {
         }
         const insertUser = await users.insertOne(newUser);
         if (insertUser.insertedCount === 0){
-            throw `insertion of user failed`;
+            throw Error(`insertion of user failed`);
         }
         return {userInserted: true};
     },
     async getUser(id){
-        if (!id) throw `No id supplied`;
+        if (!id) throw Error(`No id supplied`);
         utils.checkObjectIdString(id);
         const users = await usersCollection();
 
@@ -93,16 +93,16 @@ const exportedMethods = {
         {first_name,
         last_name,
         email,
-        Disability,
-        Dob}
+        disability,
+        dob}
     ){
         utils.checkObjectIdString(id);
 
         utils.validateName(first_name, "First name");
         utils.validateName(last_name, "Last name");
         utils.validateEmail(email,"Email");
-        utils.validateBooleanInput(Disability,"Disability");
-        utils.validateDate(Dob,"Date of Birth");
+        utils.validateBooleanInput(disability,"Disability");
+        utils.validateDate(dob,"Date of Birth");
 
         const users = await usersCollection();
         const currUser = await this.getUser(id);
@@ -112,8 +112,8 @@ const exportedMethods = {
             last_name: last_name,
             email: email,
             password: currUser.password,
-            Disability: Disability,
-            Dob: Dob,
+            Disability: disability,
+            Dob: dob,
             Consent: currUser.Consent,
             taskIds: currUser.taskIds,
             reminderIds: currUser.reminderIds,
@@ -134,13 +134,19 @@ const exportedMethods = {
         newPassword = newPassword.trim();
         const hashPW = await bcrypt.hash(newPassword, pwRounds);
 
-        let users = usersCollection();
+        let users = await usersCollection();
+        const currUser = await this.getUser(id);
+        const currPW = currUser.password;
+        if (currPW === hashPW){
+            throw Error("New password must be different from current password");
+        }
+
         const updateInfo = await users.updateOne(
             {_id: new ObjectId(id)},
             { $set: {password: hashPW}}
         );
         if (!updateInfo.matchedCount && !updateInfo.modifiedCount) {
-            throw "Update failed";
+            throw Error("Update failed");
           } else {
             return { updated: true };
           }
@@ -148,11 +154,11 @@ const exportedMethods = {
 
     async loginUser(email,password){
         if (!email) throw Error(`No email provided`);
-        if (!password) throw `No password provided`;
+        if (!password) throw Error(`No password provided`);
         const users = usersCollection();
         const currUser = await this.getUserByEmail(email);
 
-        if (!currUser) throw `No account with that email`;
+        if (!currUser) throw Error(`No account with that email`);
 
         utils.validatePassword(password);
 
@@ -172,8 +178,8 @@ const exportedMethods = {
     },
 
     async getUserByEmail(email){
-        //returns user object
-        if (!email) throw `No id supplied`;
+
+        if (!email) throw Error(`No id supplied`);
         utils.validateEmail(email);
         const users = await usersCollection();
 

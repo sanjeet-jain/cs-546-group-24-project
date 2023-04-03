@@ -10,20 +10,32 @@ import utils from "../utils/utils.js";
 router
     .route("/signup")
     .post(async(req,res) => {
-        //validate
+
         const first_name = req.body.first_name;
         const last_name = req.body.last_name;
         const email = req.body.email;
         const password = req.body.password;
-        const Disability = req.body.Disability;
-        const Dob = req.body.Dob;
-        const Consent = req.body.Consent;
+        const disability = req.body.disability;
+        const dob = req.body.dob;
+        const consent = req.body.consent;
+        try{
+            utils.validateName(first_name, "First name");
+            utils.validateName(last_name, "Last name");
+            utils.validateEmail(email,"Email");
+            utils.validatePassword(password,"Password");
+            utils.validateBooleanInput(disability,"Disability");
+            utils.validateDate(dob,"Date of Birth");
+            utils.validateBooleanInput(consent,"Consent");
+        }
+        catch(e){
+            return res.status(400).json({error:e});
+        }
 
         if(req.session.user){
             console.log("test");
         }
         try{
-            const newUser = await usersFunctions.create(first_name,last_name,email,password,Disability,Dob,Consent);
+            const newUser = await usersFunctions.create(first_name,last_name,email,password,disability,dob,consent);
             const user = await usersFunctions.loginUser(email,password);
             if (user){
                 req.session.user = {
@@ -39,9 +51,11 @@ router
 router
     .route("/login")
     .post(async(req,res)=>{
-        //validate request body
         const email = req.body.email;
         const password = req.body.password;
+
+        utils.validateEmail(email);
+        utils.validatePassword(password);
 
         if(req.session.user){
             return res.status(400).json({error:"already logged in"});
@@ -70,15 +84,77 @@ router
     });
 router
     .route("/profile")
+    //TODO: choose how to display user details
     .put(async(req,res) =>{
-        
+    try{
+        if (req.session.user){
+            const users = await usersCollection();
+            const id = req.session.user.user_id;
+            return currUser = users.getUsers(id);
+        }
+    }
+    catch(e){
+        return res.status(500).json({error: e});
+    }    
     });
-    //TODO
 router
-    .route("/password")
-    .post(async(req,res)=>{
+    .route("/profile/edit")
+    .get(async(req,res)=>{
+        const id = req.session.user.user_id;
+        try{
+            const currUser = await usersFunctions.getUser(id);
+            return res.status(200).json(currUser);
+        }
+        catch(e){
+            return res.status(400).json({error:e});
+        }
+
+
+    })
+    .put(async(req,res) =>{
+        const id = req.session.user.user_id;
+        const first_name = req.body.first_name;
+        const last_name = req.body.last_name;
+        const email = req.body.email;
+        const disability = req.body.disability;
+        const dob = req.body.dob;
+
+        try{
+            utils.checkObjectIdString(id);
+            utils.validateName(first_name);
+            utils.validateName(last_name);
+            utils.validateEmail(email);
+            utils.validateBooleanInput(disability);
+            utils.validateDate(dob);
+        }
+        catch(e){
+            return res(400).json({error:e});
+        }
+        try{
+            const updatedUser = usersFunctions.updateUser(id,{first_name,last_name,email,disability,dob});
+            return res.redirect("/profile");
+        }catch(e){
+            return res.status(400).json({error:e});
+        }
 
     });
+router
+    .route("/profile/password")
+    .put(async(req,res)=>{
+        const id = req.session.user.user_id;
+        try{
+            const updated = usersFunctions.changePassword(id,req.body.password);
+            return res.redirect("/profile");
+        }
+        catch(e){
+            return res.status(400).json({error:e});
+        }
 
-    //TODO
+    });
+router
+    .route("/logout")
+    .post(async(req,res)=>{
+        req.session.destroy();
+        res.redirect("/");
+    });
 export default router;
