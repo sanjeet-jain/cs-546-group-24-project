@@ -17,3 +17,4 @@ const getCollectionFn = (collection) => {
 export const usersCollection = getCollectionFn("users");
 export const meetingsCollection = getCollectionFn("meetings");
 export const notesCollection = getCollectionFn("notes");
+export const remindersCollection = getCollectionFn("reminders");
