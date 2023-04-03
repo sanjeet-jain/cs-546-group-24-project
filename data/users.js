@@ -67,10 +67,11 @@ const exportedMethods = {
       meetingIds: [],
     };
     const insertUser = await users.insertOne(newUser);
+    const user = this.getUser(newUser._id.toString());
     if (insertUser.insertedCount === 0) {
       throw Error(`insertion of user failed`);
     }
-    return { userInserted: true };
+    return user;
   },
   async getUser(id) {
     if (!id) throw Error(`No id supplied`);
