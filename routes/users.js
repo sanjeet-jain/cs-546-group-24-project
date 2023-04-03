@@ -31,7 +31,7 @@ router
       utils.validateDate(dob, "Date of Birth");
       utils.validateBooleanInput(consent, "Consent");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
 
     try {
@@ -50,7 +50,7 @@ router
       }
       return res.status(200).redirect("/calendar");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
   })
   .get(async (req, res) => {
@@ -85,7 +85,7 @@ router
         return res.redirect("/calendar");
       }
     } catch (e) {
-      return res.status(500).json({ error: e });
+      return res.status(500).json({ error: e.message });
     }
   })
   .get(async (req, res) => {
@@ -107,7 +107,7 @@ router
         return res.status(200).json(currUser);
       }
     } catch (e) {
-      return res.status(500).json({ error: e });
+      return res.status(500).json({ error: e.message });
     }
   });
 router
@@ -119,7 +119,7 @@ router
       //TODO render handlebar
       return res.status(200).json(currUser);
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
   })
   .put(async (req, res) => {
@@ -138,7 +138,7 @@ router
       utils.validateBooleanInput(disability);
       utils.validateDate(dob);
     } catch (e) {
-      return res(400).json({ error: e });
+      return res(400).json({ error: e.message });
     }
     try {
       const updatedUser = usersFunctions.updateUser(id, {
@@ -150,7 +150,7 @@ router
       });
       return res.redirect("/profile");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
   });
 router
@@ -161,7 +161,7 @@ router
       const updated = usersFunctions.changePassword(id, req.body.password);
       return res.redirect("/profile");
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
   })
   .get(async (req, res) => {
