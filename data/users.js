@@ -150,19 +150,19 @@ const exportedMethods = {
     if (!currUser) throw Error(`No account with that email`);
     try {
       utils.validatePassword(password);
-    } catch (e) {}
+    } catch (e) {
+      return e;
+    }
 
     const hashPW = currUser.password;
     let validPassword = false;
 
-    try {
-      validPassword = await bcrypt.compare(password, hashPW);
-    } catch (e) {}
+    validPassword = await bcrypt.compare(password, hashPW);
 
     if (validPassword) {
       return currUser;
     } else {
-      throw `Invalid password`;
+      throw Error(`Invalid password`);
     }
   },
 
