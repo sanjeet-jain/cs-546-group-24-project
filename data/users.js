@@ -76,6 +76,7 @@ const exportedMethods = {
   async getUser(id) {
     if (!id) throw Error(`No id supplied`);
     utils.checkObjectIdString(id);
+    id = id.trim();
     const users = await usersCollection();
 
     const user = await users.findOne({ _id: new ObjectId(id) });
@@ -88,10 +89,11 @@ const exportedMethods = {
     utils.validateEmail(email, "Email");
     utils.validateBooleanInput(disability, "Disability");
     utils.validateDate(dob, "Date of Birth");
+    id = id.trim();
     first_name = first_name.trim();
     last_name = last_name.trim();
-    email = email.trim();
-    email = email.toLowerCase();
+    email = email.trim().toLowerCase();
+    dob = dob.trim();
     const users = await usersCollection();
     const currUser = await this.getUser(id);
 
@@ -100,9 +102,9 @@ const exportedMethods = {
       last_name: last_name,
       email: email,
       password: currUser.password,
-      Disability: disability,
-      Dob: dob,
-      Consent: currUser.Consent,
+      disability: disability,
+      dob: dob,
+      consent: currUser.Consent,
       taskIds: currUser.taskIds,
       reminderIds: currUser.reminderIds,
       noteIds: currUser.noteIds,
@@ -118,14 +120,12 @@ const exportedMethods = {
   async changePassword(id, newPassword) {
     utils.checkObjectIdString(id);
     utils.validatePassword(newPassword);
-
     newPassword = newPassword.trim();
-    const hashPW = await bcrypt.hash(newPassword, constants.pwRounds);
-
+    id = id.trim();
     let users = await usersCollection();
     const currUser = await this.getUser(id);
-    const currPW = currUser.password;
-    if (currPW === hashPW) {
+    const isSamePassword = await bcrypt.compare(newPassword, currUser.password);
+    if (isSamePassword) {
       throw Error("New password must be different from current password");
     }
 
@@ -143,16 +143,15 @@ const exportedMethods = {
   async loginUser(email, password) {
     if (!email) throw Error(`No email provided`);
     if (!password) throw Error(`No password provided`);
-    const users = usersCollection();
-    email = email.trim();
+
     const currUser = await this.getUserByEmail(email);
 
     if (!currUser) throw Error(`No account with that email`);
-    try {
-      utils.validatePassword(password);
-    } catch (e) {
-      return e;
-    }
+
+    utils.validatePassword(password);
+    utils.validateEmail(email);
+    email = email.trim().toLowerCase();
+    password = password.trim().toLowerCase();
 
     const hashPW = currUser.password;
     let validPassword = false;
@@ -162,16 +161,15 @@ const exportedMethods = {
     if (validPassword) {
       return currUser;
     } else {
-      throw Error(`Invalid password`);
+      throw Error("Invalid password");
     }
   },
 
   async getUserByEmail(email) {
-    if (!email) throw Error(`No id supplied`);
-    email = email.trim();
+    if (!email) throw Error("No id supplied");
     utils.validateEmail(email);
+    email = email.trim().toLowerCase();
     const users = await usersCollection();
-
     const user = await users.findOne({ email: email });
     return user;
   },

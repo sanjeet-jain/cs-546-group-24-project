@@ -63,8 +63,8 @@ router
 router
   .route("/login")
   .post(async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    let email = req.body.email;
+    let password = req.body.password;
 
     if (req.session.user) {
       return res.redirect("/calendar");
@@ -78,6 +78,8 @@ router
 
     //try checkuser
     try {
+      email = email.trim().toLowerCase();
+      password = password.trim().toLowerCase();
       const user = await usersFunctions.loginUser(email, password);
       if (user) {
         req.session.user = createSessionObject(user);
