@@ -79,14 +79,14 @@ router
     //try checkuser
     try {
       const user = await usersFunctions.loginUser(email, password);
+      if (user) {
+        req.session.user = createSessionObject(user);
+        return res.redirect("/calendar");
+      } else {
+        return res.status(500).json({ error: e.message });
+      }
     } catch (e) {
       return res.status(400).json({ error: e.message });
-    }
-    if (user) {
-      req.session.user = createSessionObject(user);
-      return res.redirect("/calendar");
-    } else {
-      return res.status(500).json({ error: e.message });
     }
   })
   .get(async (req, res) => {
