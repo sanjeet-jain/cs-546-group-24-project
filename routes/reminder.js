@@ -13,12 +13,12 @@ router
       utils.checkObjectIdString(user_id);
       user_id = user_id.trim();
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
     try {
       res.json(await reminderManager.getAllReminders(user_id));
     } catch (e) {
-      return res.status(404).json({ error: e });
+      return res.status(404).json({ error: e.message });
     }
   })
   .post(async (req, res) => {
@@ -97,7 +97,7 @@ router
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
     } catch (e) {
-      return res.status(400).json({ error: e });
+      return res.status(400).json({ error: e.message });
     }
     try {
       res.json(await reminderManager.getReminder(reminder_id));
