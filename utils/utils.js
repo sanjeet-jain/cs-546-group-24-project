@@ -26,17 +26,6 @@ const utils = {
     }
   },
 
-  validateDate(date, paramName) {
-    this.validateStringInput(date, paramName);
-    date = date.trim();
-    date = new Date(date);
-
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
-    }
-  },
   validateInputIsNumber(input, inputName) {
     if (typeof input !== "number" || isNaN(input)) {
       throw new Error(`${inputName} is not a number `);
@@ -59,30 +48,31 @@ const utils = {
     }
   },
 
-  validateName(name, inputName){
+  validateName(name, inputName) {
     this.validateStringInput(name);
-    if (!(/^[a-zA-Z]+$/.test(name))){
-      throw new Error(`${inputName} can only contain letters`)
+    if (!/^[a-zA-Z]+$/.test(name)) {
+      throw new Error(`${inputName} can only contain letters`);
     }
   },
-  validateEmail(email,inputName){
+  validateEmail(email, inputName) {
     this.validateStringInput(email);
-    if(!(email.toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/))){
+    const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
     }
   },
-  validatePassword(password){
-    if (!password){
+  validatePassword(password) {
+    if (!password) {
       throw new Error("Please enter a password");
     }
     this.validateStringInput(password, "Password");
-    if (password.length < 8){
+    if (password.length < constants.stringLimits.password) {
       throw new Error("Password must be at least 8 characters long");
     }
-    if (!(/[A-Z]/.test(password))){
+    if (!/[A-Z]/.test(password)) {
       throw new Error("Password must contain at least one uppercase letter");
     }
-    if (!(/[0-9]/.test(password))){
+    if (!/[0-9]/.test(password)) {
       throw new Error("Password must contain at least one number");
     }
   },
@@ -191,6 +181,107 @@ const utils = {
     this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
 
     return true;
+  },
+
+  /**
+   * @param {date object} date1
+   * @param {date object} date2
+   */
+  isDateObjEqual(date1, date2) {
+    this.validateDateObj(date1);
+    this.validateDateObj(date2);
+    if (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate() &&
+      date1.getHours() === date2.getHours() &&
+      date1.getMinutes() === date2.getMinutes()
+    ) {
+      return true;
+    }
+    return false;
+  },
+
+  /**
+   * Created for reminders to find id there are reminders that are overlapping with eachother
+   * @param {*} startDateTime
+   * @param {*} endDateTime
+   * @param {*} dateTime
+   */
+  isDateObjOverllaping(startDateTime, endDateTime, dateTime) {
+    if (
+      startDateTime.getMinutes() === dateTime.getMinutes() &&
+      startDateTime.getHours() === dateTime.getHours() &&
+      dateTime.getDate() >= startDateTime.getDate() &&
+      dateTime.getDate() <= endDateTime.getDate() &&
+      dateTime.getMonth() >= startDateTime.getMonth() &&
+      dateTime.getMonth() <= endDateTime.getMonth() &&
+      dateTime.getFullYear() >= startDateTime.getFullYear() &&
+      dateTime.getFullYear() <= endDateTime.getFullYear()
+    ) {
+      return true;
+    }
+    return false;
+  },
+
+  dateObjPersistDB(dateTime) {
+    this.validateDate(dateTime);
+    let standardisedDate = new Date();
+    standardisedDate.setFullYear(dateTime.getFullYear());
+    standardisedDate.setMonth(dateTime.getMonth());
+    standardisedDate.setDate(dateTime.getDate());
+    standardisedDate.setHours(dateTime.getHours());
+    standardisedDate.setMinutes(dateTime.getMinutes());
+    return standardisedDate;
+  },
+
+  validateDate(date, paramName) {
+    this.validateStringInput(date, paramName);
+    date = date.trim();
+    date = new Date(date);
+
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
+    }
+  },
+
+  /**Changes Made to existing code */
+  validateDateObj(date, paramName) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
+    }
+  },
+
+  getNewDateObject(fullYear, month, date, hours, minutes) {
+    let dateObj = new Date();
+    dateObj.setFullYear(fullYear);
+    dateObj.setMonth(month);
+    dateObj.setDate(date);
+    dateObj.setHours(hours);
+    dateObj.setMinutes(minutes);
+    return dateObj;
+  },
+
+  /**
+   * MM/DD/YYYY 12:13
+   * @param {*} dateTimeString
+   */
+  getNewDateObjectFromString(dateTimeString) {
+    this.validateStringInput(dateTimeString);
+    let strList = dateTimeString.split(" ");
+    let timeStr = strList[1].split(":");
+    let dateStr = strList[0].split("/");
+    return this.getNewDateObject(
+      Number.parseInt(dateStr[2]),
+      Number.parseInt(dateStr[0]),
+      Number.parseInt(dateStr[1]),
+      Number.parseInt(timeStr[0]),
+      Number.parseInt(timeStr[1])
+    );
   },
 };
 
