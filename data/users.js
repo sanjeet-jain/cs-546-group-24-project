@@ -114,7 +114,11 @@ const exportedMethods = {
       { _id: new ObjectId(id) },
       { $set: updatedUser }
     );
-    return updatedUser;
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) {
+      throw Error("Update failed");
+    } else {
+      return updatedUser;
+    }
   },
 
   async changePassword(id, newPassword) {
