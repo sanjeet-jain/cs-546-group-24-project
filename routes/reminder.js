@@ -43,13 +43,13 @@ router
       console.log(typeof user_id);
       utils.checkObjectIdString(user_id);
       user_id = user_id.trim();
-      utils.validateStringInput(
+      utils.validateStringInputWithMaxLength(
         title,
         "title",
         constants.stringLimits["title"]
       );
       title = title.trim();
-      utils.validateStringInput(
+      utils.validateStringInputWithMaxLength(
         textBody,
         "text body",
         constants.stringLimits["textBody"]
@@ -59,7 +59,11 @@ router
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
       tag = tag.trim();
       utils.validateDateObj(dateAddedTo, "date time value");
       utils.validateBooleanInput(repeating);
@@ -129,13 +133,13 @@ router
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
-      utils.validateStringInput(
+      utils.validateStringInputWithMaxLength(
         title,
         "title",
         constants.stringLimits["title"]
       );
       title = title.trim();
-      utils.validateStringInput(
+      utils.validateStringInputWithMaxLength(
         textBody,
         "text body",
         constants.stringLimits["textBody"]
@@ -145,7 +149,11 @@ router
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
       tag = tag.trim();
       utils.validateDateObj(dateAddedTo, "date time added to value");
       utils.validateBooleanInput(repeating);
@@ -188,6 +196,8 @@ router
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(user_id);
+      reminder_id = reminder_id.trim();
+      user_id = user_id.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
