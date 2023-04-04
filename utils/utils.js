@@ -144,7 +144,6 @@ const utils = {
       this.validateRepeatingIncrementBy(repeatingIncrementBy);
     }
     this.validateDateRange(dateAddedTo, dateDueOn);
-    return true;
   },
 
   validateMeetingUpdateInputs(
@@ -174,8 +173,6 @@ const utils = {
       constants.stringLimits["tag"]
     );
     this.validateDateRange(dateAddedTo, dateDueOn);
-
-    return true;
   },
   validateMeetingUpdateAllRecurrencesInputs(
     title,
@@ -203,8 +200,6 @@ const utils = {
       "tag",
       constants.stringLimits["tag"]
     );
-
-    return true;
   },
 
   /**
