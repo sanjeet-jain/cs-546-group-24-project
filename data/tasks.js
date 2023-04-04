@@ -71,9 +71,9 @@ const tasksDataFunctions = {
     const newTask = {
       title: title,
       textBody: textBody,
-      dateCreated: new Date(),
-      dateAddedTo: new Date(dateAddedTo),
-      dateDueOn: new Date(dateDueOn),
+      dateCreated: new Date().toString(),
+      dateAddedTo: new Date(dateAddedTo).toString(),
+      dateDueOn: new Date(dateDueOn).toString(),
       priority: priority,
       tag: tag,
       checked: false,
@@ -104,10 +104,11 @@ const tasksDataFunctions = {
 
   async updateTask(id, updatedTask) {
     utils.checkObjectIdString(id);
-
-    const tasks = await tasksCollection();
-
     const updatedTaskData = {};
+    const tasks = await tasksCollection();
+    const task = await tasks.findOne({ _id: new ObjectId(id) });
+    updatedTaskData.type = task.type;
+    updatedTaskData.dateCreated = task.dateCreated;
     updatedTask.title = updatedTask.title.trim();
     updatedTask.textBody = updatedTask.textBody.trim();
     updatedTask.tag = updatedTask.tag.trim().toLowerCase();
@@ -135,14 +136,16 @@ const tasksDataFunctions = {
     }
     if (updatedTask.dateAddedTo) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
-      updatedTaskData.dateAddedTo = new Date(updatedTask.dateAddedTo);
+      updatedTaskData.dateAddedTo = new Date(
+        updatedTask.dateAddedTo
+      ).toString();
     } else {
       throw new Error("You must provide a dateAddedTo for the task.");
     }
 
     if (updatedTask.dateDueOn) {
       utils.validateDate(updatedTask.dateDueOn, "dateDueOn");
-      updatedTaskData.dateDueOn = new Date(updatedTask.dateDueOn);
+      updatedTaskData.dateDueOn = new Date(updatedTask.dateDueOn).toString();
     } else {
       throw new Error("You must provide a dateDueOn for the task.");
     }
@@ -171,7 +174,6 @@ const tasksDataFunctions = {
     } else {
       throw new Error("You must provide a checked value for the task.");
     }
-
     const updateInfo = await tasks.updateOne(
       { _id: new ObjectId(id) },
       { $set: updatedTaskData }
@@ -186,14 +188,13 @@ const tasksDataFunctions = {
   async removeTask(id) {
     utils.checkObjectIdString(id);
     id = id.trim();
-    const tasks = await tasksCollection();
-    const task = await this.getTaskById(id);
-    const deletionInfo = await tasks.deleteOne({ _id: new ObjectId(id) });
-    if (deletionInfo.deletedCount === 0) {
+    const task = await tasksCollection();
+    const deletionInfo = await task.findOneAndDelete({ _id: new ObjectId(id) });
+    if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`Could not delete task with ID ${id}`);
     }
 
-    return task;
+    return `${deletionInfo.value.title} has been successfully deleted!`;
   },
 
   async getAllTasks(userId) {
