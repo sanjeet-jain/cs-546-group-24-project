@@ -106,15 +106,17 @@ const exportedMethods = {
     //doc links ?
     this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
     const notes = await notesCollection();
-
+    const note = await this.get(noteId.trim());
     let updatednote = {};
     // updatednote.userId = userId.trim();
     updatednote.noteId = noteId.trim();
     updatednote.title = title.trim();
-    updatednote.dateAddedTo = dateAddedTo;
-    updatednote.textBody = textBody;
-    updatednote.tag = tag.trim();
+    updatednote.dateAddedTo = dateAddedTo.trim();
+    updatednote.textBody = textBody.trim();
+    updatednote.tag = tag.trim().toLowerCase();
     updatednote.documentLinks = documentLinks;
+    updatednote.dateCreated = note.dateCreated;
+    updatednote.type = "notes";
 
     const result = await notes.updateOne(
       { _id: new ObjectId(noteId) },
