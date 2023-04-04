@@ -4,7 +4,7 @@ import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
 import constants from "../constants/constants.js";
 router
-  .route("/note/:noteId")
+  .route("/:noteId")
   .get(async (req, res) => {
     let noteId = "";
     try {

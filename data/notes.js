@@ -159,7 +159,7 @@ const exportedMethods = {
     );
 
     // if the note exists in collection then return it else throw an error
-    return `${deletionInfo.value.id} has been successfully deleted!`;
+    return `${deletionInfo.value._id} has been successfully deleted!`;
   },
 };
 
