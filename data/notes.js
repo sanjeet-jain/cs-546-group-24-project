@@ -15,6 +15,7 @@ import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import { notesCollection } from "../config/mongoCollections.js";
 import { usersCollection } from "../config/mongoCollections.js";
+import constants from "../constants/constants.js";
 
 const exportedMethods = {
   async get(noteId) {
@@ -57,11 +58,11 @@ const exportedMethods = {
     // type
   ) {
     utils.checkObjectIdString(userId);
-    this.validateStringInput(title, "title", constants.stringLimits["title"]);
-    this.validateDate(dateAddedTo, "DateAddedTo");
+    utils.validateStringInput(title, "title", constants.stringLimits["title"]);
+    utils.validateDate(dateAddedTo, "DateAddedTo");
     // textbody?
     //doc links ?
-    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
 
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
@@ -73,6 +74,7 @@ const exportedMethods = {
       throw new Error("User not found.");
     }
     let dateCreated = new Date().toString();
+    const notes = await notesCollection();
     const result = await notes.insertOne({
       title: title,
       dateCreated: dateCreated,
@@ -85,7 +87,7 @@ const exportedMethods = {
     const insertedId = result.insertedId;
     await users.updateOne(
       { _id: new ObjectId(userId) },
-      { $push: { notesIds: insertedId } }
+      { $push: { noteIds: insertedId } }
     );
     return this.get(insertedId.toString());
   },
@@ -100,11 +102,11 @@ const exportedMethods = {
   ) {
     utils.checkObjectIdString(noteId);
     // utils.checkObjectIdString(userId);
-    this.validateStringInput(title, "title", constants.stringLimits["title"]);
-    this.validateDate(dateAddedTo, "DateAddedTo");
+    utils.validateStringInput(title, "title", constants.stringLimits["title"]);
+    utils.validateDate(dateAddedTo, "DateAddedTo");
     // textbody?
     //doc links ?
-    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
     const notes = await notesCollection();
     const note = await this.get(noteId.trim());
     let updatednote = {};

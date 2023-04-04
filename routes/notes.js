@@ -53,17 +53,17 @@ router
     }
     try {
       //validation
-      utils.checkObjectIdString(notePutData.noteId);
+      utils.checkObjectIdString(noteId);
       // utils.checkObjectIdString(userId);
-      this.validateStringInput(
+      utils.validateStringInput(
         notePutData.title,
         "title",
         constants.stringLimits["title"]
       );
-      this.validateDate(notePutData.dateAddedTo, "DateAddedTo");
+      utils.validateDate(notePutData.dateAddedTo, "DateAddedTo");
       // textbody?
       //doc links ?
-      this.validateStringInput(
+      utils.validateStringInput(
         notePutData.tag,
         "tag",
         constants.stringLimits["tag"]
@@ -94,12 +94,12 @@ router
   });
 
 router
-  .route("notes/:userId/")
+  .route("/notes/:userId")
   .get(async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.noteId.trim();
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -115,7 +115,7 @@ router
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.noteId.trim();
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -128,17 +128,16 @@ router
     }
     try {
       //validation
-      utils.checkObjectIdString(notePostData.noteId);
-      // utils.checkObjectIdString(userId);
-      this.validateStringInput(
+      utils.checkObjectIdString(userId);
+      utils.validateStringInput(
         notePostData.title,
         "title",
         constants.stringLimits["title"]
       );
-      this.validateDate(notePostData.dateAddedTo, "DateAddedTo");
+      utils.validateDate(notePostData.dateAddedTo, "DateAddedTo");
       // textbody?
       //doc links ?
-      this.validateStringInput(
+      utils.validateStringInput(
         notePostData.tag,
         "tag",
         constants.stringLimits["tag"]
@@ -164,3 +163,5 @@ router
       return res.status(500).json({ error: e.message });
     }
   });
+
+export default router;
