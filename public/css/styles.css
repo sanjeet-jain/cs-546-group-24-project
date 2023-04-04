@@ -15,7 +15,7 @@ body {
 }
 #calendar-div table tbody tr td:hover {
   border: grey;
-  border-style: inherit;
+  border-style: dashed;
 }
 
 #left-menu-div {
@@ -34,4 +34,7 @@ body {
 
 #main_page {
   width: 100%;
+}
+.greyed-out {
+  color: #ccc;
 }

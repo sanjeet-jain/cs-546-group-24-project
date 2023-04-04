@@ -7,36 +7,58 @@
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <button id="prevMonth" class="btn btn-outline-dark" style="border:
+        <form id="monthCalendarForm" method="get" action="/calendar/calendarv2">
+          <input type="hidden" name="month" value="{{prevMonth}}">
+          {{#if (eq currentMonth 0 )}}
+          <input type="hidden" name="year" value="{{prevYear}}">
+          {{else}}
+          <input type="hidden" name="year" value="{{currYear}}">
+          {{/if}}
+          <button type="submit" id="prevMonth" class="btn btn-outline-dark" style="border:
           none">
-          <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
+            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
             none"></i>
-        </button>
+          </button>
+        </form>
+
       </li>
 
       <li class="nav-item">
         <select id="monthDropDown" class="form-select h-100" aria-label="Month
           Select">
           {{#each months}}
-          <option value="{{@index}}" {{#if (eq @index
-            ../currentMonth)}}selected{{/if}}>{{this}}</option>
+          <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
         </select>
       </li>
 
       <li class="nav-item">
-        <button id="nextMonth" class="btn btn-outline-dark" style="border:
+        <form method="get" action="/calendar/calendarv2">
+          <input type="hidden" name="month" value="{{nextMonth}}">
+          {{#if (eq currentMonth 0)}}
+          <input type="hidden" name="year" value="{{nextYear}}">
+          {{else}}
+          <input type="hidden" name="year" value="{{currYear}}">
+          {{/if}}
+          <button type="submit" id="nextMonth" class="btn btn-outline-dark" style="border:
           none">
-          <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
             none"></i>
-        </button>
+          </button>
+        </form>
+
       </li>
 
       <li class="nav-item">
-        <button id="prevYear" class="btn btn-outline-dark" style="border: none">
-          <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
+        <form id="yearCalendarForm" method="get" action="/calendar/calendarv2">
+          <input type="hidden" name="month" value="{{currentMonth}}">
+          <input type="hidden" name="year" value="{{prevYear}}">
+          <button type="submit" id="prevYear" class="btn btn-outline-dark" style="border: none">
+            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem; border:
             none"></i>
-        </button>
+          </button>
+        </form>
+
       </li>
 
       <li class="nav-item">
@@ -49,22 +71,24 @@
       </li>
 
       <li class="nav-item">
-        <button id="nextYear" class="btn btn-outline-dark" style="border: none">
-          <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+        <form method="get" action="/calendar/calendarv2">
+          <input type="hidden" name="month" value="{{currentMonth}}">
+          <input type="hidden" name="year" value="{{nextYear}}">
+          <button type="submit" id="nextYear" class="btn btn-outline-dark" style="border: none">
+            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
             none"></i>
-        </button>
+          </button>
+        </form>
       </li>
     </ul>
   </div>
   {{/if}}
   <div>
-    <button class="btn btn-outline-dark" style="border: none" type="button"
-      data-bs-toggle="offcanvas"
+    <button class="btn btn-outline-dark" style="border: none" type="button" data-bs-toggle="offcanvas"
       data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
-      aria-labelledby="offcanvasNavbarLabel">
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
         <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
           {{#if session}}
@@ -73,8 +97,7 @@
           Hi Guest
           {{/if}}
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
-          aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
         {{#if userName}}
@@ -86,8 +109,7 @@
             <a class="nav-link" href="#">Change Personal Details</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Support
             </a>
             <ul class="dropdown-menu">
@@ -111,8 +133,7 @@
             <a class="nav-link" href="/user/signup">Signup</a>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Support
             </a>
             <ul class="dropdown-menu">
@@ -121,10 +142,10 @@
                 <hr class="dropdown-divider" />
               </li>
               <li>
-                <li><a class="dropdown-item" href="/about">About Us</a></li>
-              </li>
-            </ul>
+              <li><a class="dropdown-item" href="/about">About Us</a></li>
           </li>
+        </ul>
+        </li>
         </ul>
         {{/if}}
         <!-- <form class="d-flex mt-3" role="search">

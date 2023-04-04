@@ -3,112 +3,127 @@ const router = Router();
 import constants from "./../constants/constants.js";
 let dt = new Date();
 
-router.route("/:monthNav?/:yearNav?").get((req, res) => {
-  const monthNav = Number(req.params.monthNav) || 0;
-  const yearNav = Number(req.params.yearNav) || 0;
+router.route("/calendarv2").get((req, res) => {
+  // get the current month and year
+  const now = new Date();
+  const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
+  const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
+  // calculate the previous and next month and year
+  const prevMonth = month === 0 ? 11 : month - 1;
+  const prevYear = year - 1;
+  const nextMonth = month === 11 ? 0 : month + 1;
+  const nextYear = year + 1;
 
-  // const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
-  const { calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
+  // generate the calendar data
+  const weeks = getCalendar(month, year);
 
-  res.setHeader("Content-Type", "text/html");
-  res.render("calendar/calendar", {
-    calendarModal: "calendarModal",
-    // dateString: dateString,
-    weekdays: constants.weekdays,
-    calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
+  // render the calendarv2 template with the calendar data and navigation links
+  res.render("calendar/calendarv2", {
+    currentMonth: month,
+    yearRange: constants.yearRange,
     months: constants.months,
-    currentMonth: dt.getMonth(),
-    yearRange: constants.yearRange,
-    currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
-    cellIds: cellIds,
-  });
-});
-router.get("/api/:monthNav?/:yearNav?", (req, res) => {
-  const monthNav = Number(req.params.monthNav) || 0;
-  const yearNav = Number(req.params.yearNav) || 0;
-
-  // const { dateString, calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
-  const { calendarHTML, dt, cellIds } = getData(monthNav, yearNav);
-
-  // Send the JSON response
-  res.setHeader("Content-Type", "application/json");
-  res.json({
-    // dateString: dateString,
-    calendarHTML: calendarHTML, // Pass the calendar HTML string to the template
-    currentMonth: dt.getMonth(),
-    yearRange: constants.yearRange,
-    currYear: constants.yearRange.find((x) => x === dt.getFullYear()),
-    dt: dt,
-    cellIds: cellIds,
+    weekdays: constants.weekdays,
+    currYear: year,
+    weeks: weeks,
+    greyedOutDays: getGreyedOutDays(month, year),
+    prevMonth: prevMonth,
+    prevYear: prevYear,
+    nextMonth: nextMonth,
+    nextYear: nextYear,
   });
 });
 
-function getData(monthNav = 0, yearNav = 0) {
-  // let dt = new Date();
-  if (monthNav !== 0) {
-    dt = new Date(dt.getFullYear(), dt.getMonth() + monthNav);
-  }
-  if (yearNav !== 0) {
-    const newYear = dt.getFullYear() + yearNav;
-    if (
-      newYear <= constants.yearRange[constants.yearRange.length - 1] &&
-      newYear >= constants.yearRange[0]
-    ) {
-      dt.setFullYear(newYear);
-    }
-  }
-  const day = dt.getDay();
-  const month = dt.getMonth();
-  const year = dt.getFullYear();
-  const firstDayOfMonth = new Date(year, month, 1);
+// Returns an array of weeks and days in the calendar for the specified month and year
+function getCalendar(month, year) {
+  const calendar = [];
+
+  // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  // const dateString = dt.toLocaleDateString("en-us", {
-  //   weekday: "long",
-  //   day: "numeric",
-  //   month: "long",
-  //   year: "numeric",
-  // });
 
-  const paddingDays = firstDayOfMonth.getDay();
+  // Get the index of the first day of the month (0-6)
+  const firstDayIndex = new Date(year, month, 1).getDay();
 
-  let calendarHTML = "";
-  let weekNum = 0;
-  let weekrowHTML = `<tr id="${month}-weekrow-${weekNum}" class="table-row table-bordered">`;
-  const daySquare = (month, date, active) => {
-    const id = `${month}-${date}-${year}`;
-    if (active) cellIds.push(id);
-    return `<td ${active ? `id="${id}"` : ""} class="table-cell table-bordered${
-      active ? " clickable-td" : " table-active"
-    }" data-bs-toggle="modal" data-bs-target="#modal-${id}">${date}</td>`;
-  };
-  const cellIds = [];
-  for (let i = 1; i <= daysInMonth + paddingDays; i++) {
-    if (i > paddingDays) {
-      weekrowHTML += daySquare(month, i - paddingDays, true);
-    } else {
-      weekrowHTML += daySquare(
-        month - 1,
-        new Date(year, month, 0).getDate() - paddingDays + i,
-        false
-      );
-    }
-    if (i % 7 === 0 || i === daysInMonth + paddingDays) {
-      const weekrowlen = weekrowHTML.match(/<td/g).length; // Count the number of table cells in the row
-      if (i === daysInMonth + paddingDays && weekrowlen !== 7) {
-        for (let j = 0; j < 7 - weekrowlen; j++) {
-          weekrowHTML += daySquare(month + 1, 1 + j, false);
-        }
-      }
-      weekrowHTML += "</tr>";
-      calendarHTML += weekrowHTML;
-      if (i / 7 > 0) {
-        weekNum++;
-        weekrowHTML = `<tr id="${month}-weekrow-${weekNum}" class="table-row table-bordered">`;
-      }
-    }
+  // Get the index of the last day of the month (0-6)
+  const lastDayIndex = new Date(year, month, daysInMonth).getDay();
+
+  // Get the number of days in the previous month
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  // Get the number of days to display from the previous month
+  const prevMonthDays = firstDayIndex === 0 ? 0 : firstDayIndex;
+
+  // Get the number of days to display from the next month
+  const nextMonthDays = lastDayIndex === 0 ? 6 : 6 - lastDayIndex;
+
+  // Loop through the previous month days
+  for (let i = 0; i < prevMonthDays; i++) {
+    const day = daysInPrevMonth - prevMonthDays + i + 1;
+    calendar.push({ day: day, month: month - 1, year: year, greyedOut: true });
   }
 
-  // return { dateString, calendarHTML, dt, cellIds };
-  return { calendarHTML, dt, cellIds };
+  // Loop through the current month days
+  for (let i = 1; i <= daysInMonth; i++) {
+    calendar.push({ day: i, month: month, year: year });
+  }
+
+  // Loop through the next month days
+  for (let i = 0; i < nextMonthDays; i++) {
+    calendar.push({
+      day: i + 1,
+      month: month + 1,
+      year: year,
+      greyedOut: true,
+    });
+  }
+
+  // Group the days into weeks
+  const weeks = [];
+  let week = [];
+  calendar.forEach((day, index) => {
+    week.push(day);
+    if ((index + 1) % 7 === 0) {
+      weeks.push(week);
+      week = [];
+    }
+  });
+
+  return weeks;
 }
+
+// Returns an array of booleans indicating which days of the previous month should be greyed out
+function getGreyedOutDays(month, year) {
+  const greyedOutDays = [];
+
+  // Get the number of days in the previous month
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+  // Get the index of the first day of the month (0-6)
+  const firstDayIndex = new Date(year, month, 1).getDay();
+
+  // Get the number of days to display from the previous month
+  const prevMonthDays = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+  // Loop through the previous month days and mark them as greyed out
+  for (let i = 0; i < prevMonthDays; i++) {
+    greyedOutDays.push(true);
+  }
+
+  // Loop through the current month days and mark them as not greyed out
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let i = 1; i <= daysInMonth; i++) {
+    greyedOutDays.push(false);
+  }
+
+  // Get the number of days to display from the next month
+  const lastDayIndex = new Date(year, month, daysInMonth).getDay();
+  const nextMonthDays = lastDayIndex === 0 ? 0 : 7 - lastDayIndex;
+
+  // Loop through the next month days and mark them as greyed out
+  for (let i = 0; i < nextMonthDays; i++) {
+    greyedOutDays.push(true);
+  }
+
+  return greyedOutDays;
+}
+
 export default router;

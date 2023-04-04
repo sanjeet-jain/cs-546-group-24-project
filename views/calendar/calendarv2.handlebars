@@ -1,0 +1,27 @@
+<!-- calendarv2.handlebars -->
+
+<div id="calendar-div">
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr id="weekdays">
+                {{#each weekdays}}
+                <th scope="col">{{this}}</th>
+                {{/each}}
+            </tr>
+        </thead>
+        <tbody>
+            {{#each weeks}}
+            <tr>
+                {{#each this}}
+                <td{{#if ../greyedOutDays.[@index]}} class="greyed-out" {{/if}}>{{this.day}}</td>
+                {{/each}}
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+  
+</div>
+<script src="/public/scripts/calendarv2.js" type="text/javascript"></script>

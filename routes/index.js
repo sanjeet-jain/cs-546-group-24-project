@@ -8,6 +8,7 @@ import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
+import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
   app.use("/user", userRoutes);
