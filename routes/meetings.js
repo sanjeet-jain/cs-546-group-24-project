@@ -86,7 +86,7 @@ router
   });
 
 router
-  .route("/user/meetings/:userId")
+  .route("/user/:userId/meetings/")
   .get(async (req, res) => {
     let userId = "";
     try {
@@ -167,7 +167,7 @@ router
   });
 
 router
-  .route("/user/meetings/:userId/repeating/:repeatingGroup")
+  .route("/user/:userId/meetings/repeating/:repeatingGroup")
   .get(async (req, res) => {
     let userId = "";
     let repeatingGroup = "";

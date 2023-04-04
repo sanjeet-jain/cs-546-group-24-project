@@ -148,7 +148,7 @@ const meetingsDataFunctions = {
   ) {
     utils.checkObjectIdString(userId);
     userId = userId.trim();
-    const isValid = utils.validateMeetingCreateInputs(
+    utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -159,9 +159,6 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
-    if (!isValid) {
-      throw new Error("Invalid meeting inputs.");
-    }
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     let dateAddedToObject = new Date(dateAddedTo);
@@ -332,7 +329,7 @@ const meetingsDataFunctions = {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
 
-    const isValid = utils.validateMeetingUpdateAllRecurrencesInputs(
+    utils.validateMeetingUpdateAllRecurrencesInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -340,9 +337,6 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
-    if (!isValid) {
-      throw new Error("Invalid meeting inputs.");
-    }
 
     userId = userId.trim();
     title = title.trim();

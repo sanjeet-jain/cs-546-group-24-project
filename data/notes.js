@@ -13,14 +13,15 @@ type: “notes”
 */
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
-import { notesCollection } from "../config/mongoCollections.js";
-import { usersCollection } from "../config/mongoCollections.js";
-import constants from "../constants/constants.js";
+import {
+  notesCollection,
+  usersCollection,
+} from "../config/mongoCollections.js";
 
 const exportedMethods = {
   async get(noteId) {
     utils.checkObjectIdString(noteId);
-
+    noteId = noteId.trim();
     const notes = await notesCollection();
     const note = await notes.findOne({ _id: new ObjectId(noteId) });
 
@@ -33,7 +34,7 @@ const exportedMethods = {
   },
   async getAll(userId) {
     utils.checkObjectIdString(userId);
-
+    userId = userId.trim();
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (user) {
@@ -50,12 +51,10 @@ const exportedMethods = {
   async create(
     userId,
     title,
-    // dateCreated,
     dateAddedTo,
     textBody,
     tag,
     documentLinks // how to use this ???????
-    // type
   ) {
     utils.checkObjectIdString(userId);
     utils.validateNotesInputs(
@@ -68,7 +67,7 @@ const exportedMethods = {
 
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
-    tag = tag.trim();
+    tag = tag.trim().toLowerCase();
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -103,6 +102,7 @@ const exportedMethods = {
     documentLinks // how to use this ???????
   ) {
     utils.checkObjectIdString(noteId);
+    noteId = noteId.trim();
     // utils.checkObjectIdString(userId);
     utils.validateNotesInputs(
       title,
@@ -113,15 +113,13 @@ const exportedMethods = {
     );
 
     const notes = await notesCollection();
-    const note = await this.get(noteId.trim());
-    let updatednote = {};
+    const note = await this.get(noteId);
+    let updatednote = { ...note };
     updatednote.title = title.trim();
     updatednote.dateAddedTo = dateAddedTo.trim();
     updatednote.textBody = textBody.trim();
     updatednote.tag = tag.trim().toLowerCase();
     updatednote.documentLinks = documentLinks;
-    updatednote.dateCreated = note.dateCreated;
-    updatednote.type = "notes";
 
     const result = await notes.updateOne(
       { _id: new ObjectId(noteId) },
@@ -146,6 +144,7 @@ const exportedMethods = {
   },
   async delete(noteId, userId) {
     utils.checkObjectIdString(noteId);
+    noteId = noteId.trim();
 
     const notes = await notesCollection();
     const deletionInfo = await notes.findOneAndDelete({

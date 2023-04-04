@@ -184,9 +184,9 @@ export async function runSetup() {
     sampleNote.tag,
     sampleNote.documentLinks
   );
-  console.log("newly created user: ", user._id.toString());
   const updatedUser = await usersDataFunctions.getUser(user._id.toString());
   console.log(updatedUser);
+  console.log("newly created user: ", user._id.toString());
   console.log("seeding done!");
 }
 
