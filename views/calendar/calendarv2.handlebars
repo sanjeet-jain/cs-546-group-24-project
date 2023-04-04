@@ -1,7 +1,9 @@
 <!-- calendarv2.handlebars -->
 
 <div id="calendar-div">
-
+ <div id="modal-div">
+    {{>calendarModal modalData=modalData}}
+  </div>
     <table class="table table-bordered">
 
         <thead>
@@ -16,7 +18,7 @@
             {{#each weeks}}
             <tr>
                 {{#each this}}
-                <td{{#if ../greyedOutDays.[@index]}} class="greyed-out" {{/if}}>{{this.day}}</td>
+                <td{{#if ../greyedOutDays.[@index]}} class="greyed-out" {{/if}} data-bs-toggle="modal" data-bs-target="#modal-{{this.modalId}}"> {{this.day}}</td>
                 {{/each}}
             </tr>
             {{/each}}

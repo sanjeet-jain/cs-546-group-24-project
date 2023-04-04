@@ -16,6 +16,7 @@ router.route("/calendarv2").get((req, res) => {
 
   // generate the calendar data
   const weeks = getCalendar(month, year);
+  const modalData = getModalData(weeks);
 
   // render the calendarv2 template with the calendar data and navigation links
   res.render("calendar/calendarv2", {
@@ -24,7 +25,8 @@ router.route("/calendarv2").get((req, res) => {
     months: constants.months,
     weekdays: constants.weekdays,
     currYear: year,
-    weeks: weeks,
+    weeks: modalData.weeks,
+    modalData: modalData,
     greyedOutDays: getGreyedOutDays(month, year),
     prevMonth: prevMonth,
     prevYear: prevYear,
@@ -124,6 +126,25 @@ function getGreyedOutDays(month, year) {
   }
 
   return greyedOutDays;
+}
+function getModalData(weeks) {
+  weeks.forEach((week) => {
+    week.forEach((day) => {
+      let modalId = "" + day.month + "-" + day.day + "-" + day.year;
+      day.modalId = modalId;
+
+      // add modalData property to day object
+      day.modalData = {
+        title: "Event Title for " + day.month + "/" + day.day + "/" + day.year,
+        description:
+          "Event Description for " + day.month + "/" + day.day + "/" + day.year,
+      };
+    });
+  });
+
+  return {
+    weeks: weeks,
+  };
 }
 
 export default router;
