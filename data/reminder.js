@@ -22,9 +22,13 @@ export const createReminder = async (
 ) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
-  utils.validateStringInput(title, "title", constants.stringLimits["title"]);
+  utils.validateStringInputWithMaxLength(
+    title,
+    "title",
+    constants.stringLimits["title"]
+  );
   title = title.trim();
-  utils.validateStringInput(
+  utils.validateStringInputWithMaxLength(
     textBody,
     "text body",
     constants.stringLimits["textBody"]
@@ -34,7 +38,11 @@ export const createReminder = async (
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+  utils.validateStringInputWithMaxLength(
+    tag,
+    "tag",
+    constants.stringLimits["tag"]
+  );
   tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
   utils.validateDateObj(dateAddedTo, "date time value");
@@ -140,9 +148,13 @@ export const updateReminder = async (
 ) => {
   utils.checkObjectIdString(reminder_id);
   reminder_id = reminder_id.trim();
-  utils.validateStringInput(title, "title", constants.stringLimits["title"]);
+  utils.validateStringInputWithMaxLength(
+    title,
+    "title",
+    constants.stringLimits["title"]
+  );
   title = title.trim();
-  utils.validateStringInput(
+  utils.validateStringInputWithMaxLength(
     textBody,
     "text body",
     constants.stringLimits["textBody"]
@@ -152,7 +164,11 @@ export const updateReminder = async (
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+  utils.validateStringInputWithMaxLength(
+    tag,
+    "tag",
+    constants.stringLimits["tag"]
+  );
   tag = tag.trim().toLowerCase();
   let dateCreated = new Date();
   utils.validateDateObj(dateAddedTo, "date time value");
@@ -193,8 +209,8 @@ export const updateReminder = async (
      * If DateTime is same them you just have to update rest of records no new reminder needs to be created
      */
     if (
-      utils.isDateEqual(reminder.dateAddedTo, dateAddedTo) &&
-      utils.isDateEqual(reminder.endDateTime, endDateTime)
+      utils.isDateObjEqual(reminder.dateAddedTo, dateAddedTo) &&
+      utils.isDateObjEqual(reminder.endDateTime, endDateTime)
     ) {
       await updateAllRecurrencesDAO(user_id, reminder_id, reminderObj);
     } else {
