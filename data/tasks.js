@@ -6,7 +6,7 @@ import { usersCollection } from "../config/mongoCollections.js";
 const tasksDataFunctions = {
   async getTaskById(id) {
     utils.checkObjectIdString(id);
-
+    id = id.trim();
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
 
@@ -46,7 +46,7 @@ const tasksDataFunctions = {
     dateAddedTo = dateAddedTo.trim();
     dateDueOn = dateDueOn.trim();
     textBody = textBody.trim();
-    tag = tag.trim();
+    tag = tag.trim().toLowerCase();
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -97,7 +97,7 @@ const tasksDataFunctions = {
     updatedTask.dateAddedTo = updatedTask.dateAddedTo;
     updatedTask.dateDueOn = updatedTask.dateDueOn;
     updatedTask.textBody = updatedTask.textBody.trim();
-    updatedTask.tag = updatedTask.tag.trim();
+    updatedTask.tag = updatedTask.tag.trim().toLowerCase();
     updatedTask.checked = updatedTask.checked;
 
     if (updatedTask.title) {
