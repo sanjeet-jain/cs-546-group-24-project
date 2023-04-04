@@ -7,28 +7,50 @@ const router = Router();
 router
   .route("/tasks/:userId")
   .get(async (req, res) => {
+    let userId = req.params.userId;
     try {
-      const userId = req.params.userId.trim();
       utils.checkObjectIdString(userId);
+      userId = userId.trim();
+    } catch (error) {
+      res.status(400).json({ error: e.message });
+    }
+    try {
       const tasks = await tasksDataFunctions.getAllTasks(userId);
       res.json(tasks);
     } catch (e) {
-      res.status(500).json({ error: e.message });
+      res.status(404).json({ error: e.message });
     }
   })
   .post(async (req, res) => {
+    let userId = req.params.userId;
     try {
-      const userId = req.params.userId.trim();
       utils.checkObjectIdString(userId);
+      userId = userId.trim();
+    } catch (error) {
+      res.status(400).json({ error: e.message });
+    }
+    try {
       const { title, textBody, dateAddedTo, dateDueOn, priority, tag } =
         req.body;
       utils.checkObjectIdString(userId);
-      utils.validateStringInput(title, "title");
-      utils.validateStringInput(textBody, "textBody");
+      utils.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+      utils.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
       utils.validateDate(dateAddedTo, "dateAddedTo");
       utils.validateDate(dateDueOn, "dateDueOn");
       utils.validatePriority(priority);
-      utils.validateStringInput(tag, "tag");
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
       const newTask = await tasksDataFunctions.createTask(
         userId,
         title,
@@ -69,12 +91,24 @@ router
           .status(400)
           .json({ error: "There are no fields in the request body" });
       }
-      utils.validateStringInput(title, "title");
-      utils.validateStringInput(textBody, "textBody");
+      utils.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+      utils.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
       utils.validateDate(dateAddedTo, "dateAddedTo");
       utils.validateDate(dateDueOn, "dateDueOn");
       utils.validatePriority(priority);
-      utils.validateStringInput(tag, "tag");
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,

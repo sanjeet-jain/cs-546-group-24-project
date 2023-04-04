@@ -1,7 +1,9 @@
-import { tasksCollection } from "../config/mongoCollections.js";
+import {
+  tasksCollection,
+  usersCollection,
+} from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import utils from "../utils/utils.js";
-import { usersCollection } from "../config/mongoCollections.js";
 
 const tasksDataFunctions = {
   async getTaskById(id) {
@@ -35,13 +37,25 @@ const tasksDataFunctions = {
     tag
   ) {
     utils.checkObjectIdString(userId);
-    utils.validateStringInput(title, "title");
-    utils.validateStringInput(textBody, "textBody");
+    utils.validateStringInputWithMaxLength(
+      title,
+      "title",
+      constants.stringLimits["title"]
+    );
+    utils.validateStringInputWithMaxLength(
+      textBody,
+      "textBody",
+      constants.stringLimits["textBody"]
+    );
     utils.validateDate(dateAddedTo, "dateAddedTo");
     utils.validateDate(dateDueOn, "dateDueOn");
     utils.validatePriority(priority);
-    utils.validateStringInput(tag, "tag");
-
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
+    userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     dateDueOn = dateDueOn.trim();
@@ -94,21 +108,28 @@ const tasksDataFunctions = {
 
     const updatedTaskData = {};
     updatedTask.title = updatedTask.title.trim();
-    updatedTask.dateAddedTo = updatedTask.dateAddedTo;
-    updatedTask.dateDueOn = updatedTask.dateDueOn;
+    updatedTask.dateAddedTo = new Date(updatedTask.dateAddedTo);
+    updatedTask.dateDueOn = new Date(updatedTask.dateDueOn);
     updatedTask.textBody = updatedTask.textBody.trim();
     updatedTask.tag = updatedTask.tag.trim().toLowerCase();
-    updatedTask.checked = updatedTask.checked;
 
     if (updatedTask.title) {
-      utils.validateStringInput(updatedTask.title, "title");
+      utils.validateStringInputWithMaxLength(
+        updatedTask.title,
+        "title",
+        constants.stringLimits["title"]
+      );
       updatedTaskData.title = updatedTask.title;
     } else {
       throw new Error("You must provide a title for the task.");
     }
 
     if (updatedTask.textBody) {
-      utils.validateStringInput(updatedTask.textBody, "textBody");
+      utils.validateStringInputWithMaxLength(
+        updatedTask.textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
       updatedTaskData.textBody = updatedTask.textBody;
     } else {
       throw new Error("You must provide a textBody for the task.");
@@ -135,7 +156,11 @@ const tasksDataFunctions = {
     }
 
     if (updatedTask.tag) {
-      utils.validateStringInput(updatedTask.tag, "tag");
+      utils.validateStringInputWithMaxLength(
+        updatedTask.tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
       updatedTaskData.tag = updatedTask.tag;
     } else {
       throw new Error("You must provide a tag for the task.");
@@ -161,10 +186,10 @@ const tasksDataFunctions = {
 
   async removeTask(id) {
     utils.checkObjectIdString(id);
-
+    id = id.trim();
     const tasks = await tasksCollection();
     const task = await this.getTaskById(id);
-    const deletionInfo = await tasks.deleteOne({ _id: ObjectId(id) });
+    const deletionInfo = await tasks.deleteOne({ _id: new ObjectId(id) });
     if (deletionInfo.deletedCount === 0) {
       throw new Error(`Could not delete task with ID ${id}`);
     }
@@ -174,6 +199,7 @@ const tasksDataFunctions = {
 
   async getAllTasks(userId) {
     utils.checkObjectIdString(userId);
+    userId = userId.trim();
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (user) {
