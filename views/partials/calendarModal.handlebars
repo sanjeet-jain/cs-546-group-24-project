@@ -1,4 +1,4 @@
-{{#each modalData.weeks}}
+{{#each modalsData.weeks}}
   {{#each this}}
     <div
       class="modal fade"
@@ -10,8 +10,10 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title" id="modal-{{this.modalId}}-label">Modal
-              title</h1>
+            <h1
+              class="modal-title"
+              id="modal-{{this.modalId}}-label"
+            >{{this.modalData.title}}</h1>
             <button
               type="button"
               class="btn-close"

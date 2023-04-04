@@ -16,7 +16,7 @@ router.route("/calendarv2").get((req, res) => {
 
   // generate the calendar data
   const weeks = getCalendar(month, year);
-  const modalData = getModalData(weeks);
+  const modalsData = getModalData(weeks);
 
   // render the calendarv2 template with the calendar data and navigation links
   res.render("calendar/calendarv2", {
@@ -25,8 +25,8 @@ router.route("/calendarv2").get((req, res) => {
     months: constants.months,
     weekdays: constants.weekdays,
     currYear: year,
-    weeks: modalData.weeks,
-    modalData: modalData,
+    weeks: modalsData.weeks,
+    modalsData: modalsData,
     greyedOutDays: getGreyedOutDays(month, year),
     prevMonth: prevMonth,
     prevYear: prevYear,
