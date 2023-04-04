@@ -17,15 +17,17 @@ Meeting Collection {
 */
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
-import { meetingsCollection } from "../config/mongoCollections.js";
-import { usersCollection } from "../config/mongoCollections.js";
+import {
+  meetingsCollection,
+  usersCollection,
+} from "../config/mongoCollections.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
   async get(meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
-
+    meetingId = meetingId.trim();
     const meetings = await meetingsCollection();
     const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
@@ -47,29 +49,29 @@ const meetingsDataFunctions = {
   ) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
+    meetingId = meetingId.trim();
     //validate other fields
-    if (
-      !utils.validateMeetingUpdateInputs(
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag
-      )
-    ) {
-      throw new Error("Invalid update inputs for meeting");
-    }
+    utils.validateMeetingUpdateInputs(
+      title,
+      dateAddedTo,
+      dateDueOn,
+      priority,
+      textBody,
+      tag
+    );
+
     const meetings = await meetingsCollection();
-    const updatedMeeting = {};
+    const oldMeeting = await this.get(meetingId);
+    let updatedMeeting = { ...oldMeeting };
+    delete updatedMeeting._id;
 
     // only update the fields that have been provided as input
     updatedMeeting.title = title.trim();
-    updatedMeeting.dateAddedTo = dateAddedTo;
-    updatedMeeting.dateDueOn = dateDueOn;
+    updatedMeeting.dateAddedTo = dateAddedTo.trim();
+    updatedMeeting.dateDueOn = dateDueOn.trim();
     updatedMeeting.priority = priority;
     updatedMeeting.textBody = textBody.trim();
-    updatedMeeting.tag = tag.trim();
+    updatedMeeting.tag = tag.trim().toLowerCase();
 
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
@@ -96,6 +98,7 @@ const meetingsDataFunctions = {
   },
   async delete(meetingId) {
     utils.checkObjectIdString(meetingId);
+    meetingId = meetingId.trim();
 
     const meetings = await meetingsCollection();
     const deletionInfo = await meetings.findOneAndDelete({
@@ -113,7 +116,7 @@ const meetingsDataFunctions = {
     );
 
     // if the meeting exists in collection then return it else throw an error
-    return `${deletionInfo.value.id} has been successfully deleted!`;
+    return `${deletionInfo.value._id} has been successfully deleted!`;
   },
 
   // only userId needed
@@ -144,7 +147,8 @@ const meetingsDataFunctions = {
     repeatingIncrementBy
   ) {
     utils.checkObjectIdString(userId);
-    const isValid = utils.validateMeetingCreateInputs(
+    userId = userId.trim();
+    utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -155,9 +159,6 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
-    if (!isValid) {
-      throw new Error("Invalid meeting inputs.");
-    }
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     let dateAddedToObject = new Date(dateAddedTo);
@@ -165,7 +166,7 @@ const meetingsDataFunctions = {
     let dateDueOnObject = new Date(dateDueOn);
 
     textBody = textBody.trim();
-    tag = tag.trim();
+    tag = tag.trim().toLowerCase();
     repeatingIncrementBy = repeatingIncrementBy.trim();
 
     const users = await usersCollection();
@@ -202,8 +203,29 @@ const meetingsDataFunctions = {
       const meetingObjects = [];
 
       for (let i = 0; i < repeatingCounterIncrement; i++) {
-        let newDateDueOn;
-        let newDateAddedTo;
+        let newDateDueOn = new Date(
+          dateDueOnObject.setDate(dateDueOnObject.getDate())
+        );
+        let newDateAddedTo = new Date(
+          dateAddedToObject.setDate(dateAddedToObject.getDate())
+        );
+
+        const meeting = {
+          title,
+          dateCreated,
+          dateAddedTo: newDateAddedTo.toString(),
+          dateDueOn: newDateDueOn.toString(),
+          priority,
+          textBody,
+          tag,
+          repeating,
+          repeatingCounterIncrement,
+          repeatingIncrementBy,
+          repeatingGroup,
+          expired: false,
+          type: "meeting",
+        };
+        meetingObjects.push(meeting);
         switch (repeatingIncrementBy) {
           case "day":
             newDateDueOn = new Date(
@@ -240,25 +262,8 @@ const meetingsDataFunctions = {
           default:
             throw new Error("Invalid repeatingIncrementBy value");
         }
-
-        const meeting = {
-          title,
-          dateCreated,
-          dateAddedTo: newDateAddedTo.toString(),
-          dateDueOn: newDateDueOn.toString(),
-          priority,
-          textBody,
-          tag,
-          repeating,
-          repeatingCounterIncrement,
-          repeatingIncrementBy,
-          repeatingGroup,
-          expired: false,
-          type: "meeting",
-        };
-        meetingObjects.push(meeting);
-        dateDueOn = newDateDueOn;
-        dateAddedTo = newDateAddedTo;
+        dateDueOnObject = newDateDueOn;
+        dateAddedToObject = newDateAddedTo;
       }
 
       const result = await meetings.insertMany(meetingObjects);
@@ -273,7 +278,7 @@ const meetingsDataFunctions = {
 
   async getAll(userId) {
     utils.checkObjectIdString(userId);
-
+    userId = userId.trim();
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (user) {
@@ -291,7 +296,9 @@ const meetingsDataFunctions = {
   // userId and repeatingGroup needed
   async getAllRecurrences(userId, repeatingGroup) {
     utils.checkObjectIdString(userId);
+    userId = userId.trim();
     utils.checkObjectIdString(repeatingGroup);
+    repeatingGroup = repeatingGroup.trim();
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -322,7 +329,7 @@ const meetingsDataFunctions = {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
 
-    const isValid = utils.validateMeetingUpdateAllRecurrencesInputs(
+    utils.validateMeetingUpdateAllRecurrencesInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -330,16 +337,13 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
-    if (!isValid) {
-      throw new Error("Invalid meeting inputs.");
-    }
 
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     dateDueOn = dateDueOn.trim();
     textBody = textBody.trim();
-    tag = tag.trim();
+    tag = tag.trim().toLowerCase();
     repeatingGroup = repeatingGroup.trim();
 
     const users = await usersCollection();
