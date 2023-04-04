@@ -58,11 +58,13 @@ const exportedMethods = {
     // type
   ) {
     utils.checkObjectIdString(userId);
-    utils.validateStringInput(title, "title", constants.stringLimits["title"]);
-    utils.validateDate(dateAddedTo, "DateAddedTo");
-    // textbody?
-    //doc links ?
-    utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    utils.validateNotesInputs(
+      title,
+      dateAddedTo,
+      textBody,
+      tag,
+      documentLinks // how to use this ???????
+    );
 
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
@@ -102,11 +104,14 @@ const exportedMethods = {
   ) {
     utils.checkObjectIdString(noteId);
     // utils.checkObjectIdString(userId);
-    utils.validateStringInput(title, "title", constants.stringLimits["title"]);
-    utils.validateDate(dateAddedTo, "DateAddedTo");
-    // textbody?
-    //doc links ?
-    utils.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    utils.validateNotesInputs(
+      title,
+      dateAddedTo,
+      textBody,
+      tag,
+      documentLinks // how to use this ???????
+    );
+
     const notes = await notesCollection();
     const note = await this.get(noteId.trim());
     let updatednote = {};

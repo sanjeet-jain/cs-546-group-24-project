@@ -55,18 +55,12 @@ router
       //validation
       utils.checkObjectIdString(noteId);
       // utils.checkObjectIdString(userId);
-      utils.validateStringInput(
+      utils.validateNotesInputs(
         notePutData.title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      utils.validateDate(notePutData.dateAddedTo, "DateAddedTo");
-      // textbody?
-      //doc links ?
-      utils.validateStringInput(
+        notePutData.dateAddedTo,
+        notePutData.textBody,
         notePutData.tag,
-        "tag",
-        constants.stringLimits["tag"]
+        notePutData.documentLinks // how to use this ???????
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -129,18 +123,12 @@ router
     try {
       //validation
       utils.checkObjectIdString(userId);
-      utils.validateStringInput(
+      utils.validateNotesInputs(
         notePostData.title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      utils.validateDate(notePostData.dateAddedTo, "DateAddedTo");
-      // textbody?
-      //doc links ?
-      utils.validateStringInput(
+        notePostData.dateAddedTo,
+        notePostData.textBody,
         notePostData.tag,
-        "tag",
-        constants.stringLimits["tag"]
+        notePostData.documentLinks // how to use this ???????
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
