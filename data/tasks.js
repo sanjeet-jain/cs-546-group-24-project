@@ -4,6 +4,7 @@ import {
 } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import utils from "../utils/utils.js";
+import constants from "../constants/constants.js";
 
 const tasksDataFunctions = {
   async getTaskById(id) {
@@ -108,8 +109,6 @@ const tasksDataFunctions = {
 
     const updatedTaskData = {};
     updatedTask.title = updatedTask.title.trim();
-    updatedTask.dateAddedTo = new Date(updatedTask.dateAddedTo);
-    updatedTask.dateDueOn = new Date(updatedTask.dateDueOn);
     updatedTask.textBody = updatedTask.textBody.trim();
     updatedTask.tag = updatedTask.tag.trim().toLowerCase();
 

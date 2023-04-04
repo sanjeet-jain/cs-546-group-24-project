@@ -147,7 +147,7 @@ export async function runSetup() {
   // Seed tasks
 
   await tasksDataFunctions.createTask(
-    insertInfo.insertedId.toString(),
+    user._id.toString(),
     sampleTask.title,
     sampleTask.textBody,
     sampleTask.dateAddedTo,
@@ -157,7 +157,7 @@ export async function runSetup() {
   );
 
   await tasksDataFunctions.createTask(
-    insertInfo.insertedId.toString(),
+    user._id.toString(),
     sampleTask2.title,
     sampleTask2.textBody,
     sampleTask2.dateAddedTo,
