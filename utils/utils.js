@@ -120,23 +120,30 @@ const utils = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    this.validateStringInput(title, "title", constants.stringLimits["title"]);
+    this.validateStringInputWithMaxLength(
+      title,
+      "title",
+      constants.stringLimits["title"]
+    );
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(
+    this.validateStringInputWithMaxLength(
       textBody,
       "textBody",
       constants.stringLimits["textBody"]
     );
-    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    this.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
     this.validateBooleanInput(repeating, "repeating");
     if (repeating) {
       this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
       this.validateRepeatingIncrementBy(repeatingIncrementBy);
     }
     this.validateDateRange(dateAddedTo, dateDueOn);
-    return true;
   },
 
   validateMeetingUpdateInputs(
@@ -147,19 +154,25 @@ const utils = {
     textBody,
     tag
   ) {
-    this.validateStringInput(title, "title", constants.stringLimits["title"]);
+    this.validateStringInputWithMaxLength(
+      title,
+      "title",
+      constants.stringLimits["title"]
+    );
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(
+    this.validateStringInputWithMaxLength(
       textBody,
       "textBody",
       constants.stringLimits["textBody"]
     );
-    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
+    this.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
     this.validateDateRange(dateAddedTo, dateDueOn);
-
-    return true;
   },
   validateMeetingUpdateAllRecurrencesInputs(
     title,
@@ -169,18 +182,24 @@ const utils = {
     textBody,
     tag
   ) {
-    this.validateStringInput(title, "title", constants.stringLimits["title"]);
+    this.validateStringInputWithMaxLength(
+      title,
+      "title",
+      constants.stringLimits["title"]
+    );
     this.validateDate(dateAddedTo, "DateAddedTo");
     this.validateDate(dateDueOn, "DateDueOn");
     this.validatePriority(priority);
-    this.validateStringInput(
+    this.validateStringInputWithMaxLength(
       textBody,
       "textBody",
       constants.stringLimits["textBody"]
     );
-    this.validateStringInput(tag, "tag", constants.stringLimits["tag"]);
-
-    return true;
+    this.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
   },
 
   /**
@@ -281,6 +300,27 @@ const utils = {
       Number.parseInt(dateStr[1]),
       Number.parseInt(timeStr[0]),
       Number.parseInt(timeStr[1])
+    );
+  },
+  validateNotesInputs(
+    title,
+    dateAddedTo,
+    textBody,
+    tag,
+    documentLinks // how to use this ???????
+  ) {
+    utils.validateStringInputWithMaxLength(
+      title,
+      "title",
+      constants.stringLimits["title"]
+    );
+    utils.validateDate(dateAddedTo, "DateAddedTo");
+    // textbody?
+    //doc links ?
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
     );
   },
 };
