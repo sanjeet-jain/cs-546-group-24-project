@@ -12,11 +12,11 @@ import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
   app.use("/user", userRoutes);
-  app.use("/calendar", calendarRoutes);
-  app.use("/meeting", meetingRoutes);
-  app.use("/task", taskRoutes);
-  app.use("/reminder", reminderRoutes);
-  app.use("/note", noteRoutes);
+  app.use("/calendar", validateUser, calendarRoutes);
+  app.use("/meeting", validateUser, meetingRoutes);
+  app.use("/task", validateUser, taskRoutes);
+  app.use("/reminder", validateUser, reminderRoutes);
+  app.use("/note", validateUser, noteRoutes);
   app.get("/about", (req, res) => {
     res.render("aboutUs");
   });
@@ -29,5 +29,12 @@ const constructorMethod = (app) => {
     res.status(404).render("errors/error", { error: error });
   });
 };
+
+function validateUser(req, res, next) {
+  if (!req?.session?.user) {
+    return res.redirect("/user/login");
+  }
+  next();
+}
 
 export default constructorMethod;

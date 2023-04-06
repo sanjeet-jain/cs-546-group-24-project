@@ -1,9 +1,8 @@
 import { Router } from "express";
 const router = Router();
 import constants from "./../constants/constants.js";
-let dt = new Date();
 
-router.route("/calendarv2").get((req, res) => {
+router.route("/").get((req, res) => {
   // get the current month and year
   const now = new Date();
   const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
