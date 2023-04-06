@@ -35,7 +35,7 @@
       <li class="nav-item">
         <form method="get" action="/calendar/calendarv2">
           <input type="hidden" name="month" value="{{nextMonth}}">
-          {{#if (eq currentMonth 0)}}
+          {{#if (eq currentMonth 11)}}
           <input type="hidden" name="year" value="{{nextYear}}">
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">

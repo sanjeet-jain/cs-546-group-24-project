@@ -8,14 +8,27 @@ router.route("/calendarv2").get((req, res) => {
   const now = new Date();
   const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
   const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
-  // calculate the previous and next month and year
-  const prevMonth = month === 0 ? 11 : month - 1;
-  const prevYear = year - 1;
-  const nextMonth = month === 11 ? 0 : month + 1;
-  const nextYear = year + 1;
 
+  // calculate the previous and next month and year
+  let prevMonth = month === 0 ? 11 : month - 1;
+  let prevYear = year - 1;
+  let nextMonth = month === 11 ? 0 : month + 1;
+  let nextYear = year + 1;
+  if (year === 2021) {
+    prevYear = 2021;
+  }
+  if (year === 2025) {
+    nextYear = 2025;
+  }
   // generate the calendar data
-  const weeks = getCalendar(month, year);
+  const weeks = getCalendar(
+    month,
+    year,
+    prevMonth,
+    prevYear,
+    nextMonth,
+    nextYear
+  );
   const modalsData = getModalData(weeks);
 
   // render the calendarv2 template with the calendar data and navigation links
@@ -27,7 +40,6 @@ router.route("/calendarv2").get((req, res) => {
     currYear: year,
     weeks: modalsData.weeks,
     modalsData: modalsData,
-    greyedOutDays: getGreyedOutDays(month, year),
     prevMonth: prevMonth,
     prevYear: prevYear,
     nextMonth: nextMonth,
@@ -36,7 +48,7 @@ router.route("/calendarv2").get((req, res) => {
 });
 
 // Returns an array of weeks and days in the calendar for the specified month and year
-function getCalendar(month, year) {
+function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   const calendar = [];
 
   // Get the number of days in the month
@@ -60,7 +72,21 @@ function getCalendar(month, year) {
   // Loop through the previous month days
   for (let i = 0; i < prevMonthDays; i++) {
     const day = daysInPrevMonth - prevMonthDays + i + 1;
-    calendar.push({ day: day, month: month - 1, year: year, greyedOut: true });
+    if (month == 0) {
+      calendar.push({
+        day: day,
+        month: prevMonth,
+        year: prevYear,
+        greyedOut: true,
+      });
+    } else {
+      calendar.push({
+        day: day,
+        month: prevMonth,
+        year: year,
+        greyedOut: true,
+      });
+    }
   }
 
   // Loop through the current month days
@@ -70,12 +96,21 @@ function getCalendar(month, year) {
 
   // Loop through the next month days
   for (let i = 0; i < nextMonthDays; i++) {
-    calendar.push({
-      day: i + 1,
-      month: month + 1,
-      year: year,
-      greyedOut: true,
-    });
+    if (month === 1) {
+      calendar.push({
+        day: i + 1,
+        month: nextMonth,
+        year: nextYear,
+        greyedOut: true,
+      });
+    } else {
+      calendar.push({
+        day: i + 1,
+        month: nextMonth,
+        year: year,
+        greyedOut: true,
+      });
+    }
   }
 
   // Group the days into weeks
@@ -92,41 +127,6 @@ function getCalendar(month, year) {
   return weeks;
 }
 
-// Returns an array of booleans indicating which days of the previous month should be greyed out
-function getGreyedOutDays(month, year) {
-  const greyedOutDays = [];
-
-  // Get the number of days in the previous month
-  const daysInPrevMonth = new Date(year, month, 0).getDate();
-
-  // Get the index of the first day of the month (0-6)
-  const firstDayIndex = new Date(year, month, 1).getDay();
-
-  // Get the number of days to display from the previous month
-  const prevMonthDays = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
-
-  // Loop through the previous month days and mark them as greyed out
-  for (let i = 0; i < prevMonthDays; i++) {
-    greyedOutDays.push(true);
-  }
-
-  // Loop through the current month days and mark them as not greyed out
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  for (let i = 1; i <= daysInMonth; i++) {
-    greyedOutDays.push(false);
-  }
-
-  // Get the number of days to display from the next month
-  const lastDayIndex = new Date(year, month, daysInMonth).getDay();
-  const nextMonthDays = lastDayIndex === 0 ? 0 : 7 - lastDayIndex;
-
-  // Loop through the next month days and mark them as greyed out
-  for (let i = 0; i < nextMonthDays; i++) {
-    greyedOutDays.push(true);
-  }
-
-  return greyedOutDays;
-}
 function getModalData(weeks) {
   weeks.forEach((week) => {
     week.forEach((day) => {

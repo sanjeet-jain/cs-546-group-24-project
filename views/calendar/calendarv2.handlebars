@@ -18,7 +18,11 @@
             {{#each weeks}}
             <tr>
                 {{#each this}}
-                <td{{#if ../greyedOutDays.[@index]}} class="greyed-out" {{/if}} data-bs-toggle="modal" data-bs-target="#modal-{{this.modalId}}"> {{this.day}}</td>
+                {{#if this.greyedOut}} 
+                <td class="greyed-out"> {{this.day}}</td>
+                {{else}}
+                <td class="active-month" data-bs-toggle="modal" data-bs-target="#modal-{{this.modalId}}"> {{this.day}}</td>
+                {{/if}}
                 {{/each}}
             </tr>
             {{/each}}

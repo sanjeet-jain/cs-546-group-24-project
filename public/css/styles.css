@@ -13,7 +13,7 @@ body {
   width: 10vw;
   height: 12vh;
 }
-#calendar-div table tbody tr td:hover {
+#calendar-div table tbody tr td.active-month:hover {
   border: grey;
   border-style: dashed;
 }
