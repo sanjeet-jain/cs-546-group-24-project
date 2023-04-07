@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
-import constants from "../constants/constants.js";
+
 router
   .route("/:noteId")
   .get(async (req, res) => {

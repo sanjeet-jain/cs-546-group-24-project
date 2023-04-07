@@ -25,14 +25,17 @@ const constructorMethod = (app) => {
   });
   app.use("*", (req, res) => {
     // we can set this to check for authorization and then send back to correct page !
-    const error = { error: "The Requested Page was not Found!" };
-    res.status(404).render("errors/error", { error: error });
+    res.status(404).render("errors/error", {
+      error: new Error("The Requested Page was not Found!"),
+    });
   });
 };
 
 function validateUser(req, res, next) {
   if (!req?.session?.user) {
-    return res.redirect("/user/login");
+    return res.status(403).render("errors/error", {
+      error: new Error("HTTP Error 403 : please Login"),
+    });
   }
   next();
 }

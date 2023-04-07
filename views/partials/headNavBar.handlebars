@@ -7,7 +7,7 @@
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <form id="monthCalendarForm" method="get" action="/calendar/calendarv2">
+        <form id="monthCalendarForm" method="get" action="/calendar">
           <input type="hidden" name="month" value="{{prevMonth}}">
           {{#if (eq currentMonth 0 )}}
           <input type="hidden" name="year" value="{{prevYear}}">
@@ -33,7 +33,7 @@
       </li>
 
       <li class="nav-item">
-        <form method="get" action="/calendar/calendarv2">
+        <form method="get" action="/calendar">
           <input type="hidden" name="month" value="{{nextMonth}}">
           {{#if (eq currentMonth 11)}}
           <input type="hidden" name="year" value="{{nextYear}}">
@@ -50,7 +50,7 @@
       </li>
 
       <li class="nav-item">
-        <form id="yearCalendarForm" method="get" action="/calendar/calendarv2">
+        <form id="yearCalendarForm" method="get" action="/calendar">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{prevYear}}">
           <button type="submit" id="prevYear" class="btn btn-outline-dark" style="border: none">
@@ -71,7 +71,7 @@
       </li>
 
       <li class="nav-item">
-        <form method="get" action="/calendar/calendarv2">
+        <form method="get" action="/calendar">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{nextYear}}">
           <button type="submit" id="nextYear" class="btn btn-outline-dark" style="border: none">
