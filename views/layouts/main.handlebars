@@ -11,8 +11,10 @@
         <link rel="stylesheet" href="/public/css/styles.css" />
     </head>
     <body >
+        <div>
         {{>headNavBar months=months currentMonth=currentMonth
         yearRange=yearRange currYear=currYear prevYear=prevYear prevMonth=prevMonth nextMonth=nextMonth nextYear=nextYear}}
+        </div>
         <main>
             <div id="main_page" class="row">
                 <div id="left-menu-div" class="col">{{>leftPane }}</div>
