@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import constants from "./../constants/constants.js";
-import axios from "axios";
+import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 
 router.route("/").get(async (req, res) => {
@@ -36,7 +36,7 @@ router.route("/").get(async (req, res) => {
     const userId = req?.session?.user?.user_id.trim();
     utils.checkObjectIdString(userId);
 
-    const modalsData = await getModalData(weeks, userId, req);
+    const modalsData = await getModalData(weeks, userId);
 
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
@@ -137,20 +137,12 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   return weeks;
 }
 
-async function getModalData(weeks, userId, req) {
+async function getModalData(weeks, userId) {
   try {
-    const response = await axios.get(
-      `http://localhost:3000/events/all/${userId}`,
-      {
-        headers: {
-          Cookie: req.headers.cookie,
-        },
-      }
-    );
-    const { data } = response;
+    const response = await eventDataFunctions.getAllEvents(userId);
     weeks.forEach((week) => {
       week.forEach((day) => {
-        let modalData = data.filter((x) => {
+        let modalData = response.meetings.filter((x) => {
           const date = new Date(x.dateAddedTo);
           const dayAddedTo = date.getDate();
           const monthAddedTo = date.getMonth();

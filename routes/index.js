@@ -4,7 +4,6 @@ import taskRoutes from "./tasks.js";
 import reminderRoutes from "./reminder.js";
 import noteRoutes from "./notes.js";
 import userRoutes from "./users.js";
-import eventRoutes from "./events.js";
 import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -13,7 +12,6 @@ import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
   app.use("/user", userRoutes);
-  app.use("/events", validateUser, eventRoutes);
   app.use("/calendar", validateUser, calendarRoutes);
   app.use("/meeting", validateUser, meetingRoutes);
   app.use("/task", validateUser, taskRoutes);
