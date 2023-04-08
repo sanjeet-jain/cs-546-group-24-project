@@ -47,7 +47,7 @@ app.use(
     secret: "CS546",
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 1.8e6 },
   })
 );
 
