@@ -1,8 +1,11 @@
 body {
   padding: 0 !important;
+  margin-top: 2vh;
+  margin-left: 2vw;
+  margin-right: 2vw;
 }
-.navbar div {
-  padding: 1rem;
+.userRightMenu {
+  text-align-last: end;
 }
 .center-div {
   width: 60vw;
@@ -10,28 +13,22 @@ body {
 #calendar-div table tbody tr td {
   text-align: center;
   vertical-align: top;
-  width: 10vw;
-  height: 12vh;
+  width: 20vw;
+  height: 13vh;
 }
-#calendar-div table tbody tr td:hover {
+#calendar-div table tbody tr td.active-month:hover {
   border: grey;
-  border-style: inherit;
+  border-style: dashed;
 }
 
 #left-menu-div {
   width: 20vw;
-  margin-left: 5%;
-  margin-right: 5%;
-  padding: 0;
 }
 
 #right-menu-div {
   width: 20vw;
-  margin-left: 5%;
-  margin-right: 5%;
-  padding: 0;
 }
 
-#main_page {
-  width: 100%;
+.greyed-out {
+  color: #ccc;
 }

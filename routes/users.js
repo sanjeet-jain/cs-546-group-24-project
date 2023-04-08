@@ -15,6 +15,9 @@ function createSessionObject(user) {
 router
   .route("/signup")
   .post(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar");
+    }
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
@@ -63,12 +66,12 @@ router
 router
   .route("/login")
   .post(async (req, res) => {
-    let email = req.body.email;
-    let password = req.body.password;
-
     if (req.session.user) {
       return res.redirect("/calendar");
     }
+    let email = req.body.email;
+    let password = req.body.password;
+
     try {
       utils.validateEmail(email);
       utils.validatePassword(password);
@@ -108,6 +111,8 @@ router
         const currUser = users.getUsers(id);
         //TODO render handlebar
         return res.status(200).json(currUser);
+      } else {
+        return res.redirect("/user/login");
       }
     } catch (e) {
       return res.status(500).json({ error: e.message });
@@ -116,6 +121,9 @@ router
 router
   .route("/profile/edit")
   .get(async (req, res) => {
+    if (!req.session.user) {
+      return res.redirect("/user/login");
+    }
     const id = req.session.user.user_id;
     try {
       const currUser = await usersFunctions.getUser(id);
@@ -126,6 +134,9 @@ router
     }
   })
   .put(async (req, res) => {
+    if (!req.session.user) {
+      return res.redirect("/user/login");
+    }
     const id = req.session.user.user_id;
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
@@ -159,6 +170,9 @@ router
 router
   .route("/profile/password")
   .put(async (req, res) => {
+    if (!req.session.user) {
+      return res.redirect("/user/login");
+    }
     const id = req.session.user.user_id;
     try {
       const updated = usersFunctions.changePassword(id, req.body.password);
@@ -168,14 +182,17 @@ router
     }
   })
   .get(async (req, res) => {
-    if (req.session.user) {
-      return res.redirect("/calendar");
+    if (!req.session.user) {
+      return res.redirect("/user/login");
     }
     //TODO password change UI
     res.redirect("/");
   });
-router.route("/logout").post(async (req, res) => {
+router.route("/logout").get(async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/user/login");
+  }
   req.session.destroy();
-  res.redirect("/");
+  res.redirect("/user/login");
 });
 export default router;

@@ -14,7 +14,8 @@ const __dirname = dirname(__filename);
 
 const handlebarsInstance = exphbs.create({
   defaultLayout: "main",
-  partialsDir: ["views/partials/"],
+  layoutsDir: "views/layouts",
+  partialsDir: ["views/partials/", "views/partials/modals"],
   helpers: {
     eq: function (a, b) {
       return a === b;
@@ -46,7 +47,7 @@ app.use(
     secret: "CS546",
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 60000 },
+    cookie: { maxAge: 1.8e6 },
   })
 );
 

@@ -13,7 +13,7 @@ const utils = {
   validateStringInput(input, inputName) {
     if (input && typeof input !== "string") {
       throw new Error(`${inputName} must be a string`);
-    } else if (input && input.trim().length === 0) {
+    } else if (input.trim().length === 0) {
       throw new Error(`${inputName} cannot be an empty string`);
     }
   },
@@ -55,7 +55,7 @@ const utils = {
     }
   },
   validateEmail(email, inputName) {
-    this.validateStringInput(email);
+    this.validateStringInput(email, inputName);
     const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
     if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
