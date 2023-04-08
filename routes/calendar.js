@@ -94,7 +94,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
         day: day,
         month: prevMonth,
         year: year,
-        greyedOut: false,
+        greyedOut: true,
       });
     }
   }

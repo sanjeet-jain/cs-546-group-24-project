@@ -14,7 +14,7 @@ body {
   text-align: center;
   vertical-align: top;
   width: 20vw;
-  height: 12vh;
+  height: 13vh;
 }
 #calendar-div table tbody tr td.active-month:hover {
   border: grey;
