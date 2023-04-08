@@ -21,7 +21,14 @@
                 {{#if this.greyedOut}} 
                 <td class="greyed-out"> {{this.day}}</td>
                 {{else}}
-                <td class="active-month" data-bs-toggle="modal" data-bs-target="#modal-{{this.modalId}}"> {{this.day}}</td>
+                <td class="active-month" > {{this.day}}
+                    {{#each this.modalData}}
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modal-{{this._id}}" >{{this.type}}</button>
+                    </div>
+                {{/each}}
+
+                </td>
                 {{/if}}
                 {{/each}}
             </tr>
