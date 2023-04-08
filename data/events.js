@@ -11,7 +11,7 @@ const exportedMethods = {
     const notes = await notesDataFunctions.getAll(userId);
     return {
       userId: userId,
-      meeetings: meetings,
+      meetings: meetings,
       reminders: reminders,
       tasks: tasks,
       notes: notes,
