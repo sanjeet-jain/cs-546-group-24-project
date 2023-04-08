@@ -94,7 +94,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
         day: day,
         month: prevMonth,
         year: year,
-        greyedOut: true,
+        greyedOut: false,
       });
     }
   }
@@ -148,10 +148,9 @@ async function getModalData(weeks, userId, req) {
       }
     );
     const { data } = response;
-
     weeks.forEach((week) => {
       week.forEach((day) => {
-        let modalData = data.find((x) => {
+        let modalData = data.filter((x) => {
           const date = new Date(x.dateAddedTo);
           const dayAddedTo = date.getDate();
           const monthAddedTo = date.getMonth();
@@ -166,7 +165,7 @@ async function getModalData(weeks, userId, req) {
         day.modalId = modalId;
 
         // add modalData property to day object
-        day.modalData = { ...modalData };
+        day.modalData = modalData;
       });
     });
 
