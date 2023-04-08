@@ -142,17 +142,21 @@ async function getModalData(weeks, userId) {
     const response = await eventDataFunctions.getAllEvents(userId);
     weeks.forEach((week) => {
       week.forEach((day) => {
-        let modalData = response.meetings.filter((x) => {
-          const date = new Date(x.dateAddedTo);
-          const dayAddedTo = date.getDate();
-          const monthAddedTo = date.getMonth();
-          const yearAddedTo = date.getFullYear();
-          return (
-            dayAddedTo === day.day &&
-            monthAddedTo === day.month &&
-            yearAddedTo === day.year
-          );
-        });
+        let modalData = {};
+        delete response.userId;
+        for (let eventType in response) {
+          modalData[eventType] = response[eventType].filter((x) => {
+            const date = new Date(x.dateAddedTo);
+            const dayAddedTo = date.getDate();
+            const monthAddedTo = date.getMonth();
+            const yearAddedTo = date.getFullYear();
+            return (
+              dayAddedTo === day.day &&
+              monthAddedTo === day.month &&
+              yearAddedTo === day.year
+            );
+          });
+        }
         let modalId = "" + day.month + "-" + day.day + "-" + day.year;
         day.modalId = modalId;
 

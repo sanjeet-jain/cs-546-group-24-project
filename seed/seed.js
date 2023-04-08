@@ -3,7 +3,7 @@ import meetingsDataFunctions from "../data/meetings.js";
 import tasksDataFunctions from "../data/tasks.js";
 import usersDataFunctions from "../data/users.js";
 import notesDataFunctions from "../data/notes.js";
-
+import * as reminderDataFunctions from "../data/reminder.js";
 export async function runSetup() {
   /*
   UsersCollection
@@ -165,6 +165,30 @@ export async function runSetup() {
   );
 
   // Seed reminders
+  const sampleReminder = {
+    title: "reminder title",
+    textBody: "important reminder",
+    priority: 3,
+    tag: "rem",
+    repeating: false,
+    dateAddedTo: dt,
+    endDateTime: new Date(new Date().setHours(new Date().getHours() + 1)),
+    repeatingCounterIncrement: null,
+    repeatingIncrementBy: null,
+  };
+
+  const insertedReminder = await reminderDataFunctions.createReminder(
+    user._id.toString(),
+    sampleReminder.title,
+    sampleReminder.textBody,
+    sampleReminder.priority,
+    sampleReminder.tag,
+    sampleReminder.repeating,
+    sampleReminder.endDateTime,
+    sampleReminder.repeatingCounterIncrement,
+    sampleReminder.repeatingIncrementBy,
+    sampleReminder.dateAddedTo
+  );
 
   // Seed notes
   const sampleNote = {
