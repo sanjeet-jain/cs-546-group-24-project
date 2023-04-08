@@ -140,7 +140,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
 async function getModalData(weeks, userId, req) {
   try {
     const response = await axios.get(
-      `http://localhost:3000/meeting/user/${userId}/meetings/`,
+      `http://localhost:3000/events/all/${userId}`,
       {
         headers: {
           Cookie: req.headers.cookie,
