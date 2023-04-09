@@ -3,11 +3,29 @@
     <i class="bi-calendar-check-fill"></i>
     <a class="navbar-brand" href="/">TimeWise</a>
   </div>
-  {{#if months}}
+  {{#if session}}
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <form id="monthCalendarForm" method="get" action="/calendar">
+        <div class="btn-group" role="group" aria-label="Calendar View Options Radio">
+          <input type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio" autocomplete="off">
+          <label class="btn btn-outline-dark" for="monthViewRadio">Month</label>
+        
+          <input type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio" autocomplete="off">
+          <label class="btn btn-outline-dark" for="weekViewRadio">Week</label>
+
+          <input type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio" autocomplete="off">
+          <label class="btn btn-outline-dark" for="dayViewRadio">Day</label>
+        </div>
+       
+      </li>
+    </ul>
+  </div>
+  <div>
+    <ul class="nav justify-content-center">
+      
+      <li class="nav-item">
+        <form id="monthCalendarForm" method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{prevMonth}}">
           {{#if (eq currentMonth 0 )}}
           <input type="hidden" name="year" value="{{prevYear}}">
@@ -33,7 +51,7 @@
       </li>
 
       <li class="nav-item">
-        <form method="get" action="/calendar">
+        <form method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{nextMonth}}">
           {{#if (eq currentMonth 11)}}
           <input type="hidden" name="year" value="{{nextYear}}">
@@ -50,7 +68,7 @@
       </li>
 
       <li class="nav-item">
-        <form id="yearCalendarForm" method="get" action="/calendar">
+        <form id="yearCalendarForm" method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{prevYear}}">
           <button type="submit" id="prevYear" class="btn btn-outline-dark" style="border: none">
@@ -71,7 +89,7 @@
       </li>
 
       <li class="nav-item">
-        <form method="get" action="/calendar">
+        <form method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{nextYear}}">
           <button type="submit" id="nextYear" class="btn btn-outline-dark" style="border: none">
@@ -141,7 +159,7 @@
               Support
             </a>
             <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="/calendar">Contact Us</a></li>
+              <li><a class="dropdown-item" href="/calendar/month">Contact Us</a></li>
               <li>
                 <hr class="dropdown-divider" />
               </li>

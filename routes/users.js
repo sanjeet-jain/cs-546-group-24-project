@@ -16,7 +16,7 @@ router
   .route("/signup")
   .post(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
@@ -51,14 +51,14 @@ router
       if (user) {
         req.session.user = createSessionObject(user);
       }
-      return res.status(200).redirect("/calendar");
+      return res.status(200).redirect("/calendar/month");
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
   })
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
     res.render("user/signup");
   });
@@ -67,7 +67,7 @@ router
   .route("/login")
   .post(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
     let email = req.body.email;
     let password = req.body.password;
@@ -86,7 +86,7 @@ router
       const user = await usersFunctions.loginUser(email, password);
       if (user) {
         req.session.user = createSessionObject(user);
-        return res.redirect("/calendar");
+        return res.redirect("/calendar/month");
       } else {
         return res.status(500).json({ error: e.message });
       }
@@ -96,7 +96,7 @@ router
   })
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
     res.render("user/login");
   });

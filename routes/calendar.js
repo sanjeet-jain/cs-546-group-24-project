@@ -4,7 +4,7 @@ import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 
-router.route("/").get(async (req, res) => {
+router.route("/month").get(async (req, res) => {
   try {
     // get the current month and year
     const now = new Date();
