@@ -1,65 +1,66 @@
 <!-- calendarv2.handlebars -->
 
 <div id="calendar-div">
-    <div id="modal-div">
-        {{>calendarModal modalsData=modalsData}}
-    </div>
-    <table class="table table-bordered">
+  <div id="modal-div">
+    {{!-- {{>calendarModal modalsData=modalsData}} --}}
+  </div>
+  <table class="table table-bordered">
 
-        <thead>
+    <thead>
 
-            <tr id="weekdays">
-                {{#each weekdays}}
-                <th scope="col">{{this}}</th>
-                {{/each}}
-            </tr>
-        </thead>
-        <tbody>
-            {{#each weeks}}
-            <tr>
-                {{#each this}}
-                {{#if this.greyedOut}}
-                <td class="greyed-out"> {{this.day}}</td>
-                {{else}}
-                <td class="active-month"> {{this.day}}
-                    <div class="day-events">
+      <tr id="weekdays">
+        {{#each weekdays}}
+          <th scope="col">{{this}}</th>
+        {{/each}}
+      </tr>
+    </thead>
+    <tbody>
+      {{#each weeks}}
+        <tr>
+          {{#each this}}
+            {{#if this.greyedOut}}
+              <td class="greyed-out"> {{this.day}}</td>
+            {{else}}
+              <td class="active-month">
+                {{this.day}}
+                <div class="day-events">
 
-                        <div class="d-grid gap-1">
-                            {{#if this.modalData.meetings.length}}
-                            <span class="badge rounded-pill text-bg-primary">
-                                <i class="bi-calendar-event"></i>
-                                {{this.modalData.meetings.length}} meetings</span>
-                            {{/if}}
-                            {{#if this.modalData.notes.length}}
-                            <span class="badge rounded-pill text-bg-success">
-                                <i class="bi-file-text"></i>
-                                {{this.modalData.notes.length}}
-                                notes</span>
-                            {{/if}}
-                            {{#if this.modalData.reminders.length}}
-                            <span class="badge rounded-pill text-bg-warning">
-                                <i class="bi-alarm"></i>
-                                {{this.modalData.reminders.length}}
-                                reminders</span>
-                            {{/if}}
-                            {{#if this.modalData.tasks.length}}
-                            <span class="badge rounded-pill text-bg-danger"> 
-                                <i class="bi-check2-square"></i>
-                                {{this.modalData.tasks.length}}
-                                tasks</span>
-                            {{/if}}
-                        </div>
+                  <div class="d-grid gap-1">
+                    {{#if this.modalData.meetings.length}}
+                      <span class="badge rounded-pill text-bg-primary">
+                        <i class="bi-calendar-event"></i>
+                        {{this.modalData.meetings.length}}
+                        meetings</span>
+                    {{/if}}
+                    {{#if this.modalData.notes.length}}
+                      <span class="badge rounded-pill text-bg-success">
+                        <i class="bi-file-text"></i>
+                        {{this.modalData.notes.length}}
+                        notes</span>
+                    {{/if}}
+                    {{#if this.modalData.reminders.length}}
+                      <span class="badge rounded-pill text-bg-warning">
+                        <i class="bi-alarm"></i>
+                        {{this.modalData.reminders.length}}
+                        reminders</span>
+                    {{/if}}
+                    {{#if this.modalData.tasks.length}}
+                      <span class="badge rounded-pill text-bg-danger">
+                        <i class="bi-check2-square"></i>
+                        {{this.modalData.tasks.length}}
+                        tasks</span>
+                    {{/if}}
+                  </div>
 
+                </div>
 
-                    </div>
-
-                </td>
-                {{/if}}
-                {{/each}}
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+              </td>
+            {{/if}}
+          {{/each}}
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
 
 </div>
 <script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
