@@ -22,7 +22,12 @@
               <td class="greyed-out"> {{this.day}}</td>
             {{else}}
               <td class="active-month">
-                {{this.day}}
+                <div
+                {{#if (eq this.day ../../now)}}
+                class="badge rounded-pill bg-info"
+                {{/if}}
+                >{{this.day}}
+                </div>
                 <div class="day-events">
 
                   <div class="d-grid gap-1">
