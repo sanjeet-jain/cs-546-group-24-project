@@ -3,8 +3,8 @@ const router = Router();
 import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
-
-router.route("/").get(async (req, res) => {
+let weeksData;
+router.route("/month").get(async (req, res) => {
   try {
     // get the current month and year
     const now = new Date();
@@ -37,9 +37,11 @@ router.route("/").get(async (req, res) => {
     utils.checkObjectIdString(userId);
 
     const modalsData = await getModalData(weeks, userId);
-
+    // set global weeks data
+    weeksData = modalsData.weeks;
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
+      now: now.getDate(),
       currentMonth: month,
       yearRange: constants.yearRange,
       months: constants.months,
@@ -56,6 +58,8 @@ router.route("/").get(async (req, res) => {
     res.status(404).render("errors/error", { error: new Error(error.message) });
   }
 });
+
+router.route("/week").get(async (req, res) => {});
 
 // Returns an array of weeks and days in the calendar for the specified month and year
 function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
@@ -142,17 +146,21 @@ async function getModalData(weeks, userId) {
     const response = await eventDataFunctions.getAllEvents(userId);
     weeks.forEach((week) => {
       week.forEach((day) => {
-        let modalData = response.meetings.filter((x) => {
-          const date = new Date(x.dateAddedTo);
-          const dayAddedTo = date.getDate();
-          const monthAddedTo = date.getMonth();
-          const yearAddedTo = date.getFullYear();
-          return (
-            dayAddedTo === day.day &&
-            monthAddedTo === day.month &&
-            yearAddedTo === day.year
-          );
-        });
+        let modalData = {};
+        delete response.userId;
+        for (let eventType in response) {
+          modalData[eventType] = response[eventType].filter((x) => {
+            const date = new Date(x.dateAddedTo);
+            const dayAddedTo = date.getDate();
+            const monthAddedTo = date.getMonth();
+            const yearAddedTo = date.getFullYear();
+            return (
+              dayAddedTo === day.day &&
+              monthAddedTo === day.month &&
+              yearAddedTo === day.year
+            );
+          });
+        }
         let modalId = "" + day.month + "-" + day.day + "-" + day.year;
         day.modalId = modalId;
 
