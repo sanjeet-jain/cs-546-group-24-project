@@ -77,7 +77,12 @@ router.route("/month").get(async (req, res) => {
       nextYear: nextYear,
     });
   } catch (error) {
-    res.status(404).render("errors/error", { error: new Error(error.message) });
+    res
+      .status(404)
+      .render("errors/error", {
+        title: "Error",
+        error: new Error(error.message),
+      });
   }
 });
 
@@ -104,8 +109,6 @@ router.route("/week").get(async (req, res) => {
   });
   res.render("calendar/calendarv2", {
     title: "Calendar",
-    yearRange: constants.yearRange,
-    months: constants.months,
     weekdays: constants.weekdays,
     week: week,
     currentMonth: month,
