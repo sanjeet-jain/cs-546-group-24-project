@@ -48,7 +48,7 @@ function viewRadioButtons() {
       } else if (selectedValue === "week") {
         form.action = "/calendar/week";
       } else if (selectedValue === "day") {
-        form.action = "/calendar/month";
+        form.action = "/calendar/day";
       }
       form.submit();
     });

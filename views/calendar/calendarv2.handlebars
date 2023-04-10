@@ -15,57 +15,14 @@
       </tr>
     </thead>
     <tbody>
-      {{#if months}}
-      {{#each weeks}}
-        <tr>
-          {{#each this}}
-            {{#if this.greyedOut}}
-              <td class="greyed-out"> {{this.day}}</td>
-            {{else}}
-              <td class="active-month">
-                <div
-                {{#if (checkIfToday this.year this.month this.day)}}
-                class="badge rounded-pill bg-info"
-                {{/if}}
-                >{{this.day}}
-                </div>
-                <div class="day-events">
-
-                  <div class="d-grid gap-1">
-                    {{#if this.modalData.meetings.length}}
-                      <span class="badge rounded-pill text-bg-primary">
-                        <i class="bi-calendar-event"></i>
-                        {{this.modalData.meetings.length}}
-                        meetings</span>
-                    {{/if}}
-                    {{#if this.modalData.notes.length}}
-                      <span class="badge rounded-pill text-bg-success">
-                        <i class="bi-file-text"></i>
-                        {{this.modalData.notes.length}}
-                        notes</span>
-                    {{/if}}
-                    {{#if this.modalData.reminders.length}}
-                      <span class="badge rounded-pill text-bg-warning">
-                        <i class="bi-alarm"></i>
-                        {{this.modalData.reminders.length}}
-                        reminders</span>
-                    {{/if}}
-                    {{#if this.modalData.tasks.length}}
-                      <span class="badge rounded-pill text-bg-danger">
-                        <i class="bi-check2-square"></i>
-                        {{this.modalData.tasks.length}}
-                        tasks</span>
-                    {{/if}}
-                  </div>
-
-                </div>
-
-              </td>
-            {{/if}}
-          {{/each}}
-        </tr>
-      {{/each}}
+      {{#if months.length}}
+      {{>month-view weeks=weeks}}
       {{/if}}
+      {{#if week.length}}
+      {{>week-view weeks=weeks}}
+
+      {{/if}}
+
     </tbody>
   </table>
 
