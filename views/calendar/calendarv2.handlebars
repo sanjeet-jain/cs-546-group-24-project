@@ -23,7 +23,7 @@
             {{else}}
               <td class="active-month">
                 <div
-                {{#if (eq this.day ../../now)}}
+                {{#if (checkIfToday this.year this.month this.day)}}
                 class="badge rounded-pill bg-info"
                 {{/if}}
                 >{{this.day}}

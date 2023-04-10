@@ -20,8 +20,13 @@ const handlebarsInstance = exphbs.create({
     eq: function (a, b) {
       return a === b;
     },
-    currDate: function () {
-      return new Date().toISOString().slice(0, 10);
+    checkIfToday: function (year, month, date) {
+      const today = new Date();
+      return (
+        today.getFullYear() === year &&
+        today.getMonth() === month &&
+        today.getDate() === date
+      );
     },
     minDobDate: function () {
       return new Date(new Date().getFullYear() - 14, 0, 1)
