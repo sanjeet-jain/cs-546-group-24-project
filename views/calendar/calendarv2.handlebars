@@ -17,14 +17,16 @@
     <tbody>
       {{#if months.length}}
       {{>month-view weeks=weeks}}
+      <script src="/public/scripts/month-calendar.js" type="text/javascript"></script>
       {{/if}}
       {{#if week.length}}
       {{>week-view weeks=weeks}}
+      <script src="/public/scripts/week-calendar.js" type="text/javascript"></script>
 
       {{/if}}
 
     </tbody>
   </table>
+<script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
 
 </div>
-<script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
