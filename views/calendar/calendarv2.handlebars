@@ -15,6 +15,7 @@
       </tr>
     </thead>
     <tbody>
+      {{#if months}}
       {{#each weeks}}
         <tr>
           {{#each this}}
@@ -64,6 +65,7 @@
           {{/each}}
         </tr>
       {{/each}}
+      {{/if}}
     </tbody>
   </table>
 

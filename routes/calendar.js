@@ -4,41 +4,54 @@ import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 let weeksData;
+
+async function getWeeksData(req) {
+  // get the current month and year
+  const now = new Date();
+  const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
+  const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
+
+  // calculate the previous and next month and year
+  let prevMonth = month === 0 ? 11 : month - 1;
+  let prevYear = year - 1;
+  let nextMonth = month === 11 ? 0 : month + 1;
+  let nextYear = year + 1;
+  if (year === 2021) {
+    prevYear = 2021;
+  }
+  if (year === 2025) {
+    nextYear = 2025;
+  }
+  // generate the calendar data
+  const weeks = getCalendar(
+    month,
+    year,
+    prevMonth,
+    prevYear,
+    nextMonth,
+    nextYear
+  );
+  // get the userId
+
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+
+  const modalsData = await getModalData(weeks, userId);
+  // set global weeks data
+  weeksData = modalsData.weeks;
+  return { month, year, modalsData, prevMonth, prevYear, nextMonth, nextYear };
+}
 router.route("/month").get(async (req, res) => {
   try {
-    // get the current month and year
-    const now = new Date();
-    const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
-    const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
-
-    // calculate the previous and next month and year
-    let prevMonth = month === 0 ? 11 : month - 1;
-    let prevYear = year - 1;
-    let nextMonth = month === 11 ? 0 : month + 1;
-    let nextYear = year + 1;
-    if (year === 2021) {
-      prevYear = 2021;
-    }
-    if (year === 2025) {
-      nextYear = 2025;
-    }
-    // generate the calendar data
-    const weeks = getCalendar(
+    const {
       month,
       year,
+      modalsData,
       prevMonth,
       prevYear,
       nextMonth,
-      nextYear
-    );
-    // get the userId
-
-    const userId = req?.session?.user?.user_id.trim();
-    utils.checkObjectIdString(userId);
-
-    const modalsData = await getModalData(weeks, userId);
-    // set global weeks data
-    weeksData = modalsData.weeks;
+      nextYear,
+    } = await getWeeksData(req);
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
       title: "Calendar",
