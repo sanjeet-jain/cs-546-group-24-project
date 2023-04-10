@@ -9,6 +9,7 @@
     <ul class="nav justify-content-center">
       <li class="nav-item">
         <form id="viewRadioForm">
+
         <div class="btn-group" role="group" aria-label="Calendar View Options
           Radio">
           <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio" value="month">
@@ -31,9 +32,8 @@
       </li>
     </ul>
   </div>
-  <div>
     {{#if months}}
-
+  <div>
     <ul class="nav justify-content-center">
 
       <li class="nav-item">
@@ -113,9 +113,8 @@
         </form>
       </li>
     </ul>
-    {{/if}}
-
   </div>
+    {{/if}}
   {{/if}}
   <div>
     <button class="btn btn-outline-dark" style="border: none" type="button" data-bs-toggle="offcanvas"

@@ -60,7 +60,9 @@ router
     if (req.session.user) {
       return res.redirect("/calendar/month");
     }
-    res.render("user/signup");
+    res.render("user/signup", {
+      title: "SignUp",
+    });
   });
 
 router
@@ -98,7 +100,9 @@ router
     if (req.session.user) {
       return res.redirect("/calendar/month");
     }
-    res.render("user/login");
+    res.render("user/login", {
+      title: "Login",
+    });
   });
 router
   .route("/profile")

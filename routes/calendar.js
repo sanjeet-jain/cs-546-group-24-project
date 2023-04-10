@@ -41,6 +41,7 @@ router.route("/month").get(async (req, res) => {
     weeksData = modalsData.weeks;
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
+      title: "Calendar",
       currentMonth: month,
       yearRange: constants.yearRange,
       months: constants.months,
@@ -102,6 +103,8 @@ router.route("/week").get(async (req, res) => {
     });
   });
   res.render("calendar/calendarv2", {
+    title: "Calendar",
+
     yearRange: constants.yearRange,
     months: constants.months,
     weekdays: constants.weekdays,
