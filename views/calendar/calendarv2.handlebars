@@ -9,6 +9,9 @@
     <thead>
 
       <tr id="weekdays">
+         {{#if week.length}}
+        <td></td>
+        {{/if}}
         {{#each weekdays}}
           <th scope="col">{{this}}</th>
         {{/each}}
@@ -20,7 +23,7 @@
       <script src="/public/scripts/month-calendar.js" type="text/javascript"></script>
       {{/if}}
       {{#if week.length}}
-      {{>week-view weeks=weeks}}
+      {{>week-view weeks=weeks timeslots=timeslots}}
       <script src="/public/scripts/week-calendar.js" type="text/javascript"></script>
 
       {{/if}}

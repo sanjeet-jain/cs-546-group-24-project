@@ -1,5 +1,14 @@
 <tr>
+  <td></td>
+
   {{#each week}}
     <td class="active-month">{{this.day}}</td>
   {{/each}}
+
 </tr>
+{{#each timeslots}}
+  <tr>
+
+    <td>{{this}}</td>
+  </tr>
+{{/each}}
