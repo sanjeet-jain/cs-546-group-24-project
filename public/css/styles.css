@@ -10,6 +10,10 @@ main {
   height: 8vh;
   width: 100%;
 }
+.navbar {
+  right: 1vw;
+  left: 1vw !important;
+}
 .userRightMenu {
   text-align-last: end;
 }
@@ -19,6 +23,8 @@ main {
 }
 #calendar-div {
   height: 90vh;
+  max-height: 90vh;
+  overflow-y: scroll;
   width: 60vw;
 }
 .active-month {
@@ -53,4 +59,19 @@ main {
 }
 .day-events span {
   text-align: left !important;
+}
+
+.timeslots {
+  width: 6vw;
+}
+
+.sticky-calendar-head {
+  height: 3vh;
+  position: sticky;
+  top: 0;
+}
+
+.sticky-calendar-row {
+  position: sticky;
+  top: 3vh;
 }

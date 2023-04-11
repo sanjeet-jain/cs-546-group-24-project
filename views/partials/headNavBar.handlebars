@@ -1,36 +1,43 @@
-<nav class="navbar justify-content-between">
+<nav class="navbar justify-content-between fixed-top bg-body">
   <div class="navbar-brand">
     <i class="bi-calendar-check-fill"></i>
     <a class="navbar-brand" href="/">TimeWise</a>
   </div>
   {{#if session}}
+    {{#if (eq title "Calendar")}}
+
   <div>
     <ul class="nav justify-content-center">
       <li class="nav-item">
-        <div class="btn-group" role="group" aria-label="Calendar View Options
-          Radio">
-          <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio" >
-          <label class="btn btn-outline-dark" for="monthViewRadio">Month</label>
-          <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio" >
-          <label class="btn btn-outline-dark" for="weekViewRadio">Week</label>
-          <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio" >
-          <label class="btn btn-outline-dark" for="dayViewRadio">Day</label>
-        </div>
+        <form id="viewRadioForm">
+
+          <div class="btn-group" role="group" aria-label="Calendar View Options
+            Radio">
+            <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio"
+              value="month">
+            <label class="btn btn-outline-dark" for="monthViewRadio">Month</label>
+            <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio"
+              value="week">
+            <label class="btn btn-outline-dark" for="weekViewRadio">Week</label>
+            <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio"
+              value="day">
+            <label class="btn btn-outline-dark" for="dayViewRadio">Day</label>
+          </div>
+        </form>
       </li>
       <li class="nav-item">
-        
+
         <div>
           <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{/if}}>
             <button id="today" class="btn btn-primary" type="submit">Today</button>
           </form>
         </div>
-        
+
       </li>
     </ul>
   </div>
+      {{#if months}}
   <div>
-    {{#if months}}
-
     <ul class="nav justify-content-center">
 
       <li class="nav-item">
@@ -42,10 +49,10 @@
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
           <button type="submit" id="prevMonth" class="btn btn-outline-dark" style="border:
-              none">
+            none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-                border:
-                none"></i>
+              border:
+              none"></i>
           </button>
         </form>
 
@@ -53,7 +60,7 @@
 
       <li class="nav-item">
         <select id="monthDropDown" class="form-select h-100" aria-label="Month
-            Select">
+          Select">
           {{#each months}}
           <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
           {{/each}}
@@ -69,9 +76,9 @@
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
           <button type="submit" id="nextMonth" class="btn btn-outline-dark" style="border:
-              none">
+            none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-                none"></i>
+              none"></i>
           </button>
         </form>
 
@@ -83,8 +90,8 @@
           <input type="hidden" name="year" value="{{prevYear}}">
           <button type="submit" id="prevYear" class="btn btn-outline-dark" style="border: none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-                border:
-                none"></i>
+              border:
+              none"></i>
           </button>
         </form>
 
@@ -92,7 +99,7 @@
 
       <li class="nav-item">
         <select id="yearDropDown" class="form-select h-100" aria-label="Year
-            Select">
+          Select">
           {{#each yearRange}}
           <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
           {{/each}}
@@ -105,14 +112,14 @@
           <input type="hidden" name="year" value="{{nextYear}}">
           <button type="submit" id="nextYear" class="btn btn-outline-dark" style="border: none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-                none"></i>
+              none"></i>
           </button>
         </form>
       </li>
     </ul>
-    {{/if}}
-
   </div>
+      {{/if}}
+    {{/if}}
   {{/if}}
   <div>
     <button class="btn btn-outline-dark" style="border: none" type="button" data-bs-toggle="offcanvas"

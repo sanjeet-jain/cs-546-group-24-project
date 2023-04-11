@@ -18,14 +18,19 @@ const constructorMethod = (app) => {
   app.use("/reminder", validateUser, reminderRoutes);
   app.use("/note", validateUser, noteRoutes);
   app.get("/about", (req, res) => {
-    res.render("aboutUs");
+    res.render("aboutUs", {
+      title: "About Us",
+    });
   });
   app.get("/", (req, res) => {
-    res.render("aboutUs");
+    res.render("aboutUs", {
+      title: "About Us",
+    });
   });
   app.use("*", (req, res) => {
     // we can set this to check for authorization and then send back to correct page !
     res.status(404).render("errors/error", {
+      title: "Error",
       error: new Error("The Requested Page was not Found!"),
     });
   });
@@ -34,6 +39,7 @@ const constructorMethod = (app) => {
 function validateUser(req, res, next) {
   if (!req?.session?.user) {
     return res.status(403).render("errors/error", {
+      title: "Error",
       error: new Error("HTTP Error 403 : please Login"),
     });
   }

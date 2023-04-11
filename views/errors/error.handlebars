@@ -2,5 +2,10 @@
   <div class="alert alert-danger" role="alert">
     {{{error.message}}}
   </div>
-  <a href="/user/login" class="badge bg-primary">Go Back to Login</a>
+  {{#if session}}
+    <a href="/calendar/month" class="badge bg-primary">Go Back to Calendar</a>
+
+  {{else}}
+    <a href="/user/login" class="badge bg-primary">Go Back to Login</a>
+  {{/if}}
 </div>

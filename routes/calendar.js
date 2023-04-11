@@ -3,45 +3,22 @@ const router = Router();
 import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
-let weeksData;
+
 router.route("/month").get(async (req, res) => {
   try {
-    // get the current month and year
-    const now = new Date();
-    const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
-    const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
-
-    // calculate the previous and next month and year
-    let prevMonth = month === 0 ? 11 : month - 1;
-    let prevYear = year - 1;
-    let nextMonth = month === 11 ? 0 : month + 1;
-    let nextYear = year + 1;
-    if (year === 2021) {
-      prevYear = 2021;
-    }
-    if (year === 2025) {
-      nextYear = 2025;
-    }
-    // generate the calendar data
-    const weeks = getCalendar(
+    const {
       month,
       year,
+      modalsData,
       prevMonth,
       prevYear,
       nextMonth,
-      nextYear
-    );
-    // get the userId
+      nextYear,
+    } = await getWeeksData(req);
 
-    const userId = req?.session?.user?.user_id.trim();
-    utils.checkObjectIdString(userId);
-
-    const modalsData = await getModalData(weeks, userId);
-    // set global weeks data
-    weeksData = modalsData.weeks;
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
-      now: now.getDate(),
+      title: "Calendar",
       currentMonth: month,
       yearRange: constants.yearRange,
       months: constants.months,
@@ -55,12 +32,89 @@ router.route("/month").get(async (req, res) => {
       nextYear: nextYear,
     });
   } catch (error) {
-    res.status(404).render("errors/error", { error: new Error(error.message) });
+    res.status(404).render("errors/error", {
+      title: "Error",
+      error: new Error(error.message),
+    });
   }
 });
 
-router.route("/week").get(async (req, res) => {});
+router.route("/week").get(async (req, res) => {
+  const {
+    now,
+    month,
+    year,
+    modalsData,
+    // prevMonth,
+    // prevYear,
+    // nextMonth,
+    // nextYear,
+  } = await getWeeksData(req);
 
+  let week = modalsData.weeks.find((week) => {
+    return week.find((day) => {
+      return (
+        now.getDate() === day.day &&
+        now.getMonth() === day.month &&
+        now.getFullYear() === day.year
+      );
+    });
+  });
+  res.render("calendar/calendarv2", {
+    title: "Calendar",
+    weekdays: constants.weekdays,
+    week: week,
+    currentMonth: month,
+    currYear: year,
+    timeslots: constants.timeslots,
+  });
+});
+
+async function getWeeksData(req) {
+  // get the current month and year
+  const now = new Date();
+  const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
+  const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
+
+  // calculate the previous and next month and year
+  let prevMonth = month === 0 ? 11 : month - 1;
+  let prevYear = year - 1;
+  let nextMonth = month === 11 ? 0 : month + 1;
+  let nextYear = year + 1;
+  if (year === 2021) {
+    prevYear = 2021;
+  }
+  if (year === 2025) {
+    nextYear = 2025;
+  }
+  // generate the calendar data
+  const weeks = getCalendar(
+    month,
+    year,
+    prevMonth,
+    prevYear,
+    nextMonth,
+    nextYear
+  );
+  // get the userId
+
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+
+  const modalsData = await getModalData(weeks, userId);
+  // set global weeks data
+
+  return {
+    now,
+    month,
+    year,
+    modalsData,
+    prevMonth,
+    prevYear,
+    nextMonth,
+    nextYear,
+  };
+}
 // Returns an array of weeks and days in the calendar for the specified month and year
 function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   const calendar = [];
