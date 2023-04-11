@@ -17,31 +17,18 @@ main {
 .userRightMenu {
   text-align-last: end;
 }
-.center-div {
-  height: 90vh;
-  width: 60vw;
-}
-#calendar-div {
-  height: 90vh;
-  max-height: 90vh;
-  overflow-y: scroll;
-  width: 60vw;
-}
+
 .active-month {
   text-align: center;
   vertical-align: top;
   width: 8vw;
   height: 13vh;
-  overflow: hidden;
 }
 .active-month:hover {
   border: grey;
   border-style: dashed;
 }
-#calendar-div table {
-  height: 90vh;
-  width: 60vw;
-}
+
 #left-menu-div {
   height: 90vh;
   width: 20vw;
@@ -68,10 +55,10 @@ main {
 .sticky-calendar-head {
   height: 3vh;
   position: sticky;
-  top: 0;
+  top: 8vh;
 }
 
 .sticky-calendar-row {
   position: sticky;
-  top: 3vh;
+  top: 11vh;
 }
