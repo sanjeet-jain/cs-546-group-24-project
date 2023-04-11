@@ -59,6 +59,7 @@ app.use(
 app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
+    //todo extend cookie
   }
   next();
 });
