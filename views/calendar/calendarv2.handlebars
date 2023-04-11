@@ -4,20 +4,20 @@
   <div id="modal-div">
     {{!-- {{>calendarModal modalsData=modalsData}} --}}
   </div>
-  <table class="table table-bordered">
+  <table class="table table-bordered ">
 
-    <thead>
+    <thead class="sticky-calendar-head bg-light">
 
       <tr id="weekdays">
          {{#if week.length}}
-        <td></td>
+        <td class="timeslots"></td>
         {{/if}}
         {{#each weekdays}}
           <th scope="col">{{this}}</th>
         {{/each}}
       </tr>
     </thead>
-    <tbody>
+    <tbody class="scrollable-calendar-body">
       {{#if months.length}}
       {{>month-view weeks=weeks}}
       <script src="/public/scripts/month-calendar.js" type="text/javascript"></script>
