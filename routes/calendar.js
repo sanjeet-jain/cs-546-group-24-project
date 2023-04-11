@@ -214,6 +214,10 @@ async function getModalData(weeks, userId) {
               yearAddedTo === day.year
             );
           });
+          modalData[eventType].forEach((eventData) => {
+            eventData.timeslotStart = getTimeSlot(eventData.dateAddedTo);
+            eventData.timeslotEnd = getTimeSlot(eventData.dateDueOn);
+          });
         }
         let modalId = "" + day.month + "-" + day.day + "-" + day.year;
         day.modalId = modalId;
@@ -229,6 +233,36 @@ async function getModalData(weeks, userId) {
   } catch (error) {
     throw Error("Internal server error");
   }
+}
+
+function getTimeSlot(dateString) {
+  // Create a new Date object from the date string
+  const date = new Date(dateString);
+
+  // Extract the hours and minutes from the Date object
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+
+  // Format the hours and minutes as a string in the format "H:MM AM/PM"
+  let time = "";
+  if (minutes < 30) {
+    minutes = "00";
+  } else {
+    minutes = "30";
+  }
+  if (hours === 0) {
+    time = "12:" + minutes + " AM";
+  } else if (hours < 12) {
+    time = hours + ":" + minutes + " AM";
+  } else if (hours === 12) {
+    time = "12:" + minutes + " PM";
+  } else {
+    time = hours - 12 + ":" + minutes + " PM";
+  }
+
+  // Find the index of the time slot in the timeslots array
+  const index = constants.timeslots.indexOf(time);
+  return time;
 }
 
 export default router;

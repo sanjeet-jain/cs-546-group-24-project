@@ -1,74 +1,68 @@
 <tr class="sticky-calendar-row bg-light">
-    <td></td>
+  <td></td>
 
-    {{#each week}}
-    <td >
-        <div {{#if (checkIfToday this.year this.month this.day)}} class="badge rounded-pill bg-info" {{/if}}>
-            {{this.day}}
-        </div>
-    </td>
-    {{/each}}
+  {{#each week}}
+  <td>
+    <div {{#if (checkIfToday this.year this.month this.day)}} class="badge rounded-pill bg-info" {{/if}}>
+      {{this.day}}
+    </div>
+  </td>
+  {{/each}}
 
 </tr>
 {{#each timeslots}}
 <tr>
-    <td>{{this}}</td>
-      {{#each ../week}}
-    <td class="active-month">
-        <div class="d-grid gap-1">
-                    {{#if this.modalData.meetings.length}}
-                      <span class="badge rounded-pill text-bg-primary">
-                        <i class="bi-calendar-event"></i>
-                        {{this.modalData.meetings.length}}
-                        meetings</span>
-                    {{/if}}
-                    {{#if this.modalData.notes.length}}
-                      <span class="badge rounded-pill text-bg-success">
-                        <i class="bi-file-text"></i>
-                        {{this.modalData.notes.length}}
-                        notes</span>
-                    {{/if}}
-                    {{#if this.modalData.reminders.length}}
-                      <span class="badge rounded-pill text-bg-warning">
-                        <i class="bi-alarm"></i>
-                        {{this.modalData.reminders.length}}
-                        reminders</span>
-                    {{/if}}
-                    {{#if this.modalData.tasks.length}}
-                      <span class="badge rounded-pill text-bg-danger">
-                        <i class="bi-check2-square"></i>
-                        {{this.modalData.tasks.length}}
-                        tasks</span>
-                    {{/if}}
-                  </div>
-                    <div class="d-grid gap-1">
-                    {{#if this.modalData.meetings.length}}
-                      <span class="badge rounded-pill text-bg-primary">
-                        <i class="bi-calendar-event"></i>
-                        {{this.modalData.meetings.length}}
-                        meetings</span>
-                    {{/if}}
-                    {{#if this.modalData.notes.length}}
-                      <span class="badge rounded-pill text-bg-success">
-                        <i class="bi-file-text"></i>
-                        {{this.modalData.notes.length}}
-                        notes</span>
-                    {{/if}}
-                    {{#if this.modalData.reminders.length}}
-                      <span class="badge rounded-pill text-bg-warning">
-                        <i class="bi-alarm"></i>
-                        {{this.modalData.reminders.length}}
-                        reminders</span>
-                    {{/if}}
-                    {{#if this.modalData.tasks.length}}
-                      <span class="badge rounded-pill text-bg-danger">
-                        <i class="bi-check2-square"></i>
-                        {{this.modalData.tasks.length}}
-                        tasks</span>
-                    {{/if}}
-                  </div>
-    </td>
+  <td class=" timeslots">{{this }}</td>
+  {{#each ../week}}
+
+  <td >
+    <div class="d-grid gap-1"></div>
+    {{#if this.modalData.meetings.length}}
+    {{#each this.modalData.meetings}}
+    {{#if (eq this.timeslotStart ../../this)}}
+    <span class="badge rounded-pill text-bg-primary text-wrap text-center">
+      <i class="bi-calendar-event"></i>
+      {{{this.title}}}</span>
+    {{/if}}
     {{/each}}
+    {{/if}}
+
+ {{#if this.modalData.notes.length}}
+    {{#each this.modalData.notes}}
+    {{#if (eq this.timeslotStart ../../this)}}
+    <span class="badge rounded-pill text-bg-success text-wrap text-center">
+      <i class="bi-file-text"></i>
+      {{{this.title}}}</span>
+    {{/if}}
+    {{/each}}
+    {{/if}}
+
+ {{#if this.modalData.reminders.length}}
+    {{#each this.modalData.reminders}}
+    {{#if (eq this.timeslotStart ../../this)}}
+    <span class="badge rounded-pill text-bg-warning text-wrap text-center">
+            <i class="bi-alarm"></i>
+      {{{this.title}}}</span>
+    {{/if}}
+    {{/each}}
+    {{/if}}
+
+
+ {{#if this.modalData.tasks.length}}
+    {{#each this.modalData.tasks}}
+    {{#if (eq this.timeslotStart ../../this)}}
+    <span class="badge rounded-pill text-bg-danger text-wrap text-center">
+       <i class="bi-check2-square"></i>
+      {{{this.title}}}</span>
+    {{/if}}
+    {{/each}}
+    {{/if}}
+
+
+    </div>
+  </td>
+
+  {{/each}}
 
 </tr>
 {{/each}}

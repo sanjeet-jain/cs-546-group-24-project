@@ -17,11 +17,16 @@ main {
 .userRightMenu {
   text-align-last: end;
 }
+.center-div {
+  height: 90vh;
+  width: 60vw;
+  top: 10vh;
+}
 
 .active-month {
   text-align: center;
   vertical-align: top;
-  width: 8vw;
+  width: 9vw;
   height: 13vh;
 }
 .active-month:hover {
@@ -49,7 +54,7 @@ main {
 }
 
 .timeslots {
-  width: 6vw;
+  min-width: 6vw;
 }
 
 .sticky-calendar-head {

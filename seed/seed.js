@@ -53,7 +53,7 @@ export async function runSetup() {
 
   // Seed Meetings
   const sampleMeeting = {
-    title: "Weekly Team Meeting",
+    title: "Weekly Team Meeting repeating",
     dateCreated: dt.toString(),
     dateAddedTo: dt.toString(),
     dateDueOn: new Date(
@@ -62,19 +62,25 @@ export async function runSetup() {
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
+    repeating: true,
+    repeatingCounterIncrement: 2,
+    repeatingIncrementBy: "day",
     repeatingGroup: null,
     expired: false,
     type: "meeting",
   };
   const sampleMeeting2 = {
-    title: "Weekly Team Meeting",
+    title: "Weekly Team Meeting non repeating",
     dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
+    dateAddedTo: new Date(
+      new Date(new Date().setHours(new Date().getHours() + 1)).setDate(
+        new Date().getDate() + 1
+      )
+    ).toString(),
     dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
+      new Date(new Date().setHours(new Date().getHours() + 2)).setDate(
+        new Date().getDate() + 1
+      )
     ).toString(),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
