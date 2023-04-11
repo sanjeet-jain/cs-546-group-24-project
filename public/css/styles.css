@@ -5,6 +5,7 @@ body {
 main {
   height: 90vh;
   width: 100%;
+  padding-top: 3vh;
 }
 .headBarNav {
   height: 8vh;
@@ -20,7 +21,6 @@ main {
 .center-div {
   height: 90vh;
   width: 60vw;
-  top: 10vh;
 }
 
 .active-month {
@@ -60,10 +60,10 @@ main {
 .sticky-calendar-head {
   height: 3vh;
   position: sticky;
-  top: 8vh;
+  top: 9vh;
 }
 
 .sticky-calendar-row {
   position: sticky;
-  top: 11vh;
+  top: 15vh;
 }
