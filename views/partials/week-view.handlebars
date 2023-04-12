@@ -16,13 +16,17 @@
   {{#each ../week}}
 
   <td >
-    <div class="d-grid gap-1"></div>
+    <div class="d-grid gap-1">
     {{#if this.modalData.meetings.length}}
     {{#each this.modalData.meetings}}
     {{#if (eq this.timeslotStart ../../this)}}
-    <span class="badge rounded-pill text-bg-primary text-wrap text-center">
+      <div  class="modal-div">
+      {{>test eventData=this session=../../../session}}
+    </div>
+  
+    <button class="badge rounded-pill text-bg-primary text-wrap text-center" data-bs-toggle="modal" data-bs-target="#modal-event-display-{{this._id}}" >
       <i class="bi-calendar-event"></i>
-      {{{this.title}}}</span>
+      {{{this.title}}}</button>
     {{/if}}
     {{/each}}
     {{/if}}
