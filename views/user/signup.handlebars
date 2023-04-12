@@ -114,8 +114,10 @@
       <input
         class="form-check-input"
         type="checkbox"
+        name = "disability"
         id="disability"
         aria-describedby="disability_help_id"
+        value = "true"
       />
       <label class="form-check-label" for="disability">
         Disability CheckBox
@@ -124,7 +126,24 @@
         Please check if you need accesibilty Features</small>
     </div>
     <br />
-
+<div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name = "consent"
+        id="consent"
+        aria-describedby="consent_help_id"
+        value = "true"
+        required
+      />
+      <label class="form-check-label" for="disability">
+        Disability CheckBox
+      </label>
+      <small id="consent_help_id" class="form-text text-muted">
+        Please check to consent for the data being collected</small>
+    </div>
+    <br/>
+    
     <button class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
     </button>
