@@ -69,12 +69,17 @@ const utils = {
     if (password.length < constants.stringLimits.password) {
       throw new Error("Password must be at least 8 characters long");
     }
-    if (!/[A-Z]/.test(password)) {
-      throw new Error("Password must contain at least one uppercase letter");
+    if (!/(?=.{8,})(?=.*\d)(?=.*[A-Z])(?!.*[\W])/.test(password)) {
+      throw new Error(
+        "Password must contain at least one uppercase letter and one number"
+      );
     }
-    if (!/[0-9]/.test(password)) {
-      throw new Error("Password must contain at least one number");
-    }
+    // if (!/[A-Z]/.test(password)) {
+    //   throw new Error("Password must contain at least one uppercase letter");
+    // }
+    // if (!/[0-9]/.test(password)) {
+    //   throw new Error("Password must contain at least one number");
+    // }
   },
   validateRepeatingCounterIncrement(repeatingCounterIncrement) {
     this.validateInputIsNumber(

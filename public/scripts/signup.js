@@ -101,7 +101,7 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-  const passwordRegex = /^(?=.\d)(?=.[A-Z]).{8,}$/;
+  const passwordRegex = /(?=.{8,})(?=.*\d)(?=.*[A-Z])(?!.*[\W])/;
   return passwordRegex.test(password);
 }
 
