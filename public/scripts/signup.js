@@ -8,11 +8,7 @@ function validatesignup(event) {
         event.preventDefault();
         event.stopPropagation();
 
-        if (form.checkValidity()) {
-          form.submit();
-        } else {
-          checkValidations();
-        }
+        checkValidations(event);
 
         form.classList.add("was-validated");
       },
@@ -21,8 +17,9 @@ function validatesignup(event) {
   });
 }
 
-function checkValidations() {
-  let emailInput = document.getElementById("email");
+function checkValidations(event) {
+  let emailInput = event.target.email;
+  //todo use similary3
   let passwordInput = document.getElementById("password");
   let firstNameInput = document.getElementById("first_name");
   let lastNameInput = document.getElementById("last_name");
@@ -40,35 +37,28 @@ function checkValidations() {
 
   if (!validateEmail(emailVal)) {
     email_error.innerText = "Please enter a valid email.";
-    emailInput.setCustomValidity("Invalid");
   } else {
     email_error.innerText = "";
-    emailInput.setCustomValidity("");
   }
 
   if (!validatePassword(passwordVal)) {
     password_error.innerText =
       "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
-    passwordInput.setCustomValidity("Invalid");
   } else {
     password_error.innerText = "";
-    passwordInput.setCustomValidity("");
+    passwordInput.validity.patternMismatch = true;
   }
 
   if (!validateName(firstNameInput.value)) {
     firstName_error.innerText = "Please enter a valid first name.";
-    firstNameInput.setCustomValidity("Invalid");
   } else {
     firstName_error.innerText = "";
-    firstNameInput.setCustomValidity("");
   }
 
   if (!validateName(lastNameInput.value)) {
     lastName_error.innerText = "Please enter a valid last name.";
-    lastNameInput.setCustomValidity("Invalid");
   } else {
     lastName_error.innerText = "";
-    lastNameInput.setCustomValidity("");
   }
 
   if (dob.validity.valueMissing) {
@@ -80,7 +70,6 @@ function checkValidations() {
   } else {
     date_error.textContent = "";
   }
-  dob.setCustomValidity(date_error.textContent);
   if (
     emailInput.checkValidity() &&
     passwordInput.checkValidity() &&
