@@ -1,26 +1,15 @@
 <div id="signup-form-div" class="container w-100">
-  <form
-    action="/user/signup"
-    id="signup-form"
-    method="POST"
-    onsubmit="validatesignup(event)"
-    class="needs-validation"
-    novalidate
-  >
+  <form action="/user/signup" id="signup-form" method="POST" onsubmit="validatesignup(event)" class="needs-validation"
+    novalidate>
     <h1 class="h3 mb-3 fw-normal">
       <i class="bi-calendar-check-fill"></i>
+      Create an Account
     </h1>
+
     <br />
     <div class="form-floating mb-3">
-      <input
-        required
-        type="text"
-        class="form-control"
-        name="first_name"
-        id="first_name"
-        aria-describedby="first_name_help_id"
-        placeholder="First Name"
-      />
+      <input required type="text" class="form-control" name="first_name" id="first_name"
+        aria-describedby="first_name_help_id" placeholder="First Name" pattern="^[a-zA-Z]+$" />
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
@@ -29,16 +18,8 @@
       </div>
     </div>
     <div class="form-floating mb-3">
-      <input
-        required
-        type="text"
-        class="form-control"
-        name="last_name"
-        id="last_name"
-        aria-describedby="last_name_help_id"
-        placeholder="Last
-                Name"
-      />
+      <input required type="text" class="form-control" name="last_name" id="last_name"
+        aria-describedby="last_name_help_id" placeholder="Last Name" pattern="^[a-zA-Z]+$" />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
@@ -48,16 +29,8 @@
     </div>
 
     <div class="form-floating mb-3">
-      <input
-        required
-        type="email"
-        class="form-control"
-        name="email"
-        id="email"
-        placeholder="abc@mail.com"
-        aria-describedby="email_help_id"
-        {{! pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" }}
-      />
+      <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
+        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
@@ -67,16 +40,8 @@
     </div>
 
     <div class="form-floating">
-      <input
-        required
-        type="password"
-        class="form-control"
-        name="password"
-        id="password"
-        placeholder="Password"
-        {{! minlength="10" }}
-        aria-describedby="password_help_id"
-      />
+      <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
+        pattern="^(?=.\d)(?=.[A-Z]).{8,}$" aria-describedby="password_help_id" />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
@@ -87,18 +52,8 @@
     <br />
 
     <div class="form-floating mb-3">
-      <input
-        required
-        type="date"
-        class="form-control"
-        name="dob"
-        id="dob"
-        aria-describedby="dob_help_id"
-        placeholder="MM/DD/YYYY"
-        value=""
-        max="{{minDobDate}}"
-        min="{{maxDobDate}}"
-      />
+      <input required type="date" class="form-control" name="dob" id="dob" aria-describedby="dob_help_id"
+        placeholder="MM/DD/YYYY" value="" max="{{minDobDate}}" min="{{maxDobDate}}" />
       <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
@@ -108,17 +63,12 @@
     </div>
 
     <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        id="disability"
-        aria-describedby="disability_help_id"
-      />
+      <input class="form-check-input" type="checkbox" id="disability" aria-describedby="disability_help_id" />
       <label class="form-check-label" for="disability">
         Disability CheckBox
       </label>
       <small id="disability_help_id" class="form-text text-muted">
-        Please Check if you need accesibilty Features</small>
+        Please check if you need accesibilty Features</small>
     </div>
     <br />
 

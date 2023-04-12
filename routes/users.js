@@ -22,6 +22,8 @@ router
     const disability = req.body.disability;
     const dob = req.body.dob;
     const consent = req.body.consent;
+    const min_age = 13;
+    const max_age = 150;
     try {
       utils.validateName(first_name, "First name");
       utils.validateName(last_name, "Last name");
@@ -29,9 +31,13 @@ router
       utils.validatePassword(password, "Password");
       utils.validateBooleanInput(disability, "Disability");
       utils.validateDate(dob, "Date of Birth");
+
       utils.validateBooleanInput(consent, "Consent");
+      utils.validateAge(dob, min_age, max_age);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      return res
+        .status(400)
+        .render("user/signup", { error: e.message, statuscode: 400 });
     }
 
     try {
@@ -50,7 +56,7 @@ router
       }
       return res.status(200).redirect("/calendar");
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      return res.render("user/signup", { error: e.message, statuscode: 400 });
     }
   })
   .get(async (req, res) => {

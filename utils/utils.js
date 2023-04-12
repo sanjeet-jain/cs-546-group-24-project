@@ -255,6 +255,20 @@ const utils = {
       );
     }
   },
+  validateAge(dob, min_age, max_age) {
+    this.validateDate(dob, "dob");
+    let today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    let m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    if (age < min_age || age > max_age) {
+      throw new Error(
+        `Age must be between ${min_age} and ${max_age} years old`
+      );
+    }
+  },
 
   getNewDateObject(fullYear, month, date, hours, minutes) {
     let dateObj = new Date();
