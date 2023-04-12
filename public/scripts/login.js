@@ -26,7 +26,7 @@ function checkValidations() {
   let passForm = document.getElementById("login-form");
   let password_error = document.getElementById("password_error");
   let email_error = document.getElementById("email_error");
-
+  console.log(typeof usernameVal);
   if (
     !usernameVal ||
     usernameVal == null ||

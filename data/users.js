@@ -82,12 +82,12 @@ const exportedMethods = {
     const user = await users.findOne({ _id: new ObjectId(id) });
     return user;
   },
-  async updateUser(id, { first_name, last_name, email, disability, dob }) {
+  async updateUser(id, { first_name, last_name, email, /*disability,*/ dob }) {
     utils.checkObjectIdString(id);
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
-    utils.validateBooleanInput(disability, "Disability");
+    //utils.validateBooleanInput(disability, "Disability");
     utils.validateDate(dob, "Date of Birth");
     id = id.trim();
     first_name = first_name.trim();
@@ -102,9 +102,9 @@ const exportedMethods = {
       last_name: last_name,
       email: email,
       password: currUser.password,
-      disability: disability,
+      disability: false, //TESTING! TODO: change back to disability:disability and fix others
       dob: dob,
-      consent: currUser.Consent,
+      consent: currUser.consent,
       taskIds: currUser.taskIds,
       reminderIds: currUser.reminderIds,
       noteIds: currUser.noteIds,
@@ -117,17 +117,30 @@ const exportedMethods = {
     return updatedUser;
   },
 
-  async changePassword(id, newPassword) {
+  async changePassword(id, oldPassword, newPassword, reEnterNewPassword) {
     utils.checkObjectIdString(id);
-    utils.validatePassword(newPassword);
+    utils.validatePassword(newPassword, "New Password");
+    utils.validateStringInput(oldPassword);
+    utils.validateStringInput(reEnterNewPassword);
+    oldPassword = oldPassword.trim();
     newPassword = newPassword.trim();
+    reEnterNewPassword = reEnterNewPassword.trim();
+
     id = id.trim();
     let users = await usersCollection();
     const currUser = await this.getUser(id);
     const isSamePassword = await bcrypt.compare(newPassword, currUser.password);
+    const oldPassCheck = await bcrypt.compare(oldPassword, currUser.password);
     if (isSamePassword) {
-      throw Error("New password must be different from current password");
+      throw new Error("New password must be different from current password");
     }
+    if (!oldPassCheck) {
+      throw new Error("Previous password is incorrect");
+    }
+    if (newPassword !== reEnterNewPassword) {
+      throw new Error("New password and re-entered password do not match");
+    }
+    const hashPW = await bcrypt.hash(newPassword, constants.pwRounds);
 
     const updateInfo = await users.updateOne(
       { _id: new ObjectId(id) },
@@ -161,7 +174,7 @@ const exportedMethods = {
     if (validPassword) {
       return currUser;
     } else {
-      throw Error("Invalid password");
+      throw Error("Invalid email or password");
     }
   },
 

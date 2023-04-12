@@ -3,6 +3,7 @@ const router = Router();
 
 import usersFunctions from "../data/users.js";
 import utils from "../utils/utils.js";
+import { usersCollection } from "../config/mongoCollections.js";
 
 function createSessionObject(user) {
   return {
@@ -22,6 +23,7 @@ router
     const disability = req.body.disability;
     const dob = req.body.dob;
     const consent = req.body.consent;
+    console.log(consent);
     try {
       utils.validateName(first_name, "First name");
       utils.validateName(last_name, "Last name");
@@ -100,80 +102,91 @@ router
 router
   .route("/profile")
   //TODO: choose how to display user details
-  .put(async (req, res) => {
+  .get(async (req, res) => {
     try {
       if (req.session.user) {
-        const users = await usersCollection();
         const id = req.session.user.user_id;
-        const currUser = users.getUsers(id);
+        const currUser = await usersFunctions.getUser(id);
+        console.log(currUser);
         //TODO render handlebar
-        return res.status(200).json(currUser);
+
+        return res.render("user/profile", { currUser });
       }
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
   });
+
 router
-  .route("/profile/edit")
+  .route("/edit")
   .get(async (req, res) => {
     const id = req.session.user.user_id;
     try {
       const currUser = await usersFunctions.getUser(id);
       //TODO render handlebar
-      return res.status(200).json(currUser);
+      return res.render("user/edit", { currUser });
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
   })
-  .put(async (req, res) => {
+  .post(async (req, res) => {
     const id = req.session.user.user_id;
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
-    const disability = req.body.disability;
+    //const disability = req.body.disability;
     const dob = req.body.dob;
-
+    console.log(last_name);
     try {
       utils.checkObjectIdString(id);
-      utils.validateName(first_name);
-      utils.validateName(last_name);
-      utils.validateEmail(email);
-      utils.validateBooleanInput(disability);
-      utils.validateDate(dob);
+      utils.validateName(first_name, "First name");
+      utils.validateName(last_name, "Last name");
+      utils.validateEmail(email, "Email");
+      //utils.validateBooleanInput(disability, "Disability");
+      utils.validateDate(dob, "Date of birth");
     } catch (e) {
-      return res(400).json({ error: e.message });
+      return res.status(400).json({ error: e.message });
     }
     try {
       const updatedUser = usersFunctions.updateUser(id, {
         first_name,
         last_name,
         email,
-        disability,
-        dob,
+        //disability,
+        dob, //,
       });
-      return res.redirect("/profile");
+      return res.redirect("profile");
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
   });
 router
-  .route("/profile/password")
-  .put(async (req, res) => {
-    const id = req.session.user.user_id;
-    try {
-      const updated = usersFunctions.changePassword(id, req.body.password);
-      return res.redirect("/profile");
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
-  })
+  .route("/password")
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.render("user/password");
     }
     //TODO password change UI
     res.redirect("/");
+  })
+  .post(async (req, res) => {
+    const id = req.session.user.user_id;
+    console.log(req.body);
+    try {
+      const updated = usersFunctions.changePassword(
+        id,
+        req.body.oldPassword,
+        req.body.newPassword,
+        req.body.reEnterNewPassword
+      );
+      const currUser = await usersFunctions.getUser(id);
+      //TODO: send "password successfully changed" message
+      return res.render("user/profile", { currUser });
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
   });
+
 router.route("/logout").post(async (req, res) => {
   req.session.destroy();
   res.redirect("/");

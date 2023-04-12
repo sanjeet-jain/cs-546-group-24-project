@@ -1,0 +1,47 @@
+<div id="signup-form-div" class="container w-100">
+  <form
+    action="/user/edit"
+    id="edit-form"
+    method="POST"
+    onsubmit="validateprofile(event)"
+    class="needs-validation"
+    novalidate
+  >
+<div>
+<label for = "first_name">First Name:</label>
+<span class = "editable" data-field = "first_name">{{currUser.first_name}}</span>
+<input type = "hidden" name = "first_name" id = "first_name" value = "{{currUser.first_name}}">
+<div id = "first_name_error" class = "invalid-feedback"></div>
+</div>
+<br />
+<div>
+<label for = "last_name">Last Name:</label>
+<span class = "editable" data-field = "last_name">{{currUser.last_name}}</span>
+<input type = "hidden" name = "last_name" id = "last_name" value = "{{currUser.last_name}}">
+<div id = "last_name_error" class = "invalid-feedback"></div>
+</div>
+<br />
+<div>
+<label for = "email">Email:</label>
+<span class = "editable" data-field = "email">{{currUser.email}}</span>
+<input type = "hidden" name = "email" id = "email" value = "{{currUser.email}}">
+<div id = "email_error" class = "invalid-feedback"></div>
+</div>
+<br />
+<div>
+<label for = "dob">Date of Birth:</label>
+<span class = "editable" data-field = "dob">{{currUser.dob}}</span>
+<input type = "hidden" name = "dob" id = "dob" value = "{{currUser.dob}}">
+<div id = "dob_error" class = "invalid-feedback"></div>
+</div>
+<!--TODO add checkbox for disability-->
+<!--<div>
+<label for = "dob">Disability:</label>
+<span class = "editable" data-field = "disability">{{currUser.disability}}</span>
+<input type = "hidden" name = "disability" id = "disability" value = "{{currUser.disability}}">
+<div id = "disability_error" class = "invalid-feedback"></div>
+</div>-->
+
+<button class="w-100 btn btn-lg btn-primary" type="submit">Save Changes</button>
+</form>
+  <script src = "/public/scripts/profile_edit.js" type="text/javascript"></script>

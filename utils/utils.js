@@ -72,13 +72,13 @@ const utils = {
       throw new Error(`${inputName} is not an email`);
     }
   },
-  validatePassword(password) {
+  validatePassword(password, inputName) {
     if (!password) {
       throw new Error("Please enter a password");
     }
-    this.validateStringInput(password, "Password");
+    this.validateStringInput(password);
     if (password.length < constants.stringLimits.password) {
-      throw new Error("Password must be at least 8 characters long");
+      throw new Error(`${inputName} must be at least 8 characters long`);
     }
     if (!/[A-Z]/.test(password)) {
       throw new Error("Password must contain at least one uppercase letter");
