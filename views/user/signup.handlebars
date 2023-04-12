@@ -77,7 +77,7 @@
         name="password"
         id="password"
         placeholder="Password"
-        pattern="(?=.{8,})(?=.*\d)(?=.*[A-Z])(?!.*[\W])"
+        pattern="^(?=.\d)(?=.[A-Z]).{8,}$"
         aria-describedby="password_help_id"
       />
       <label for="password">Password</label>
