@@ -19,34 +19,31 @@ function validatesignup(event) {
 
 function checkValidations(event) {
   let emailInput = event.target.email;
-  //todo use similary3
-  let passwordInput = document.getElementById("password");
-  let firstNameInput = document.getElementById("first_name");
-  let lastNameInput = document.getElementById("last_name");
-  let dob = document.getElementById("dob");
-  let passForm = document.getElementById("signup-form");
-
-  let emailVal = emailInput.value;
-  let passwordVal = passwordInput.value;
+  let passwordInput = event.target.password;
+  let firstNameInput = event.target.first_name;
+  let lastNameInput = event.target.last_name;
+  let dob = event.target.dob;
+  let consent = event.target.consent;
+  let passForm = event.target;
 
   let email_error = document.getElementById("email_error");
   let password_error = document.getElementById("password_error");
   let firstName_error = document.getElementById("first_name_error");
   let lastName_error = document.getElementById("last_name_error");
   let date_error = document.getElementById("date_error");
+  let consent_error = document.getElementById("consent_error");
 
-  if (!validateEmail(emailVal)) {
+  if (!validateEmail(emailInput.value)) {
     email_error.innerText = "Please enter a valid email.";
   } else {
     email_error.innerText = "";
   }
 
-  if (!validatePassword(passwordVal)) {
+  if (!validatePassword(passwordInput.value)) {
     password_error.innerText =
       "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
   } else {
     password_error.innerText = "";
-    passwordInput.validity.patternMismatch = true;
   }
 
   if (!validateName(firstNameInput.value)) {
@@ -59,6 +56,9 @@ function checkValidations(event) {
     lastName_error.innerText = "Please enter a valid last name.";
   } else {
     lastName_error.innerText = "";
+  }
+  if (!consent.value !== "true") {
+    consent_error.innerText = "Please consent to data collection";
   }
 
   if (dob.validity.valueMissing) {
@@ -75,7 +75,8 @@ function checkValidations(event) {
     passwordInput.checkValidity() &&
     firstNameInput.checkValidity() &&
     lastNameInput.checkValidity() &&
-    dob.checkValidity()
+    dob.checkValidity() &&
+    consent.checkValidity()
   ) {
     passForm.submit();
   }
