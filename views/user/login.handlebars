@@ -16,15 +16,18 @@
 
     <div class="form-floating">
       <input
+        required
         type="email"
         class="form-control"
         name="email"
         id="email"
         placeholder="abc@mail.com"
-        required
+        aria-describedby="email_help_id"
         pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
       />
       <label for="email">Email address</label>
+      <small id="email_help_id" class="form-text text-muted">
+        Please Enter Email Here</small>
       <div id="email_error" class="invalid-feedback">
 
       </div>
@@ -32,16 +35,19 @@
     <br />
     <div class="form-floating">
       <input
+        required
         type="password"
         class="form-control"
         name="password"
         id="password"
         placeholder="Password"
-        minlength="10"
-        required
-        pattern="^(?=.\d)(?=.[A-Z]).{8,}$"
+        minlength="8"
+        pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+        aria-describedby="password_help_id"
       />
       <label for="password">Password</label>
+      <small id="password_help_id" class="form-text text-muted">
+        Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
 
       </div>

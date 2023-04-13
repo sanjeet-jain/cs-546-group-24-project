@@ -63,7 +63,8 @@
       />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
-        Please Enter First Name Here</small>
+        Please Enter Email Here. This will also be used as your login id
+      </small>
       <div id="email_error" class="invalid-feedback">
 
       </div>
@@ -77,12 +78,13 @@
         name="password"
         id="password"
         placeholder="Password"
-        pattern="^(?=.\d)(?=.[A-Z]).{8,}$"
+        minlength="8"
+        pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
         aria-describedby="password_help_id"
       />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
-        Please Enter First Name Here</small>
+        Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
 
       </div>
@@ -114,10 +116,10 @@
       <input
         class="form-check-input"
         type="checkbox"
-        name = "disability"
+        name="disability"
         id="disability"
         aria-describedby="disability_help_id"
-        value = "true"
+        value="true"
       />
       <label class="form-check-label" for="disability">
         Disability CheckBox
@@ -126,24 +128,24 @@
         Please check if you need accesibilty Features</small>
     </div>
     <br />
-<div class="form-check">
+    <div class="form-check">
       <input
         class="form-check-input"
         type="checkbox"
-        name = "consent"
+        name="consent"
         id="consent"
         aria-describedby="consent_help_id"
-        value = "true"
+        value="true"
         required
       />
       <label class="form-check-label" for="disability">
         Disability CheckBox
       </label>
       <small id="consent_help_id" class="form-text text-muted">
-        Please check to consent for the data being collected</small>
+        Consent for data being collected on this application</small>
     </div>
-    <br/>
-    
+    <br />
+
     <button class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
     </button>

@@ -1,4 +1,4 @@
-function validatelogin(event) {
+function validatelogin() {
   var forms = document.querySelectorAll(".needs-validation");
 
   Array.prototype.slice.call(forms).forEach(function (form) {
@@ -7,11 +7,7 @@ function validatelogin(event) {
       function (event) {
         event.preventDefault();
         event.stopPropagation();
-        checkValidations();
-
-        if (form.checkValidity()) {
-          form.submit();
-        }
+        checkValidations(event);
 
         form.classList.add("was-validated");
       },
@@ -20,45 +16,26 @@ function validatelogin(event) {
   });
 }
 
-function checkValidations() {
-  let emailInput = document.getElementById("email");
-  let passwordInput = document.getElementById("password");
-  let emailVal = emailInput.value;
-  let passwordVal = passwordInput.value;
+function checkValidations(event) {
+  let emailInput = event.target.email;
+  let passwordInput = event.target.password;
+
   let email_error = document.getElementById("email_error");
   let password_error = document.getElementById("password_error");
-  let passForm = document.getElementById("login-form");
+  let passForm = event.target;
 
-  if (
-    !emailVal ||
-    emailVal.trim().length === "" ||
-    emailVal == null ||
-    emailVal == undefined
-  ) {
-    email_error.innerText = "Please enter an email.";
-    emailInput.setCustomValidity("Invalid");
-  } else if (!validateEmail(emailVal)) {
+  if (!validateEmail(emailInput.value)) {
     email_error.innerText = "Please enter a valid email.";
-    emailInput.setCustomValidity("Invalid");
   } else {
     email_error.innerText = "";
-    emailInput.setCustomValidity("");
   }
 
-  if (
-    !passwordVal ||
-    passwordVal.trim().length === "" ||
-    passwordVal == null ||
-    passwordVal == undefined
-  ) {
-    password_error.innerText = "Please enter a password.";
-    passwordInput.setCustomValidity("Invalid");
-  } else if (passwordVal.length < 8) {
-    password_error.innerText = "Password must be at least 9 characters.";
-    passwordInput.setCustomValidity("Invalid");
+  if (!validatePassword(passwordInput.value)) {
+    password_error.innerText =
+      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
   } else {
     password_error.innerText = "";
-    passwordInput.setCustomValidity("");
+    passwordInput.validity.patternMismatch = true;
   }
   if (emailInput.checkValidity() && passwordInput.checkValidity()) {
     passForm.submit();
@@ -73,7 +50,7 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-  const passwordRegex = /^(?=.\d)(?=.[A-Z]).{8,}$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
   return passwordRegex.test(password);
 }
 
