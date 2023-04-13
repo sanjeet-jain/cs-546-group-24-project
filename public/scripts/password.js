@@ -1,4 +1,4 @@
-function validatepassword(event) {
+function validatepassword() {
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   var forms = document.querySelectorAll(".needs-validation");
 
@@ -7,11 +7,9 @@ function validatepassword(event) {
     form.addEventListener(
       "submit",
       function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-          checkValidations();
-        }
+        event.preventDefault();
+        event.stopPropagation();
+        checkValidations(event);
 
         form.classList.add("was-validated");
       },
@@ -19,39 +17,46 @@ function validatepassword(event) {
     );
   });
 }
-function checkValidations() {
-  let oldPassVal = document.getElementById("oldPassword").value;
-  let newPassVal = document.getElementById("newPassword").value;
-  let reEnterNewVal = document.getElementById("reEnterNewPassword").value;
-  let passwordForm = document.getElementById("password-form");
-  let password_error = document.getElementById("password_error");
-  let newPassword_error = document.getElementById("newPassword_error");
-  let reenter_error = document.getElementById("reenter_error");
+function checkValidations(event) {
+  let oldPassInput = event.target.oldPassword;
+  let newPassInput = event.target.newPassword;
+  let reEnterInput = event.target.reEnterNewPassword;
 
-  console.log(oldPassVal);
-  if (
-    !oldPassVal ||
-    oldPassVal == null ||
-    oldPassVal == undefined ||
-    oldPassVal.trim().length === ""
-  ) {
-    password_error.innerText = "Please enter current password.";
-  } else if (
-    !newPassVal ||
-    newPassVal == null ||
-    newPassVal == undefined ||
-    newPassVal.trim().length === ""
-  ) {
-    newPassword_error.innerText = "Please enter a new password.";
-  } else if (
-    !reEnterNewVal ||
-    reEnterNewVal == null ||
-    reEnterNewVal == undefined ||
-    reEnterNewVal.trim().length === ""
-  ) {
-    reenter_error.innerText = "Please re-enter new password.";
+  let passwordForm = event.target;
+  let oldPassword_error = document.getElementById("oldPassword_error");
+  let newPassword_error = document.getElementById("newPassword_error");
+  let reEnterNewPassword_error = document.getElementById(
+    "reEnterNewPassword_error"
+  );
+
+  if (!validateNewPassword(newPassInput.value)) {
+    console.log(newPassInput.value);
+    newPassword_error.innerText =
+      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
   } else {
+    newPassword_error.innerText = "";
+    newPassInput.validity.patternMismatch = true;
+  }
+  if (!confirmNewPassword(newPassInput.value, reEnterInput.value)) {
+    reEnterNewPassword_error.innerText =
+      "Re-Entered password does not match new password.";
+  } else {
+    reEnterNewPassword_error.innerText = "";
+    reEnterInput.validity.patternMismatch = true;
+  }
+  if (newPassInput.checkValidity() && reEnterInput.checkValidity()) {
     passwordForm.submit();
+  }
+}
+function validateNewPassword(password) {
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  return passwordRegex.test(password);
+}
+function confirmNewPassword(newPassword, reEnter) {
+  if (newPassword !== reEnter) {
+    return false;
+  } else {
+    return true;
   }
 }
 validatepassword();

@@ -124,28 +124,22 @@ const exportedMethods = {
   },
 
   async changePassword(id, oldPassword, newPassword, reEnterNewPassword) {
-    utils.checkObjectIdString(id);
-    utils.validatePassword(newPassword, "New Password");
-    utils.validateStringInput(oldPassword);
-    utils.validateStringInput(reEnterNewPassword);
+    try {
+      utils.checkObjectIdString(id);
+
+      utils.validateStringInput(oldPassword);
+      utils.validateStringInput(reEnterNewPassword);
+    } catch (e) {
+      throw new Error(e);
+    }
+
     oldPassword = oldPassword.trim();
     newPassword = newPassword.trim();
     reEnterNewPassword = reEnterNewPassword.trim();
 
     id = id.trim();
     let users = await usersCollection();
-    const currUser = await this.getUser(id);
-    const isSamePassword = await bcrypt.compare(newPassword, currUser.password);
-    const oldPassCheck = await bcrypt.compare(oldPassword, currUser.password);
-    if (isSamePassword) {
-      throw new Error("New password must be different from current password");
-    }
-    if (!oldPassCheck) {
-      throw new Error("Previous password is incorrect");
-    }
-    if (newPassword !== reEnterNewPassword) {
-      throw new Error("New password and re-entered password do not match");
-    }
+
     const hashPW = await bcrypt.hash(newPassword, constants.pwRounds);
 
     const updateInfo = await users.updateOne(

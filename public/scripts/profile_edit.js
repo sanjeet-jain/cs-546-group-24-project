@@ -7,11 +7,9 @@ function validateedits(event) {
     form.addEventListener(
       "submit",
       function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault();
-          event.stopPropagation();
-          checkValidations();
-        }
+        event.preventDefault();
+        event.stopPropagation();
+        checkValidations(event);
 
         form.classList.add("was-validated");
       },
@@ -19,59 +17,55 @@ function validateedits(event) {
     );
   });
 }
-function checkValidations() {
-  let first_name = document.getElementById("first_name").value;
-  let last_name = document.getElementById("last_name").value;
-  let email = document.getElementById("email").value;
-  let dob = document.getElementById("dob").value;
-  let disability = document.getElementById("disability").value;
+function checkValidations(event) {
+  let firstNameInput = event.target.first_name;
+  let lastNameInput = event.target.last_name;
+  let emailInput = event.target.email;
+  let dob = event.target.dob;
+
+  let passForm = event.target;
+  let disabilityInput = event.target.disability;
 
   let first_name_error = document.getElementById("first_name_error");
   let last_name_error = document.getElementById("last_name_error");
   let email_error = document.getElementById("email_error");
-  let dob_error = document.getElementById("dob_error");
+  let date_error = document.getElementById("date_error");
   let disability_error = document.getElementById("disability_error");
 
   let profileForm = document.getElementById("edit-form");
-  console.log(document);
-  if (
-    !first_name ||
-    first_name == null ||
-    first_name == undefined ||
-    first_name.trim().length === ""
-  ) {
-    first_name_error.innerText = "Please enter a first name.";
-  } else if (
-    !last_name ||
-    last_name == null ||
-    last_name == undefined ||
-    last_name.trim().length === ""
-  ) {
-    last_name_error.innerText = "Please enter a last name.";
-  } else if (
-    !email ||
-    email == null ||
-    email == undefined ||
-    email.trim().length === ""
-  ) {
-    email_error.innerText = "Please enter an email.";
-  } else if (
-    !dob ||
-    dob == null ||
-    dob == undefined ||
-    dob.trim().length === ""
-  ) {
-    dob_error.innerText = "Please enter a date of birth.";
-  } else if (
-    !disability ||
-    disability == null ||
-    disability == undefined ||
-    disability.trim().length === ""
-  ) {
-    disability_error.innerText = "Invalid Disability Value";
+  if (!validateEmail(emailInput.value)) {
+    email_error.innerText = "Please enter a valid email.";
   } else {
-    profileForm.submit();
+    email_error.innerText = "";
   }
+  if (!validate_name(firstNameInput.value)) {
+    first_name_error.innerText = "Please enter a valid first name.";
+  } else {
+    first_name_error.innerText = "";
+  }
+  if (!validate_name(lastNameInput.value)) {
+    last_name_error.innerText = "Please enter a valid last name.";
+  } else {
+    last_name_error.innerText = "";
+  }
+  if (dob.validity.valueMissing) {
+    date_error.textContent = "Please enter a date of birth.";
+  } else if (dob.validity.rangeUnderflow) {
+    date_error.textContent = "You cannot be more than 150 years old to signup!";
+  } else if (dob.validity.rangeOverflow) {
+    date_error.textContent = "You must be at least 13 years old to signup!";
+  } else {
+    date_error.textContent = "";
+  }
+  if (
+    emailInput.checkValidity() &&
+    firstNameInput.checkValidity() &&
+    lastNameInput.checkValidity() &&
+    dob.checkValidity()
+  ) {
+    passForm.submit();
+  }
+  return;
 }
 const spans = document.querySelectorAll(".editable");
 spans.forEach((span) => {
@@ -96,4 +90,13 @@ spans.forEach((span) => {
     });
   });
 });
+function validateEmail(email) {
+  const emailRegex =
+    /^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return emailRegex.test(email);
+}
+function validate_name(name) {
+  const nameRegex = /^[a-zA-Z]+$/;
+  return nameRegex.test(name);
+}
 validateedits();

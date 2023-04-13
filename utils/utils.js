@@ -54,7 +54,9 @@ const utils = {
 
   validateName(name, inputName) {
     this.validateStringInput(name);
-    if (!/^[a-zA-Z]+$/.test(name)) {
+    console.log(name);
+    const nameRegex = /^[a-zA-Z]+$/;
+    if (!nameRegex.test(name)) {
       throw new Error(`${inputName} can only contain letters`);
     }
   },
@@ -66,6 +68,7 @@ const utils = {
     }
   },
   validatePassword(password, inputName) {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (!password) {
       throw new Error("Please enter a password");
     }
@@ -73,9 +76,9 @@ const utils = {
     if (password.length < constants.stringLimits.password) {
       throw new Error(`${inputName} must be at least 8 characters long`);
     }
-    if (!/^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+    if (!passwordRegex.test(password)) {
       throw new Error(
-        "Password must contain at least one uppercase letter and one number"
+        `${inputName} must contain at least one uppercase letter and one number`
       );
     }
     // if (!/[A-Z]/.test(password)) {
