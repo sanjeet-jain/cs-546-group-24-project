@@ -36,7 +36,9 @@ const exportedMethods = {
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
     utils.validatePassword(password, "Password");
-    utils.validateBooleanInput(disability, "Disability");
+    if (disability) {
+      utils.validateBooleanInput(disability, "Disability");
+    }
     utils.validateDate(dob, "Date of Birth");
     utils.validateBooleanInput(consent, "Consent");
 
@@ -58,9 +60,9 @@ const exportedMethods = {
       last_name: last_name.trim(),
       email: email,
       password: hashPW,
-      disability: disability,
+      disability: disability === "true" ? true : false,
       dob: dob,
-      consent: consent,
+      consent: consent === "true" ? true : false,
       taskIds: [],
       reminderIds: [],
       noteIds: [],
@@ -114,7 +116,11 @@ const exportedMethods = {
       { _id: new ObjectId(id) },
       { $set: updatedUser }
     );
-    return updatedUser;
+    if (!updateInfo.matchedCount && !updateInfo.modifiedCount) {
+      throw Error("Update failed");
+    } else {
+      return updatedUser;
+    }
   },
 
   async changePassword(id, oldPassword, newPassword, reEnterNewPassword) {
