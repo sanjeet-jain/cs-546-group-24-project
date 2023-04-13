@@ -58,18 +58,20 @@ router
     try {
       utils.validateDate(dob, "Date of Birth");
     } catch (e) {
-      errorMessages.dob = e.message;
+      errorMessages.dob = "Please enter a valid date of birth.";
     }
-    try {
-      utils.validateAge(dob, constants.min_age, constants.max_age);
-    } catch (e) {
-      errorMessages.dob = e.message;
+    if (!errorMessages.dob) {
+      try {
+        utils.validateAge(dob, constants.min_age, constants.max_age);
+      } catch (e) {
+        errorMessages.dob = e.message;
+      }
     }
 
     try {
       utils.validateBooleanInput(consent, "Consent");
     } catch (e) {
-      errorMessages.consent = e.message;
+      errorMessages.consent = "Please consent to data collection";
     }
 
     if (Object.keys(errorMessages).length !== 0) {
@@ -118,12 +120,23 @@ router
     if (req.session.user) {
       return res.redirect("/calendar");
     }
+    let errorMessages = {};
     try {
       utils.validateEmail(email);
+    } catch (e) {
+      errorMessages.email = "Please enter a valid email.";
+    }
+
+    try {
       utils.validatePassword(password);
     } catch (e) {
+      errorMessages.password =
+        "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+    }
+
+    if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/login", {
-        errorMessage: "Invalid email and password",
+        errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
       });
@@ -139,8 +152,7 @@ router
         return res.redirect("/calendar");
       } else {
         return res.status(500).render("user/login", {
-          errorMessage:
-            "Something went wrong on the server, please try again later",
+          error: "Something went wrong on the server, please try again later",
           is_invalid: true,
           errorContent: req.body,
         });
