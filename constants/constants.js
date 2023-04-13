@@ -3,7 +3,8 @@ let yeaRangeRef = new Date().getFullYear();
 
 const constants = {
   pwRounds: 16,
-
+  min_age: 13,
+  max_age: 150,
   weekdays: [
     "Sunday",
     "Monday",

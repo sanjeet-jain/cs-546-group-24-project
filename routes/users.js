@@ -3,7 +3,7 @@ const router = Router();
 
 import usersFunctions from "../data/users.js";
 import utils from "../utils/utils.js";
-
+import constants from "../constants/constants.js";
 function createSessionObject(user) {
   return {
     user_id: user._id.toString(),
@@ -22,22 +22,62 @@ router
     const disability = req.body.disability;
     const dob = req.body.dob;
     const consent = req.body.consent;
-    const min_age = 13;
-    const max_age = 150;
+
+    let errorMessages = {};
     try {
       utils.validateName(first_name, "First name");
-      utils.validateName(last_name, "Last name");
-      utils.validateEmail(email, "Email");
-      utils.validatePassword(password, "Password");
-      utils.validateBooleanInput(disability, "Disability");
-      utils.validateDate(dob, "Date of Birth");
-
-      utils.validateBooleanInput(consent, "Consent");
-      utils.validateAge(dob, min_age, max_age);
     } catch (e) {
-      return res
-        .status(400)
-        .render("user/signup", { error: e.message, statuscode: 400 });
+      errorMessages.first_name = e.message;
+    }
+
+    try {
+      utils.validateName(last_name, "Last name");
+    } catch (e) {
+      errorMessages.last_name = e.message;
+    }
+
+    try {
+      utils.validateEmail(email, "Email");
+    } catch (e) {
+      errorMessages.email = e.message;
+    }
+
+    try {
+      utils.validatePassword(password, "Password");
+    } catch (e) {
+      errorMessages.password = e.message;
+    }
+
+    if (disability) {
+      try {
+        utils.validateBooleanInput(disability, "Disability");
+      } catch (e) {
+        errorMessages.disability = e.message;
+      }
+    }
+    try {
+      utils.validateDate(dob, "Date of Birth");
+    } catch (e) {
+      errorMessages.dob = e.message;
+    }
+    try {
+      utils.validateAge(dob, constants.min_age, constants.max_age);
+    } catch (e) {
+      errorMessages.dob = e.message;
+    }
+
+    try {
+      utils.validateBooleanInput(consent, "Consent");
+    } catch (e) {
+      errorMessages.consent = e.message;
+    }
+
+    if (Object.keys(errorMessages).length !== 0) {
+      return res.status(400).render("user/signup", {
+        errorMessages: errorMessages,
+        is_invalid: true,
+        errorContent: req.body,
+      });
     }
 
     try {
@@ -56,7 +96,7 @@ router
       }
       return res.status(200).redirect("/calendar");
     } catch (e) {
-      return res.render("user/signup", { error: e.message, statuscode: 400 });
+      return res.render("user/signup", { error: e.message });
     }
   })
   .get(async (req, res) => {
