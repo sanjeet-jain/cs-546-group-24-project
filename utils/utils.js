@@ -105,6 +105,7 @@ const utils = {
     dateDueOn = dateDueOn.trim();
     this.validateDate(dateAddedTo, "dateAddedTo");
     this.validateDate(dateDueOn, "dateDueOn");
+    //TODO check date as well ! not just time
     if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }
