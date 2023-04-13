@@ -88,14 +88,12 @@
         pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
         aria-describedby="password_help_id"
         value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}"
-
       />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
         {{errorMessages.password}}
-
       </div>
     </div>
     <br />
