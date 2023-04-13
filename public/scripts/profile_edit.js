@@ -67,29 +67,6 @@ function checkValidations(event) {
   }
   return;
 }
-const spans = document.querySelectorAll(".editable");
-spans.forEach((span) => {
-  span.addEventListener("click", function () {
-    const value = this.textContent.trim();
-    const input = document.createElement("input");
-    input.setAttribute("type", "text");
-    input.setAttribute("value", value);
-    this.textContent = "";
-    this.appendChild(input);
-    input.focus();
-
-    input.addEventListener("blur", function () {
-      const newValue = this.value.trim();
-      const field = this.parentElement.dataset.field;
-      if (newValue === "" || !newValue) {
-        this.parentElement.textContent = value;
-      } else {
-        this.parentElement.textContent = newValue;
-        document.querySelector(`[name="${field}"]`).value = newValue;
-      }
-    });
-  });
-});
 function validateEmail(email) {
   const emailRegex =
     /^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

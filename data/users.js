@@ -84,12 +84,12 @@ const exportedMethods = {
     const user = await users.findOne({ _id: new ObjectId(id) });
     return user;
   },
-  async updateUser(id, { first_name, last_name, email, /*disability,*/ dob }) {
+  async updateUser(id, { first_name, last_name, email, disability, dob }) {
     utils.checkObjectIdString(id);
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
-    //utils.validateBooleanInput(disability, "Disability");
+    utils.validateBooleanInput(disability, "Disability");
     utils.validateDate(dob, "Date of Birth");
     id = id.trim();
     first_name = first_name.trim();
@@ -104,7 +104,7 @@ const exportedMethods = {
       last_name: last_name,
       email: email,
       password: currUser.password,
-      disability: false, //TESTING! TODO: change back to disability:disability and fix others
+      disability: disability, //TESTING! TODO: change back to disability:disability and fix others
       dob: dob,
       consent: currUser.consent,
       taskIds: currUser.taskIds,

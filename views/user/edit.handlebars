@@ -1,5 +1,5 @@
 <div id="edit-form-div" class="container w-100">
-  <form action="/user/edit" id="edit-form" method="POST" onsubmit="validateprofile(event)"
+  <form action="/user/edit" id="edit-form" method="POST" onsubmit="validateedits(event)"
     class="needs-validation {{#if is_invalid}} was-validated{{/if}}" novalidate>
   <h1>Edit Profile</h1>
   <br>
@@ -27,30 +27,72 @@
     </div>
     <br />
     {{!-- TODO Change the others below similar to first_name --}}
-    <div>
-      <label for="last_name">Last Name:</label>
-      <span class="editable" data-field="last_name">{{currUser.last_name}}</span>
-      <input type="hidden" name="last_name" id="last_name" value="{{currUser.last_name}}">
+    <div class="row g-3 align-items-center">
+      <div class="col-auto ">
+      <label for="first_name" class="col-form-label">Last Name: </label>
+      </div>
+      <div class="col-auto ">
+      <input
+        required
+        type="text"
+        class="form-control"
+        name="last_name"
+        id="last_name"
+        placeholder="Last Name"
+        pattern="^[a-zA-Z]+$"
+        value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{else}}{{currUser.last_name}}{{/if}}"
+      />
+      </div>
+      <div class="col-auto ">
       <div id="last_name_error" class="invalid-feedback">
         {{errorMessages.last_name}}
       </div>
-    </div>
-    <br />
-    <div>
-      <label for="email">Email:</label>
-      <span class="editable" data-field="email">{{currUser.email}}</span>
-      <input type="hidden" name="email" id="email" value="{{currUser.email}}">
-      <div id="email_error" class="invalid-feedback">
-        {{errorMessages.email}}
       </div>
     </div>
     <br />
-    <div>
-      <label for="dob">Date of Birth:</label>
-      <span class="editable" data-field="dob">{{currUser.dob}}</span>
-      <input type="hidden" name="dob" id="dob" value="{{currUser.dob}}">
+    <div class="row g-3 align-items-center">
+      <div class="col-auto ">
+      <label for="email" class="col-form-label">Email: </label>
+      </div>
+      <div class="col-auto ">
+      <input
+        required
+        type="text"
+        class="form-control"
+        name="email"
+        id="email"
+        placeholder="Email"
+        pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        value="{{#if errorContent.email}}{{errorContent.email}}{{else}}{{currUser.email}}{{/if}}"
+      />
+      </div>
+      <div class="col-auto ">
+      <div id="email_error" class="invalid-feedback">
+        {{errorMessages.email}}
+      </div>
+      </div>
+    </div>
+    <br />
+    <div class="row g-3 align-items-center">
+      <div class="col-auto ">
+      <label for="dob" class="col-form-label">Date of Birth: </label>
+      </div>
+      <div class="col-auto ">
+      <input
+        required
+        type="text"
+        class="form-control"
+        name="dob"
+        id="dob"
+        placeholder="MM/DD/YYYY"
+        
+        value="{{#if errorContent.dob}}{{errorContent.dob}}{{else}}{{currUser.dob}}{{/if}}"
+      />
+      </div>
+      <div class="col-auto ">
       <div id="date_error" class="invalid-feedback">
         {{errorMessages.dob}}
+      </div>
       </div>
     </div>
 
