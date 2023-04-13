@@ -21,6 +21,7 @@ export async function runSetup() {
  meetingIds: [ObjectId]
 */
   let dt = new Date();
+  dt.setHours(14);
 
   const sampleUser = {
     first_name: "Sample",
@@ -56,9 +57,7 @@ export async function runSetup() {
     title: "Weekly Team Meeting repeating",
     dateCreated: dt.toString(),
     dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 1)).toString(),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -72,16 +71,8 @@ export async function runSetup() {
   const sampleMeeting2 = {
     title: "Weekly Team Meeting non repeating",
     dateCreated: dt.toString(),
-    dateAddedTo: new Date(
-      new Date(new Date().setHours(new Date().getHours() + 1)).setDate(
-        new Date().getDate() + 1
-      )
-    ).toString(),
-    dateDueOn: new Date(
-      new Date(new Date().setHours(new Date().getHours() + 2)).setDate(
-        new Date().getDate() + 1
-      )
-    ).toString(),
+    dateAddedTo: new Date(new Date().setHours(dt.getHours() + 1)).toString(),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 2)).toString(),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -100,7 +91,7 @@ export async function runSetup() {
     dateCreated: dt.toString(),
     dateAddedTo: dt.toString(),
     dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 7)
+      new Date().setHours(new Date().getHours() + 1)
     ).toString(),
     priority: 1,
     tag: "work",
@@ -114,7 +105,7 @@ export async function runSetup() {
     dateCreated: dt.toString(),
     dateAddedTo: dt.toString(),
     dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 1)
+      new Date().setHours(new Date().getHours() + 1)
     ).toString(),
     priority: 3,
     tag: "personal",
