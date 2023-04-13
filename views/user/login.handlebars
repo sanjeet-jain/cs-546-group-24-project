@@ -52,12 +52,17 @@
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
-  {{errorMessage}}
+
       </div>
     </div>
     <br />
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    {{#if error}}
+     <div class="alert alert-danger" role="alert">
+      <strong>{{error}}</strong>
+     </div>
+     {{/if}}
   </form>
   <br />
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>

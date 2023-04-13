@@ -43,6 +43,10 @@ const utils = {
   },
 
   validateBooleanInput(input, inputName) {
+    if (typeof input === "string" && (input === "true" || input === "false")) {
+      input = input === "true" ? true : false;
+    }
+
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }

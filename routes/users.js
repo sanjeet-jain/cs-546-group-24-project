@@ -96,7 +96,10 @@ router
       }
       return res.status(200).redirect("/calendar");
     } catch (e) {
-      return res.render("user/signup", { error: e.message });
+      return res.status(404).render("user/signup", {
+        error: "Something went wrong, please try again later",
+        errorContent: req.body,
+      });
     }
   })
   .get(async (req, res) => {
@@ -144,7 +147,7 @@ router
       }
     } catch (e) {
       return res.status(400).render("user/login", {
-        errorMessage: "Invalid email and password",
+        error: "Invalid email and password",
         is_invalid: true,
         errorContent: req.body,
       });
