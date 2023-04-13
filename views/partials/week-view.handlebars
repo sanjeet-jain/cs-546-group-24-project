@@ -20,11 +20,9 @@
     {{#if this.modalData.meetings.length}}
     {{#each this.modalData.meetings}}
     {{#if (eq this.timeslotStart ../../this)}}
-      <div  class="modal-div">
-      {{>test eventData=this session=../../../session}}
-    </div>
+    
   
-    <button class="badge rounded-pill text-bg-primary text-wrap text-center" data-bs-toggle="modal" data-bs-target="#modal-event-display-{{this._id}}" >
+    <button class="badge rounded-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-event-display" data-id="{{this._id}}" onclick="populateMeetingsModal({{json this}})">
       <i class="bi-calendar-event"></i>
       {{{this.title}}}</button>
     {{/if}}

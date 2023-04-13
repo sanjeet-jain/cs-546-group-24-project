@@ -38,6 +38,9 @@ const handlebarsInstance = exphbs.create({
         .toISOString()
         .slice(0, 10);
     },
+    json: function (context) {
+      return JSON.stringify(context);
+    },
   },
 });
 
