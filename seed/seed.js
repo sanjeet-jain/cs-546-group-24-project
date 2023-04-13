@@ -84,35 +84,6 @@ export async function runSetup() {
     type: "meeting",
   };
 
-  const sampleTask = {
-    title: "Finish project report",
-    textBody:
-      "Complete the final report for the project and submit it to the manager.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
-    priority: 1,
-    tag: "work",
-    checked: false,
-    type: "task",
-  };
-
-  const sampleTask2 = {
-    title: "Buy groceries",
-    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
-    priority: 3,
-    tag: "personal",
-    checked: false,
-    type: "task",
-  };
-
   await meetingsDataFunctions.create(
     user._id.toString(),
     sampleMeeting.title,
@@ -141,6 +112,34 @@ export async function runSetup() {
 
   // Seed tasks
 
+  const sampleTask = {
+    title: "Finish project report",
+    textBody:
+      "Complete the final report for the project and submit it to the manager.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 1,
+    tag: "work",
+    checked: false,
+    type: "task",
+  };
+
+  const sampleTask2 = {
+    title: "Buy groceries",
+    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 3,
+    tag: "personal",
+    checked: false,
+    type: "task",
+  };
   await tasksDataFunctions.createTask(
     user._id.toString(),
     sampleTask.title,

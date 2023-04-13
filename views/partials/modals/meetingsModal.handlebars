@@ -14,11 +14,16 @@
           <i class=""></i>
 
         </h4>
-        <button type="button" class="btn" aria-label="Edit" onclick="">
+        <button
+          type="button"
+          class="btn"
+          aria-label="Edit"
+          onclick="enableFormEdit()"
+        >
           <i class="bi-pencil-fill"></i>
         </button>
         <button
-          id="close-and-clear-modal"
+          id="top-close-button"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -27,7 +32,7 @@
       </div>
 
       <div class="modal-body">
-        <fieldset>
+        <fieldset id="form-enabler" disabled>
           <form id="event-form">
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
@@ -86,7 +91,7 @@
             </div>
             <div class="form-floating mb-3">
               <input
-                type="date"
+                type="datetime"
                 class="form-control"
                 name="dateAddedTo"
                 id="dateAddedTo"
@@ -101,7 +106,7 @@
             </div>
             <div class="form-floating mb-3">
               <input
-                type="date"
+                type="datetime"
                 class="form-control"
                 name="dateDueOn"
                 id="dateDueOn"
@@ -166,6 +171,7 @@
       </div>
       <div class="modal-footer">
         <button
+          id="bottom-close-button"
           type="button"
           class="btn btn-secondary"
           data-bs-dismiss="modal"
