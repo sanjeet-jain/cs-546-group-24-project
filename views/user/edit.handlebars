@@ -1,55 +1,84 @@
-
 <div id="edit-form-div" class="container w-100">
-  <form
-    action="/user/edit"
-    id="edit-form"
-    method="POST"
-    onsubmit="validateprofile(event)"
-    class="needs-validation {{#if is_invalid}} was-validated{{/if}}"
-    novalidate
-  >
-
-<div>
-<label for = "first_name">First Name:</label>
-<span class = "editable" data-field = "first_name">{{currUser.first_name}}</span>
-<input type = "hidden" name = "first_name" id = "first_name" value = "{{currUser.first_name}}">
-      <small id="first_name_help_id" class="form-text text-muted">
-        Click on name to edit</small>
+  <form action="/user/edit" id="edit-form" method="POST" onsubmit="validateprofile(event)"
+    class="needs-validation {{#if is_invalid}} was-validated{{/if}}" novalidate>
+  <h1>Edit Profile</h1>
+  <br>
+    <div class="row g-3 align-items-center">
+      <div class="col-auto ">
+      <label for="first_name" class="col-form-label">First Name: </label>
+      </div>
+      <div class="col-auto ">
+      <input
+        required
+        type="text"
+        class="form-control"
+        name="first_name"
+        id="first_name"
+        placeholder="First Name"
+        pattern="^[a-zA-Z]+$"
+        value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{else}}{{currUser.first_name}}{{/if}}"
+      />
+      </div>
+      <div class="col-auto ">
       <div id="first_name_error" class="invalid-feedback">
         {{errorMessages.first_name}}
       </div>
-<br />
-<div>
-<label for = "last_name">Last Name:</label>
-<span class = "editable" data-field = "last_name">{{currUser.last_name}}</span>
-<input type = "hidden" name = "last_name" id = "last_name" value = "{{currUser.last_name}}">
+      </div>
+    </div>
+    <br />
+    {{!-- TODO Change the others below similar to first_name --}}
+    <div>
+      <label for="last_name">Last Name:</label>
+      <span class="editable" data-field="last_name">{{currUser.last_name}}</span>
+      <input type="hidden" name="last_name" id="last_name" value="{{currUser.last_name}}">
       <div id="last_name_error" class="invalid-feedback">
         {{errorMessages.last_name}}
       </div>
-<br />
-<div>
-<label for = "email">Email:</label>
-<span class = "editable" data-field = "email">{{currUser.email}}</span>
-<input type = "hidden" name = "email" id = "email" value = "{{currUser.email}}">
+    </div>
+    <br />
+    <div>
+      <label for="email">Email:</label>
+      <span class="editable" data-field="email">{{currUser.email}}</span>
+      <input type="hidden" name="email" id="email" value="{{currUser.email}}">
       <div id="email_error" class="invalid-feedback">
         {{errorMessages.email}}
       </div>
-<br />
-<div>
-<label for = "dob">Date of Birth:</label>
-<span class = "editable" data-field = "dob">{{currUser.dob}}</span>
-<input type = "hidden" name = "dob" id = "dob" value = "{{currUser.dob}}">
+    </div>
+    <br />
+    <div>
+      <label for="dob">Date of Birth:</label>
+      <span class="editable" data-field="dob">{{currUser.dob}}</span>
+      <input type="hidden" name="dob" id="dob" value="{{currUser.dob}}">
       <div id="date_error" class="invalid-feedback">
         {{errorMessages.dob}}
       </div>
-<!--TODO add checkbox for disability-->
-<!--<div>
-<label for = "dob">Disability:</label>
-<span class = "editable" data-field = "disability">{{currUser.disability}}</span>
-<input type = "hidden" name = "disability" id = "disability" value = "{{currUser.disability}}">
-<div id = "disability_error" class = "invalid-feedback"></div>
-</div>-->
+    </div>
 
-<button class="w-100 btn btn-lg btn-primary" type="submit">Save Changes</button>
-</form>
-  <script src = "/public/scripts/profile_edit.js" type="text/javascript"></script>
+     <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="disability"
+        id="disability"
+        aria-describedby="disability_help_id"
+        value="true"
+        {{#if errorContent.disability}}
+        checked
+        {{else}}
+        {{!-- this should come from the back as boolean but it goes into the API as a string --}}
+          {{#if currUser.disability}}
+            checked
+          {{/if}}
+        {{/if}}
+      />
+      <label class="form-check-label" for="disability">
+        Disability CheckBox
+      </label>
+      <small id="disability_help_id" class="form-text text-muted">
+        Please check if you need accesibilty Features</small>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-primary" type="submit">Save Changes</button>
+  </form>
+  <script src="/public/scripts/profile_edit.js" type="text/javascript"></script>
+</div>
