@@ -5,7 +5,7 @@
     id="login-form"
     method="POST"
     onsubmit="validatelogin(event)"
-    class="needs-validation"
+    class="needs-validation {{#if is_invalid}}was-validated{{/if}}"
     novalidate
   >
 
@@ -24,6 +24,8 @@
         placeholder="abc@mail.com"
         aria-describedby="email_help_id"
         pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}"
+
       />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
@@ -44,12 +46,13 @@
         minlength="8"
         pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
         aria-describedby="password_help_id"
+        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}"
       />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
-
+  {{errorMessage}}
       </div>
     </div>
     <br />

@@ -119,7 +119,11 @@ router
       utils.validateEmail(email);
       utils.validatePassword(password);
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      return res.status(400).render("user/login", {
+        errorMessage: "Invalid email and password",
+        is_invalid: true,
+        errorContent: req.body,
+      });
     }
 
     //try checkuser
@@ -131,10 +135,19 @@ router
         req.session.user = createSessionObject(user);
         return res.redirect("/calendar");
       } else {
-        return res.status(500).json({ error: e.message });
+        return res.status(500).render("user/login", {
+          errorMessage:
+            "Something went wrong on the server, please try again later",
+          is_invalid: true,
+          errorContent: req.body,
+        });
       }
     } catch (e) {
-      return res.status(400).json({ error: e.message });
+      return res.status(400).render("user/login", {
+        errorMessage: "Invalid email and password",
+        is_invalid: true,
+        errorContent: req.body,
+      });
     }
   })
   .get(async (req, res) => {
