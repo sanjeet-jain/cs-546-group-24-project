@@ -276,52 +276,86 @@ router
   .post(async (req, res) => {
     let errorMessages = {};
 
-    if (!req.session.user) {
-      res.render("user/login");
-    } else {
-      const id = req.session.user.user_id;
-      const oldPassword = req.body.oldPassword;
-      const newPassword = req.body.newPassword;
-      const reEnterNewPassword = req.body.reEnterNewPassword;
-      const currUser = await usersFunctions.getUser(id);
-      const isSamePassword = await bcrypt.compare(
-        newPassword,
-        currUser.password
-      );
-      const oldPassCheck = await bcrypt.compare(oldPassword, currUser.password);
-      if (isSamePassword) {
-        errorMessages.newPassword =
-          "New password must be different from current password";
-      }
-      if (!oldPassCheck) {
-        errorMessages.oldPassword = "Current password is incorrect";
-      }
-      try {
-        utils.validatePassword(newPassword);
-      } catch (e) {
-        errorMessages.newPassword =
-          "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
-      }
-      if (newPassword !== reEnterNewPassword) {
-        errorMessages.reEnterNewPassword =
-          "Re-Entered password does not match new password.";
-      }
-      console.log(errorMessages);
-      if (Object.keys(errorMessages).length !== 0) {
-        return res.status(400).render("user/password", {
-          errorMessages: errorMessages,
-          is_invalid: true,
-          errorContent: req.body,
-        });
-      }
+    if (!req?.session?.user || !req.session.user.user_id) {
+      return res.render("user/login");
+    }
+    const id = req.session.user.user_id;
+    const oldPassword = req?.body?.oldPassword;
+    const newPassword = req?.body?.newPassword;
+    const reEnterNewPassword = req?.body?.reEnterNewPassword;
+
+    try {
+      utils.validatePassword(oldPassword);
+    } catch (e) {
+      errorMessages.oldPassword =
+        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+    }
+    try {
+      utils.validatePassword(newPassword);
+    } catch (e) {
+      errorMessages.newPassword =
+        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+    }
+    try {
+      utils.validatePassword(reEnterNewPassword);
+    } catch (e) {
+      errorMessages.reEnterNewPassword =
+        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+    }
+
+    //trim the validated passwords
+    newPassword = newPassword.trim();
+    reEnterNewPassword = reEnterNewPassword.trim();
+    oldPassword = oldPassword.trim();
+
+    if (newPassword !== reEnterNewPassword) {
+      errorMessages.reEnterNewPassword =
+        "Re-Entered password does not match new password.";
+    }
+    if (
+      errorMessages?.oldPassword ||
+      errorMessages?.newPassword ||
+      errorMessages?.reEnterNewPassword
+    ) {
+      return res.status(400).render("user/password", {
+        errorMessages: errorMessages,
+        is_invalid: true,
+        errorContent: req.body,
+      });
+    }
+    const currUser = await usersFunctions.getUser(id);
+    const isSamePassword = await bcrypt.compare(newPassword, currUser.password);
+    const oldPassCheck = await bcrypt.compare(oldPassword, currUser.password);
+    if (isSamePassword) {
+      errorMessages.newPassword =
+        "New password must be different from current password";
+    }
+    if (!oldPassCheck) {
+      errorMessages.oldPassword = "Current password is incorrect";
+    }
+    console.log(errorMessages);
+    if (Object.keys(errorMessages).length !== 0) {
+      return res.status(400).render("user/password", {
+        errorMessages: errorMessages,
+        is_invalid: true,
+        errorContent: req.body,
+      });
+    }
+    try {
       await usersFunctions.changePassword(
         req.session.user.user_id,
         req.body.oldPassword,
         req.body.newPassword,
         req.body.reEnterNewPassword
       );
-      return res.redirect("profile");
-      //TODO: send "password successfully changed" message
+      return res.status(200).redirect("user/password", {
+        success: "password successfully changed",
+      });
+    } catch (e) {
+      return res.status(500).render("user/password", {
+        error: "error changing password ",
+        is_invalid: true,
+      });
     }
   });
 

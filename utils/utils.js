@@ -68,14 +68,15 @@ const utils = {
     }
   },
   validatePassword(password, inputName) {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (!password) {
       throw new Error("Please enter a password");
     }
     this.validateStringInput(password);
+    password = password.trim();
     if (password.length < constants.stringLimits.password) {
       throw new Error(`${inputName} must be at least 8 characters long`);
     }
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
     if (!passwordRegex.test(password)) {
       throw new Error(
         `${inputName} must contain at least one uppercase letter and one number`
