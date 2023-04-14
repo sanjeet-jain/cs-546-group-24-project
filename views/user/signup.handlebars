@@ -147,6 +147,7 @@
         aria-describedby="consent_help_id"
         value="true"
         required
+        {{#if errorContent.consent}}checked{{/if}}
       />
       <label class="form-check-label" for="consent">
         Consent CheckBox
@@ -155,10 +156,8 @@
         Consent for data being collected on this application</small>
       <div id="consent_error" class="invalid-feedback">
         {{errorMessages.consent}}
- 
       </div>
     </div>
-    <br />
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
@@ -166,7 +165,6 @@
    
     
   </form>
-  <br />
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
   <br />
 
