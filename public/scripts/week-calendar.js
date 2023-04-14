@@ -1,7 +1,8 @@
 function populateMeetingsModal(data) {
-  let event_modal = document.getElementById("modal-event-display");
+  let event_modal = document.getElementById("modal-meeting-display");
 
-  event_modal.querySelector("#modal-label.modal-title").innerText = data.title;
+  event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+    data.title;
   event_modal.querySelector("input#title").value = data.title;
   event_modal.querySelector("input#textBody").value = data.textBody;
   event_modal.querySelector("input#tag").value = data.tag;
@@ -24,19 +25,20 @@ function populateMeetingsModal(data) {
 }
 
 function enableFormEdit() {
-  let event_modal = document.getElementById("modal-event-display");
+  let event_modal = document.getElementById("modal-meeting-display");
   let fieldset = event_modal.querySelector("#form-enabler");
   fieldset.disabled = fieldset.disabled ? false : true;
 }
 
 function onModalClose() {
-  let event_modal = document.getElementById("modal-event-display");
+  let event_modal = document.getElementById("modal-meeting-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#form-enabler");
       fieldset.disabled = true;
-      event_modal.querySelector("#modal-label.modal-title").innerText = "";
+      event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+        "";
       event_modal.querySelector("input#title").value = "";
       event_modal.querySelector("input#textBody").value = "";
       event_modal.querySelector("input#tag").value = "";
