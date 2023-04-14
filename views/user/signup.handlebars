@@ -22,7 +22,7 @@
         id="first_name"
         aria-describedby="first_name_help_id"
         placeholder="First Name"
-        pattern="^[a-zA-Z]+$"
+        pattern="^[a-zA-Z]{1,20}$"
         value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}"
       />
       <label for="first_name" class="form-label">First Name</label>
