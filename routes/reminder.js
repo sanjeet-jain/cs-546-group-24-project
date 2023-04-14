@@ -64,7 +64,7 @@ router
         "tag",
         constants.stringLimits["tag"]
       );
-      tag = tag.trim();
+      tag = tag.trim().toLowerCase();
       utils.validateDateObj(dateAddedTo, "date time value");
       utils.validateBooleanInput(repeating);
       if (repeating) {
@@ -154,7 +154,7 @@ router
         "tag",
         constants.stringLimits["tag"]
       );
-      tag = tag.trim();
+      tag = tag.trim().toLowerCase();
       utils.validateDateObj(dateAddedTo, "date time added to value");
       utils.validateBooleanInput(repeating);
       if (!flagForUpdateSingleReminderUpdate) {
