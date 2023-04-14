@@ -4,12 +4,14 @@
     id="signup-form"
     method="POST"
     onsubmit="validatesignup(event)"
-    class="needs-validation"
+    class="needs-validation {{#if is_invalid}}was-validated{{/if}}"
     novalidate
   >
     <h1 class="h3 mb-3 fw-normal">
       <i class="bi-calendar-check-fill"></i>
+      Create an Account
     </h1>
+
     <br />
     <div class="form-floating mb-3">
       <input
@@ -20,12 +22,14 @@
         id="first_name"
         aria-describedby="first_name_help_id"
         placeholder="First Name"
+        pattern="^[a-zA-Z]+$"
+        value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}"
       />
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
       <div id="first_name_error" class="invalid-feedback">
-
+        {{errorMessages.first_name}}
       </div>
     </div>
     <div class="form-floating mb-3">
@@ -36,13 +40,15 @@
         name="last_name"
         id="last_name"
         aria-describedby="last_name_help_id"
-        placeholder="Last
-                Name"
+        placeholder="Last Name"
+        pattern="^[a-zA-Z]+$"
+        value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}"
       />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
       <div id="last_name_error" class="invalid-feedback">
+        {{errorMessages.last_name}}
 
       </div>
     </div>
@@ -56,12 +62,16 @@
         id="email"
         placeholder="abc@mail.com"
         aria-describedby="email_help_id"
-        {{! pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" }}
+        pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}"
+
       />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
-        Please Enter First Name Here</small>
+        Please Enter Email Here. This will also be used as your login id
+      </small>
       <div id="email_error" class="invalid-feedback">
+        {{errorMessages.email}}
 
       </div>
     </div>
@@ -74,14 +84,16 @@
         name="password"
         id="password"
         placeholder="Password"
-        {{! minlength="10" }}
+        minlength="8"
+        pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
         aria-describedby="password_help_id"
+        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}"
       />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
-        Please Enter First Name Here</small>
+        Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
-
+        {{errorMessages.password}}
       </div>
     </div>
     <br />
@@ -98,11 +110,14 @@
         value=""
         max="{{minDobDate}}"
         min="{{maxDobDate}}"
+        value="{{#if errorContent.dob}}{{errorContent.dob}}{{/if}}"
+
       />
       <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">
+        {{errorMessages.dob}}
 
       </div>
     </div>
@@ -111,20 +126,46 @@
       <input
         class="form-check-input"
         type="checkbox"
+        name="disability"
         id="disability"
         aria-describedby="disability_help_id"
+        value="true"
+        {{#if errorContent.disability}}checked{{/if}}
       />
       <label class="form-check-label" for="disability">
         Disability CheckBox
       </label>
       <small id="disability_help_id" class="form-text text-muted">
-        Please Check if you need accesibilty Features</small>
+        Please check if you need accesibilty Features</small>
+    </div>
+    <br />
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="consent"
+        id="consent"
+        aria-describedby="consent_help_id"
+        value="true"
+        required
+      />
+      <label class="form-check-label" for="consent">
+        Consent CheckBox
+      </label>
+      <small id="consent_help_id" class="form-text text-muted">
+        Consent for data being collected on this application</small>
+      <div id="consent_error" class="invalid-feedback">
+        {{errorMessages.consent}}
+ 
+      </div>
     </div>
     <br />
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
     </button>
+   
+    
   </form>
   <br />
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>

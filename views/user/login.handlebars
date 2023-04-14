@@ -5,7 +5,7 @@
     id="login-form"
     method="POST"
     onsubmit="validatelogin(event)"
-    class="needs-validation"
+    class="needs-validation {{#if is_invalid}}was-validated{{/if}}"
     novalidate
   >
 
@@ -16,38 +16,53 @@
 
     <div class="form-floating">
       <input
+        required
         type="email"
         class="form-control"
         name="email"
         id="email"
         placeholder="abc@mail.com"
-        required
-        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+        aria-describedby="email_help_id"
+        pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}"
+
       />
       <label for="email">Email address</label>
+      <small id="email_help_id" class="form-text text-muted">
+        Please Enter Email Here</small>
       <div id="email_error" class="invalid-feedback">
-
+        {{errorMessages.email}}
       </div>
     </div>
     <br />
     <div class="form-floating">
       <input
+        required
         type="password"
         class="form-control"
         name="password"
         id="password"
         placeholder="Password"
-        minlength="10"
-        required
+        minlength="8"
+        pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+        aria-describedby="password_help_id"
+        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}"
       />
       <label for="password">Password</label>
+      <small id="password_help_id" class="form-text text-muted">
+        Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
-
+       {{errorMessages.password}}
       </div>
     </div>
     <br />
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+    {{#if error}}
+     <div class="alert alert-danger" role="alert">
+      <strong>{{error}}</strong>
+     </div>
+     {{/if}}
   </form>
   <br />
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
