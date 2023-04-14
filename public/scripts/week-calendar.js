@@ -1,4 +1,8 @@
-function populateMeetingsModal(data) {
+let dataGlobal;
+let userIdGlobal;
+function populateMeetingsModal(data, userId) {
+  dataGlobal = data;
+  userIdGlobal = userId;
   let event_modal = document.getElementById("modal-meeting-display");
 
   event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
@@ -51,5 +55,18 @@ function onModalClose() {
     });
   });
 }
+
+function submitForm(event) {
+  // do an ajax here for backend validation
+  event.preventDefault();
+  event.stopPropagation();
+  //todo validations
+  checkValidations();
+  event.target.action = `/meeting/user/${userIdGlobal}`;
+  event.target.method = "post";
+  event.target.submit();
+}
+
+function checkValidations() {}
 
 onModalClose();

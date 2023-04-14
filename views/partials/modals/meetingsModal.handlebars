@@ -23,7 +23,7 @@
           <i class="bi-pencil-fill"></i>
         </button>
         <button
-          id="top-close-button"
+          id="meeting-top-close-button"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -31,9 +31,9 @@
         ></button>
       </div>
 
-      <div class="modal-body">
-        <fieldset id="form-enabler" disabled>
-          <form id="event-form">
+      <fieldset id="form-enabler" disabled>
+        <div class="modal-body">
+          <form id="meeting-form" onsubmit="submitForm(event)">
             {{! title }}
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
@@ -177,22 +177,17 @@
             {{! add more fields for other events }}
 
           </form>
-        </fieldset>
-      </div>
-      <div class="modal-footer">
-        <button
-          id="bottom-close-button"
-          type="button"
-          class="btn btn-secondary"
-          data-bs-dismiss="modal"
-        >Close</button>
-        <input
-          type="submit"
-          form="event-form"
-          value="Save Changes"
-          class="btn btn-primary"
-        />
-      </div>
+        </div>
+        <div class="modal-footer">
+          <input
+            id="meeting-bottom-submit-button"
+            type="submit"
+            form="meeting-form"
+            value="Save Changes"
+            class="btn btn-primary"
+          />
+        </div>
+      </fieldset>
 
     </div>
   </div>
