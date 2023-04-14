@@ -10,43 +10,49 @@ function populateMeetingsModal(userId, meetingId) {
 
       event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
         data.title;
-      event_modal.querySelector("input#title").value = data.title;
-      event_modal.querySelector("input#textBody").value = data.textBody;
-      event_modal.querySelector("input#tag").value = data.tag;
-      event_modal.querySelector("select#priority").value = data.priority;
+      event_modal.querySelector("input#meeting_title").value = data.title;
+      event_modal.querySelector("input#meeting_textBody").value = data.textBody;
+      event_modal.querySelector("input#meeting_tag").value = data.tag;
+      event_modal.querySelector("select#meeting_priority").value =
+        data.priority;
       // issue with date time coming as a date string
       // it needs an iso string
-      event_modal.querySelector("input#dateAddedTo").value = data.dateAddedTo;
+      event_modal.querySelector("input#meeting_dateAddedTo").value =
+        data.dateAddedTo;
 
-      event_modal.querySelector("input#dateDueOn").value = data.dateDueOn;
-      event_modal.querySelector("input#repeating").value = data.repeating;
-      event_modal.querySelector("input#repeating").checked = data.repeating;
+      event_modal.querySelector("input#meeting_dateDueOn").value =
+        data.dateDueOn;
+      event_modal.querySelector("input#meeting_repeating").value =
+        data.repeating;
+      event_modal.querySelector("input#meeting_repeating").checked =
+        data.repeating;
 
-      event_modal.querySelector("select#repeatingIncrementBy").value =
+      event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
         data.repeatingIncrementBy;
-      event_modal.querySelector("input#repeatingCounterIncrement").value =
-        data.repeatingCounterIncrement;
-      // if (!event_modal.querySelector("input#repeating").value) {
+      event_modal.querySelector(
+        "input#meeting_repeatingCounterIncrement"
+      ).value = data.repeatingCounterIncrement;
+      // if (!event_modal.querySelector("input#meeting_repeating").value) {
       //   event_modal.querySelector(
-      //     "select#repeatingIncrementBy"
+      //     "select#meeting_repeatingIncrementBy"
       //   ).disabled = true;
       //   event_modal.querySelector(
-      //     "input#repeatingCounterIncrement"
+      //     "input#meeting_repeatingCounterIncrement"
       //   ).disabled = true;
-      //   event_modal.querySelector("select#repeatingIncrementBy").value = "";
-      //   event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+      //   event_modal.querySelector("select#meeting_repeatingIncrementBy").value = "";
+      //   event_modal.querySelector("input#meeting_repeatingCounterIncrement").value = "";
       // }
     }
   );
 }
 function repeatingCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
-  let repeating = event_modal.querySelector("input#repeating");
+  let repeating = event_modal.querySelector("input#meeting_repeating");
   let repeatingIncrementBy = event_modal.querySelector(
-    "select#repeatingIncrementBy"
+    "select#meeting_repeatingIncrementBy"
   );
   let repeatingCounterIncrement = event_modal.querySelector(
-    "input#repeatingCounterIncrement"
+    "input#meeting_repeatingCounterIncrement"
   );
   repeating.addEventListener("change", (event) => {
     if (event.target.checked) {
@@ -62,8 +68,11 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingCounterIncrement.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
       repeatingCounterIncrement.removeAttribute("required");
-      event_modal.querySelector("select#repeatingIncrementBy").value = "";
-      event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+      event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
+        "";
+      event_modal.querySelector(
+        "input#meeting_repeatingCounterIncrement"
+      ).value = "";
     }
   });
 }
@@ -74,14 +83,14 @@ function enableMeetingFormEdit() {
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let event_modal = document.getElementById("modal-meeting-display");
-      let fieldset = event_modal.querySelector("#form-enabler");
+      let fieldset = event_modal.querySelector("#meeting-form-enabler");
       fieldset.disabled = fieldset.disabled ? false : true;
-      let repeating = event_modal.querySelector("input#repeating");
+      let repeating = event_modal.querySelector("input#meeting_repeating");
       let repeatingIncrementBy = event_modal.querySelector(
-        "select#repeatingIncrementBy"
+        "select#meeting_repeatingIncrementBy"
       );
       let repeatingCounterIncrement = event_modal.querySelector(
-        "input#repeatingCounterIncrement"
+        "input#meeting_repeatingCounterIncrement"
       );
       if (!repeating.checked) {
         repeating.value = false;
@@ -99,20 +108,23 @@ function onMeetingModalClose() {
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
-      let fieldset = event_modal.querySelector("#form-enabler");
+      let fieldset = event_modal.querySelector("#meeting-form-enabler");
       fieldset.disabled = true;
       event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
         "";
-      event_modal.querySelector("input#title").value = "";
-      event_modal.querySelector("input#textBody").value = "";
-      event_modal.querySelector("input#tag").value = "";
-      event_modal.querySelector("select#priority").value = "";
-      event_modal.querySelector("input#dateAddedTo").value = "";
-      event_modal.querySelector("input#dateDueOn").value = "";
-      event_modal.querySelector("input#repeating").value = "";
-      event_modal.querySelector("input#repeating").checked = false;
-      event_modal.querySelector("select#repeatingIncrementBy").value = "";
-      event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+      event_modal.querySelector("input#meeting_title").value = "";
+      event_modal.querySelector("input#meeting_textBody").value = "";
+      event_modal.querySelector("input#meeting_tag").value = "";
+      event_modal.querySelector("select#meeting_priority").value = "";
+      event_modal.querySelector("input#meeting_dateAddedTo").value = "";
+      event_modal.querySelector("input#meeting_dateDueOn").value = "";
+      event_modal.querySelector("input#meeting_repeating").value = "";
+      event_modal.querySelector("input#meeting_repeating").checked = false;
+      event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
+        "";
+      event_modal.querySelector(
+        "input#meeting_repeatingCounterIncrement"
+      ).value = "";
       resultDiv = document.getElementById("update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
@@ -181,11 +193,13 @@ function bindEventButtontoModal() {
 
 function checkMeetingValidations(jsonData) {
   //get all error divs
-  title_error = document.getElementById("title_error");
-  textBody_error = document.getElementById("textBody_error");
-  tag_error = document.getElementById("tag_error");
-  dateAddedTo_error = document.getElementById("dateAddedTo_error");
-  dateDueOn_error = document.getElementById("dateDueOn_error");
+  meeting_title_error = document.getElementById("meeting_title_error");
+  meeting_textBody_error = document.getElementById("meeting_textBody_error");
+  meeting_tag_error = document.getElementById("meeting_tag_error");
+  meeting_dateAddedTo_error = document.getElementById(
+    "meeting_dateAddedTo_error"
+  );
+  meeting_dateDueOn_error = document.getElementById("meeting_dateDueOn_error");
   repeatingCounterIncrement_error = document.getElementById(
     "repeatingCounterIncrement_error"
   );

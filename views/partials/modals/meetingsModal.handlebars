@@ -31,62 +31,65 @@
         ></button>
       </div>
 
-      <fieldset id="form-enabler" disabled>
+      <fieldset id="meeting-form-enabler" disabled>
         <div class="modal-body">
           <form id="meeting-form" {{! onsubmit="submitForm(event)" }}>
             {{! title }}
             <div class="mb-3">
-              <label for="title" class="form-label">Title</label>
+              <label for="meeting_title" class="form-label">Title</label>
               <input
                 required
                 type="text"
                 class="form-control"
                 name="title"
-                id="title"
+                id="meeting_title"
                 placeholder="Title"
                 value=""
               />
-              <div id="title_error" class="invalid-feedback">
+              <div id="meeting_title_error" class="invalid-feedback">
 
               </div>
             </div>
             {{! textBody }}
             <div class="mb-3">
-              <label for="textBody" class="form-label">Description</label>
+              <label
+                for="meeting_textBody"
+                class="form-label"
+              >Description</label>
               <input
                 type="text"
                 class="form-control"
                 name="textBody"
-                id="textBody"
+                id="meeting_textBody"
                 placeholder="Description"
                 value=""
               />
-              <div id="textBody_error" class="invalid-feedback">
+              <div id="meeting_textBody_error" class="invalid-feedback">
 
               </div>
             </div>
             {{! tag }}
             <div class="mb-3">
-              <label for="tag" class="form-label">Tag</label>
+              <label for="meeting_tag" class="form-label">Tag</label>
               <input
                 type="text"
                 class="form-control"
                 name="tag"
-                id="tag"
+                id="meeting_tag"
                 placeholder="Tag"
                 value=""
               />
-              <div id="tag_error" class="invalid-feedback">
+              <div id="meeting_tag_error" class="invalid-feedback">
 
               </div>
             </div>
             {{! priority }}
             <div class="mb-3">
-              <label for="priority" class="form-label">Priority</label>
+              <label for="meeting_priority" class="form-label">Priority</label>
               <select
                 class="form-select form-select-sm"
                 name="priority"
-                id="priority"
+                id="meeting_priority"
               >
                 <option selected value="1">Low</option>
                 <option value="2">Medium</option>
@@ -99,13 +102,14 @@
                 type="datetime-local"
                 class="form-control"
                 name="dateAddedTo"
-                id="dateAddedTo"
+                id="meeting_dateAddedTo"
                 value=""
               />
-              <label for="dateAddedTo" class="form-label">Date to Add event to
+              <label for="meeting_dateAddedTo" class="form-label">Date to Add
+                event to
               </label>
 
-              <div id="dateAddedTo_error" class="invalid-feedback">
+              <div id="meeting_dateAddedTo_error" class="invalid-feedback">
 
               </div>
             </div>
@@ -115,13 +119,14 @@
                 type="datetime-local"
                 class="form-control"
                 name="dateDueOn"
-                id="dateDueOn"
+                id="meeting_dateDueOn"
                 value=""
               />
-              <label for="dateDueOn" class="form-label">Date event is due on
+              <label for="meeting_dateDueOn" class="form-label">Date event is
+                due on
               </label>
 
-              <div id="dateDueOn_error" class="invalid-feedback">
+              <div id="meeting_dateDueOn_error" class="invalid-feedback">
 
               </div>
             </div>
@@ -131,11 +136,11 @@
                 class="form-check-input"
                 type="checkbox"
                 name="repeating"
-                id="repeating"
+                id="meeting_repeating"
                 aria-describedby="repeating_help_id"
                 value="false"
               />
-              <label class="form-check-label" for="repeating">
+              <label class="form-check-label" for="meeting_repeating">
                 Is the event repeating?
               </label>
               <small id="repeating_help_id" class="form-text text-muted">
@@ -152,14 +157,17 @@
               <select
                 class="form-select form-select-sm"
                 name="repeatingIncrementBy"
-                id="repeatingIncrementBy"
+                id="meeting_repeatingIncrementBy"
               >
                 <option selected value="day">day</option>
                 <option value="week">week</option>
                 <option value="month">month</option>
                 <option value="year">Year</option>
               </select>
-              <div id="repeatingIncrementBy_error" class="invalid-feedback">
+              <div
+                id="meeting_repeatingIncrementBy_error"
+                class="invalid-feedback"
+              >
 
               </div>
             </div>
@@ -169,17 +177,17 @@
                 type="number"
                 class="form-control"
                 {{! change max to depending on the drop down }}
-                min="0"
+                min="1"
                 max="5"
-                id="repeatingCounterIncrement"
+                id="meeting_repeatingCounterIncrement"
                 name="repeatingCounterIncrement"
                 value="0"
               />
-              <label for="repeatingCounterIncrement" class="form-label">
+              <label for="meeting_repeatingCounterIncrement" class="form-label">
                 How Many times to repeat the event ? ( number )
               </label>
               <div
-                id="repeatingCounterIncrement_error"
+                id="meeting_repeatingCounterIncrement_error"
                 class="invalid-feedback"
               >
 
