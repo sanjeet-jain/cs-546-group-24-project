@@ -6,8 +6,16 @@ function populateMeetingsModal(data) {
   event_modal.querySelector("input#textBody").value = data.textBody;
   event_modal.querySelector("input#tag").value = data.tag;
   event_modal.querySelector("select#priority").value = data.priority;
-  event_modal.querySelector("input#dateAddedTo").value = data.dateAddedTo;
-  event_modal.querySelector("input#dateDueOn").value = data.dateDueOn;
+  // issue with date time coming as a date string
+  // it needs an iso string
+  event_modal.querySelector("input#dateAddedTo").value = new Date(
+    data.dateAddedTo
+  )
+    .toISOString()
+    .slice(0, 16);
+  event_modal.querySelector("input#dateDueOn").value = new Date(data.dateDueOn)
+    .toISOString()
+    .slice(0, 16);
   event_modal.querySelector("input#repeating").value = data.repeating;
   event_modal.querySelector("select#repeatingIncrementBy").value =
     data.repeatingIncrementBy;
