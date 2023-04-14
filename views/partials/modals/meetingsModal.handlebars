@@ -133,7 +133,7 @@
                 name="repeating"
                 id="repeating"
                 aria-describedby="repeating_help_id"
-                value="true"
+                value="false"
               />
               <label class="form-check-label" for="repeating">
                 Is the event repeating?
@@ -157,6 +157,9 @@
                 <option value="month">month</option>
                 <option value="year">Year</option>
               </select>
+              <div id="repeatingIncrementBy_error" class="invalid-feedback">
+
+              </div>
             </div>
             {{! repeatingCounterIncrement }}
             <div class="form-floating mb-3">
@@ -168,11 +171,17 @@
                 max="5"
                 id="repeatingCounterIncrement"
                 name="repeatingCounterIncrement"
+                value="0"
               />
               <label for="repeatingCounterIncrement" class="form-label">
                 How Many times to repeat the event ? ( number )
               </label>
+              <div
+                id="repeatingCounterIncrement_error"
+                class="invalid-feedback"
+              >
 
+              </div>
             </div>
             {{! add more fields for other events }}
 

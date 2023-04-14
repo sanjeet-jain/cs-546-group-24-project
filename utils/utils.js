@@ -27,6 +27,10 @@ const utils = {
   },
 
   validateInputIsNumber(input, inputName) {
+    if (typeof input === "string") {
+      this.validateStringInput(input, inputName);
+      input = Number(input.trim());
+    }
     if (typeof input !== "number" || isNaN(input)) {
       throw new Error(`${inputName} is not a number `);
     }
@@ -34,7 +38,9 @@ const utils = {
 
   validatePriority(priority) {
     if (typeof priority === "string") {
-      priority = Number(priority);
+      this.validateStringInput(priority, "priority");
+
+      priority = Number(priority.trim());
     }
     this.validateInputIsNumber(priority, "priority");
     if (!Number.isInteger(priority)) {
@@ -46,8 +52,12 @@ const utils = {
   },
 
   validateBooleanInput(input, inputName) {
-    if (typeof input === "string" && (input === "true" || input === "false")) {
-      input = input === "true" ? true : false;
+    if (typeof input === "string") {
+      this.validateStringInput(input, inputName);
+
+      if (input === "true" || input === "false") {
+        input = input.trim() === "true" ? true : false;
+      }
     }
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
@@ -127,48 +137,6 @@ const utils = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    let errorMessages = this.validateMeetingUpdateInputs(
-      title,
-      dateAddedTo,
-      dateDueOn,
-      priority,
-      textBody,
-      tag
-    );
-
-    if (repeating) {
-      try {
-        this.validateBooleanInput(repeating, "repeating");
-      } catch (error) {
-        errorMessages.repeating = error.message;
-      }
-      try {
-        this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
-      } catch (error) {
-        errorMessages.repeatingCounterIncrement = error.message;
-      }
-
-      try {
-        this.validateRepeatingIncrementBy(repeatingIncrementBy);
-      } catch (error) {
-        errorMessages.repeatingIncrementBy = error.message;
-      }
-    }
-    try {
-      this.validateDateRange(dateAddedTo, dateDueOn);
-    } catch (error) {
-      errorMessages.dateDueOn = error.message;
-    }
-    return errorMessages;
-  },
-  validateMeetingUpdateInputs(
-    title,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    textBody,
-    tag
-  ) {
     let errorMessages = {};
     try {
       this.validateStringInputWithMaxLength(
@@ -215,6 +183,29 @@ const utils = {
       );
     } catch (e) {
       errorMessages.tag = e.message;
+    }
+    if (repeating) {
+      try {
+        this.validateBooleanInput(repeating, "repeating");
+      } catch (error) {
+        errorMessages.repeating = error.message;
+      }
+      try {
+        this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
+      } catch (error) {
+        errorMessages.repeatingCounterIncrement = error.message;
+      }
+
+      try {
+        this.validateRepeatingIncrementBy(repeatingIncrementBy);
+      } catch (error) {
+        errorMessages.repeatingIncrementBy = error.message;
+      }
+    }
+    try {
+      this.validateDateRange(dateAddedTo, dateDueOn);
+    } catch (error) {
+      errorMessages.dateDueOn = error.message;
     }
     return errorMessages;
   },

@@ -20,12 +20,52 @@ function populateMeetingsModal(userId, meetingId) {
 
       event_modal.querySelector("input#dateDueOn").value = data.dateDueOn;
       event_modal.querySelector("input#repeating").value = data.repeating;
+      event_modal.querySelector("input#repeating").checked = data.repeating;
+
       event_modal.querySelector("select#repeatingIncrementBy").value =
         data.repeatingIncrementBy;
       event_modal.querySelector("input#repeatingCounterIncrement").value =
         data.repeatingCounterIncrement;
+      // if (!event_modal.querySelector("input#repeating").value) {
+      //   event_modal.querySelector(
+      //     "select#repeatingIncrementBy"
+      //   ).disabled = true;
+      //   event_modal.querySelector(
+      //     "input#repeatingCounterIncrement"
+      //   ).disabled = true;
+      //   event_modal.querySelector("select#repeatingIncrementBy").value = "";
+      //   event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+      // }
     }
   );
+}
+function repeatingCheckBoxTogglerMeeting() {
+  let event_modal = document.getElementById("modal-meeting-display");
+  let repeating = event_modal.querySelector("input#repeating");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#repeatingIncrementBy"
+  );
+  let repeatingCounterIncrement = event_modal.querySelector(
+    "input#repeatingCounterIncrement"
+  );
+  repeating.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      event.target.value = true;
+      repeatingIncrementBy.disabled = false;
+      repeatingCounterIncrement.disabled = false;
+      repeatingIncrementBy.setAttribute("required", "");
+      repeatingIncrementBy.value = "day";
+      repeatingCounterIncrement.setAttribute("required", "");
+      repeatingCounterIncrement.value = 0;
+    } else {
+      repeatingIncrementBy.disabled = true;
+      repeatingCounterIncrement.disabled = true;
+      repeatingIncrementBy.removeAttribute("required");
+      repeatingCounterIncrement.removeAttribute("required");
+      event_modal.querySelector("select#repeatingIncrementBy").value = "";
+      event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+    }
+  });
 }
 
 function enableMeetingFormEdit() {
@@ -58,8 +98,12 @@ function onMeetingModalClose() {
       event_modal.querySelector("input#dateAddedTo").value = "";
       event_modal.querySelector("input#dateDueOn").value = "";
       event_modal.querySelector("input#repeating").value = "";
+      event_modal.querySelector("input#repeating").checked = false;
       event_modal.querySelector("select#repeatingIncrementBy").value = "";
       event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+      resultDiv = document.getElementById("update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText = "";
     });
   });
 }
@@ -76,14 +120,16 @@ function submitMeetingForm() {
       jsonData[key] = value;
     }
     //todo validations
-    checkMeetingValidations(jsonData);
+    checkMeetingValidations(event.target);
     $.ajax({
       method: "PUT",
       url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
       data: jsonData,
       success: function (data) {
         resultDiv = document.getElementById("update-result");
-        resultDiv.innerText = "Meeting updated Successfully!";
+        resultDiv.innerText =
+          "Meeting updated Successfully! Please refresh the page!";
+        resultDiv.classList = "";
         resultDiv.classList.add("alert", "alert-success");
         // if status code 200 update modal
         populateMeetingsModal(data.userId, data.meetingId);
@@ -121,9 +167,23 @@ function bindEventButtontoModal() {
   });
 }
 
-function checkMeetingValidations(jsonData) {}
+function checkMeetingValidations(jsonData) {
+  //get all error divs
+  title_error = document.getElementById("title_error");
+  textBody_error = document.getElementById("textBody_error");
+  tag_error = document.getElementById("tag_error");
+  dateAddedTo_error = document.getElementById("dateAddedTo_error");
+  dateDueOn_error = document.getElementById("dateDueOn_error");
+  repeatingCounterIncrement_error = document.getElementById(
+    "repeatingCounterIncrement_error"
+  );
+  repeatingIncrementBy_error = document.getElementById(
+    "repeatingIncrementBy_error"
+  );
+}
 
 submitMeetingForm();
 bindEventButtontoModal();
 enableMeetingFormEdit();
 onMeetingModalClose();
+repeatingCheckBoxTogglerMeeting();
