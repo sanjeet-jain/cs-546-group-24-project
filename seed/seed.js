@@ -21,8 +21,8 @@ export async function runSetup() {
  noteIds: [ObjectId],
  meetingIds: [ObjectId]
 */
-  let dt = new Date();
-  dt = dayjs(dt).set("hours", 14).toDate();
+
+  let dt = dayjs().set("hours", 14).toDate();
 
   const sampleUser = {
     first_name: "Sample",
