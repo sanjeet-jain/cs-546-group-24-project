@@ -15,6 +15,7 @@ Meeting Collection {
     expired:Boolean
     }
 */
+import dayjs from "dayjs";
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import {
@@ -39,31 +40,48 @@ const meetingsDataFunctions = {
     }
   },
   async update(
+    userId,
     meetingId,
     title,
     dateAddedTo,
     dateDueOn,
     priority,
     textBody,
-    tag
+    tag,
+    repeating,
+    repeatingCounterIncrement,
+    repeatingIncrementBy
   ) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
+
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
     utils.checkObjectIdString(meetingId);
     meetingId = meetingId.trim();
     //validate other fields
-    utils.validateMeetingUpdateInputs(
+
+    let errorMessages = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
       priority,
       textBody,
-      tag
+      tag,
+      repeating,
+      repeatingCounterIncrement,
+      repeatingIncrementBy
     );
+    if (Object.keys(errorMessages).length !== 0) {
+      throw errorMessages;
+    }
 
     const meetings = await meetingsCollection();
     const oldMeeting = await this.get(meetingId);
     let updatedMeeting = { ...oldMeeting };
     delete updatedMeeting._id;
+
+    textBody = textBody.trim();
+    tag = tag.trim().toLowerCase();
 
     // only update the fields that have been provided as input
     updatedMeeting.title = title.trim();
@@ -72,12 +90,106 @@ const meetingsDataFunctions = {
     updatedMeeting.priority = priority;
     updatedMeeting.textBody = textBody.trim();
     updatedMeeting.tag = tag.trim().toLowerCase();
+    updatedMeeting.repeating = repeating;
+    updatedMeeting.repeatingCounterIncrement = repeatingCounterIncrement;
+    updatedMeeting.repeatingIncrementBy = repeatingIncrementBy;
 
+    if (
+      (repeating === "true" || repeating === true) &&
+      oldMeeting.repeating !== updatedMeeting.repeating
+    ) {
+      dateAddedTo = dateAddedTo.trim();
+      let dateAddedToObject = new Date(dateAddedTo);
+      dateDueOn = dateDueOn.trim();
+      let dateDueOnObject = new Date(dateDueOn);
+      const repeatingGroup = new ObjectId();
+      const meetingObjects = [];
+      let newDateDueOn;
+      let newDateAddedTo;
+      for (let i = 0; i < repeatingCounterIncrement; i++) {
+        switch (repeatingIncrementBy) {
+          case "day":
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 1)
+            );
+            break;
+          case "week":
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 7)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 7)
+            );
+            break;
+          case "month":
+            newDateDueOn = new Date(
+              dateDueOnObject.setMonth(dateDueOnObject.getMonth() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setMonth(dateAddedToObject.getMonth() + 1)
+            );
+            break;
+          case "year":
+            newDateDueOn = new Date(
+              dateDueOnObject.setFullYear(dateDueOnObject.getFullYear() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setFullYear(dateAddedToObject.getFullYear() + 1)
+            );
+            break;
+          default:
+            throw new Error("Invalid repeatingIncrementBy value");
+        }
+        dateDueOnObject = newDateDueOn;
+        dateAddedToObject = newDateAddedTo;
+        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
+        const meeting = {
+          title: title,
+          dateCreated: dateCreated,
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm"),
+          priority: priority,
+          textBody: textBody,
+          tag: tag,
+          repeating: repeating,
+          repeatingCounterIncrement: repeatingCounterIncrement,
+          repeatingIncrementBy: repeatingIncrementBy,
+          repeatingGroup: repeatingGroup,
+          expired: false,
+          type: "meeting",
+        };
+        meetingObjects.push(meeting);
+      }
+
+      const result = await meetings.insertMany(meetingObjects);
+      const insertedIds = Object.values(result.insertedIds);
+      const users = await usersCollection();
+
+      await users.updateOne(
+        { _id: new ObjectId(userId) },
+        { $push: { meetingIds: { $each: insertedIds } } }
+      );
+      updatedMeeting.repeatingGroup = repeatingGroup;
+    }
+    if (
+      (repeating === "false" || !repeating) &&
+      updatedMeeting.repeatingGroup?.toString()?.trim() &&
+      oldMeeting.repeating !== updatedMeeting.repeating
+    ) {
+      await this.deleteAllRecurrences(
+        userId,
+        updatedMeeting.repeatingGroup.toString().trim(),
+        meetingId
+      );
+      updatedMeeting.repeatingGroup = null;
+    }
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
       { $set: updatedMeeting }
     );
-
     // if the meeting was successfully updated, return the updated meeting
     if (
       result.modifiedCount === 1 &&
@@ -148,7 +260,7 @@ const meetingsDataFunctions = {
   ) {
     utils.checkObjectIdString(userId);
     userId = userId.trim();
-    utils.validateMeetingCreateInputs(
+    let errorMessages = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -159,6 +271,9 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
+    if (Object.keys(errorMessages).length !== 0) {
+      throw errorMessages;
+    }
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     let dateAddedToObject = new Date(dateAddedTo);
@@ -174,7 +289,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = new Date().toISOString().slice(0, 16);
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -213,8 +328,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.toISOString().slice(0, 16),
-          dateDueOn: newDateDueOn.toISOString().slice(0, 16),
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm"),
           priority,
           textBody,
           tag,
@@ -329,7 +444,7 @@ const meetingsDataFunctions = {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
 
-    utils.validateMeetingUpdateAllRecurrencesInputs(
+    let errorMessages = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -337,6 +452,9 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
+    if (Object.keys(errorMessages).length !== 0) {
+      throw errorMessages;
+    }
 
     userId = userId.trim();
     title = title.trim();
@@ -384,7 +502,7 @@ const meetingsDataFunctions = {
         throw new Error("Meetings update wasnt successfull");
     }
   },
-  async deleteAllRecurrences(userId, repeatingGroup) {
+  async deleteAllRecurrences(userId, repeatingGroup, meetingIdToSkip = "") {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
 
@@ -393,7 +511,12 @@ const meetingsDataFunctions = {
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
-    const meetingIdList = user.meetingIds;
+    let meetingIdList = user.meetingIds;
+    if (meetingIdToSkip !== "") {
+      meetingIdList = meetingIdList.filter((x) => {
+        return x.toString() !== meetingIdToSkip;
+      });
+    }
     const meetings = await meetingsCollection();
 
     const result = await meetings.deleteMany({

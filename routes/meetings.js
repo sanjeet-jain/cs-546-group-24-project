@@ -38,9 +38,12 @@ router
   .put(async (req, res) => {
     //code here for PUT
     let meetingId = "";
+    let userId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
+      utils.checkObjectIdString(req.params.userId);
       meetingId = req.params.meetingId.trim();
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -51,34 +54,52 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
-    try {
-      //validation
-      utils.validateMeetingUpdateInputs(
-        meetingPutData.title,
-        meetingPutData.dateAddedTo,
-        meetingPutData.dateDueOn,
-        meetingPutData.priority,
-        meetingPutData.textBody,
-        meetingPutData.tag
-      );
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
+
+    //validation
+    let errorMessages = utils.validateMeetingCreateInputs(
+      meetingPutData.title,
+      meetingPutData.dateAddedTo,
+      meetingPutData.dateDueOn,
+      meetingPutData.priority,
+      meetingPutData.textBody,
+      meetingPutData.tag,
+      meetingPutData.repeating,
+      meetingPutData.repeatingCounterIncrement,
+      meetingPutData.repeatingIncrementBy
+    );
+
+    if (Object.keys(errorMessages).length !== 0) {
+      return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
-      const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
-        meetingPutData;
+      const {
+        title,
+        dateAddedTo,
+        dateDueOn,
+        priority,
+        textBody,
+        tag,
+        repeating,
+        repeatingCounterIncrement,
+        repeatingIncrementBy,
+      } = meetingPutData;
+      //TODO add user id to route
       const updatedMeeting = await meetingsDataFunctions.update(
+        userId,
         meetingId,
         title,
         dateAddedTo,
         dateDueOn,
         priority,
         textBody,
-        tag
+        tag,
+        repeating,
+        repeatingCounterIncrement,
+        repeatingIncrementBy
       );
-      return res.status(200).json(updatedMeeting);
+      return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
@@ -116,21 +137,20 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
-    try {
-      //validation
-      utils.validateMeetingCreateInputs(
-        meetingPostData.title,
-        meetingPostData.dateAddedTo,
-        meetingPostData.dateDueOn,
-        meetingPostData.priority,
-        meetingPostData.textBody,
-        meetingPostData.tag,
-        meetingPostData.repeating,
-        meetingPostData.repeatingCounterIncrement,
-        meetingPostData.repeatingIncrementBy
-      );
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
+    //validation
+    let errorMessages = utils.validateMeetingCreateInputs(
+      meetingPostData.title,
+      meetingPostData.dateAddedTo,
+      meetingPostData.dateDueOn,
+      meetingPostData.priority,
+      meetingPostData.textBody,
+      meetingPostData.tag,
+      meetingPostData.repeating,
+      meetingPostData.repeatingCounterIncrement,
+      meetingPostData.repeatingIncrementBy
+    );
+    if (Object.keys(errorMessages).length !== 0) {
+      return res.status(400).json({ errorMessages: errorMessages });
     }
 
     try {
@@ -157,9 +177,11 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy
       );
-      return res.status(200).json(newMeeting);
+      return res
+        .status(200)
+        .json({ userId: userId, meetingId: newMeeting._id });
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
@@ -208,18 +230,17 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
-    try {
-      //validation
-      utils.validateMeetingUpdateAllRecurrencesInputs(
-        meetingPutData.title,
-        meetingPutData.dateAddedTo,
-        meetingPutData.dateDueOn,
-        meetingPutData.priority,
-        meetingPutData.textBody,
-        meetingPutData.tag
-      );
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
+    let errorMessages = utils.validateMeetingCreateInputs(
+      meetingPutData.title,
+      meetingPutData.dateAddedTo,
+      meetingPutData.dateDueOn,
+      meetingPutData.priority,
+      meetingPutData.textBody,
+      meetingPutData.tag
+    );
+
+    if (Object.keys(errorMessages).length !== 0) {
+      return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
       const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
@@ -234,9 +255,11 @@ router
         tag,
         repeatingGroup
       );
-      return res.status(200).json(updatedMeeting);
+      return res
+        .status(200)
+        .json({ userId: userId, repeatingGroup: repeatingGroup });
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
