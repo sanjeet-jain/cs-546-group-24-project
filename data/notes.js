@@ -11,6 +11,7 @@ type: “notes”
 }
 
 */
+import dayjs from "dayjs";
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import {
@@ -74,7 +75,7 @@ const exportedMethods = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = dayjs(new Date()).format();
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
     const notes = await notesCollection();
     const result = await notes.insertOne({
       title: title,

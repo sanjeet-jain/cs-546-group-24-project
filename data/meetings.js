@@ -145,12 +145,12 @@ const meetingsDataFunctions = {
         }
         dateDueOnObject = newDateDueOn;
         dateAddedToObject = newDateAddedTo;
-        let dateCreated = dayjs(new Date()).format();
+        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
         const meeting = {
           title: title,
           dateCreated: dateCreated,
-          dateAddedTo: dayjs(newDateAddedTo).format(),
-          dateDueOn: dayjs(newDateDueOn).format(),
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm:ss"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm:ss"),
           priority: priority,
           textBody: textBody,
           tag: tag,
@@ -289,7 +289,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = dayjs(new Date()).format();
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -328,8 +328,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: dayjs(newDateAddedTo).format(),
-          dateDueOn: dayjs(newDateDueOn).format(),
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm:ss"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm:ss"),
           priority,
           textBody,
           tag,

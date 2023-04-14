@@ -72,9 +72,9 @@ const tasksDataFunctions = {
     const newTask = {
       title: title,
       textBody: textBody,
-      dateCreated: dayjs(new Date()).format(),
-      dateAddedTo: dayjs(dateAddedTo).format(),
-      dateDueOn: dayjs(dateDueOn).format(),
+      dateCreated: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
+      dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm:ss"),
+      dateDueOn: dayjs(dateDueOn).format("YYYY-MM-DDTHH:mm:ss"),
       priority: priority,
       tag: tag,
       checked: false,
@@ -137,14 +137,18 @@ const tasksDataFunctions = {
     }
     if (updatedTask.dateAddedTo) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
-      updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format();
+      updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format(
+        "YYYY-MM-DDTHH:mm:ss"
+      );
     } else {
       throw new Error("You must provide a dateAddedTo for the task.");
     }
 
     if (updatedTask.dateDueOn) {
       utils.validateDate(updatedTask.dateDueOn, "dateDueOn");
-      updatedTaskData.dateDueOn = dayjs(updatedTask.dateDueOn).format();
+      updatedTaskData.dateDueOn = dayjs(updatedTask.dateDueOn).format(
+        "YYYY-MM-DDTHH:mm:ss"
+      );
     } else {
       throw new Error("You must provide a dateDueOn for the task.");
     }
