@@ -72,9 +72,9 @@ const tasksDataFunctions = {
     const newTask = {
       title: title,
       textBody: textBody,
-      dateCreated: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
-      dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm:ss"),
-      dateDueOn: dayjs(dateDueOn).format("YYYY-MM-DDTHH:mm:ss"),
+      dateCreated: dayjs().format("YYYY-MM-DDTHH:mm"),
+      dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
+      dateDueOn: dayjs(dateDueOn).format("YYYY-MM-DDTHH:mm"),
       priority: priority,
       tag: tag,
       checked: false,

@@ -56,9 +56,9 @@ export async function runSetup() {
   // Seed Meetings
   const sampleMeeting = {
     title: "Weekly Team Meeting repeating",
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateDueOn: dayjs(dt).add(1, "hour").format("YYYY-MM-DDTHH:mm:ss"),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).add(1, "hour").format("YYYY-MM-DDTHH:mm"),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -71,9 +71,9 @@ export async function runSetup() {
   };
   const sampleMeeting2 = {
     title: "Weekly Team Meeting non repeating",
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateDueOn: dayjs(dt).add(2, "hour").format("YYYY-MM-DDTHH:mm:ss"),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).add(2, "hour").format("YYYY-MM-DDTHH:mm"),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -117,9 +117,9 @@ export async function runSetup() {
     title: "Finish project report",
     textBody:
       "Complete the final report for the project and submit it to the manager.",
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     priority: 1,
     tag: "work",
     checked: false,
@@ -129,9 +129,9 @@ export async function runSetup() {
   const sampleTask2 = {
     title: "Buy groceries",
     textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
-    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     priority: 3,
     tag: "personal",
     checked: false,
@@ -165,7 +165,7 @@ export async function runSetup() {
     tag: "rem",
     repeating: false,
     dateAddedTo: dt,
-    endDateTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm:ss"),
+    endDateTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
     repeatingCounterIncrement: null,
     repeatingIncrementBy: null,
   };
@@ -190,7 +190,7 @@ export async function runSetup() {
     textBody: "     sample Note body      ",
     tag: "cs 546",
     documentLinks: [],
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm:ss"),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     type: "notes",
   };
   await notesDataFunctions.create(
