@@ -41,7 +41,7 @@
         id="last_name"
         aria-describedby="last_name_help_id"
         placeholder="Last Name"
-        pattern="^[a-zA-Z]+$"
+        pattern="^[a-zA-Z]{1,20}$"
         value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}"
       />
       <label for="last_name" class="form-label">Last Name</label>
