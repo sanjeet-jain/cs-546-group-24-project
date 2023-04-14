@@ -28,7 +28,7 @@ function populateMeetingsModal(userId, meetingId) {
   );
 }
 
-function enableFormEdit() {
+function enableMeetingFormEdit() {
   let calender_div = document.getElementById("calendar-div");
   editButtons = calender_div.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
@@ -40,7 +40,7 @@ function enableFormEdit() {
   });
 }
 
-function onModalClose() {
+function onMeetingModalClose() {
   dataGlobal = undefined;
   userIdGlobal = undefined;
   let event_modal = document.getElementById("modal-meeting-display");
@@ -64,38 +64,58 @@ function onModalClose() {
   });
 }
 
-function submitForm(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  //make it a put request
-  // Create a new hidden input element
-  var input = document.createElement("input");
-  input.type = "hidden";
-  input.name = "_method";
-  input.value = "PUT";
+function submitMeetingForm() {
+  meetingform = document.getElementById("meeting-form");
+  meetingform.addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-  // Append the new input element to the form
-  event.target.appendChild(input);
+    // //make it a put request
+    // // Create a new hidden input element
+    // var input = document.createElement("input");
+    // input.type = "hidden";
+    // input.name = "_method";
+    // input.value = "PUT";
 
-  let formData = new FormData(event.target);
-  let jsonData = {};
-  for (var [key, value] of formData.entries()) {
-    jsonData[key] = value;
-  }
-  //todo validations
-  checkValidations(jsonData);
-  // $.ajax({ method: "PUT", url: `/meeting/${userIdGlobal}/${dataGlobal._id}` }).then(
-  //   function (data) {
-  //     //check status code
-  //     // if status code 200 update modal
-  //     // if status code something else show the errors
-  //   })
+    // // Append the new input element to the form
+    // event.target.appendChild(input);
 
-  event.target.action = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
-  event.target.method = "post";
-  event.target.submit();
+    let formData = new FormData(event.target);
+    let jsonData = {};
+    for (var [key, value] of formData.entries()) {
+      jsonData[key] = value;
+    }
+    //todo validations
+    checkMeetingValidations(jsonData);
+    $.ajax({
+      method: "PUT",
+      url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
+      data: jsonData,
+      success: function (data) {
+        console.log(data);
+        resultDiv = document.getElementById("update-result");
+        resultDiv.innerText = "Meeting updated Successfully!";
+        resultDiv.classList.add("alert", "alert-success");
+        // if status code 200 update modal
+        populateMeetingsModal(data.userId, data.meetingId);
+      },
+      error: function (data) {
+        console.log(data);
+        resultDiv = document.getElementById("update-result");
+        resultDiv.classList = "";
+        resultDiv.innerText =
+          data?.responseJSON?.error || "Update wasnt Successful";
+        resultDiv.classList.add("alert", "alert-danger");
+      },
+    });
+
+    // event.target.action = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
+    // event.target.method = "post";
+    // event.target.submit();
+  });
 }
 
+//bind all event pills to respective modal generators
 function bindEventButtontoModal() {
   let calender_div = document.getElementById("calendar-div");
   event_pills = calender_div.querySelectorAll("button.event-pill");
@@ -117,8 +137,9 @@ function bindEventButtontoModal() {
   });
 }
 
-function checkValidations(jsonData) {}
+function checkMeetingValidations(jsonData) {}
 
+submitMeetingForm();
 bindEventButtontoModal();
-enableFormEdit();
-onModalClose();
+enableMeetingFormEdit();
+onMeetingModalClose();

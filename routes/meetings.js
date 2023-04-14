@@ -38,9 +38,12 @@ router
   .put(async (req, res) => {
     //code here for PUT
     let meetingId = "";
+    let userId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
+      utils.checkObjectIdString(req.params.userId);
       meetingId = req.params.meetingId.trim();
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -67,6 +70,7 @@ router
     try {
       const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
         meetingPutData;
+      //TODO add user id to route
       const updatedMeeting = await meetingsDataFunctions.update(
         meetingId,
         title,
@@ -76,9 +80,9 @@ router
         textBody,
         tag
       );
-      return res.status(200).json(updatedMeeting);
+      return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Error: Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
@@ -159,7 +163,7 @@ router
       );
       return res.status(200).json(newMeeting);
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Error: Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
@@ -236,7 +240,7 @@ router
       );
       return res.status(200).json(updatedMeeting);
     } catch (e) {
-      if (e === "Error: same object passed for update with no changes") {
+      if (e === "Error: Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });

@@ -33,7 +33,7 @@
 
       <fieldset id="form-enabler" disabled>
         <div class="modal-body">
-          <form id="meeting-form" onsubmit="submitForm(event)">
+          <form id="meeting-form" {{! onsubmit="submitForm(event)" }}>
             {{! title }}
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
@@ -179,6 +179,9 @@
           </form>
         </div>
         <div class="modal-footer">
+          <div id="update-result">
+
+          </div>
           <input
             id="meeting-bottom-submit-button"
             type="submit"
