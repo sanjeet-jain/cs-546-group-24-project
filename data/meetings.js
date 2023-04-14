@@ -176,7 +176,7 @@ const meetingsDataFunctions = {
     }
     if (
       (repeating === "false" || !repeating) &&
-      updatedMeeting.repeatingGroup.toString().trim() &&
+      updatedMeeting.repeatingGroup?.toString()?.trim() &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
       await this.deleteAllRecurrences(
