@@ -8,7 +8,7 @@ import exphbs from "express-handlebars";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import * as path from "path";
-
+import dayjs from "dayjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -29,14 +29,14 @@ const handlebarsInstance = exphbs.create({
       );
     },
     minDobDate: function () {
-      return new Date(new Date().getFullYear() - 14, 0, 1)
-        .toISOString()
-        .slice(0, 10);
+      return dayjs(new Date(new Date().getFullYear() - 14, 0, 1)).format(
+        "YYYY-MM-DD"
+      );
     },
     maxDobDate: function () {
-      return new Date(new Date().getFullYear() - 100, 0, 1)
-        .toISOString()
-        .slice(0, 10);
+      return dayjs(new Date(new Date().getFullYear() - 100, 0, 1)).format(
+        "YYYY-MM-DD"
+      );
     },
     json: function (context) {
       return JSON.stringify(context);
