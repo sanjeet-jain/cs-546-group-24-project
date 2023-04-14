@@ -1,0 +1,79 @@
+let dataGlobal;
+let userIdGlobal;
+function populateMeetingsModal(data, userId) {
+  dataGlobal = data;
+  userIdGlobal = userId;
+  let event_modal = document.getElementById("modal-meeting-display");
+
+  event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+    data.title;
+  event_modal.querySelector("input#title").value = data.title;
+  event_modal.querySelector("input#textBody").value = data.textBody;
+  event_modal.querySelector("input#tag").value = data.tag;
+  event_modal.querySelector("select#priority").value = data.priority;
+  // issue with date time coming as a date string
+  // it needs an iso string
+  event_modal.querySelector("input#dateAddedTo").value = data.dateAddedTo;
+
+  event_modal.querySelector("input#dateDueOn").value = data.dateDueOn;
+  event_modal.querySelector("input#repeating").value = data.repeating;
+  event_modal.querySelector("select#repeatingIncrementBy").value =
+    data.repeatingIncrementBy;
+  event_modal.querySelector("input#repeatingCounterIncrement").value =
+    data.repeatingCounterIncrement;
+}
+
+function enableFormEdit() {
+  let event_modal = document.getElementById("modal-meeting-display");
+  let fieldset = event_modal.querySelector("#form-enabler");
+  fieldset.disabled = fieldset.disabled ? false : true;
+}
+
+function onModalClose() {
+  dataGlobal = undefined;
+  userIdGlobal = undefined;
+  let event_modal = document.getElementById("modal-meeting-display");
+  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  modalCloseButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      let fieldset = event_modal.querySelector("#form-enabler");
+      fieldset.disabled = true;
+      event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+        "";
+      event_modal.querySelector("input#title").value = "";
+      event_modal.querySelector("input#textBody").value = "";
+      event_modal.querySelector("input#tag").value = "";
+      event_modal.querySelector("select#priority").value = "";
+      event_modal.querySelector("input#dateAddedTo").value = "";
+      event_modal.querySelector("input#dateDueOn").value = "";
+      event_modal.querySelector("input#repeating").value = "";
+      event_modal.querySelector("select#repeatingIncrementBy").value = "";
+      event_modal.querySelector("input#repeatingCounterIncrement").value = "";
+    });
+  });
+}
+
+function submitForm(event) {
+  // do an ajax here for backend validation
+  event.preventDefault();
+  event.stopPropagation();
+  //make it a put request
+
+  // Create a new hidden input element
+  var input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "_method";
+  input.value = "PUT";
+
+  // Append the new input element to the form
+  event.target.appendChild(input);
+  //todo validations
+  checkValidations();
+  event.target.action = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
+  event.target.method = "post";
+  event.target.submit();
+}
+
+function checkValidations() {}
+
+onModalClose();

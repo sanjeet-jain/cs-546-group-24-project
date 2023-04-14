@@ -4,7 +4,7 @@ import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
 
 router
-  .route("/meeting/:meetingId")
+  .route("/:userId/:meetingId")
   .get(async (req, res) => {
     let meetingId = "";
     try {
@@ -86,7 +86,7 @@ router
   });
 
 router
-  .route("/user/:userId/meetings/")
+  .route("/user/:userId")
   .get(async (req, res) => {
     let userId = "";
     try {

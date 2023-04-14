@@ -33,6 +33,9 @@ const utils = {
   },
 
   validatePriority(priority) {
+    if (typeof priority === "string") {
+      priority = Number(priority);
+    }
     this.validateInputIsNumber(priority, "priority");
     if (!Number.isInteger(priority)) {
       throw new Error("priority cant be a float");
@@ -43,6 +46,9 @@ const utils = {
   },
 
   validateBooleanInput(input, inputName) {
+    if (typeof input === "string" && (input === "true" || input === "false")) {
+      input = input === "true" ? true : false;
+    }
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }
@@ -105,6 +111,7 @@ const utils = {
     dateDueOn = dateDueOn.trim();
     this.validateDate(dateAddedTo, "dateAddedTo");
     this.validateDate(dateDueOn, "dateDueOn");
+    //TODO check date as well ! not just time
     if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }
@@ -138,8 +145,8 @@ const utils = {
       "tag",
       constants.stringLimits["tag"]
     );
-    this.validateBooleanInput(repeating, "repeating");
     if (repeating) {
+      this.validateBooleanInput(repeating, "repeating");
       this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
       this.validateRepeatingIncrementBy(repeatingIncrementBy);
     }

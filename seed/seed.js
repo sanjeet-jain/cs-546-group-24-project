@@ -21,6 +21,7 @@ export async function runSetup() {
  meetingIds: [ObjectId]
 */
   let dt = new Date();
+  dt.setHours(14);
 
   const sampleUser = {
     first_name: "Sample",
@@ -30,7 +31,7 @@ export async function runSetup() {
     password: "abcDefgh2i",
     disability: false,
     // date string passed here is MM/DD/YYYY
-    dob: new Date("01/01/1996").toDateString(),
+    dob: new Date("01/01/1996").toISOString().slice(0, 16),
     consent: true,
     //initially an empty array
     // taskIds: [],
@@ -53,29 +54,31 @@ export async function runSetup() {
 
   // Seed Meetings
   const sampleMeeting = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
+    title: "Weekly Team Meeting repeating",
+    dateCreated: dt.toISOString().slice(0, 16),
+    dateAddedTo: dt.toISOString().slice(0, 16),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 1))
+      .toISOString()
+      .slice(0, 16),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
+    repeating: true,
+    repeatingCounterIncrement: 2,
+    repeatingIncrementBy: "day",
     repeatingGroup: null,
     expired: false,
     type: "meeting",
   };
   const sampleMeeting2 = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
+    title: "Weekly Team Meeting non repeating",
+    dateCreated: dt.toISOString().slice(0, 16),
+    dateAddedTo: new Date(new Date().setHours(dt.getHours() + 1))
+      .toISOString()
+      .slice(0, 16),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 2))
+      .toISOString()
+      .slice(0, 16),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -85,35 +88,6 @@ export async function runSetup() {
     repeatingGroup: null,
     expired: false,
     type: "meeting",
-  };
-
-  const sampleTask = {
-    title: "Finish project report",
-    textBody:
-      "Complete the final report for the project and submit it to the manager.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 7)
-    ).toString(),
-    priority: 1,
-    tag: "work",
-    checked: false,
-    type: "task",
-  };
-
-  const sampleTask2 = {
-    title: "Buy groceries",
-    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 1)
-    ).toString(),
-    priority: 3,
-    tag: "personal",
-    checked: false,
-    type: "task",
   };
 
   await meetingsDataFunctions.create(
@@ -144,6 +118,34 @@ export async function runSetup() {
 
   // Seed tasks
 
+  const sampleTask = {
+    title: "Finish project report",
+    textBody:
+      "Complete the final report for the project and submit it to the manager.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 1,
+    tag: "work",
+    checked: false,
+    type: "task",
+  };
+
+  const sampleTask2 = {
+    title: "Buy groceries",
+    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
+    dateCreated: dt.toString(),
+    dateAddedTo: dt.toString(),
+    dateDueOn: new Date(
+      new Date().setHours(new Date().getHours() + 1)
+    ).toString(),
+    priority: 3,
+    tag: "personal",
+    checked: false,
+    type: "task",
+  };
   await tasksDataFunctions.createTask(
     user._id.toString(),
     sampleTask.title,
