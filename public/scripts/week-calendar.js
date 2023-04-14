@@ -186,18 +186,21 @@ function submitMeetingForm() {
               "meeting_repeatingIncrementBy_error"
             );
             meeting_title_error.innerText =
-              data.responseJSON?.errorMessages?.title;
+              data.responseJSON?.errorMessages?.title || "";
             meeting_textBody_error.innerText =
-              data.responseJSON?.errorMessages?.textBody;
-            meeting_tag_error.innerText = data.responseJSON?.errorMessages?.tag;
+              data.responseJSON?.errorMessages?.textBody || "";
+            meeting_tag_error.innerText =
+              data.responseJSON?.errorMessages?.tag || "";
             meeting_dateAddedTo_error.innerText =
-              data.responseJSON?.errorMessages?.dateAddedTo;
+              data.responseJSON?.errorMessages?.dateAddedTo || "";
             meeting_dateDueOn_error.innerText =
-              data.responseJSON?.errorMessages?.dateDueOn;
+              data.responseJSON?.errorMessages?.dateDueOn || "";
             meeting_repeatingCounterIncrement_error.innerText =
-              data.responseJSON?.errorMessages?.repeatingCounterIncrement;
+              data.responseJSON?.errorMessages?.repeatingCounterIncrement || "";
             meeting_repeatingIncrementBy_error.innerText =
-              data.responseJSON?.errorMessages?.repeatingIncrementBy;
+              data.responseJSON?.errorMessages?.repeatingIncrementBy ||
+              "" ||
+              "";
           },
         });
       }
