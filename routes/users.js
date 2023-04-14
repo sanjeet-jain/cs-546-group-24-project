@@ -159,7 +159,7 @@ router
       }
     } catch (e) {
       return res.status(400).render("user/login", {
-        error: "Invalid email and password",
+        error: "Invalid Credentials",
         is_invalid: true,
         errorContent: req.body,
       });
