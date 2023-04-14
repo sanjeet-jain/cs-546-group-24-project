@@ -174,7 +174,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = new Date().toString();
+    let dateCreated = new Date().toISOString().slice(0, 16);
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -213,8 +213,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.toString(),
-          dateDueOn: newDateDueOn.toString(),
+          dateAddedTo: newDateAddedTo.toISOString().slice(0, 16),
+          dateDueOn: newDateDueOn.toISOString().slice(0, 16),
           priority,
           textBody,
           tag,
@@ -272,7 +272,7 @@ const meetingsDataFunctions = {
         { _id: new ObjectId(userId) },
         { $push: { meetingIds: { $each: insertedIds } } }
       );
-      return this.getAll(userId);
+      return await this.getAll(userId);
     }
   },
 

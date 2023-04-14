@@ -13,14 +13,9 @@ function populateMeetingsModal(data, userId) {
   event_modal.querySelector("select#priority").value = data.priority;
   // issue with date time coming as a date string
   // it needs an iso string
-  event_modal.querySelector("input#dateAddedTo").value = new Date(
-    data.dateAddedTo
-  )
-    .toISOString()
-    .slice(0, 16);
-  event_modal.querySelector("input#dateDueOn").value = new Date(data.dateDueOn)
-    .toISOString()
-    .slice(0, 16);
+  event_modal.querySelector("input#dateAddedTo").value = data.dateAddedTo;
+
+  event_modal.querySelector("input#dateDueOn").value = data.dateDueOn;
   event_modal.querySelector("input#repeating").value = data.repeating;
   event_modal.querySelector("select#repeatingIncrementBy").value =
     data.repeatingIncrementBy;
@@ -35,6 +30,8 @@ function enableFormEdit() {
 }
 
 function onModalClose() {
+  dataGlobal = undefined;
+  userIdGlobal = undefined;
   let event_modal = document.getElementById("modal-meeting-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
   modalCloseButtons.forEach((button) => {
@@ -60,9 +57,19 @@ function submitForm(event) {
   // do an ajax here for backend validation
   event.preventDefault();
   event.stopPropagation();
+  //make it a put request
+
+  // Create a new hidden input element
+  var input = document.createElement("input");
+  input.type = "hidden";
+  input.name = "_method";
+  input.value = "PUT";
+
+  // Append the new input element to the form
+  event.target.appendChild(input);
   //todo validations
   checkValidations();
-  event.target.action = `/meeting/user/${userIdGlobal}`;
+  event.target.action = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
   event.target.method = "post";
   event.target.submit();
 }

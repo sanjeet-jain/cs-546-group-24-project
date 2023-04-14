@@ -31,7 +31,7 @@ export async function runSetup() {
     password: "abcDefgh2i",
     disability: false,
     // date string passed here is MM/DD/YYYY
-    dob: new Date("01/01/1996").toDateString(),
+    dob: new Date("01/01/1996").toISOString().slice(0, 16),
     consent: true,
     //initially an empty array
     // taskIds: [],
@@ -55,9 +55,11 @@ export async function runSetup() {
   // Seed Meetings
   const sampleMeeting = {
     title: "Weekly Team Meeting repeating",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(new Date().setHours(dt.getHours() + 1)).toString(),
+    dateCreated: dt.toISOString().slice(0, 16),
+    dateAddedTo: dt.toISOString().slice(0, 16),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 1))
+      .toISOString()
+      .slice(0, 16),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -70,9 +72,13 @@ export async function runSetup() {
   };
   const sampleMeeting2 = {
     title: "Weekly Team Meeting non repeating",
-    dateCreated: dt.toString(),
-    dateAddedTo: new Date(new Date().setHours(dt.getHours() + 1)).toString(),
-    dateDueOn: new Date(new Date().setHours(dt.getHours() + 2)).toString(),
+    dateCreated: dt.toISOString().slice(0, 16),
+    dateAddedTo: new Date(new Date().setHours(dt.getHours() + 1))
+      .toISOString()
+      .slice(0, 16),
+    dateDueOn: new Date(new Date().setHours(dt.getHours() + 2))
+      .toISOString()
+      .slice(0, 16),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
