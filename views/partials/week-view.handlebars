@@ -42,9 +42,8 @@
  {{#if this.modalData.reminders.length}}
     {{#each this.modalData.reminders}}
     {{#if (eq this.timeslotStart ../../this)}}
-    <span class="badge event-pill text-bg-warning text-wrap text-center">
-            <i class="bi-alarm"></i>
-      {{{this.title}}}</span>
+    <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
+    <i class="bi-calendar-event"></i>{{{this.}}}</button>
     {{/if}}
     {{/each}}
     {{/if}}
