@@ -70,16 +70,6 @@ function submitMeetingForm() {
     event.preventDefault();
     event.stopPropagation();
 
-    // //make it a put request
-    // // Create a new hidden input element
-    // var input = document.createElement("input");
-    // input.type = "hidden";
-    // input.name = "_method";
-    // input.value = "PUT";
-
-    // // Append the new input element to the form
-    // event.target.appendChild(input);
-
     let formData = new FormData(event.target);
     let jsonData = {};
     for (var [key, value] of formData.entries()) {
@@ -92,7 +82,6 @@ function submitMeetingForm() {
       url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
       data: jsonData,
       success: function (data) {
-        console.log(data);
         resultDiv = document.getElementById("update-result");
         resultDiv.innerText = "Meeting updated Successfully!";
         resultDiv.classList.add("alert", "alert-success");
@@ -100,7 +89,6 @@ function submitMeetingForm() {
         populateMeetingsModal(data.userId, data.meetingId);
       },
       error: function (data) {
-        console.log(data);
         resultDiv = document.getElementById("update-result");
         resultDiv.classList = "";
         resultDiv.innerText =
@@ -108,10 +96,6 @@ function submitMeetingForm() {
         resultDiv.classList.add("alert", "alert-danger");
       },
     });
-
-    // event.target.action = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
-    // event.target.method = "post";
-    // event.target.submit();
   });
 }
 

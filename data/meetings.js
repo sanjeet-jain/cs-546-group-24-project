@@ -51,7 +51,8 @@ const meetingsDataFunctions = {
     utils.checkObjectIdString(meetingId);
     meetingId = meetingId.trim();
     //validate other fields
-    utils.validateMeetingUpdateInputs(
+
+    let errorMessages = utils.validateMeetingUpdateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -59,6 +60,9 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
+    if (Object.keys(errorMessages) !== 0) {
+      throw errorMessages;
+    }
 
     const meetings = await meetingsCollection();
     const oldMeeting = await this.get(meetingId);
@@ -148,7 +152,7 @@ const meetingsDataFunctions = {
   ) {
     utils.checkObjectIdString(userId);
     userId = userId.trim();
-    utils.validateMeetingCreateInputs(
+    let errorMessages = utils.validateMeetingCreateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -159,6 +163,9 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
+    if (Object.keys(errorMessages) !== 0) {
+      throw errorMessages;
+    }
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     let dateAddedToObject = new Date(dateAddedTo);
@@ -329,7 +336,7 @@ const meetingsDataFunctions = {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
 
-    utils.validateMeetingUpdateAllRecurrencesInputs(
+    let errorMessages = utils.validateMeetingUpdateInputs(
       title,
       dateAddedTo,
       dateDueOn,
@@ -337,6 +344,9 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
+    if (Object.keys(errorMessages) !== 0) {
+      throw errorMessages;
+    }
 
     userId = userId.trim();
     title = title.trim();

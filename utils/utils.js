@@ -127,32 +127,40 @@ const utils = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    this.validateStringInputWithMaxLength(
+    let errorMessages = this.validateMeetingUpdateInputs(
       title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
+      dateAddedTo,
+      dateDueOn,
+      priority,
       textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
+      tag
     );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
-    if (repeating) {
-      this.validateBooleanInput(repeating, "repeating");
-      this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
-      this.validateRepeatingIncrementBy(repeatingIncrementBy);
-    }
-    this.validateDateRange(dateAddedTo, dateDueOn);
-  },
 
+    if (repeating) {
+      try {
+        this.validateBooleanInput(repeating, "repeating");
+      } catch (error) {
+        errorMessages.repeating = error.message;
+      }
+      try {
+        this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
+      } catch (error) {
+        errorMessages.repeatingCounterIncrement = error.message;
+      }
+
+      try {
+        this.validateRepeatingIncrementBy(repeatingIncrementBy);
+      } catch (error) {
+        errorMessages.repeatingIncrementBy = error.message;
+      }
+    }
+    try {
+      this.validateDateRange(dateAddedTo, dateDueOn);
+    } catch (error) {
+      errorMessages.dateDueOn = error.message;
+    }
+    return errorMessages;
+  },
   validateMeetingUpdateInputs(
     title,
     dateAddedTo,
@@ -161,52 +169,54 @@ const utils = {
     textBody,
     tag
   ) {
-    this.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
-    this.validateDateRange(dateAddedTo, dateDueOn);
-  },
-  validateMeetingUpdateAllRecurrencesInputs(
-    title,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    textBody,
-    tag
-  ) {
-    this.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
+    let errorMessages = {};
+    try {
+      this.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+    } catch (e) {
+      errorMessages.title = e.message;
+    }
+    try {
+      this.validateDate(dateAddedTo, "DateAddedTo");
+    } catch (e) {
+      errorMessages.dateAddedTo = e.message;
+    }
+
+    try {
+      this.validateDate(dateDueOn, "DateDueOn");
+    } catch (e) {
+      errorMessages.dateDueOn = e.message;
+    }
+
+    try {
+      this.validatePriority(priority);
+    } catch (e) {
+      errorMessages.priority = e.message;
+    }
+
+    try {
+      this.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+    } catch (e) {
+      errorMessages.textBody = e.message;
+    }
+
+    try {
+      this.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
+    } catch (e) {
+      errorMessages.tag = e.message;
+    }
+    return errorMessages;
   },
 
   /**
