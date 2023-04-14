@@ -34,6 +34,7 @@
       <div class="modal-body">
         <fieldset id="form-enabler" disabled>
           <form id="event-form">
+            {{! title }}
             <div class="mb-3">
               <label for="title" class="form-label">Title</label>
               <input
@@ -49,6 +50,7 @@
 
               </div>
             </div>
+            {{! textBody }}
             <div class="mb-3">
               <label for="textBody" class="form-label">Description</label>
               <input
@@ -63,6 +65,7 @@
 
               </div>
             </div>
+            {{! tag }}
             <div class="mb-3">
               <label for="tag" class="form-label">Tag</label>
               <input
@@ -77,6 +80,7 @@
 
               </div>
             </div>
+            {{! priority }}
             <div class="mb-3">
               <label for="priority" class="form-label">Priority</label>
               <select
@@ -89,6 +93,7 @@
                 <option value="3">High</option>
               </select>
             </div>
+            {{! dateAddedTo }}
             <div class="form-floating mb-3">
               <input
                 type="datetime-local"
@@ -104,6 +109,7 @@
 
               </div>
             </div>
+            {{! dateDueOn }}
             <div class="form-floating mb-3">
               <input
                 type="datetime-local"
@@ -119,6 +125,7 @@
 
               </div>
             </div>
+            {{! repeating }}
             <div class="form-check">
               <input
                 class="form-check-input"
@@ -134,6 +141,7 @@
               <small id="repeating_help_id" class="form-text text-muted">
                 Please check if you need the event to repeat</small>
             </div>
+            {{! repeatingIncrementBy }}
             <div class="mb-3">
               <label
                 for="repeatingIncrementBy"
@@ -150,8 +158,8 @@
                 <option value="year">Year</option>
               </select>
             </div>
+            {{! repeatingCounterIncrement }}
             <div class="form-floating mb-3">
-
               <input
                 type="number"
                 class="form-control"
