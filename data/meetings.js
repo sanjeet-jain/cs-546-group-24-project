@@ -15,6 +15,7 @@ Meeting Collection {
     expired:Boolean
     }
 */
+import dayjs from "dayjs";
 import utils from "../utils/utils.js";
 import { ObjectId } from "mongodb";
 import {
@@ -144,19 +145,19 @@ const meetingsDataFunctions = {
         }
         dateDueOnObject = newDateDueOn;
         dateAddedToObject = newDateAddedTo;
-        let dateCreated = new Date().toISOString().slice(0, 16);
+        let dateCreated = dayjs(new Date()).format();
         const meeting = {
-          title,
-          dateCreated,
-          dateAddedTo: newDateAddedTo.toISOString().slice(0, 16),
-          dateDueOn: newDateDueOn.toISOString().slice(0, 16),
-          priority,
-          textBody,
-          tag,
-          repeating,
-          repeatingCounterIncrement,
-          repeatingIncrementBy,
-          repeatingGroup,
+          title: title,
+          dateCreated: dateCreated,
+          dateAddedTo: dayjs(newDateAddedTo).format(),
+          dateDueOn: dayjs(newDateDueOn).format(),
+          priority: priority,
+          textBody: textBody,
+          tag: tag,
+          repeating: repeating,
+          repeatingCounterIncrement: repeatingCounterIncrement,
+          repeatingIncrementBy: repeatingIncrementBy,
+          repeatingGroup: repeatingGroup,
           expired: false,
           type: "meeting",
         };
@@ -288,7 +289,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = new Date().toISOString().slice(0, 16);
+    let dateCreated = dayjs(new Date()).format();
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -327,8 +328,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.toISOString().slice(0, 16),
-          dateDueOn: newDateDueOn.toISOString().slice(0, 16),
+          dateAddedTo: dayjs(newDateAddedTo).format(),
+          dateDueOn: dayjs(newDateDueOn).format(),
           priority,
           textBody,
           tag,

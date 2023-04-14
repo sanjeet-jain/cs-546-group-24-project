@@ -74,7 +74,7 @@ const exportedMethods = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = new Date().toString();
+    let dateCreated = dayjs(new Date()).format();
     const notes = await notesCollection();
     const result = await notes.insertOne({
       title: title,
