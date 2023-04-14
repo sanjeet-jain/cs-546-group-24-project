@@ -60,7 +60,7 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       throw errorMessages;
     }
 
@@ -163,7 +163,7 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       throw errorMessages;
     }
     title = title.trim();
@@ -344,7 +344,7 @@ const meetingsDataFunctions = {
       textBody,
       tag
     );
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       throw errorMessages;
     }
 

@@ -57,15 +57,15 @@ router
 
     //validation
     let errorMessages = utils.validateMeetingUpdateInputs(
-      title,
-      dateAddedTo,
-      dateDueOn,
-      priority,
-      textBody,
-      tag
+      meetingPutData.title,
+      meetingPutData.dateAddedTo,
+      meetingPutData.dateDueOn,
+      meetingPutData.priority,
+      meetingPutData.textBody,
+      meetingPutData.tag
     );
 
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
@@ -123,17 +123,17 @@ router
     }
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
-      title,
-      dateAddedTo,
-      dateDueOn,
-      priority,
-      textBody,
-      tag,
-      repeating,
-      repeatingCounterIncrement,
-      repeatingIncrementBy
+      meetingPostData.title,
+      meetingPostData.dateAddedTo,
+      meetingPostData.dateDueOn,
+      meetingPostData.priority,
+      meetingPostData.textBody,
+      meetingPostData.tag,
+      meetingPostData.repeating,
+      meetingPostData.repeatingCounterIncrement,
+      meetingPostData.repeatingIncrementBy
     );
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
     }
 
@@ -215,15 +215,15 @@ router
         .json({ error: "There are no fields in the request body" });
     }
     let errorMessages = utils.validateMeetingUpdateInputs(
-      title,
-      dateAddedTo,
-      dateDueOn,
-      priority,
-      textBody,
-      tag
+      meetingPutData.title,
+      meetingPutData.dateAddedTo,
+      meetingPutData.dateDueOn,
+      meetingPutData.priority,
+      meetingPutData.textBody,
+      meetingPutData.tag
     );
 
-    if (Object.keys(errorMessages) !== 0) {
+    if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
