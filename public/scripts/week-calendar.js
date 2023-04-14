@@ -76,6 +76,18 @@ function enableMeetingFormEdit() {
       let event_modal = document.getElementById("modal-meeting-display");
       let fieldset = event_modal.querySelector("#form-enabler");
       fieldset.disabled = fieldset.disabled ? false : true;
+      let repeating = event_modal.querySelector("input#repeating");
+      let repeatingIncrementBy = event_modal.querySelector(
+        "select#repeatingIncrementBy"
+      );
+      let repeatingCounterIncrement = event_modal.querySelector(
+        "input#repeatingCounterIncrement"
+      );
+      if (!repeating.checked) {
+        repeating.value = false;
+        repeatingIncrementBy.disabled = true;
+        repeatingCounterIncrement.disabled = true;
+      }
     });
   });
 }
