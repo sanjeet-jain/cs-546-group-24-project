@@ -46,6 +46,7 @@ const constants = {
     textBody: 200,
     tag: 20,
     password: 8,
+    first_last_names: 20,
   },
 };
 
