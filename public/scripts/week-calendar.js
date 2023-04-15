@@ -45,6 +45,40 @@ function populateMeetingsModal(userId, meetingId) {
     }
   );
 }
+
+function populateRemindersModal(userId, reminderId) {
+  $.ajax({
+    method: "GET",
+    url: `/reminder/${userId}/reminder/${reminderId}&true`,
+  }).then(function (data) {
+    dataGlobal = data;
+    userIdGlobal = userId;
+    let event_modal = document.getElementById("modal-reminder-display");
+
+    event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
+      data.title;
+    event_modal.querySelector("input#reminder_title").value = data.title;
+    event_modal.querySelector("input#reminder_textBody").value = data.textBody;
+    event_modal.querySelector("input#reminder_tag").value = data.tag;
+    event_modal.querySelector("select#reminder_priority").value = data.priority;
+    // issue with date time coming as a date string
+    // it needs an iso string
+    event_modal.querySelector("input#reminder_dateAddedTo").value =
+      data.dateAddedTo;
+
+    event_modal.querySelector("input#reminder_repeating").value =
+      data.repeating;
+    event_modal.querySelector("input#reminder_repeating").checked =
+      data.repeating;
+
+    event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
+      data.repeatingIncrementBy;
+
+    event_modal.querySelector("input#reminder_endDateTime").value =
+      data.endDateTime;
+  });
+}
+
 function repeatingCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
   let repeating = event_modal.querySelector("input#meeting_repeating");
@@ -78,8 +112,8 @@ function repeatingCheckBoxTogglerMeeting() {
 }
 
 function enableMeetingFormEdit() {
-  let calender_div = document.getElementById("calendar-div");
-  editButtons = calender_div.querySelectorAll("button.btn-edit");
+  let event_modal = document.getElementById("modal-meeting-display");
+  editButtons = event_modal.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let event_modal = document.getElementById("modal-meeting-display");
@@ -96,6 +130,27 @@ function enableMeetingFormEdit() {
         repeating.value = false;
         repeatingIncrementBy.disabled = true;
         repeatingCounterIncrement.disabled = true;
+      }
+    });
+  });
+}
+
+function enableReminderFormEdit() {
+  let eventModal = document.getElementById("modal-reminder-display");
+  editButtons = eventModal.querySelectorAll("button.btn-edit");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      let fieldset = eventModal.querySelector("#reminder-form-enabler");
+      fieldset.disabled = fieldset.disabled ? false : true;
+      let repeating = eventModal.querySelector("input#reminder_repeating");
+      let repeatingIncrementBy = eventModal.querySelector(
+        "select#reminder_repeatingIncrementBy"
+      );
+      let endDateTime = eventModal.querySelector("input#reminder_endDateTime");
+      if (!repeating.checked) {
+        repeating.value = false;
+        repeatingIncrementBy.disabled = true;
+        endDateTime.disabled = true;
       }
     });
   });
@@ -125,6 +180,34 @@ function onMeetingModalClose() {
       event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       ).value = "";
+      resultDiv = document.getElementById("update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText = "";
+    });
+  });
+}
+
+function onReminderModalClose() {
+  dataGlobal = undefined;
+  userIdGlobal = undefined;
+  let event_modal = document.getElementById("modal-reminder-display");
+  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  modalCloseButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      let fieldset = event_modal.querySelector("#reminder-form-enabler");
+      fieldset.disabled = true;
+      event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
+        "";
+      event_modal.querySelector("input#reminder_title").value = "";
+      event_modal.querySelector("input#reminder_textBody").value = "";
+      event_modal.querySelector("input#reminder_tag").value = "";
+      event_modal.querySelector("select#reminder_priority").value = "";
+      event_modal.querySelector("input#reminder_dateAddedTo").value = "";
+      event_modal.querySelector("input#reminder_repeating").value = "";
+      event_modal.querySelector("input#reminder_repeating").checked = false;
+      event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
+        "";
+      event_modal.querySelector("input##reminder_endDateTime").value = "";
       resultDiv = document.getElementById("update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
@@ -183,6 +266,7 @@ function bindEventButtontoModal() {
           populateMeetingsModal(userId, eventId);
           break;
         case "reminder":
+          populateRemindersModal(userId, eventId);
           break;
         default:
           break;
@@ -213,3 +297,4 @@ bindEventButtontoModal();
 enableMeetingFormEdit();
 onMeetingModalClose();
 repeatingCheckBoxTogglerMeeting();
+enableReminderFormEdit();

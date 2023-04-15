@@ -7,6 +7,8 @@ import {
 
 import constants from "./../constants/constants.js";
 
+import dayjs from "dayjs";
+
 /** API Reminder.js */
 export const createReminder = async (
   user_id,
@@ -44,11 +46,12 @@ export const createReminder = async (
     constants.stringLimits["tag"]
   );
   tag = tag.trim().toLowerCase();
-  let dateCreated = new Date();
-  utils.validateDateObj(dateAddedTo, "date time value");
+  let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
+  utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
   if (repeating) {
-    utils.validateDateObj(endDateTime, "end date value");
+    endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+    utils.validateDate(endDateTime, "end date value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     endDateTime = null;
@@ -61,7 +64,7 @@ export const createReminder = async (
   for (let i = 0; i < reminderEvents.length; i++) {
     if (endDateTime === null) {
       if (
-        utils.isDateObjOverllaping(
+        utils.isDateStrOverllaping(
           dateAddedTo,
           dateAddedTo,
           reminderEvents.dateAddedTo
@@ -75,7 +78,7 @@ export const createReminder = async (
       }
     } else {
       if (
-        utils.isDateObjOverllaping(
+        utils.isDateStrOverllaping(
           dateAddedTo,
           endDateTime,
           reminderEvents.dateAddedTo
@@ -170,11 +173,11 @@ export const updateReminder = async (
     constants.stringLimits["tag"]
   );
   tag = tag.trim().toLowerCase();
-  let dateCreated = new Date();
-  utils.validateDateObj(dateAddedTo, "date time value");
+  let dateCreated = utils.getNewDateStr(new Date());
+  utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
   if (!flagForUpdateSingleReminderUpdate) {
-    utils.validateDateObj(endDateTime, "end time value");
+    utils.validateDate(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     //repeatCounter = 0;
@@ -302,11 +305,11 @@ const deleteAllRecurrences = async (user_id, reminder_id) => {
 
 function duplicateReminderEvents(reminder) {
   let listOfEvents = [];
-  let currentDate = reminder.dateAddedTo;
-  let endDateTime = reminder.endDateTime;
+  let currentDate = new Date(reminder.dateAddedTo);
+  let endDateTime = new Date(reminder.endDateTime);
   reminder.groupId = new ObjectId();
   while (endDateTime - currentDate >= 0) {
-    reminder.dateAddedTo = currentDate;
+    reminder.dateAddedTo = utils.getNewDateStr(currentDate);
     listOfEvents.push(constructNewReminderObj(reminder));
     if (reminder.repeatingIncrementBy === "day") {
       currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
@@ -330,9 +333,9 @@ function constructNewReminderObj(reminderEvent) {
     priority: reminderEvent.priority,
     tag: reminderEvent.tag,
     dateCreated: reminderEvent.dateCreated,
-    dateAddedTo: new Date(reminderEvent.dateAddedTo.valueOf()),
+    dateAddedTo: reminderEvent.dateAddedTo,
     repeating: reminderEvent.repeating,
-    endDateTime: new Date(reminderEvent.endDateTime.valueOf()),
+    endDateTime: reminderEvent.endDateTime,
     repeatingIncrementBy: reminderEvent.repeatingIncrementBy,
     expired: reminderEvent.expired,
     groupId: reminderEvent.groupId,

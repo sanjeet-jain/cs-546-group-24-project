@@ -3,6 +3,7 @@ const router = Router();
 import utils from "../utils/utils.js";
 import * as reminderManager from "../data/reminder.js";
 import constants from "./../constants/constants.js";
+import dayjs from "dayjs";
 
 router
   .route("/:user_id")
@@ -31,13 +32,13 @@ router
     let tag = reminder.tag;
     let repeating = reminder.repeating;
     let endDateTime;
-    console.log(typeof reminder.endDateTime);
+
     if (typeof reminder.endDateTime !== "undefined") {
-      endDateTime = utils.getNewDateObjectFromString(reminder.endDateTime);
+      endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
     }
 
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
-    let dateAddedTo = utils.getNewDateObjectFromString(reminder.dateAddedTo);
+    let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       console.log(typeof user_id);
@@ -65,10 +66,10 @@ router
         constants.stringLimits["tag"]
       );
       tag = tag.trim().toLowerCase();
-      utils.validateDateObj(dateAddedTo, "date time value");
+      utils.validateDate(dateAddedTo, "date time value");
       utils.validateBooleanInput(repeating);
       if (repeating) {
-        utils.validateDateObj(endDateTime, "end time value");
+        utils.validateDate(endDateTime, "end time value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
     } catch (e) {
@@ -122,7 +123,7 @@ router
     let priority = reminder.priority;
     let tag = reminder.tag;
 
-    let dateAddedTo = utils.getNewDateObjectFromString(reminder.dateAddedTo);
+    let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     let repeating = reminder.repeating;
     let endDateTime;
     if (!typeof reminder.endDateTime === "undefined") {
@@ -155,10 +156,10 @@ router
         constants.stringLimits["tag"]
       );
       tag = tag.trim().toLowerCase();
-      utils.validateDateObj(dateAddedTo, "date time added to value");
+      utils.validateDate(dateAddedTo, "date time added to value");
       utils.validateBooleanInput(repeating);
       if (!flagForUpdateSingleReminderUpdate) {
-        utils.validateDateObj(endDateTime, "end date value");
+        utils.validateDate(endDateTime, "end date value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {
         repeatingIncrementBy = null;

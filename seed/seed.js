@@ -164,8 +164,8 @@ export async function runSetup() {
     priority: 3,
     tag: "rem",
     repeating: false,
-    dateAddedTo: dt,
-    endDateTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    endDateTime: null,
     repeatingCounterIncrement: null,
     repeatingIncrementBy: null,
   };

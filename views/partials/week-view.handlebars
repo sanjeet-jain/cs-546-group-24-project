@@ -39,15 +39,16 @@
     {{/each}}
     {{/if}}
 
+  
  {{#if this.modalData.reminders.length}}
     {{#each this.modalData.reminders}}
     {{#if (eq this.timeslotStart ../../this)}}
-    <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
-    <i class="bi-calendar-event"></i>{{{this.title}}}</button>
+    <button class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
+    <i class="bi-calendar-event"></i>
+      {{{this.title}}}</button>
     {{/if}}
     {{/each}}
-    {{/if}}
-
+  {{/if}}
 
  {{#if this.modalData.tasks.length}}
     {{#each this.modalData.tasks}}
@@ -58,8 +59,6 @@
     {{/if}}
     {{/each}}
     {{/if}}
-
-
     </div>
   </td>
 
