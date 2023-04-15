@@ -257,12 +257,17 @@ function checkMeetingValidations(form) {
     meeting_textBody_error.innerText =
       "Title cant be longer than 100 characters";
   }
-  if (form.dateAddedTo.value !== "" && form.dateDueOn !== "") {
-    if (dayjs(form.dateAddedTo).diff(form.dateDueOn) <= 0) {
+  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
+    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
+      form.dateAddedTo.setCustomValidity("invalid_range");
+      form.dateDueOn.setCustomValidity("invalid_range");
       meeting_dateDueOn_error.innerText =
         "Date Due to must be after date Due On";
       meeting_dateAddedTo_error.innerText =
         "Date Added to must be before date Due On";
+    } else {
+      form.dateAddedTo.setCustomValidity("");
+      form.dateDueOn.setCustomValidity("");
     }
   }
   if (form.repeating.checked) {
