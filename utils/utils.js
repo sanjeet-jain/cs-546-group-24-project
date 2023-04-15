@@ -66,6 +66,11 @@ const utils = {
 
   validateName(name, inputName) {
     this.validateStringInput(name);
+    this.validateStringInputWithMaxLength(
+      name,
+      inputName,
+      constants.stringLimits["first_last_names"]
+    );
     if (!/^[a-zA-Z]+$/.test(name)) {
       throw new Error(`${inputName} can only contain letters`);
     }
