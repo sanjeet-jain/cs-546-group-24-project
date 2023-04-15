@@ -66,6 +66,11 @@ const utils = {
 
   validateName(name, inputName) {
     this.validateStringInput(name);
+    this.validateStringInputWithMaxLength(
+      name,
+      inputName,
+      constants.stringLimits["first_last_names"]
+    );
     if (!/^[a-zA-Z]+$/.test(name)) {
       throw new Error(`${inputName} can only contain letters`);
     }
@@ -85,12 +90,17 @@ const utils = {
     if (password.length < constants.stringLimits.password) {
       throw new Error("Password must be at least 8 characters long");
     }
-    if (!/[A-Z]/.test(password)) {
-      throw new Error("Password must contain at least one uppercase letter");
+    if (!/^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+      throw new Error(
+        "Password must contain at least one uppercase letter and one number"
+      );
     }
-    if (!/[0-9]/.test(password)) {
-      throw new Error("Password must contain at least one number");
-    }
+    // if (!/[A-Z]/.test(password)) {
+    //   throw new Error("Password must contain at least one uppercase letter");
+    // }
+    // if (!/[0-9]/.test(password)) {
+    //   throw new Error("Password must contain at least one number");
+    // }
   },
   validateRepeatingCounterIncrement(repeatingCounterIncrement) {
     this.validateInputIsNumber(
@@ -270,6 +280,28 @@ const utils = {
 
   //Dates are stored as string
   /**Changes Made to existing code */
+  validateDateObj(date, paramName) {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      throw new Error(
+        `${paramName} must be a valid Date object or a string that can be parsed as a date`
+      );
+    }
+  },
+  validateAge(dob, min_age, max_age) {
+    this.validateDate(dob, "dob");
+    let today = new Date();
+    dob = new Date(dob);
+    let age = today.getFullYear() - dob.getFullYear();
+    let m = today.getMonth() - dob.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+    if (age < min_age || age > max_age) {
+      throw new Error(
+        `Age must be between ${min_age} and ${max_age} years old`
+      );
+    }
+  },
   // validateDateObj(date, paramName) {
   //   if (!(date instanceof Date) || isNaN(date.getTime())) {
   //     throw new Error(

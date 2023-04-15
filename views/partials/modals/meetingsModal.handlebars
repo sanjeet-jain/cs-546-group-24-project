@@ -33,7 +33,7 @@
 
       <fieldset id="meeting-form-enabler" disabled>
         <div class="modal-body">
-          <form id="meeting-form" {{! onsubmit="submitForm(event)" }}>
+          <form id="meeting-form" class="needs-validation" novalidate>
             {{! title }}
             <div class="mb-3">
               <label for="meeting_title" class="form-label">Title</label>
@@ -45,6 +45,7 @@
                 id="meeting_title"
                 placeholder="Title"
                 value=""
+                maxlength="100"
               />
               <div id="meeting_title_error" class="invalid-feedback">
 
@@ -63,6 +64,7 @@
                 id="meeting_textBody"
                 placeholder="Description"
                 value=""
+                maxlength="200"
               />
               <div id="meeting_textBody_error" class="invalid-feedback">
 
@@ -78,6 +80,7 @@
                 id="meeting_tag"
                 placeholder="Tag"
                 value=""
+                maxlength="20"
               />
               <div id="meeting_tag_error" class="invalid-feedback">
 
@@ -87,6 +90,7 @@
             <div class="mb-3">
               <label for="meeting_priority" class="form-label">Priority</label>
               <select
+                required
                 class="form-select form-select-sm"
                 name="priority"
                 id="meeting_priority"

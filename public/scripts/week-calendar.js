@@ -217,39 +217,81 @@ function onReminderModalClose() {
 
 function submitMeetingForm() {
   meetingform = document.getElementById("meeting-form");
-  meetingform.addEventListener("submit", (event) => {
-    event.preventDefault();
-    event.stopPropagation();
+  meetingform.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
 
-    let formData = new FormData(event.target);
-    let jsonData = {};
-    for (var [key, value] of formData.entries()) {
-      jsonData[key] = value;
-    }
-    //todo validations
-    checkMeetingValidations(event.target);
-    $.ajax({
-      method: "PUT",
-      url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
-      data: jsonData,
-      success: function (data) {
-        resultDiv = document.getElementById("update-result");
-        resultDiv.innerText =
-          "Meeting updated Successfully! Please refresh the page!";
-        resultDiv.classList = "";
-        resultDiv.classList.add("alert", "alert-success");
-        // if status code 200 update modal
-        populateMeetingsModal(data.userId, data.meetingId);
-      },
-      error: function (data) {
-        resultDiv = document.getElementById("update-result");
-        resultDiv.classList = "";
-        resultDiv.innerText =
-          data?.responseJSON?.error || "Update wasnt Successful";
-        resultDiv.classList.add("alert", "alert-danger");
-      },
-    });
-  });
+      let formData = new FormData(event.target);
+      let jsonData = {};
+      for (var [key, value] of formData.entries()) {
+        jsonData[key] = value.trim();
+      }
+      //todo validations
+      if (checkMeetingValidations(event.target)) {
+        $.ajax({
+          method: "PUT",
+          url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
+          data: jsonData,
+          success: function (data) {
+            resultDiv = document.getElementById("update-result");
+            resultDiv.innerText =
+              "Meeting updated Successfully! Please refresh the page!";
+            resultDiv.classList = "";
+            resultDiv.classList.add("alert", "alert-success");
+            // if status code 200 update modal
+            populateMeetingsModal(data.userId, data.meetingId);
+          },
+          error: function (data) {
+            resultDiv = document.getElementById("update-result");
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              data?.responseJSON?.error || "Update wasnt Successful";
+            resultDiv.classList.add("alert", "alert-danger");
+            meeting_title_error = document.getElementById(
+              "meeting_title_error"
+            );
+            meeting_textBody_error = document.getElementById(
+              "meeting_textBody_error"
+            );
+            meeting_tag_error = document.getElementById("meeting_tag_error");
+            meeting_dateAddedTo_error = document.getElementById(
+              "meeting_dateAddedTo_error"
+            );
+            meeting_dateDueOn_error = document.getElementById(
+              "meeting_dateDueOn_error"
+            );
+            meeting_repeatingCounterIncrement_error = document.getElementById(
+              "meeting_repeatingCounterIncrement_error"
+            );
+            meeting_repeatingIncrementBy_error = document.getElementById(
+              "meeting_repeatingIncrementBy_error"
+            );
+            meeting_title_error.innerText =
+              data.responseJSON?.errorMessages?.title || "";
+            meeting_textBody_error.innerText =
+              data.responseJSON?.errorMessages?.textBody || "";
+            meeting_tag_error.innerText =
+              data.responseJSON?.errorMessages?.tag || "";
+            meeting_dateAddedTo_error.innerText =
+              data.responseJSON?.errorMessages?.dateAddedTo || "";
+            meeting_dateDueOn_error.innerText =
+              data.responseJSON?.errorMessages?.dateDueOn || "";
+            meeting_repeatingCounterIncrement_error.innerText =
+              data.responseJSON?.errorMessages?.repeatingCounterIncrement || "";
+            meeting_repeatingIncrementBy_error.innerText =
+              data.responseJSON?.errorMessages?.repeatingIncrementBy ||
+              "" ||
+              "";
+          },
+        });
+      }
+
+      event.target.classList.add("was-validated");
+    },
+    false
+  );
 }
 
 //bind all event pills to respective modal generators
@@ -275,7 +317,7 @@ function bindEventButtontoModal() {
   });
 }
 
-function checkMeetingValidations(jsonData) {
+function checkMeetingValidations(form) {
   //get all error divs
   meeting_title_error = document.getElementById("meeting_title_error");
   meeting_textBody_error = document.getElementById("meeting_textBody_error");
@@ -290,6 +332,36 @@ function checkMeetingValidations(jsonData) {
   repeatingIncrementBy_error = document.getElementById(
     "repeatingIncrementBy_error"
   );
+
+  if (form.title.length > 100) {
+    meeting_title_error.innerText = "Title cant be longer than 100 characters";
+  }
+
+  if (form.textBody.length > 100) {
+    meeting_textBody_error.innerText =
+      "Title cant be longer than 100 characters";
+  }
+  if (form.dateAddedTo.value !== "" && form.dateDueOn !== "") {
+    if (dayjs(form.dateAddedTo).diff(form.dateDueOn) <= 0) {
+      meeting_dateDueOn_error.innerText =
+        "Date Due to must be after date Due On";
+      meeting_dateAddedTo_error.innerText =
+        "Date Added to must be before date Due On";
+    }
+  }
+  if (form.repeating.checked) {
+    if (form.repeatingCounterIncrement.value < 0) {
+      repeatingCounterIncrement_error.innerText =
+        "the counter needs to be greater than 0";
+    }
+    if (!/^(day|week|month|year)$/.test(form.repeatingIncrementBy.value)) {
+      repeatingIncrementBy_error.innerText =
+        "the counter needs to be greater a value from the drop down!";
+    }
+  }
+  if (form.checkValidity()) {
+    return true;
+  } else return false;
 }
 
 submitMeetingForm();
