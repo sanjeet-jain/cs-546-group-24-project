@@ -49,7 +49,7 @@ function populateMeetingsModal(userId, meetingId) {
 function populateRemindersModal(userId, reminderId) {
   $.ajax({
     method: "GET",
-    url: `/reminder/${userId}/reminder/${reminderId}&true`,
+    url: `/reminder/${userId}/reminder/${reminderId}`,
   }).then(function (data) {
     dataGlobal = data;
     userIdGlobal = userId;
@@ -107,6 +107,34 @@ function repeatingCheckBoxTogglerMeeting() {
       event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       ).value = "";
+    }
+  });
+}
+
+function repeatingCheckBoxTogglerReminder() {
+  let event_modal = document.getElementById("modal-reminder-display");
+  let repeating = event_modal.querySelector("input#reminder_repeating");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#reminder_repeatingIncrementBy"
+  );
+  let endDateTime = event_modal.querySelector("input#reminder_endDateTime");
+
+  repeating.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      event.target.value = true;
+      repeatingIncrementBy.disabled = false;
+      endDateTime.disabled = false;
+      repeatingIncrementBy.setAttribute("required", "");
+      repeatingIncrementBy.value = "day";
+      endDateTime.setAttribute("required", "");
+      endDateTime.value = "";
+    } else {
+      repeatingIncrementBy.disabled = true;
+      endDateTime.disabled = true;
+      repeatingIncrementBy.removeAttribute("required");
+      endDateTime.removeAttribute("required");
+      repeatingIncrementBy.value = "";
+      endDateTime.value = "";
     }
   });
 }
@@ -180,7 +208,7 @@ function onMeetingModalClose() {
       event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       ).value = "";
-      resultDiv = document.getElementById("update-result");
+      resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
     });
@@ -192,6 +220,7 @@ function onReminderModalClose() {
   userIdGlobal = undefined;
   let event_modal = document.getElementById("modal-reminder-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  let reminderForm = document.getElementById("reminder-form");
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#reminder-form-enabler");
@@ -207,10 +236,15 @@ function onReminderModalClose() {
       event_modal.querySelector("input#reminder_repeating").checked = false;
       event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
         "";
-      event_modal.querySelector("input##reminder_endDateTime").value = "";
-      resultDiv = document.getElementById("update-result");
+      event_modal.querySelector("input#reminder_endDateTime").value = "";
+      resultDiv = document.getElementById("reminder-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
+      reminderForm.classList.remove("was-validated");
+      reminderForm.dateAddedTo.setCustomValidity("");
+      reminderForm.endDateTime.setCustomValidity("");
+      reminderForm.title.setCustomValidity("");
+      reminderForm.textBody.setCustomValidity("");
     });
   });
 }
@@ -222,7 +256,6 @@ function submitMeetingForm() {
     (event) => {
       event.preventDefault();
       event.stopPropagation();
-
       let formData = new FormData(event.target);
       let jsonData = {};
       for (var [key, value] of formData.entries()) {
@@ -235,7 +268,7 @@ function submitMeetingForm() {
           url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
           data: jsonData,
           success: function (data) {
-            resultDiv = document.getElementById("update-result");
+            resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
               "Meeting updated Successfully! Please refresh the page!";
             resultDiv.classList = "";
@@ -244,7 +277,7 @@ function submitMeetingForm() {
             populateMeetingsModal(data.userId, data.meetingId);
           },
           error: function (data) {
-            resultDiv = document.getElementById("update-result");
+            resultDiv = document.getElementById("meeting-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
               data?.responseJSON?.error || "Update wasnt Successful";
@@ -294,14 +327,56 @@ function submitMeetingForm() {
   );
 }
 
+function submitReminderForm() {
+  let reminderForm = document.getElementById("reminder-form");
+  let resultDiv = document.getElementById("reminder-update-result");
+  reminderForm.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      let formData = new FormData(event.target);
+      let jsonData = {};
+      for (let [key, value] of formData.entries()) {
+        jsonData[key] = value.trim();
+      }
+      if (jsonData["repeating"] === undefined) {
+        jsonData["repeating"] = false;
+      }
+      if (checkReminderValidations(event.target)) {
+        console.log("form is valid");
+        $.ajax({
+          method: "PUT",
+          url: `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`,
+          data: jsonData,
+          success: function (data) {
+            resultDiv.innerText =
+              "Reminder Updated Successfully! Please refresh the page!";
+            resultDiv.classList.add("alert", "alert-success");
+            location.reload();
+          },
+          error: function (data) {
+            console.log(resultDiv);
+            resultDiv.classList = "";
+            resultDiv.innerText = data?.responseJSON?.error;
+            resultDiv.classList.add("alert", "alert-danger");
+          },
+        });
+      }
+      event.target.classList.add("was-validated");
+    },
+    false
+  );
+}
+
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
   let calender_div = document.getElementById("calendar-div");
-  event_pills = calender_div.querySelectorAll("button.event-pill");
+  let event_pills = calender_div.querySelectorAll("button.event-pill");
   event_pills.forEach((eventpill) => {
     eventpill.addEventListener("click", (event) => {
-      eventId = event.target.attributes["data-bs-eventId"].value;
-      userId = event.target.attributes["data-bs-userId"].value;
+      let eventId = event.target.attributes["data-bs-eventid"].value;
+      let userId = event.target.attributes["data-bs-userid"].value;
       typeOfEventPill = event.target.attributes["data-bs-event-type"].value;
       switch (typeOfEventPill) {
         case "meeting":
@@ -327,10 +402,10 @@ function checkMeetingValidations(form) {
   );
   meeting_dateDueOn_error = document.getElementById("meeting_dateDueOn_error");
   repeatingCounterIncrement_error = document.getElementById(
-    "repeatingCounterIncrement_error"
+    "meeting_repeatingCounterIncrement_error"
   );
   repeatingIncrementBy_error = document.getElementById(
-    "repeatingIncrementBy_error"
+    "meeting_repeatingIncrementBy_error"
   );
 
   if (form.title.length > 100) {
@@ -342,7 +417,7 @@ function checkMeetingValidations(form) {
       "Title cant be longer than 100 characters";
   }
   if (form.dateAddedTo.value !== "" && form.dateDueOn !== "") {
-    if (dayjs(form.dateAddedTo).diff(form.dateDueOn) <= 0) {
+    if (form.dateAddedTo.value > form.dateDueOn.value) {
       meeting_dateDueOn_error.innerText =
         "Date Due to must be after date Due On";
       meeting_dateAddedTo_error.innerText =
@@ -364,9 +439,72 @@ function checkMeetingValidations(form) {
   } else return false;
 }
 
+function checkReminderValidations(form) {
+  let reminder_title_error = document.getElementById("reminder_title_error");
+  let reminder_textBody_error = document.getElementById(
+    "reminder_textBody_error"
+  );
+  let reminder_tag_error = document.getElementById("reminder_tag_error");
+  let reminder_dateAddedTo_error = document.getElementById(
+    "reminder_dateAddedTo_error"
+  );
+  let repeatingIncrementBy_error = document.getElementById(
+    "reminder_repeatingIncrementBy_error"
+  );
+
+  let reminder_endDateTime_error = document.getElementById(
+    "reminder_endDateTime_error"
+  );
+
+  if (form.title.length > 100) {
+    reminder_title_error.innerText = "Title cant be longer than 100 characters";
+    form.title.setCustomValidity("title can't be longer than 100 chars");
+  } else {
+    form.dateAddedTo.setCustomValidity("");
+  }
+  if (form.textBody.length > 200) {
+    reminder_textBody_error.innerText =
+      "Body of text can't be longer than 200 characters";
+    form.textBody.setCustomValidity("text body can't be longer than 200 chars");
+  }
+  if (!dayjs(form.dateAddedTo.value).isValid()) {
+    reminder_dateAddedTo_error.innerText = "The date added should be valid";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
+  } else {
+    form.dateAddedTo.setCustomValidity("");
+  }
+
+  if (form.repeating.value === "true") {
+    if (!dayjs(form.endDateTime.value).isValid()) {
+      reminder_endDateTime_error.innerText =
+        "The end recurrence date should be valid";
+      form.endDateTime.setCustomValidity("Error");
+    }
+    if (
+      dayjs(form.dateAddedTo.value).isValid() &&
+      dayjs(form.endDateTime.value).isValid() &&
+      dayjs(form.dateAddedTo.value) > dayjs(form.endDateTime.value)
+    ) {
+      reminder_endDateTime_error.innerText =
+        "End Date must be after date added to";
+      reminder_dateAddedTo_error.innerText =
+        "Date Added to must be before date Due On";
+      form.dateAddedTo.setCustomValidity("Error");
+      form.endDateTime.setCustomValidity("Error");
+    } else {
+      form.dateAddedTo.setCustomValidity("");
+      form.endDateTime.setCustomValidity("");
+    }
+  }
+  return form.checkValidity();
+}
+
 submitMeetingForm();
+submitReminderForm();
 bindEventButtontoModal();
 enableMeetingFormEdit();
 onMeetingModalClose();
+onReminderModalClose();
 repeatingCheckBoxTogglerMeeting();
+repeatingCheckBoxTogglerReminder();
 enableReminderFormEdit();

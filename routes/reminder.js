@@ -31,6 +31,7 @@ router
     let priority = reminder.priority;
     let tag = reminder.tag;
     let repeating = reminder.repeating;
+    let dateAddedTo = reminder.dateAddedTo;
     let endDateTime;
 
     if (typeof reminder.endDateTime !== "undefined") {
@@ -38,7 +39,7 @@ router
     }
 
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
-    let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       console.log(typeof user_id);
@@ -84,9 +85,9 @@ router
         tag,
         repeating,
         endDateTime,
-        repeatingCounterIncrement,
         repeatingIncrementBy,
-        dateAddedTo
+        dateAddedTo,
+        type
       );
       res.status(200).json("Reminder Event is successfully added to the DB");
     } catch (e) {
@@ -95,7 +96,7 @@ router
   });
 
 router
-  .route("/:user_id/reminder/:reminder_id&:flag")
+  .route("/:user_id/reminder/:reminder_id")
   .get(async (req, res) => {
     let reminder_id = req.params.reminder_id;
     try {
@@ -114,20 +115,18 @@ router
     let reminder_id = req.params.reminder_id;
     let reminder = req.body;
     let user_id = req.params.user_id;
-    let flagForUpdateSingleReminderUpdate =
-      typeof req.params.flag === "undefined" || req.params.flag !== "false"
-        ? true
-        : false;
     let title = reminder.title;
     let textBody = reminder.textBody;
-    let priority = reminder.priority;
+    let priority = Number.parseInt(reminder.priority);
     let tag = reminder.tag;
-
     let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    let repeating = reminder.repeating;
+    let repeating =
+      reminder.repeating === "undefined" || reminder.repeating === "false"
+        ? false
+        : true;
     let endDateTime;
-    if (!typeof reminder.endDateTime === "undefined") {
-      endDateTime = utils.getNewDateObjectFromString(reminder.endDateTime);
+    if (repeating) {
+      endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
     }
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
     let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
@@ -158,7 +157,7 @@ router
       tag = tag.trim().toLowerCase();
       utils.validateDate(dateAddedTo, "date time added to value");
       utils.validateBooleanInput(repeating);
-      if (!flagForUpdateSingleReminderUpdate) {
+      if (repeating) {
         utils.validateDate(endDateTime, "end date value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {
@@ -178,11 +177,9 @@ router
         dateAddedTo,
         repeating,
         endDateTime,
-        repeatingCounterIncrement,
-        repeatingIncrementBy,
-        flagForUpdateSingleReminderUpdate
+        repeatingIncrementBy
       );
-      res.status().json("The update of reminder event is sucessful");
+      res.status(200).json("The update of reminder event is sucessful");
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }

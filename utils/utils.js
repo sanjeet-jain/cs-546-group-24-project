@@ -220,26 +220,7 @@ const utils = {
     return errorMessages;
   },
 
-  /**
-   * @param {date object} date1
-   * @param {date object} date2
-   */
-  isDateObjEqual(date1Str, date2Str) {
-    this.validateDate(date1Str);
-    this.validateDate(date2Str);
-    let date1 = new Date(date1);
-    let date2 = new Date(date2);
-    if (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate() &&
-      date1.getHours() === date2.getHours() &&
-      date1.getMinutes() === date2.getMinutes()
-    ) {
-      return true;
-    }
-    return false;
-  },
+
 
   /**
    * Created for reminders to find id there are reminders that are overlapping with eachother

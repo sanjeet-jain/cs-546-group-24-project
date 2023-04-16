@@ -166,8 +166,8 @@ export async function runSetup() {
     repeating: false,
     dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     endDateTime: null,
-    repeatingCounterIncrement: null,
     repeatingIncrementBy: null,
+    type: "reminder",
   };
 
   const insertedReminder = await reminderDataFunctions.createReminder(
@@ -178,7 +178,6 @@ export async function runSetup() {
     sampleReminder.tag,
     sampleReminder.repeating,
     sampleReminder.endDateTime,
-    sampleReminder.repeatingCounterIncrement,
     sampleReminder.repeatingIncrementBy,
     sampleReminder.dateAddedTo
   );
