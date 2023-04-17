@@ -62,6 +62,7 @@ const utils = {
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }
+    return input;
   },
 
   validateName(name, inputName) {
@@ -194,7 +195,7 @@ const utils = {
     } catch (e) {
       errorMessages.tag = e.message;
     }
-    if (repeating) {
+    if (repeating === "true" || repeating === true) {
       try {
         this.validateBooleanInput(repeating, "repeating");
       } catch (error) {
@@ -221,31 +222,15 @@ const utils = {
   },
 
   /**
-   * @param {date object} date1
-   * @param {date object} date2
-   */
-  isDateObjEqual(date1, date2) {
-    this.validateDateObj(date1);
-    this.validateDateObj(date2);
-    if (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate() &&
-      date1.getHours() === date2.getHours() &&
-      date1.getMinutes() === date2.getMinutes()
-    ) {
-      return true;
-    }
-    return false;
-  },
-
-  /**
    * Created for reminders to find id there are reminders that are overlapping with eachother
    * @param {*} startDateTime
    * @param {*} endDateTime
    * @param {*} dateTime
    */
-  isDateObjOverllaping(startDateTime, endDateTime, dateTime) {
+  isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
+    let startDateTime = utils.getNewDateStr(startDateTimeStr);
+    let endDateTime = utils.getNewDateStr(endDateTimeStr);
+    let dateTime = utils.getNewDateStr(dateTimeStr);
     if (
       startDateTime.getMinutes() === dateTime.getMinutes() &&
       startDateTime.getHours() === dateTime.getHours() &&
@@ -261,17 +246,6 @@ const utils = {
     return false;
   },
 
-  dateObjPersistDB(dateTime) {
-    this.validateDate(dateTime);
-    let standardisedDate = new Date();
-    standardisedDate.setFullYear(dateTime.getFullYear());
-    standardisedDate.setMonth(dateTime.getMonth());
-    standardisedDate.setDate(dateTime.getDate());
-    standardisedDate.setHours(dateTime.getHours());
-    standardisedDate.setMinutes(dateTime.getMinutes());
-    return standardisedDate;
-  },
-
   validateDate(date, paramName) {
     this.validateStringInput(date, paramName);
     date = date.trim();
@@ -284,6 +258,7 @@ const utils = {
     }
   },
 
+  //Dates are stored as string
   /**Changes Made to existing code */
   validateDateObj(date, paramName) {
     if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -307,15 +282,16 @@ const utils = {
       );
     }
   },
+  // validateDateObj(date, paramName) {
+  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
+  //     throw new Error(
+  //       `${paramName} must be a valid Date object or a string that can be parsed as a date`
+  //     );
+  //   }
+  // },
 
-  getNewDateObject(fullYear, month, date, hours, minutes) {
-    let dateObj = new Date();
-    dateObj.setFullYear(fullYear);
-    dateObj.setMonth(month);
-    dateObj.setDate(date);
-    dateObj.setHours(hours);
-    dateObj.setMinutes(minutes);
-    return dateObj;
+  getNewDateStr(dateObj) {
+    return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
   },
 
   /**

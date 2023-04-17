@@ -164,10 +164,10 @@ export async function runSetup() {
     priority: 3,
     tag: "rem",
     repeating: false,
-    dateAddedTo: dt,
-    endDateTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
-    repeatingCounterIncrement: null,
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    endDateTime: null,
     repeatingIncrementBy: null,
+    type: "reminder",
   };
 
   const insertedReminder = await reminderDataFunctions.createReminder(
@@ -178,7 +178,6 @@ export async function runSetup() {
     sampleReminder.tag,
     sampleReminder.repeating,
     sampleReminder.endDateTime,
-    sampleReminder.repeatingCounterIncrement,
     sampleReminder.repeatingIncrementBy,
     sampleReminder.dateAddedTo
   );

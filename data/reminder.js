@@ -7,6 +7,8 @@ import {
 
 import constants from "./../constants/constants.js";
 
+import dayjs from "dayjs";
+
 /** API Reminder.js */
 export const createReminder = async (
   user_id,
@@ -16,7 +18,6 @@ export const createReminder = async (
   tag,
   repeating,
   endDateTime,
-  repeatingCounterIncrement,
   repeatingIncrementBy,
   dateAddedTo
 ) => {
@@ -44,11 +45,12 @@ export const createReminder = async (
     constants.stringLimits["tag"]
   );
   tag = tag.trim().toLowerCase();
-  let dateCreated = new Date();
-  utils.validateDateObj(dateAddedTo, "date time value");
+  let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
+  utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
   if (repeating) {
-    utils.validateDateObj(endDateTime, "end date value");
+    endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+    utils.validateDate(endDateTime, "end date value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     endDateTime = null;
@@ -59,36 +61,29 @@ export const createReminder = async (
    */
   let reminderEvents = await getAllReminderEventsDAO(user_id);
   for (let i = 0; i < reminderEvents.length; i++) {
-    if (endDateTime === null) {
-      if (
-        utils.isDateObjOverllaping(
-          dateAddedTo,
-          dateAddedTo,
-          reminderEvents.dateAddedTo
-        ) &&
-        title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
-        tag === reminderEvents[i].tag
-      ) {
-        throw new Error(
-          "Error : No Two reminders can have same title tag and time"
-        );
-      }
-    } else {
-      if (
-        utils.isDateObjOverllaping(
-          dateAddedTo,
-          endDateTime,
-          reminderEvents.dateAddedTo
-        ) &&
-        title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
-        tag === reminderEvents[i].tag
-      ) {
-        throw new Error(
-          "Error : No Two reminders can have same title tag and time"
-        );
-      }
+    if (
+      dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
+      title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
+      tag === reminderEvents[i].tag
+    ) {
+      throw new Error(
+        "Error : No Two reminders can have same title tag and time"
+      );
     }
   }
+
+  //  else {
+  //   if (
+  //     dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
+  //     title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
+  //     tag === reminderEvents[i].tag
+  //   ) {
+  //     throw new Error(
+  //       "Error : No Two reminders can have same title tag and time"
+  //     );
+  //   }
+  // }
+
   const reminder = {
     title: title,
     textBody: textBody,
@@ -142,9 +137,7 @@ export const updateReminder = async (
   dateAddedTo,
   repeating,
   endDateTime,
-  repeatingCounterIncrement,
-  repeatingIncrementBy,
-  flagForUpdateSingleReminderUpdate
+  repeatingIncrementBy
 ) => {
   utils.checkObjectIdString(reminder_id);
   reminder_id = reminder_id.trim();
@@ -170,17 +163,18 @@ export const updateReminder = async (
     constants.stringLimits["tag"]
   );
   tag = tag.trim().toLowerCase();
-  let dateCreated = new Date();
-  utils.validateDateObj(dateAddedTo, "date time value");
+  let dateCreated = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
+  utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
-  if (!flagForUpdateSingleReminderUpdate) {
-    utils.validateDateObj(endDateTime, "end time value");
+  if (repeating) {
+    utils.validateDate(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
   } else {
     //repeatCounter = 0;
     repeatingIncrementBy = null;
   }
-  let reminder = await getReminder(reminder_id);
+  let currReminder = await getReminder(reminder_id);
+
   const reminderObj = {
     title: title,
     textBody: textBody,
@@ -191,26 +185,38 @@ export const updateReminder = async (
     repeating: repeating,
     endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
+    type: "reminder",
   };
   /**
    * This code causes update for single recurrence and normal update
    */
-  if (
-    (!repeating && !reminder.repeating && flagForUpdateSingleReminderUpdate) ||
-    (!repeating && reminder.repeating && flagForUpdateSingleReminderUpdate)
-  ) {
+  if (!repeating && !currReminder.repeating) {
     reminderObj.repeating = false;
     reminderObj.endDateTime = null;
     reminderObj.repeatingIncrementBy = null;
     reminderObj.groupId = null;
+    isTwoEventSame(reminderObj, currReminder);
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
-  } else {
-    /**
-     * If DateTime is same them you just have to update rest of records no new reminder needs to be created
-     */
+  } else if (repeating && !currReminder.repeating) {
+    //delete the reminder event and add new recurrence
+    await deleteReminderEventDAO(reminder_id);
+    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+    await createReminder(
+      user_id,
+      title,
+      textBody,
+      priority,
+      tag,
+      repeating,
+      endDateTime,
+      repeatingIncrementBy,
+      dateAddedTo
+    );
+  } else if (repeating && currReminder.repeating) {
+    // Reminder was repeating and now change its content
     if (
-      utils.isDateObjEqual(reminder.dateAddedTo, dateAddedTo) &&
-      utils.isDateObjEqual(reminder.endDateTime, endDateTime)
+      dayjs(currReminder.dateAddedTo).diff(dayjs(dateAddedTo)) === 0 &&
+      dayjs(currReminder.endDateTime).diff(dayjs(endDateTime)) === 0
     ) {
       await updateAllRecurrencesDAO(user_id, reminder_id, reminderObj);
     } else {
@@ -223,7 +229,6 @@ export const updateReminder = async (
         tag,
         repeating,
         endDateTime,
-        repeatingCounterIncrement,
         repeatingIncrementBy,
         dateAddedTo
       );
@@ -273,7 +278,7 @@ const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
   ) {
     if (result.matchedCount == 0) throw new Error("Reminder not found");
     if (result.modifiedCount == 0)
-      throw new Error("Reminder Details havent Changed");
+      throw new Error("Reminder Details haven't Changed");
     if (result.acknowledged !== true)
       throw new Error("Reminder update wasnt successfull");
   }
@@ -305,19 +310,21 @@ function duplicateReminderEvents(reminder) {
   let currentDate = reminder.dateAddedTo;
   let endDateTime = reminder.endDateTime;
   reminder.groupId = new ObjectId();
-  while (endDateTime - currentDate >= 0) {
+  while (dayjs(endDateTime).diff(dayjs(currentDate)) >= 0) {
     reminder.dateAddedTo = currentDate;
     listOfEvents.push(constructNewReminderObj(reminder));
     if (reminder.repeatingIncrementBy === "day") {
-      currentDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+      currentDate = dayjs(currentDate).add(1, "day").format("YYYY-MM-DDTHH:mm");
     } else if (reminder.repeatingIncrementBy === "week") {
-      currentDate = new Date(currentDate.setDate(currentDate.getDate() + 7));
+      currentDate = dayjs(currentDate).add(7, "day").format("YYYY-MM-DDTHH:mm");
     } else if (reminder.repeatingIncrementBy === "month") {
-      currentDate = new Date(currentDate.setMonth(currentDate.getMonth() + 1));
+      currentDate = dayjs(currentDate)
+        .add(1, "month")
+        .format("YYYY-MM-DDTHH:mm");
     } else if (reminder.repeatingIncrementBy === "year") {
-      currentDate = new Date(
-        currentDate.setDate(currentDate.getFullYear() + 1)
-      );
+      currentDate = dayjs(currentDate)
+        .add(1, "year")
+        .format("YYYY-MM-DDTHH:mm");
     }
   }
   return listOfEvents;
@@ -330,14 +337,37 @@ function constructNewReminderObj(reminderEvent) {
     priority: reminderEvent.priority,
     tag: reminderEvent.tag,
     dateCreated: reminderEvent.dateCreated,
-    dateAddedTo: new Date(reminderEvent.dateAddedTo.valueOf()),
+    dateAddedTo: dayjs(reminderEvent.dateAddedTo).format("YYYY-MM-DDTHH:mm"),
     repeating: reminderEvent.repeating,
-    endDateTime: new Date(reminderEvent.endDateTime.valueOf()),
+    endDateTime: reminderEvent.endDateTime,
     repeatingIncrementBy: reminderEvent.repeatingIncrementBy,
     expired: reminderEvent.expired,
     groupId: reminderEvent.groupId,
+    type: "reminder",
   };
   return reminderObj;
+}
+
+function isTwoEventSame(event1, event2) {
+  let keys = [
+    "title",
+    "textBody",
+    "priority",
+    "tag",
+    "dateAddedTo",
+    "endDateTime",
+    "repeatingIncrementBy",
+    "repeating",
+  ];
+  let flag = true;
+  for (let i = 0; i < keys.length; i++) {
+    if (!(event1[keys[i]] === event2[keys[i]])) {
+      flag = false;
+    }
+  }
+  if (flag) {
+    throw new Error("Trying to update same event value");
+  }
 }
 /** Supporting Functions End */
 
@@ -424,13 +454,20 @@ const deleteReminderEventDAO = async (reminder_id) => {
 
 const updateReminderByReminderIdDAO = async (reminder_id, reminderEvent) => {
   const remindersCollections = await remindersCollection();
-  remindersCollections.replaceOne(
+  let replace = await remindersCollections.replaceOne(
     {
       _id: new ObjectId(reminder_id),
     },
     reminderEvent,
     { upsert: false }
   );
+  if (!replace.acknowledged === true) {
+    throw new Error(" Error in updating reminder event");
+  } else if (replace.matchedCount < 1 || replace.matchedCount > 1) {
+    throw new Error("Multiple or no event was found for reminder event");
+  } else if (replace.modifiedCount !== 1) {
+    throw new Error("All details are existing for the reminder event");
+  }
 };
 
 const insertReminderEventDAO = async (reminder) => {

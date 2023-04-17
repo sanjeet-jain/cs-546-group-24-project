@@ -1,8 +1,8 @@
 <div
   class="modal fade"
-  id="modal-meeting-display"
+  id="modal-reminder-display"
   tabindex="-1"
-  aria-labelledby="modal-meeting-label"
+  aria-labelledby="modal-reminder-label"
   aria-hidden="true"
   data-bs-backdrop="static"
 >
@@ -10,20 +10,14 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h4 class="modal-title" id="modal-meeting-label">
-          <i class="">Meeting Event</i>
-
+        <h4 class="modal-title" id="modal-reminder-label">
+          <i class="">Reminder Event</i>
         </h4>
-        <button
-          type="button"
-          class="btn btn-edit"
-          aria-label="Edit"
-          {{! onclick="enableFormEdit()" }}
-        >
+        <button type="button" class="btn btn-edit" aria-label="Edit">
           <i class="bi-pencil-fill"></i>
         </button>
         <button
-          id="meeting-top-close-button"
+          id="reminder-top-close-button"
           type="button"
           class="btn-close"
           data-bs-dismiss="modal"
@@ -31,69 +25,67 @@
         ></button>
       </div>
 
-      <fieldset id="meeting-form-enabler" disabled>
+      <fieldset id="reminder-form-enabler" disabled>
         <div class="modal-body">
-          <form id="meeting-form" class="needs-validation" novalidate>
+          <form id="reminder-form" class="needs-validation" novalidate>
             {{! title }}
             <div class="mb-3">
-              <label for="meeting_title" class="form-label">Title</label>
+              <label for="reminder_title" class="form-label">Title</label>
               <input
                 required
                 type="text"
                 class="form-control"
                 name="title"
-                id="meeting_title"
+                id="reminder_title"
                 placeholder="Title"
                 value=""
                 maxlength="100"
               />
-              <div id="meeting_title_error" class="invalid-feedback">
-
+              <div id="reminder_title_error" class="invalid-feedback">
               </div>
             </div>
             {{! textBody }}
             <div class="mb-3">
               <label
-                for="meeting_textBody"
+                for="reminder_textBody"
                 class="form-label"
               >Description</label>
               <input
                 type="text"
                 class="form-control"
                 name="textBody"
-                id="meeting_textBody"
+                id="reminder_textBody"
                 placeholder="Description"
                 value=""
                 maxlength="200"
               />
-              <div id="meeting_textBody_error" class="invalid-feedback">
-
+              <div id="reminder_textBody_error" class="invalid-feedback">
               </div>
             </div>
             {{! tag }}
             <div class="mb-3">
-              <label for="meeting_tag" class="form-label">Tag</label>
+              <label for="reminder_tag" class="form-label">Tag</label>
               <input
                 type="text"
                 class="form-control"
                 name="tag"
-                id="meeting_tag"
+                id="reminder_tag"
                 placeholder="Tag"
                 value=""
                 maxlength="20"
               />
-              <div id="meeting_tag_error" class="invalid-feedback">
+              <div id="reminder_tag_error" class="invalid-feedback">
 
               </div>
             </div>
             {{! priority }}
             <div class="mb-3">
-              <label for="meeting_priority" class="form-label">Priority</label>
+              <label for="reminder_priority" class="form-label">Priority</label>
               <select
                 required
                 class="form-select form-select-sm"
                 name="priority"
-                id="meeting_priority"
+                id="reminder_priority"
               >
                 <option value="">Please select an option</option>
                 <option value="1">Low</option>
@@ -104,48 +96,33 @@
             {{! dateAddedTo }}
             <div class="form-floating mb-3">
               <input
+                required
                 type="datetime-local"
                 class="form-control"
                 name="dateAddedTo"
-                id="meeting_dateAddedTo"
+                id="reminder_dateAddedTo"
                 value=""
               />
-              <label for="meeting_dateAddedTo" class="form-label">Date to Add
+              <label for="reminer_dateAddedTo" class="form-label">Date to Add
                 event to
               </label>
 
-              <div id="meeting_dateAddedTo_error" class="invalid-feedback">
+              <div id="reminder_dateAddedTo_error" class="invalid-feedback">
 
               </div>
             </div>
-            {{! dateDueOn }}
-            <div class="form-floating mb-3">
-              <input
-                type="datetime-local"
-                class="form-control"
-                name="dateDueOn"
-                id="meeting_dateDueOn"
-                value=""
-              />
-              <label for="meeting_dateDueOn" class="form-label">Date event is
-                due on
-              </label>
 
-              <div id="meeting_dateDueOn_error" class="invalid-feedback">
-
-              </div>
-            </div>
             {{! repeating }}
             <div class="form-check">
               <input
                 class="form-check-input"
                 type="checkbox"
                 name="repeating"
-                id="meeting_repeating"
+                id="reminder_repeating"
                 aria-describedby="repeating_help_id"
                 value="false"
               />
-              <label class="form-check-label" for="meeting_repeating">
+              <label class="form-check-label" for="reminer_repeating">
                 Is the event repeating?
               </label>
               <small id="repeating_help_id" class="form-text text-muted">
@@ -162,7 +139,7 @@
               <select
                 class="form-select form-select-sm"
                 name="repeatingIncrementBy"
-                id="meeting_repeatingIncrementBy"
+                id="reminder_repeatingIncrementBy"
               >
                 <option value="">Please select an option</option>
                 <option value="day">day</option>
@@ -171,52 +148,42 @@
                 <option value="year">Year</option>
               </select>
               <div
-                id="meeting_repeatingIncrementBy_error"
+                id="reminder_repeatingIncrementBy_error"
                 class="invalid-feedback"
               >
-
               </div>
             </div>
-            {{! repeatingCounterIncrement }}
+
+            {{! add more fields for other events }}
+            {{! dateAddedTo }}
             <div class="form-floating mb-3">
               <input
-                type="number"
+                type="datetime-local"
                 class="form-control"
-                {{! change max to depending on the drop down }}
-                min="1"
-                max="5"
-                id="meeting_repeatingCounterIncrement"
-                name="repeatingCounterIncrement"
-                value="0"
+                name="endDateTime"
+                id="reminder_endDateTime"
+                value=""
               />
-              <label for="meeting_repeatingCounterIncrement" class="form-label">
-                How Many times to repeat the event ? ( number )
+              <label for="reminder_endDateTime" class="form-label">End Date Time
+                of Last Recurrence
               </label>
-              <div
-                id="meeting_repeatingCounterIncrement_error"
-                class="invalid-feedback"
-              >
-
+              <div id="reminder_endDateTime_error" class="invalid-feedback">
               </div>
             </div>
-            {{! add more fields for other events }}
-
           </form>
         </div>
         <div class="modal-footer">
-          <div id="meeting-update-result">
-
+          <div id="reminder-update-result">
           </div>
           <input
-            id="meeting-bottom-submit-button"
+            id="reminder-bottom-submit-button"
             type="submit"
-            form="meeting-form"
+            form="reminder-form"
             value="Save Changes"
             class="btn btn-primary"
           />
         </div>
       </fieldset>
-
     </div>
   </div>
 </div>
