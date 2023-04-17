@@ -1,10 +1,7 @@
 body {
-  /* height: 100vh; */
   width: 95vw;
 }
 main {
-  /* height: 90vh; */
-  width: 100%;
   padding-top: 1vh;
 }
 .headBarNav {
@@ -19,8 +16,9 @@ main {
   text-align-last: end;
 }
 .center-div {
-  /* height: 90vh; */
-  width: 60vw;
+  overflow-y: scroll;
+  height: 85vh;
+  width: 70vw;
 }
 
 .active-month {
@@ -60,12 +58,12 @@ main {
 .sticky-calendar-head {
   height: 3vh;
   position: sticky;
-  top: 8vh;
+  top: 0;
 }
 
 .sticky-calendar-row {
   position: sticky;
-  top: 12vh;
+  top: 4vh;
 }
 footer {
   text-align-last: center;
