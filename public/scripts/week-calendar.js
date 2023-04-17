@@ -194,8 +194,6 @@ function enableReminderFormEdit() {
 }
 
 function onMeetingModalClose() {
-  dataGlobal = undefined;
-  userIdGlobal = undefined;
   let event_modal = document.getElementById("modal-meeting-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
   modalCloseButtons.forEach((button) => {
@@ -220,13 +218,12 @@ function onMeetingModalClose() {
       resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
+      dataGlobal = undefined;
     });
   });
 }
 
 function onReminderModalClose() {
-  dataGlobal = undefined;
-  userIdGlobal = undefined;
   let event_modal = document.getElementById("modal-reminder-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
   let reminderForm = document.getElementById("reminder-form");
@@ -254,6 +251,7 @@ function onReminderModalClose() {
       reminderForm.endDateTime.setCustomValidity("");
       reminderForm.title.setCustomValidity("");
       reminderForm.textBody.setCustomValidity("");
+      dataGlobal = undefined;
     });
   });
 }
@@ -377,9 +375,8 @@ function submitReminderForm() {
             resultDiv.innerText =
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
-            dataGlobal = undefined;
-            userIdGlobal = undefined;
-            location.reload();
+
+            setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
             console.log(resultDiv);
