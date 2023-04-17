@@ -1,16 +1,13 @@
 {{#each weeks}}
-        <tr>
+        <tr class="week-class" id="week-{{@index}}">
           {{#each this}}
             {{#if this.greyedOut}}
               <td class="greyed-out"> {{this.day}}</td>
             {{else}}
               <td class="active-month">
-                <div
-                {{#if (checkIfToday this.year this.month this.day)}}
-                class="badge rounded-pill bg-info"
-                {{/if}}
+                <button id="{{this.dayjsDateId}}" class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}"
                 >{{this.day}}
-                </div>
+                </button>
                 <div class="day-events">
 
                   <div class="d-grid gap-1">

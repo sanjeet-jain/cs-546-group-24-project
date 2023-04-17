@@ -1,8 +1,10 @@
 let dataGlobal;
 let userIdGlobal;
 function populateMeetingsModal(userId, meetingId) {
-  $.ajax({ method: "GET", url: `/meeting/${userId}/${meetingId}` }).then(
-    function (data) {
+  $.ajax({
+    method: "GET",
+    url: `/meeting/${userId}/${meetingId}`,
+    success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
 
@@ -42,8 +44,15 @@ function populateMeetingsModal(userId, meetingId) {
       //   event_modal.querySelector("select#meeting_repeatingIncrementBy").value = "";
       //   event_modal.querySelector("input#meeting_repeatingCounterIncrement").value = "";
       // }
-    }
-  );
+    },
+    error: function (data) {
+      resultDiv = document.getElementById("update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText =
+        data?.responseJSON?.error || "Update wasnt Successful";
+      resultDiv.classList.add("alert", "alert-danger");
+    },
+  });
 }
 
 function populateRemindersModal(userId, reminderId) {
@@ -389,8 +398,10 @@ function submitReminderForm() {
 
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
+
   // let calender_div = document.getElementById("calendar-div");
   let event_pills = document.querySelectorAll("button.event-pill");
+
   event_pills.forEach((eventpill) => {
     eventpill.addEventListener("click", (event) => {
       let eventId = event.target.attributes["data-bs-eventid"]?.value;
@@ -438,12 +449,18 @@ function checkMeetingValidations(form) {
     meeting_textBody_error.innerText =
       "Title cant be longer than 100 characters";
   }
-  if (form.dateAddedTo.value !== "" && form.dateDueOn !== "") {
-    if (form.dateAddedTo.value > form.dateDueOn.value) {
+
+  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
+    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
+      form.dateAddedTo.setCustomValidity("invalid_range");
+      form.dateDueOn.setCustomValidity("invalid_range");
       meeting_dateDueOn_error.innerText =
         "Date Due to must be after date Due On";
       meeting_dateAddedTo_error.innerText =
         "Date Added to must be before date Due On";
+    } else {
+      form.dateAddedTo.setCustomValidity("");
+      form.dateDueOn.setCustomValidity("");
     }
   }
   if (form.repeating.checked) {

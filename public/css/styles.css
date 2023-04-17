@@ -1,11 +1,11 @@
 body {
-  height: 100vh;
+  /* height: 100vh; */
   width: 95vw;
 }
 main {
-  height: 90vh;
+  /* height: 90vh; */
   width: 100%;
-  padding-top: 3vh;
+  padding-top: 1vh;
 }
 .headBarNav {
   height: 8vh;
@@ -19,7 +19,7 @@ main {
   text-align-last: end;
 }
 .center-div {
-  height: 90vh;
+  /* height: 90vh; */
   width: 60vw;
 }
 
@@ -35,12 +35,12 @@ main {
 }
 
 #left-menu-div {
-  height: 90vh;
+  /* height: 90vh; */
   width: 20vw;
 }
 
 #right-menu-div {
-  height: 90vh;
+  /* height: 90vh; */
   width: 20vw;
 }
 
@@ -54,16 +54,21 @@ main {
 }
 
 .timeslots {
-  min-width: 6vw;
+  width: 7vw;
 }
 
 .sticky-calendar-head {
   height: 3vh;
   position: sticky;
-  top: 9vh;
+  top: 8vh;
 }
 
 .sticky-calendar-row {
   position: sticky;
-  top: 15vh;
+  top: 12vh;
+}
+footer {
+  text-align-last: center;
+  top: 2px;
+  height: 5vh;
 }

@@ -17,6 +17,12 @@ const constructorMethod = (app) => {
   app.use("/task", validateUser, taskRoutes);
   app.use("/reminder", validateUser, reminderRoutes);
   app.use("/note", validateUser, noteRoutes);
+
+  app.get("/contact", (req, res) => {
+    res.render("contact", {
+      title: "Contact Us",
+    });
+  });
   app.get("/about", (req, res) => {
     res.render("aboutUs", {
       title: "About Us",
