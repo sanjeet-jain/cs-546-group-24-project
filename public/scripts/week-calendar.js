@@ -8,8 +8,8 @@ function populateMeetingsModal(userId, meetingId) {
 
       let event_modal = document.getElementById("modal-meeting-display");
 
-      event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
-        data.title;
+      // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+      //   data.title;
       event_modal.querySelector("input#meeting_title").value = data.title;
       event_modal.querySelector("input#meeting_textBody").value = data.textBody;
       event_modal.querySelector("input#meeting_tag").value = data.tag;
@@ -55,8 +55,8 @@ function populateRemindersModal(userId, reminderId) {
     userIdGlobal = userId;
     let event_modal = document.getElementById("modal-reminder-display");
 
-    event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
-      data.title;
+    // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
+    //   data.title;
     event_modal.querySelector("input#reminder_title").value = data.title;
     event_modal.querySelector("input#reminder_textBody").value = data.textBody;
     event_modal.querySelector("input#reminder_tag").value = data.tag;
@@ -165,7 +165,7 @@ function enableMeetingFormEdit() {
 
 function enableReminderFormEdit() {
   let eventModal = document.getElementById("modal-reminder-display");
-  editButtons = eventModal.querySelectorAll("button.btn-edit");
+  let editButtons = eventModal.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let fieldset = eventModal.querySelector("#reminder-form-enabler");
@@ -193,8 +193,8 @@ function onMeetingModalClose() {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#meeting-form-enabler");
       fieldset.disabled = true;
-      event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
-        "";
+      // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
+      //   "";
       event_modal.querySelector("input#meeting_title").value = "";
       event_modal.querySelector("input#meeting_textBody").value = "";
       event_modal.querySelector("input#meeting_tag").value = "";
@@ -225,8 +225,8 @@ function onReminderModalClose() {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#reminder-form-enabler");
       fieldset.disabled = true;
-      event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
-        "";
+      // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
+      //   "";
       event_modal.querySelector("input#reminder_title").value = "";
       event_modal.querySelector("input#reminder_textBody").value = "";
       event_modal.querySelector("input#reminder_tag").value = "";
@@ -261,11 +261,20 @@ function submitMeetingForm() {
       for (var [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
+      if (jsonData["repeating"] === undefined) {
+        jsonData["repeating"] = false;
+      }
+      let reqType = "PUT";
+      let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
+      if (dataGlobal === undefined) {
+        reqType = "POST";
+        ajaxURL = `/meeting/user/${userIdGlobal}`;
+      }
       //todo validations
       if (checkMeetingValidations(event.target)) {
         $.ajax({
-          method: "PUT",
-          url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
+          method: reqType,
+          url: ajaxURL,
           data: jsonData,
           success: function (data) {
             resultDiv = document.getElementById("meeting-update-result");
@@ -274,7 +283,9 @@ function submitMeetingForm() {
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
-            populateMeetingsModal(data.userId, data.meetingId);
+            dataGlobal = undefined;
+            userIdGlobal = undefined;
+            location.reload();
           },
           error: function (data) {
             resultDiv = document.getElementById("meeting-update-result");
@@ -343,16 +354,23 @@ function submitReminderForm() {
       if (jsonData["repeating"] === undefined) {
         jsonData["repeating"] = false;
       }
+      let reqType = "PUT";
+      let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
+      if (dataGlobal === undefined) {
+        reqType = "POST";
+        ajaxURL = `/reminder/${userIdGlobal}`;
+      }
       if (checkReminderValidations(event.target)) {
-        console.log("form is valid");
         $.ajax({
-          method: "PUT",
-          url: `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`,
+          method: reqType,
+          url: ajaxURL,
           data: jsonData,
           success: function (data) {
             resultDiv.innerText =
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
+            dataGlobal = undefined;
+            userIdGlobal = undefined;
             location.reload();
           },
           error: function (data) {
@@ -371,19 +389,23 @@ function submitReminderForm() {
 
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
-  let calender_div = document.getElementById("calendar-div");
-  let event_pills = calender_div.querySelectorAll("button.event-pill");
+  // let calender_div = document.getElementById("calendar-div");
+  let event_pills = document.querySelectorAll("button.event-pill");
   event_pills.forEach((eventpill) => {
     eventpill.addEventListener("click", (event) => {
-      let eventId = event.target.attributes["data-bs-eventid"].value;
+      let eventId = event.target.attributes["data-bs-eventid"]?.value;
       let userId = event.target.attributes["data-bs-userid"].value;
-      typeOfEventPill = event.target.attributes["data-bs-event-type"].value;
+      let typeOfEventPill = event.target.attributes["data-bs-event-type"].value;
       switch (typeOfEventPill) {
         case "meeting":
           populateMeetingsModal(userId, eventId);
           break;
         case "reminder":
           populateRemindersModal(userId, eventId);
+          break;
+        case "add-event":
+          dataGlobal = undefined;
+          userIdGlobal = userId;
           break;
         default:
           break;

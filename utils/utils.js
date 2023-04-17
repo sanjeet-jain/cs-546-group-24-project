@@ -62,6 +62,7 @@ const utils = {
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }
+    return input;
   },
 
   validateName(name, inputName) {
@@ -194,7 +195,7 @@ const utils = {
     } catch (e) {
       errorMessages.tag = e.message;
     }
-    if (repeating) {
+    if (repeating === "true" || repeating === true) {
       try {
         this.validateBooleanInput(repeating, "repeating");
       } catch (error) {
@@ -219,8 +220,6 @@ const utils = {
     }
     return errorMessages;
   },
-
-
 
   /**
    * Created for reminders to find id there are reminders that are overlapping with eachother

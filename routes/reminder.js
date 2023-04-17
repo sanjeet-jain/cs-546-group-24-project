@@ -8,7 +8,6 @@ import dayjs from "dayjs";
 router
   .route("/:user_id")
   .get(async (req, res) => {
-    console.log("Hello ");
     let user_id = req.params.user_id;
     try {
       utils.checkObjectIdString(user_id);
@@ -68,7 +67,7 @@ router
       );
       tag = tag.trim().toLowerCase();
       utils.validateDate(dateAddedTo, "date time value");
-      utils.validateBooleanInput(repeating);
+      repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
         utils.validateDate(endDateTime, "end time value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
@@ -86,8 +85,7 @@ router
         repeating,
         endDateTime,
         repeatingIncrementBy,
-        dateAddedTo,
-        type
+        dateAddedTo
       );
       res.status(200).json("Reminder Event is successfully added to the DB");
     } catch (e) {
