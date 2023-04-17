@@ -167,6 +167,7 @@ function submitMeetingForm() {
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             populateMeetingsModal(data.userId, data.meetingId);
+            setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
             resultDiv = document.getElementById("update-result");

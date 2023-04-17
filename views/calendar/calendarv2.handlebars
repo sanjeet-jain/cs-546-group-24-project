@@ -6,13 +6,9 @@
   </div>
   <table class="table table-bordered ">
 
-    <thead class="sticky-calendar-head bg-light">
-
+    <thead class="{{#if weeks.length}}{{else}}sticky-calendar-head{{/if}} bg-light">
       <tr id="weekdays">
-         {{#if week.length}}
-        <th class="timeslots"></th>
-        {{/if}}
-        {{#if day}}
+        {{#if weeks.length}}{{else}}
         <th class="timeslots"></th>
         {{/if}}
         {{#each weekdays}}

@@ -261,6 +261,7 @@ const utils = {
     return false;
   },
 
+  //TODO remove
   dateObjPersistDB(dateTime) {
     this.validateDate(dateTime);
     let standardisedDate = new Date();
@@ -276,7 +277,7 @@ const utils = {
     this.validateStringInput(date, paramName);
     date = date.trim();
     date = dayjs(date).toDate();
-
+    //TODO use datejs for validation
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       throw new Error(
         `${paramName} must be a valid Date object or a string that can be parsed as a date`
@@ -294,6 +295,7 @@ const utils = {
   },
   validateAge(dob, min_age, max_age) {
     this.validateDate(dob, "dob");
+    //TODO use dayjs
     let today = new Date();
     dob = new Date(dob);
     let age = today.getFullYear() - dob.getFullYear();
@@ -308,6 +310,7 @@ const utils = {
     }
   },
 
+  //TODO remove this
   getNewDateObject(fullYear, month, date, hours, minutes) {
     let dateObj = new Date();
     dateObj.setFullYear(fullYear);

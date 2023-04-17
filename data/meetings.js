@@ -271,6 +271,8 @@ const meetingsDataFunctions = {
       repeatingCounterIncrement,
       repeatingIncrementBy
     );
+    //TODO validate repeating if its a correct boolean string using validateBoolean()
+    //TODO make repeating a boolean from string
     if (Object.keys(errorMessages).length !== 0) {
       throw errorMessages;
     }
@@ -317,6 +319,7 @@ const meetingsDataFunctions = {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];
 
+      //TODO use dayjs
       for (let i = 0; i < repeatingCounterIncrement; i++) {
         let newDateDueOn = new Date(
           dateDueOnObject.setDate(dateDueOnObject.getDate())
@@ -342,6 +345,7 @@ const meetingsDataFunctions = {
         };
         meetingObjects.push(meeting);
         switch (repeatingIncrementBy) {
+          //TODO use dayjs
           case "day":
             newDateDueOn = new Date(
               dateDueOnObject.setDate(dateDueOnObject.getDate() + 1)

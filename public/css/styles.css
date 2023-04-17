@@ -8,7 +8,7 @@ main {
   padding-top: 1vh;
 }
 .headBarNav {
-  height: 8vh;
+  height: 7vh;
   width: 100%;
 }
 .navbar {
@@ -36,12 +36,12 @@ main {
 
 #left-menu-div {
   /* height: 90vh; */
-  width: 20vw;
+  width: 15vw;
 }
 
 #right-menu-div {
   /* height: 90vh; */
-  width: 20vw;
+  width: 15vw;
 }
 
 .greyed-out {

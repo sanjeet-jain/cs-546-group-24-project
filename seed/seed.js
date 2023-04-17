@@ -32,7 +32,7 @@ export async function runSetup() {
     password: "abcDefgh2i",
     disability: false,
     // date string passed here is MM/DD/YYYY
-    dob: dayjs(new Date("01/01/1996")).format("YYYY-MM-DD"),
+    dob: "1996-01-01",
     consent: true,
     //initially an empty array
     // taskIds: [],
