@@ -1,18 +1,18 @@
 <tr class="sticky-calendar-row bg-light">
-  <td></td>
+  <td class="timeslots"></td>
 
   {{#each week}}
-  <td>
-    <div {{#if (checkIfToday this.year this.month this.day)}} class="badge rounded-pill bg-info" {{/if}}>
+  <td class="text-center">
+    <button id="{{this.dayjsDateId}}" class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}">
       {{this.day}}
-    </div>
+    </button>
   </td>
   {{/each}}
 
 </tr>
 {{#each timeslots}}
 <tr>
-  <td class=" timeslots">{{this }}</td>
+  <td class="timeslots">{{this }}</td>
   {{#each ../week}}
 
   <td >
@@ -20,9 +20,7 @@
     {{#if this.modalData.meetings.length}}
     {{#each this.modalData.meetings}}
     {{#if (eq this.timeslotStart ../../this)}}
-    <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}"
-    {{!-- onclick="populateMeetingsModal({{json this}},{{json ../../../session.user_id}})" --}}
-    >
+    <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
       <i class="bi-calendar-event"></i>
       {{{this.title}}}</button>
     {{/if}}

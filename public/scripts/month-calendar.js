@@ -35,5 +35,4 @@ function dropDownYear() {
 }
 
 dropDownYear();
-
 dropDownMonth();

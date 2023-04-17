@@ -1,13 +1,14 @@
 let dataGlobal;
 let userIdGlobal;
 function populateMeetingsModal(userId, meetingId) {
-  $.ajax({ method: "GET", url: `/meeting/${userId}/${meetingId}` }).then(
-    function (data) {
+  $.ajax({
+    method: "GET",
+    url: `/meeting/${userId}/${meetingId}`,
+    success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
 
       let event_modal = document.getElementById("modal-meeting-display");
-
       event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
         data.title;
       event_modal.querySelector("input#meeting_title").value = data.title;
@@ -42,8 +43,15 @@ function populateMeetingsModal(userId, meetingId) {
       //   event_modal.querySelector("select#meeting_repeatingIncrementBy").value = "";
       //   event_modal.querySelector("input#meeting_repeatingCounterIncrement").value = "";
       // }
-    }
-  );
+    },
+    error: function (data) {
+      resultDiv = document.getElementById("update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText =
+        data?.responseJSON?.error || "Update wasnt Successful";
+      resultDiv.classList.add("alert", "alert-danger");
+    },
+  });
 }
 function repeatingCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
@@ -213,8 +221,7 @@ function submitMeetingForm() {
 
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
-  let calender_div = document.getElementById("calendar-div");
-  event_pills = calender_div.querySelectorAll("button.event-pill");
+  event_pills = document.querySelectorAll("button.event-pill");
   event_pills.forEach((eventpill) => {
     eventpill.addEventListener("click", (event) => {
       eventId = event.target.attributes["data-bs-eventId"].value;

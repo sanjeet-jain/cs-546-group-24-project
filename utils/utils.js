@@ -1,7 +1,7 @@
 // this is where all common helper files will go
 import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
-
+import dayjs from "dayjs";
 const utils = {
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
@@ -275,7 +275,7 @@ const utils = {
   validateDate(date, paramName) {
     this.validateStringInput(date, paramName);
     date = date.trim();
-    date = new Date(date);
+    date = dayjs(date).toDate();
 
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       throw new Error(

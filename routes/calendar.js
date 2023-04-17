@@ -3,7 +3,7 @@ const router = Router();
 import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
-
+import dayjs from "dayjs";
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -70,9 +70,53 @@ router.route("/week").get(async (req, res) => {
   });
 });
 
-async function getWeeksData(req) {
+router.route("/day/:currentDate?").get(async (req, res) => {
+  let currentDate = req.params?.currentDate;
+  try {
+    utils.validateDate(currentDate);
+    currentDate = dayjs(currentDate.trim()).toDate();
+  } catch (e) {
+    currentDate = dayjs().toDate();
+  }
+
+  const {
+    now,
+    month,
+    year,
+    modalsData,
+    // prevMonth,
+    // prevYear,
+    // nextMonth,
+    // nextYear,
+  } = await getWeeksData(req, currentDate);
+
+  let week = modalsData.weeks.find((week) => {
+    return week.find((day) => {
+      return (
+        now.getDate() === day.day &&
+        now.getMonth() === day.month &&
+        now.getFullYear() === day.year
+      );
+    });
+  });
+  let day = week.find((days) => {
+    return (
+      days.day === currentDate.getDate() &&
+      days.month === currentDate.getMonth() &&
+      days.year === currentDate.getFullYear()
+    );
+  });
+
+  res.render("calendar/calendarv2", {
+    title: "Calendar",
+    day: day,
+    weekdays: [constants.weekdays[week.indexOf(day)]],
+    timeslots: constants.timeslots,
+  });
+});
+async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
-  const now = new Date();
+  const now = currentDate || dayjs().toDate();
   const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
   const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
 
@@ -117,7 +161,7 @@ async function getWeeksData(req) {
 }
 // Returns an array of weeks and days in the calendar for the specified month and year
 function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
-  const calendar = [];
+  let calendar = [];
 
   // Get the number of days in the month
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -164,7 +208,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
 
   // Loop through the next month days
   for (let i = 0; i < nextMonthDays; i++) {
-    if (month === 1) {
+    if (month === 11) {
       calendar.push({
         day: i + 1,
         month: nextMonth,
@@ -182,7 +226,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   }
 
   // Group the days into weeks
-  const weeks = [];
+  let weeks = [];
   let week = [];
   calendar.forEach((day, index) => {
     week.push(day);
@@ -219,8 +263,8 @@ async function getModalData(weeks, userId) {
             eventData.timeslotEnd = getTimeSlot(eventData.dateDueOn);
           });
         }
-        let modalId = "" + day.month + "-" + day.day + "-" + day.year;
-        day.modalId = modalId;
+        let dayjsDateId = day.year + "-" + (day.month + 1) + "-" + day.day;
+        day.dayjsDateId = dayjsDateId;
 
         // add modalData property to day object
         day.modalData = modalData;
