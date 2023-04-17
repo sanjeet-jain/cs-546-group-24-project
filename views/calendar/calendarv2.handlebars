@@ -3,6 +3,7 @@
 <div id="calendar-div">
   <div id="modal-div" class="modal-div">
       {{>meetingsModal }}
+      {{>remindersModal}}
   </div>
   <table class="table table-bordered ">
 
@@ -22,15 +23,13 @@
       <script src="/public/scripts/month-calendar.js" type="text/javascript"></script>
       {{/if}}
       {{#if week.length}}
+
       {{>week-view week=week timeslots=timeslots}}
       {{/if}}
       {{#if day}}
       {{>day-view day=day timeslots=timeslots}}
       {{/if}}
-
     </tbody>
   </table>
-  
 <script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
-
 </div>

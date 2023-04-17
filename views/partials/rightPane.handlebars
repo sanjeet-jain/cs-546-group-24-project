@@ -1,0 +1,16 @@
+{{#if session}}
+  {{#if (eq title "Calendar")}}
+    <div>
+      <div class="container mt-3">
+        <button
+          id="add-event-trigger"
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#add-event-modal"
+        >Add Event</button>
+      </div>
+      {{>addEventModal}}
+    </div>
+  {{/if}}
+{{/if}}
