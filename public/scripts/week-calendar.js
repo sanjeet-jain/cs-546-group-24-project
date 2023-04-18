@@ -88,6 +88,39 @@ function populateRemindersModal(userId, reminderId) {
   });
 }
 
+function populateTasksModal(userId, taskId) {
+  $.ajax({
+    method: "GET",
+    url: `/task/${taskId}`,
+    success: function (data) {
+      dataGlobal = data;
+      userIdGlobal = userId;
+
+      let event_modal = document.getElementById("modal-task-display");
+
+      // event_modal.querySelector("#modal-task-label.modal-title").innerText =
+      //   data.title;
+      event_modal.querySelector("input#task_title").value = data.title;
+      event_modal.querySelector("input#task_textBody").value = data.textBody;
+      event_modal.querySelector("input#task_tag").value = data.tag;
+      event_modal.querySelector("select#task_priority").value = data.priority;
+      // issue with date time coming as a date string
+      // it needs an iso string
+      event_modal.querySelector("input#task_dateAddedTo").value =
+        data.dateAddedTo;
+
+      event_modal.querySelector("input#task_dateDueOn").value = data.dateDueOn;
+    },
+    error: function (data) {
+      resultDiv = document.getElementById("update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText =
+        data?.responseJSON?.error || "Update wasnt Successful";
+      resultDiv.classList.add("alert", "alert-danger");
+    },
+  });
+}
+
 function repeatingCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
   let repeating = event_modal.querySelector("input#meeting_repeating");
@@ -192,6 +225,17 @@ function enableReminderFormEdit() {
     });
   });
 }
+function enableTaskFormEdit() {
+  let event_modal = document.getElementById("modal-task-display");
+  editButtons = event_modal.querySelectorAll("button.btn-edit");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      let event_modal = document.getElementById("modal-task-display");
+      let fieldset = event_modal.querySelector("#task-form-enabler");
+      fieldset.disabled = fieldset.disabled ? false : true;
+    });
+  });
+}
 
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
@@ -251,6 +295,28 @@ function onReminderModalClose() {
       reminderForm.endDateTime.setCustomValidity("");
       reminderForm.title.setCustomValidity("");
       reminderForm.textBody.setCustomValidity("");
+      dataGlobal = undefined;
+    });
+  });
+}
+
+function onTaskModalClose() {
+  let event_modal = document.getElementById("modal-task-display");
+  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  //let taskForm = document.getElementById("task-form");
+  modalCloseButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      let fieldset = event_modal.querySelector("#task-form-enabler");
+      fieldset.disabled = true;
+      event_modal.querySelector("input#task_title").value = "";
+      event_modal.querySelector("input#task_textBody").value = "";
+      event_modal.querySelector("input#task_tag").value = "";
+      event_modal.querySelector("select#task_priority").value = "";
+      event_modal.querySelector("input#task_dateAddedTo").value = "";
+      event_modal.querySelector("input#task_dateDueOn").value = "";
+      resultDiv = document.getElementById("task-update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText = "";
       dataGlobal = undefined;
     });
   });
@@ -392,6 +458,78 @@ function submitReminderForm() {
   );
 }
 
+function submitTaskForm() {
+  taskform = document.getElementById("task-form");
+  taskform.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      let formData = new FormData(event.target);
+      let jsonData = {};
+      for (var [key, value] of formData.entries()) {
+        jsonData[key] = value.trim();
+      }
+      let reqType = "PUT";
+      let ajaxURL = `/task/${dataGlobal?._id}`;
+      if (dataGlobal === undefined) {
+        reqType = "POST";
+        ajaxURL = `/task/tasks/${userIdGlobal}`;
+      }
+      //todo validations
+      if (checkTaskValidations(event.target)) {
+        $.ajax({
+          method: reqType,
+          url: ajaxURL,
+          data: jsonData,
+          success: function (data) {
+            resultDiv = document.getElementById("task-update-result");
+            resultDiv.innerText =
+              "Task updated Successfully! Please refresh the page!";
+            resultDiv.classList = "";
+            resultDiv.classList.add("alert", "alert-success");
+            // if status code 200 update modal
+            populateTasksModal(data.userId, data.taskId);
+            setTimeout(location.reload.bind(location), 5000);
+          },
+          error: function (data) {
+            resultDiv = document.getElementById("task-update-result");
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              data?.responseJSON?.error || "Update wasnt Successful";
+            resultDiv.classList.add("alert", "alert-danger");
+            task_title_error = document.getElementById("task_title_error");
+            task_textBody_error = document.getElementById(
+              "task_textBody_error"
+            );
+            task_tag_error = document.getElementById("task_tag_error");
+            task_dateAddedTo_error = document.getElementById(
+              "task_dateAddedTo_error"
+            );
+            task_dateDueOn_error = document.getElementById(
+              "task_dateDueOn_error"
+            );
+            task_title_error.innerText =
+              data.responseJSON?.errorMessages?.title || "";
+            task_textBody_error.innerText =
+              data.responseJSON?.errorMessages?.textBody || "";
+            task_tag_error.innerText =
+              data.responseJSON?.errorMessages?.tag || "";
+            task_dateAddedTo_error.innerText =
+              data.responseJSON?.errorMessages?.dateAddedTo || "";
+            task_dateDueOn_error.innerText =
+              data.responseJSON?.errorMessages?.dateDueOn || "";
+            ("");
+          },
+        });
+      }
+
+      event.target.classList.add("was-validated");
+    },
+    false
+  );
+}
+
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
   // let calender_div = document.getElementById("calendar-div");
@@ -409,6 +547,8 @@ function bindEventButtontoModal() {
         case "reminder":
           populateRemindersModal(userId, eventId);
           break;
+        case "task":
+          populateTasksModal(userId, eventId);
         case "add-event":
           dataGlobal = undefined;
           userIdGlobal = userId;
@@ -533,11 +673,47 @@ function checkReminderValidations(form) {
   return form.checkValidity();
 }
 
+function checkTaskValidations(form) {
+  //get all error divs
+  task_title_error = document.getElementById("task_title_error");
+  task_textBody_error = document.getElementById("task_textBody_error");
+  task_tag_error = document.getElementById("task_tag_error");
+  task_dateAddedTo_error = document.getElementById("task_dateAddedTo_error");
+  task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
+
+  if (form.title.length > 100) {
+    task_title_error.innerText = "Title cant be longer than 100 characters";
+  }
+
+  if (form.textBody.length > 100) {
+    task_textBody_error.innerText = "Title cant be longer than 100 characters";
+  }
+
+  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
+    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
+      form.dateAddedTo.setCustomValidity("invalid_range");
+      form.dateDueOn.setCustomValidity("invalid_range");
+      task_dateDueOn_error.innerText = "Date Due to must be after date Due On";
+      task_dateAddedTo_error.innerText =
+        "Date Added to must be before date Due On";
+    } else {
+      form.dateAddedTo.setCustomValidity("");
+      form.dateDueOn.setCustomValidity("");
+    }
+  }
+  if (form.checkValidity()) {
+    return true;
+  } else return false;
+}
+
 submitMeetingForm();
 submitReminderForm();
+submitTaskForm();
 bindEventButtontoModal();
 enableMeetingFormEdit();
+enableTaskFormEdit();
 onMeetingModalClose();
+onTaskModalClose();
 onReminderModalClose();
 repeatingCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
