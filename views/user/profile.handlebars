@@ -14,7 +14,8 @@
     <h2>Date of birth: {{currUser.dob}}</h2>
   </div>
   <div>
-    <h2>Disability: {{currUser.disability}}</h2>
+    <h2>Disability: {{#if currUser.disability}}{{currUser.disability}}
+      {{else}}False{{/if}}</h2>
   </div>
 
   <br />

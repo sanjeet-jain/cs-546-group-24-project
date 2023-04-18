@@ -29,20 +29,38 @@ function checkValidations(event) {
     "reEnterNewPassword_error"
   );
 
+  //TODO empty checks
+  if (!oldPassInput.value) {
+    oldPassword_error.innerText = "Please enter your old password.";
+  } else {
+    oldPassword_error.innerText = "";
+  }
+  if (!newPassInput.value) {
+    newPassword_error.innerText = "Please enter a new password.";
+  } else {
+    newPassword_error.innerText = "";
+  }
+
   if (!validateNewPassword(newPassInput.value)) {
-    console.log(newPassInput.value);
     newPassword_error.innerText =
       "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
   } else {
     newPassword_error.innerText = "";
-    newPassInput.validity.patternMismatch = true;
   }
   if (!confirmNewPassword(newPassInput.value, reEnterInput.value)) {
     reEnterNewPassword_error.innerText =
       "Re-Entered password does not match new password.";
+    reEnterInput.setCustomValidity("failed check");
   } else {
     reEnterNewPassword_error.innerText = "";
-    reEnterInput.validity.patternMismatch = true;
+    reEnterInput.setCustomValidity("");
+  }
+  if (!newCheckOld(newPassInput.value, oldPassInput.value)) {
+    newPassword_error.innerText = "New password cannot match old password";
+    newPassInput.setCustomValidity("passwords can't match");
+  } else {
+    newPassword_error.innerText = "";
+    newPassInput.setCustomValidity("");
   }
   if (newPassInput.checkValidity() && reEnterInput.checkValidity()) {
     passwordForm.submit();
@@ -54,6 +72,13 @@ function validateNewPassword(password) {
 }
 function confirmNewPassword(newPassword, reEnter) {
   if (newPassword !== reEnter) {
+    return false;
+  } else {
+    return true;
+  }
+}
+function newCheckOld(newPassword, oldPassword) {
+  if (newPassword === oldPassword) {
     return false;
   } else {
     return true;

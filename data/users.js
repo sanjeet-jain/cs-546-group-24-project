@@ -89,7 +89,10 @@ const exportedMethods = {
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
-    utils.validateBooleanInput(disability, "Disability");
+    if (disability) {
+      utils.validateBooleanInput(disability, "Disability");
+    }
+
     utils.validateDate(dob, "Date of Birth");
     id = id.trim();
     first_name = first_name.trim();

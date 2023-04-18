@@ -217,7 +217,7 @@ router
       const first_name = req.body.first_name;
       const last_name = req.body.last_name;
       const email = req.body.email;
-      //const disability = req.body.disability;
+      const disability = req.body.disability;
       const dob = req.body.dob;
       let errorMessages = {};
       try {
@@ -235,7 +235,14 @@ router
       } catch (e) {
         errorMessages.email = e.message;
       }
-      //utils.validateBooleanInput(disability, "Disability");
+      if (disability) {
+        try {
+          utils.validateBooleanInput(disability, "Disability");
+        } catch (e) {
+          errorMessages.disability = e.message;
+        }
+      }
+
       try {
         utils.validateDate(dob, "Date of Birth");
       } catch (e) {
@@ -255,8 +262,8 @@ router
           first_name,
           last_name,
           email,
-          //disability,
-          dob, //,
+          disability,
+          dob,
         });
       } catch (e) {
         return res.status(400).json({ error: e.message });
@@ -279,10 +286,10 @@ router
     if (!req?.session?.user || !req.session.user.user_id) {
       return res.render("user/login");
     }
-    const id = req.session.user.user_id;
-    const oldPassword = req?.body?.oldPassword;
-    const newPassword = req?.body?.newPassword;
-    const reEnterNewPassword = req?.body?.reEnterNewPassword;
+    let id = req.session.user.user_id;
+    let oldPassword = req?.body?.oldPassword;
+    let newPassword = req?.body?.newPassword;
+    let reEnterNewPassword = req?.body?.reEnterNewPassword;
 
     try {
       utils.validatePassword(oldPassword);
@@ -342,6 +349,8 @@ router
       });
     }
     try {
+      utils.checkObjectIdString(id);
+      id = id.trim();
       await usersFunctions.changePassword(
         req.session.user.user_id,
         req.body.oldPassword,
