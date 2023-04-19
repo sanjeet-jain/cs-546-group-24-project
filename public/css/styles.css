@@ -16,6 +16,7 @@ main {
   text-align-last: end;
 }
 .center-div {
+  overflow-y: scroll;
   height: 85vh;
   width: 70vw;
 }

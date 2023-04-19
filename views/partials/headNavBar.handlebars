@@ -4,7 +4,7 @@
     <a class="navbar-brand" href="/">TimeWise</a>
   </div>
   {{#if session}}
-    {{#if (eq title "Calendar")}}
+  {{#if (eq title "Calendar")}}
 
   <div>
     <ul class="nav justify-content-center">
@@ -36,7 +36,7 @@
       </li>
     </ul>
   </div>
-      {{#if months}}
+  {{#if months}}
   <div>
     <ul class="nav justify-content-center">
 
@@ -118,8 +118,10 @@
       </li>
     </ul>
   </div>
-      {{/if}}
-    {{/if}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
+  {{/if}}
   {{/if}}
   <div>
     <button class="btn btn-outline-dark" style="border: none" type="button" data-bs-toggle="offcanvas"
@@ -139,27 +141,24 @@
       </div>
       <div class="offcanvas-body">
         <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-        {{#if session.userFirstName}}
+          {{#if session.userFirstName}}
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="#">Change Password</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Change Personal Details</a>
+            <a class="nav-link" href="/user/profile">View Profile</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/user/logout">Logout</a>
           </li>
-        {{else}}
+          {{else}}
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="/user/login">Log In</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/user/signup">Signup</a>
           </li>
-        {{/if}}
-               <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
-   
-              <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+          {{/if}}
+          <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+
+          <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
         </ul>
         <!-- <form class="d-flex mt-3" role="search">
               <input
