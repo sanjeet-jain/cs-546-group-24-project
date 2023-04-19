@@ -1,12 +1,6 @@
 <div id="signup-form-div" class="container w-100">
-  <form
-    action="/user/signup"
-    id="signup-form"
-    method="POST"
-    onsubmit="validatesignup(event)"
-    class="needs-validation {{#if is_invalid}}was-validated{{/if}}"
-    novalidate
-  >
+  <form action="/user/signup" id="signup-form" method="POST"
+    class="needs-validation {{#if is_invalid}}was-validated{{/if}}" novalidate>
     <h1 class="h3 mb-3 fw-normal">
       <i class="bi-calendar-check-fill"></i>
       Create an Account
@@ -14,17 +8,9 @@
 
     <br />
     <div class="form-floating mb-3">
-      <input
-        required
-        type="text"
-        class="form-control"
-        name="first_name"
-        id="first_name"
-        aria-describedby="first_name_help_id"
-        placeholder="First Name"
-        pattern="^[a-zA-Z]{1,20}$"
-        value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}"
-      />
+      <input required type="text" class="form-control" name="first_name" id="first_name"
+        aria-describedby="first_name_help_id" placeholder="First Name" pattern="^[a-zA-Z]{1,20}$"
+        value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}" />
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
@@ -33,16 +19,10 @@
       </div>
     </div>
     <div class="form-floating mb-3">
-      <input
-        required
-        type="text"
-        class="form-control"
-        name="last_name"
-        id="last_name"
-        aria-describedby="last_name_help_id"
-        placeholder="Last Name"
-        pattern="^[a-zA-Z]{1,20}$"
-        value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}"
+      <input required type="text" class="form-control" name="last_name" id="last_name"
+        aria-describedby="last_name_help_id" placeholder="Last Name" <<<<<<< HEAD
+        pattern="^[a-zA-Z]+$"=======pattern="^[a-zA-Z]{1,20}$">>>>>>> main
+      value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}"
       />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
@@ -54,18 +34,9 @@
     </div>
 
     <div class="form-floating mb-3">
-      <input
-        required
-        type="email"
-        class="form-control"
-        name="email"
-        id="email"
-        placeholder="abc@mail.com"
-        aria-describedby="email_help_id"
-        pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}"
-
-      />
+      <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
+        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter Email Here. This will also be used as your login id
@@ -77,18 +48,9 @@
     </div>
 
     <div class="form-floating">
-      <input
-        required
-        type="password"
-        class="form-control"
-        name="password"
-        id="password"
-        placeholder="Password"
-        minlength="8"
-        pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
-        aria-describedby="password_help_id"
-        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}"
-      />
+      <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
+        minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" aria-describedby="password_help_id"
+        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
@@ -99,19 +61,8 @@
     <br />
 
     <div class="form-floating mb-3">
-      <input
-        required
-        type="date"
-        class="form-control"
-        name="dob"
-        id="dob"
-        aria-describedby="dob_help_id"
-        value=""
-        max="{{minDobDate}}"
-        min="{{maxDobDate}}"
-        value="{{#if errorContent.dob}}{{errorContent.dob}}{{/if}}"
-
-      />
+      <input required type="date" class="form-control" name="dob" id="dob" aria-describedby="dob_help_id"
+        max="{{minDobDate}}" min="{{maxDobDate}}" value="{{#if errorContent.dob}}{{errorContent.dob}}{{/if}}" />
       <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
@@ -122,15 +73,8 @@
     </div>
 
     <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        name="disability"
-        id="disability"
-        aria-describedby="disability_help_id"
-        value="true"
-        {{#if errorContent.disability}}checked{{/if}}
-      />
+      <input class="form-check-input" type="checkbox" name="disability" id="disability"
+        aria-describedby="disability_help_id" value="true" {{#if errorContent.disability}}checked{{/if}} />
       <label class="form-check-label" for="disability">
         Disability CheckBox
       </label>
@@ -139,16 +83,8 @@
     </div>
     <br />
     <div class="form-check">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        name="consent"
-        id="consent"
-        aria-describedby="consent_help_id"
-        value="true"
-        required
-        {{#if errorContent.consent}}checked{{/if}}
-      />
+      <input class="form-check-input" type="checkbox" name="consent" id="consent" aria-describedby="consent_help_id"
+        value="true" required {{#if errorContent.consent}}checked{{/if}} />
       <label class="form-check-label" for="consent">
         Consent CheckBox
       </label>
@@ -162,8 +98,8 @@
     <button class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
     </button>
-   
-    
+
+
   </form>
   <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
   <br />
