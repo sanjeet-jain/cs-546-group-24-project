@@ -1,0 +1,158 @@
+<div
+  class="modal fade"
+  id="modal-task-display"
+  tabindex="-1"
+  aria-labelledby="modal-task-label"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-task-label">
+          <i class="">Task Event</i>
+
+        </h4>
+        <button
+          type="button"
+          class="btn btn-edit"
+          aria-label="Edit"
+          {{! onclick="enableFormEdit()" }}
+        >
+          <i class="bi-pencil-fill"></i>
+        </button>
+        <button
+          id="task-top-close-button"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <fieldset id="task-form-enabler" disabled>
+        <div class="modal-body">
+          <form id="task-form" class="needs-validation" novalidate>
+            {{! title }}
+            <div class="mb-3">
+              <label for="task_title" class="form-label">Title</label>
+              <input
+                required
+                type="text"
+                class="form-control"
+                name="title"
+                id="task_title"
+                placeholder="Title"
+                value=""
+                maxlength="100"
+              />
+              <div id="task_title_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! textBody }}
+            <div class="mb-3">
+              <label
+                for="task_textBody"
+                class="form-label"
+              >Description</label>
+              <input
+                type="text"
+                class="form-control"
+                name="textBody"
+                id="task_textBody"
+                placeholder="Description"
+                value=""
+                maxlength="200"
+              />
+              <div id="task_textBody_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! tag }}
+            <div class="mb-3">
+              <label for="task_tag" class="form-label">Tag</label>
+              <input
+                type="text"
+                class="form-control"
+                name="tag"
+                id="task_tag"
+                placeholder="Tag"
+                value=""
+                maxlength="20"
+              />
+              <div id="task_tag_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! priority }}
+            <div class="mb-3">
+              <label for="task_priority" class="form-label">Priority</label>
+              <select
+                required
+                class="form-select form-select-sm"
+                name="priority"
+                id="task_priority"
+              >
+                <option selected value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+              </select>
+            </div>
+            {{! dateAddedTo }}
+            <div class="form-floating mb-3">
+              <input
+                type="datetime-local"
+                class="form-control"
+                name="dateAddedTo"
+                id="task_dateAddedTo"
+                value=""
+              />
+              <label for="task_dateAddedTo" class="form-label">Date to Add
+                event to
+              </label>
+
+              <div id="task_dateAddedTo_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! dateDueOn }}
+            <div class="form-floating mb-3">
+              <input
+                type="datetime-local"
+                class="form-control"
+                name="dateDueOn"
+                id="task_dateDueOn"
+                value=""
+              />
+              <label for="task_dateDueOn" class="form-label">Date event is
+                due on
+              </label>
+
+              <div id="task_dateDueOn_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            
+            {{! add more fields for other events }}
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div id="task-update-result">
+
+          </div>
+          <input
+            id="task-bottom-submit-button"
+            type="submit"
+            form="task-form"
+            value="Save Changes"
+            class="btn btn-primary"
+          />
+        </div>
+      </fieldset>
+
+    </div>
+  </div>
+</div>
