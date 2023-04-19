@@ -107,7 +107,7 @@ const exportedMethods = {
       last_name: last_name,
       email: email,
       password: currUser.password,
-      disability: disability, //TESTING! TODO: change back to disability:disability and fix others
+      disability: disability,
       dob: dob,
       consent: currUser.consent,
       taskIds: currUser.taskIds,

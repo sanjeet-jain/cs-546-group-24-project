@@ -1,4 +1,4 @@
-function validateedits(event) {
+function validateEdits(event) {
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   var forms = document.querySelectorAll(".needs-validation");
 
@@ -76,4 +76,4 @@ function validate_name(name) {
   const nameRegex = /^[a-zA-Z]+$/;
   return nameRegex.test(name);
 }
-validateedits();
+validateEdits();

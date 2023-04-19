@@ -177,14 +177,12 @@ router
   });
 router
   .route("/profile")
-  //TODO: choose how to display user details
+
   .get(async (req, res) => {
     try {
       if (req.session.user) {
         const id = req.session.user.user_id;
         const currUser = await usersFunctions.getUser(id);
-        console.log(currUser);
-        //TODO render handlebar
 
         return res.render("user/profile", { currUser });
       }
@@ -202,7 +200,7 @@ router
       const id = req.session.user.user_id;
       try {
         const currUser = await usersFunctions.getUser(id);
-        //TODO render handlebar
+
         return res.render("user/edit", { currUser });
       } catch (e) {
         return res.status(400).json({ error: e.message });
@@ -248,7 +246,7 @@ router
       } catch (e) {
         errorMessages.dob = "Please enter a valid date of birth.";
       }
-      console.log(errorMessages);
+
       if (Object.keys(errorMessages).length !== 0) {
         return res.status(400).render("user/edit", {
           errorMessages: errorMessages,
@@ -277,7 +275,7 @@ router
     if (req.session.user) {
       return res.render("user/password");
     }
-    //TODO password change UI
+
     res.redirect("/");
   })
   .post(async (req, res) => {
@@ -340,7 +338,6 @@ router
     if (!oldPassCheck) {
       errorMessages.oldPassword = "Current password is incorrect";
     }
-    console.log(errorMessages);
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/password", {
         errorMessages: errorMessages,
