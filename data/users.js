@@ -89,7 +89,10 @@ const exportedMethods = {
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
-    utils.validateBooleanInput(disability, "Disability");
+    if (disability) {
+      utils.validateBooleanInput(disability, "Disability");
+    }
+
     utils.validateDate(dob, "Date of Birth");
     id = id.trim();
     first_name = first_name.trim();
@@ -106,7 +109,7 @@ const exportedMethods = {
       password: currUser.password,
       disability: disability,
       dob: dob,
-      consent: currUser.Consent,
+      consent: currUser.consent,
       taskIds: currUser.taskIds,
       reminderIds: currUser.reminderIds,
       noteIds: currUser.noteIds,
@@ -123,17 +126,24 @@ const exportedMethods = {
     }
   },
 
-  async changePassword(id, newPassword) {
-    utils.checkObjectIdString(id);
-    utils.validatePassword(newPassword);
+  async changePassword(id, oldPassword, newPassword, reEnterNewPassword) {
+    try {
+      utils.checkObjectIdString(id);
+
+      utils.validateStringInput(oldPassword);
+      utils.validateStringInput(reEnterNewPassword);
+    } catch (e) {
+      throw new Error(e);
+    }
+
+    oldPassword = oldPassword.trim();
     newPassword = newPassword.trim();
+    reEnterNewPassword = reEnterNewPassword.trim();
+
     id = id.trim();
     let users = await usersCollection();
-    const currUser = await this.getUser(id);
-    const isSamePassword = await bcrypt.compare(newPassword, currUser.password);
-    if (isSamePassword) {
-      throw Error("New password must be different from current password");
-    }
+
+    const hashPW = await bcrypt.hash(newPassword, constants.pwRounds);
 
     const updateInfo = await users.updateOne(
       { _id: new ObjectId(id) },
@@ -167,7 +177,7 @@ const exportedMethods = {
     if (validPassword) {
       return currUser;
     } else {
-      throw Error("Invalid password");
+      throw Error("Invalid email or password");
     }
   },
 
