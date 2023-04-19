@@ -1,10 +1,8 @@
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
-import ObjectId from "mongodb";
-import { usersCollection } from "../config/mongoCollections.js";
 import meetingsDataFunctions from "../data/meetings.js";
 import tasksDataFunctions from "../data/tasks.js";
 import usersDataFunctions from "../data/users.js";
-import bcrypt from "bcrypt";
+import notesDataFunctions from "../data/notes.js";
 
 export async function runSetup() {
   /*
@@ -169,6 +167,25 @@ export async function runSetup() {
   // Seed reminders
 
   // Seed notes
+  const sampleNote = {
+    title: "sample note",
+    dateAddedTo: sampleMeeting.dateAddedTo,
+    textBody: "     sample Note body      ",
+    tag: "cs 546",
+    documentLinks: [],
+    dateCreated: dt.toString(),
+    type: "notes",
+  };
+  await notesDataFunctions.create(
+    user._id.toString(),
+    sampleNote.title,
+    sampleNote.dateAddedTo,
+    sampleNote.textBody,
+    sampleNote.tag,
+    sampleNote.documentLinks
+  );
+  const updatedUser = await usersDataFunctions.getUser(user._id.toString());
+  console.log(updatedUser);
   console.log("newly created user: ", user._id.toString());
   console.log("seeding done!");
 }

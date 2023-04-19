@@ -25,31 +25,31 @@ router
     const disability = req.body.disability;
     const dob = req.body.dob;
     const consent = req.body.consent;
-    console.log(consent);
 
     let errorMessages = {};
     try {
       utils.validateName(first_name, "First name");
     } catch (e) {
-      errorMessages.first_name = e.message;
+      errorMessages.first_name = "Please enter a valid first name.";
     }
 
     try {
       utils.validateName(last_name, "Last name");
     } catch (e) {
-      errorMessages.last_name = e.message;
+      errorMessages.last_name = "Please enter a valid last name.";
     }
 
     try {
       utils.validateEmail(email, "Email");
     } catch (e) {
-      errorMessages.email = e.message;
+      errorMessages.email = "Please enter a valid email.";
     }
 
     try {
       utils.validatePassword(password, "Password");
     } catch (e) {
-      errorMessages.password = e.message;
+      errorMessages.password =
+        "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
     }
 
     if (disability) {
@@ -163,7 +163,7 @@ router
       }
     } catch (e) {
       return res.status(400).render("user/login", {
-        error: "Invalid email and password",
+        error: "Invalid Credentials",
         is_invalid: true,
         errorContent: req.body,
       });
