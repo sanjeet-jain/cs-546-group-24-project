@@ -16,7 +16,6 @@ main {
   text-align-last: end;
 }
 .center-div {
-  overflow-y: scroll;
   height: 85vh;
   width: 70vw;
 }
@@ -40,6 +39,11 @@ main {
 #right-menu-div {
   /* height: 90vh; */
   width: 15vw;
+}
+
+#calendar-div {
+  height: 85vh;
+  overflow-y: scroll;
 }
 
 .greyed-out {
