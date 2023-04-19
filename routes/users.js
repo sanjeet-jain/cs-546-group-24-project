@@ -359,7 +359,7 @@ router
       });
     } catch (e) {
       return res.status(500).render("user/password", {
-        error: "error changing password ",
+        error: "error changing password",
         is_invalid: true,
       });
     }

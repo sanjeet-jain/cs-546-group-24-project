@@ -36,26 +36,29 @@ function checkValidations(event) {
   newPassInput.setCustomValidity("");
   reEnterInput.setCustomValidity("");
 
+  if (!validateNewPassword(oldPassInput.value)) {
+    oldPassword_error.innerText =
+      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+  }
   if (!validateNewPassword(newPassInput.value)) {
     newPassword_error.innerText =
       "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
   }
-  /*if (!confirmNewPassword(newPassInput.value, reEnterInput.value)) {
+  if (!validateNewPassword(reEnterInput.value)) {
+    reEnterNewPassword_error.innerText =
+      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+  }
+  if (!confirmNewPassword(newPassInput.value, reEnterInput.value)) {
     reEnterNewPassword_error.innerText =
       "Re-Entered password does not match new password.";
     reEnterInput.setCustomValidity("failed check");
-  } else {
-    //reEnterNewPassword_error.innerText = "";
-    reEnterInput.setCustomValidity("");
   }
   if (!newCheckOld(newPassInput.value, oldPassInput.value)) {
     newPassword_error.innerText = "New password cannot match old password";
     newPassInput.setCustomValidity("passwords can't match");
-  } else {
-    //newPassword_error.innerText = "";
-    newPassInput.setCustomValidity("");
-  }*/
-  if (newPassInput.checkValidity() && reEnterInput.checkValidity()) {
+  }
+  if (passwordForm.checkValidity()) {
+    //todo convert to ajax to show backend messages
     passwordForm.submit();
   }
 }
