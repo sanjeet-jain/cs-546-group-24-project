@@ -108,11 +108,9 @@ function populateTasksModal(userId, taskId) {
       // it needs an iso string
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
-
-      event_modal.querySelector("input#task_dateDueOn").value = data.dateDueOn;
     },
     error: function (data) {
-      resultDiv = document.getElementById("update-result");
+      resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -313,7 +311,6 @@ function onTaskModalClose() {
       event_modal.querySelector("input#task_tag").value = "";
       event_modal.querySelector("select#task_priority").value = "";
       event_modal.querySelector("input#task_dateAddedTo").value = "";
-      event_modal.querySelector("input#task_dateDueOn").value = "";
       resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
@@ -506,9 +503,6 @@ function submitTaskForm() {
             task_dateAddedTo_error = document.getElementById(
               "task_dateAddedTo_error"
             );
-            task_dateDueOn_error = document.getElementById(
-              "task_dateDueOn_error"
-            );
             task_title_error.innerText =
               data.responseJSON?.errorMessages?.title || "";
             task_textBody_error.innerText =
@@ -517,8 +511,6 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
-            task_dateDueOn_error.innerText =
-              data.responseJSON?.errorMessages?.dateDueOn || "";
             ("");
           },
         });
@@ -679,28 +671,25 @@ function checkTaskValidations(form) {
   task_textBody_error = document.getElementById("task_textBody_error");
   task_tag_error = document.getElementById("task_tag_error");
   task_dateAddedTo_error = document.getElementById("task_dateAddedTo_error");
-  task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
 
   if (form.title.length > 100) {
-    task_title_error.innerText = "Title cant be longer than 100 characters";
+    task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
-  if (form.textBody.length > 100) {
-    task_textBody_error.innerText = "Title cant be longer than 100 characters";
+  if (form.textBody.length > 200) {
+    task_textBody_error.innerText = "Text can't be longer than 100 characters";
+  }
+  if (form.tag.length > 20) {
+    task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
-  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
-    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
-      form.dateAddedTo.setCustomValidity("invalid_range");
-      form.dateDueOn.setCustomValidity("invalid_range");
-      task_dateDueOn_error.innerText = "Date Due to must be after date Due On";
-      task_dateAddedTo_error.innerText =
-        "Date Added to must be before date Due On";
-    } else {
-      form.dateAddedTo.setCustomValidity("");
-      form.dateDueOn.setCustomValidity("");
-    }
+  if (!dayjs(form.dateAddedTo.value).isValid()) {
+    reminder_dateAddedTo_error.innerText = "The date added should be valid";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
+  } else {
+    form.dateAddedTo.setCustomValidity("");
   }
+
   if (form.checkValidity()) {
     return true;
   } else return false;
