@@ -1,5 +1,11 @@
 <div id="error-div" class="text-center">
   <div class="alert alert-danger" role="alert">
-    {{{error.error}}}
+    {{{error.message}}}
   </div>
+  {{#if session}}
+    <a href="/calendar/month" class="badge bg-primary">Go Back to Calendar</a>
+
+  {{else}}
+    <a href="/user/login" class="badge bg-primary">Go Back to Login</a>
+  {{/if}}
 </div>

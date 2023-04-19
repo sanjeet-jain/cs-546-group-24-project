@@ -1,20 +1,29 @@
 jonathan 
-needs to finish post logins
+needs to finish all user UI pages
 
 mahesh 
-is finishing route validation and testing 
+help jonathan with USER ui pages
 check for overlapping events 
-make tag lowercase
 
 sundera 
+experiment with calaendar API
 add back counter later when we do UI
 
 sanjeet 
+finish version of calendar API 
 check for overlapping events 
-make tag lowercase
-check what repeatingIncrementBy does
-make upsert false for all update functions
+double check and make sure upsert false for all update functions
 
 
 for all date strings we expect a format of "MM/DD/YYYY 12:23"
 in the UI we format and convert it to this way for the API 
+
+
+User UI:
+    Login Page 
+    Sign Up Page
+    profile page
+        view main profile page
+        change password page
+        edit profile page
+

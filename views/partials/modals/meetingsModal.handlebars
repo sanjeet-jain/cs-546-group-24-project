@@ -1,0 +1,222 @@
+<div
+  class="modal fade"
+  id="modal-meeting-display"
+  tabindex="-1"
+  aria-labelledby="modal-meeting-label"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-meeting-label">
+          <i class="">Meeting Event</i>
+
+        </h4>
+        <button
+          type="button"
+          class="btn btn-edit"
+          aria-label="Edit"
+          {{! onclick="enableFormEdit()" }}
+        >
+          <i class="bi-pencil-fill"></i>
+        </button>
+        <button
+          id="meeting-top-close-button"
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <fieldset id="meeting-form-enabler" disabled>
+        <div class="modal-body">
+          <form id="meeting-form" class="needs-validation" novalidate>
+            {{! title }}
+            <div class="mb-3">
+              <label for="meeting_title" class="form-label">Title</label>
+              <input
+                required
+                type="text"
+                class="form-control"
+                name="title"
+                id="meeting_title"
+                placeholder="Title"
+                value=""
+                maxlength="100"
+              />
+              <div id="meeting_title_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! textBody }}
+            <div class="mb-3">
+              <label
+                for="meeting_textBody"
+                class="form-label"
+              >Description</label>
+              <input
+                type="text"
+                class="form-control"
+                name="textBody"
+                id="meeting_textBody"
+                placeholder="Description"
+                value=""
+                maxlength="200"
+              />
+              <div id="meeting_textBody_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! tag }}
+            <div class="mb-3">
+              <label for="meeting_tag" class="form-label">Tag</label>
+              <input
+                type="text"
+                class="form-control"
+                name="tag"
+                id="meeting_tag"
+                placeholder="Tag"
+                value=""
+                maxlength="20"
+              />
+              <div id="meeting_tag_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! priority }}
+            <div class="mb-3">
+              <label for="meeting_priority" class="form-label">Priority</label>
+              <select
+                required
+                class="form-select form-select-sm"
+                name="priority"
+                id="meeting_priority"
+              >
+                <option value="">Please select an option</option>
+                <option value="1">Low</option>
+                <option value="2">Medium</option>
+                <option value="3">High</option>
+              </select>
+            </div>
+            {{! dateAddedTo }}
+            <div class="form-floating mb-3">
+              <input
+                type="datetime-local"
+                class="form-control"
+                name="dateAddedTo"
+                id="meeting_dateAddedTo"
+                value=""
+              />
+              <label for="meeting_dateAddedTo" class="form-label">Date to Add
+                event to
+              </label>
+
+              <div id="meeting_dateAddedTo_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! dateDueOn }}
+            <div class="form-floating mb-3">
+              <input
+                type="datetime-local"
+                class="form-control"
+                name="dateDueOn"
+                id="meeting_dateDueOn"
+                value=""
+              />
+              <label for="meeting_dateDueOn" class="form-label">Date event is
+                due on
+              </label>
+
+              <div id="meeting_dateDueOn_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! repeating }}
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="repeating"
+                id="meeting_repeating"
+                aria-describedby="repeating_help_id"
+                value="false"
+              />
+              <label class="form-check-label" for="meeting_repeating">
+                Is the event repeating?
+              </label>
+              <small id="repeating_help_id" class="form-text text-muted">
+                Please check if you need the event to repeat. if it is already
+                checked and you uncheck it it will cause deletion of all other
+                recurrences</small>
+            </div>
+            {{! repeatingIncrementBy }}
+            <div class="mb-3">
+              <label
+                for="repeatingIncrementBy"
+                class="form-label"
+              >repeatingIncrementBy</label>
+              <select
+                class="form-select form-select-sm"
+                name="repeatingIncrementBy"
+                id="meeting_repeatingIncrementBy"
+              >
+                <option value="">Please select an option</option>
+                <option value="day">day</option>
+                <option value="week">week</option>
+                <option value="month">month</option>
+                <option value="year">Year</option>
+              </select>
+              <div
+                id="meeting_repeatingIncrementBy_error"
+                class="invalid-feedback"
+              >
+
+              </div>
+            </div>
+            {{! repeatingCounterIncrement }}
+            <div class="form-floating mb-3">
+              <input
+                type="number"
+                class="form-control"
+                {{! change max to depending on the drop down }}
+                min="1"
+                max="5"
+                id="meeting_repeatingCounterIncrement"
+                name="repeatingCounterIncrement"
+                value="0"
+              />
+              <label for="meeting_repeatingCounterIncrement" class="form-label">
+                How Many times to repeat the event ? ( number )
+              </label>
+              <div
+                id="meeting_repeatingCounterIncrement_error"
+                class="invalid-feedback"
+              >
+
+              </div>
+            </div>
+            {{! add more fields for other events }}
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div id="meeting-update-result">
+
+          </div>
+          <input
+            id="meeting-bottom-submit-button"
+            type="submit"
+            form="meeting-form"
+            value="Save Changes"
+            class="btn btn-primary"
+          />
+        </div>
+      </fieldset>
+
+    </div>
+  </div>
+</div>

@@ -1,39 +1,72 @@
 body {
-  padding: 0 !important;
+  width: 95vw;
 }
-.navbar div {
-  padding: 1rem;
+main {
+  padding-top: 1vh;
+}
+.headBarNav {
+  height: 7vh;
+  width: 100%;
+}
+.navbar {
+  right: 1vw;
+  left: 1vw !important;
+}
+.userRightMenu {
+  text-align-last: end;
 }
 .center-div {
-  width: 60vw;
+  overflow-y: scroll;
+  height: 85vh;
+  width: 70vw;
 }
 
-#calendar-div table tbody tr td {
+.active-month {
   text-align: center;
   vertical-align: top;
-  width: 10vw;
-  height: 12vh;
+  width: 9vw;
+  height: 13vh;
 }
-#calendar-div table tbody tr td:hover {
+.active-month:hover {
   border: grey;
-  border-style: inherit;
+  border-style: dashed;
 }
 
 #left-menu-div {
-  width: 20vw;
-  margin-left: 5%;
-  margin-right: 5%;
-  padding: 0;
+  /* height: 90vh; */
+  width: 15vw;
 }
 
 #right-menu-div {
-  width: 20vw;
-  margin-left: 5%;
-  margin-right: 5%;
-  padding: 0;
+  /* height: 90vh; */
+  width: 15vw;
 }
 
-#main_page {
-  width: 100%;
+.greyed-out {
+  width: 8vw;
+  height: 13vh;
+  color: #ccc;
+}
+.day-events span {
+  text-align: left !important;
 }
 
+.timeslots {
+  width: 7vw;
+}
+
+.sticky-calendar-head {
+  height: 3vh;
+  position: sticky;
+  top: 0;
+}
+
+.sticky-calendar-row {
+  position: sticky;
+  top: 4vh;
+}
+footer {
+  text-align-last: center;
+  top: 2px;
+  height: 5vh;
+}

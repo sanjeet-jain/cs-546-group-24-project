@@ -8,25 +8,48 @@ import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
+import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
   app.use("/user", userRoutes);
-  app.use("/calendar", calendarRoutes);
-  app.use("/meeting", meetingRoutes);
-  app.use("/task", taskRoutes);
-  app.use("/reminder", reminderRoutes);
-  app.use("/note", noteRoutes);
+  app.use("/calendar", validateUser, calendarRoutes);
+  app.use("/meeting", validateUser, meetingRoutes);
+  app.use("/task", validateUser, taskRoutes);
+  app.use("/reminder", validateUser, reminderRoutes);
+  app.use("/note", validateUser, noteRoutes);
+
+  app.get("/contact", (req, res) => {
+    res.render("contact", {
+      title: "Contact Us",
+    });
+  });
   app.get("/about", (req, res) => {
-    res.render("aboutUs");
+    res.render("aboutUs", {
+      title: "About Us",
+    });
   });
   app.get("/", (req, res) => {
-    res.render("aboutUs");
+    res.render("aboutUs", {
+      title: "About Us",
+    });
   });
   app.use("*", (req, res) => {
     // we can set this to check for authorization and then send back to correct page !
-    const error = { error: "The Requested Page was not Found!" };
-    res.status(404).render("errors/error", { error: error });
+    res.status(404).render("errors/error", {
+      title: "Error",
+      error: new Error("The Requested Page was not Found!"),
+    });
   });
 };
+
+function validateUser(req, res, next) {
+  if (!req?.session?.user) {
+    return res.status(403).render("errors/error", {
+      title: "Error",
+      error: new Error("HTTP Error 403 : please Login"),
+    });
+  }
+  next();
+}
 
 export default constructorMethod;

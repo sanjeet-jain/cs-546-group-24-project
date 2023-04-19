@@ -3,7 +3,8 @@ import meetingsDataFunctions from "../data/meetings.js";
 import tasksDataFunctions from "../data/tasks.js";
 import usersDataFunctions from "../data/users.js";
 import notesDataFunctions from "../data/notes.js";
-
+import * as reminderDataFunctions from "../data/reminder.js";
+import dayjs from "dayjs";
 export async function runSetup() {
   /*
   UsersCollection
@@ -20,7 +21,8 @@ export async function runSetup() {
  noteIds: [ObjectId],
  meetingIds: [ObjectId]
 */
-  let dt = new Date();
+
+  let dt = dayjs().set("hours", 14).toDate();
 
   const sampleUser = {
     first_name: "Sample",
@@ -30,7 +32,7 @@ export async function runSetup() {
     password: "abcDefgh2i",
     disability: false,
     // date string passed here is MM/DD/YYYY
-    dob: new Date("01/01/1996").toDateString(),
+    dob: "1996-01-01",
     consent: true,
     //initially an empty array
     // taskIds: [],
@@ -53,29 +55,25 @@ export async function runSetup() {
 
   // Seed Meetings
   const sampleMeeting = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
+    title: "Weekly Team Meeting repeating",
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).add(1, "hour").format("YYYY-MM-DDTHH:mm"),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
+    repeating: true,
+    repeatingCounterIncrement: 2,
+    repeatingIncrementBy: "day",
     repeatingGroup: null,
     expired: false,
     type: "meeting",
   };
   const sampleMeeting2 = {
-    title: "Weekly Team Meeting",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setHours(new Date().getHours() + 1)
-    ).toString(),
+    title: "Weekly Team Meeting non repeating",
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).add(2, "hour").format("YYYY-MM-DDTHH:mm"),
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",
@@ -85,35 +83,6 @@ export async function runSetup() {
     repeatingGroup: null,
     expired: false,
     type: "meeting",
-  };
-
-  const sampleTask = {
-    title: "Finish project report",
-    textBody:
-      "Complete the final report for the project and submit it to the manager.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 7)
-    ).toString(),
-    priority: 1,
-    tag: "work",
-    checked: false,
-    type: "task",
-  };
-
-  const sampleTask2 = {
-    title: "Buy groceries",
-    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
-    dateCreated: dt.toString(),
-    dateAddedTo: dt.toString(),
-    dateDueOn: new Date(
-      new Date().setDate(new Date().getDate() + 1)
-    ).toString(),
-    priority: 3,
-    tag: "personal",
-    checked: false,
-    type: "task",
   };
 
   await meetingsDataFunctions.create(
@@ -144,6 +113,30 @@ export async function runSetup() {
 
   // Seed tasks
 
+  const sampleTask = {
+    title: "Finish project report",
+    textBody:
+      "Complete the final report for the project and submit it to the manager.",
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    priority: 1,
+    tag: "work",
+    checked: false,
+    type: "task",
+  };
+
+  const sampleTask2 = {
+    title: "Buy groceries",
+    textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    priority: 3,
+    tag: "personal",
+    checked: false,
+    type: "task",
+  };
   await tasksDataFunctions.createTask(
     user._id.toString(),
     sampleTask.title,
@@ -165,6 +158,29 @@ export async function runSetup() {
   );
 
   // Seed reminders
+  const sampleReminder = {
+    title: "reminder title",
+    textBody: "important reminder",
+    priority: 3,
+    tag: "rem",
+    repeating: false,
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    endDateTime: null,
+    repeatingIncrementBy: null,
+    type: "reminder",
+  };
+
+  const insertedReminder = await reminderDataFunctions.createReminder(
+    user._id.toString(),
+    sampleReminder.title,
+    sampleReminder.textBody,
+    sampleReminder.priority,
+    sampleReminder.tag,
+    sampleReminder.repeating,
+    sampleReminder.endDateTime,
+    sampleReminder.repeatingIncrementBy,
+    sampleReminder.dateAddedTo
+  );
 
   // Seed notes
   const sampleNote = {
@@ -173,7 +189,7 @@ export async function runSetup() {
     textBody: "     sample Note body      ",
     tag: "cs 546",
     documentLinks: [],
-    dateCreated: dt.toString(),
+    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     type: "notes",
   };
   await notesDataFunctions.create(

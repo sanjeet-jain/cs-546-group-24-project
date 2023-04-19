@@ -1,0 +1,46 @@
+{{#each modalsData.weeks}}
+  {{#each this}}
+    {{#each this.modalData}}
+      <div
+        class="modal fade"
+        id="modal-{{this._id}}"
+        tabindex="-1"
+        aria-labelledby="modal-{{this._id}}-label"
+        aria-hidden="true"
+        data-bs-backdrop="static"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1
+                class="modal-title"
+                id="modal-{{this._id}}-label"
+              >{{this.title}}</h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >Close</button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+              >Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  {{/each}}
+{{/each}}

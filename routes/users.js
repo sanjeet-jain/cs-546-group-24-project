@@ -18,6 +18,9 @@ function createSessionObject(user) {
 router
   .route("/signup")
   .post(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar/month");
+    }
     const first_name = req.body.first_name;
     const last_name = req.body.last_name;
     const email = req.body.email;
@@ -100,7 +103,7 @@ router
       if (user) {
         req.session.user = createSessionObject(user);
       }
-      return res.status(200).redirect("/calendar");
+      return res.status(200).redirect("/calendar/month");
     } catch (e) {
       return res.status(404).render("user/signup", {
         error: "Something went wrong, please try again later",
@@ -110,14 +113,19 @@ router
   })
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
-    res.render("user/signup");
+    res.render("user/signup", {
+      title: "SignUp",
+    });
   });
 
 router
   .route("/login")
   .post(async (req, res) => {
+    if (req.session.user) {
+      return res.redirect("/calendar/month");
+    }
     let email = req.body.email;
     let password = req.body.password;
 
@@ -153,7 +161,7 @@ router
       const user = await usersFunctions.loginUser(email, password);
       if (user) {
         req.session.user = createSessionObject(user);
-        return res.redirect("/calendar");
+        return res.redirect("/calendar/month");
       } else {
         return res.status(500).render("user/login", {
           error: "Something went wrong on the server, please try again later",
@@ -171,9 +179,11 @@ router
   })
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.redirect("/calendar");
+      return res.redirect("/calendar/month");
     }
-    res.render("user/login");
+    res.render("user/login", {
+      title: "Login",
+    });
   });
 router
   .route("/profile")
@@ -364,9 +374,11 @@ router
       });
     }
   });
-
-router.route("/logout").post(async (req, res) => {
+router.route("/logout").get(async (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/user/login");
+  }
   req.session.destroy();
-  res.redirect("/");
+  res.redirect("/user/login");
 });
 export default router;

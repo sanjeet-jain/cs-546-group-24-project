@@ -1,7 +1,7 @@
 // this is where all common helper files will go
 import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
-
+import dayjs from "dayjs";
 const utils = {
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
@@ -13,7 +13,7 @@ const utils = {
   validateStringInput(input, inputName) {
     if (input && typeof input !== "string") {
       throw new Error(`${inputName} must be a string`);
-    } else if (input && input.trim().length === 0) {
+    } else if (input.trim().length === 0) {
       throw new Error(`${inputName} cannot be an empty string`);
     }
   },
@@ -27,12 +27,21 @@ const utils = {
   },
 
   validateInputIsNumber(input, inputName) {
+    if (typeof input === "string") {
+      this.validateStringInput(input, inputName);
+      input = Number(input.trim());
+    }
     if (typeof input !== "number" || isNaN(input)) {
       throw new Error(`${inputName} is not a number `);
     }
   },
 
   validatePriority(priority) {
+    if (typeof priority === "string") {
+      this.validateStringInput(priority, "priority");
+
+      priority = Number(priority.trim());
+    }
     this.validateInputIsNumber(priority, "priority");
     if (!Number.isInteger(priority)) {
       throw new Error("priority cant be a float");
@@ -43,13 +52,17 @@ const utils = {
   },
 
   validateBooleanInput(input, inputName) {
-    if (typeof input === "string" && (input === "true" || input === "false")) {
-      input = input === "true" ? true : false;
-    }
+    if (typeof input === "string") {
+      this.validateStringInput(input, inputName);
 
+      if (input === "true" || input === "false") {
+        input = input.trim() === "true" ? true : false;
+      }
+    }
     if (typeof input !== "boolean") {
       throw new Error(`${inputName} must be a boolean value`);
     }
+    return input;
   },
 
   validateName(name, inputName) {
@@ -64,7 +77,7 @@ const utils = {
     }
   },
   validateEmail(email, inputName) {
-    this.validateStringInput(email);
+    this.validateStringInput(email, inputName);
     const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
     if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
@@ -120,6 +133,7 @@ const utils = {
     dateDueOn = dateDueOn.trim();
     this.validateDate(dateAddedTo, "dateAddedTo");
     this.validateDate(dateDueOn, "dateDueOn");
+    //TODO check date as well ! not just time
     if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }
@@ -135,105 +149,77 @@ const utils = {
     repeatingCounterIncrement,
     repeatingIncrementBy
   ) {
-    this.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
-    this.validateBooleanInput(repeating, "repeating");
-    if (repeating) {
-      this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
-      this.validateRepeatingIncrementBy(repeatingIncrementBy);
+    let errorMessages = {};
+    try {
+      this.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+    } catch (e) {
+      errorMessages.title = e.message;
     }
-    this.validateDateRange(dateAddedTo, dateDueOn);
-  },
-
-  validateMeetingUpdateInputs(
-    title,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    textBody,
-    tag
-  ) {
-    this.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
-    this.validateDateRange(dateAddedTo, dateDueOn);
-  },
-  validateMeetingUpdateAllRecurrencesInputs(
-    title,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    textBody,
-    tag
-  ) {
-    this.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    this.validateDate(dateAddedTo, "DateAddedTo");
-    this.validateDate(dateDueOn, "DateDueOn");
-    this.validatePriority(priority);
-    this.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    this.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
-  },
-
-  /**
-   * @param {date object} date1
-   * @param {date object} date2
-   */
-  isDateObjEqual(date1, date2) {
-    this.validateDateObj(date1);
-    this.validateDateObj(date2);
-    if (
-      date1.getFullYear() === date2.getFullYear() &&
-      date1.getMonth() === date2.getMonth() &&
-      date1.getDate() === date2.getDate() &&
-      date1.getHours() === date2.getHours() &&
-      date1.getMinutes() === date2.getMinutes()
-    ) {
-      return true;
+    try {
+      this.validateDate(dateAddedTo, "DateAddedTo");
+    } catch (e) {
+      errorMessages.dateAddedTo = e.message;
     }
-    return false;
+
+    try {
+      this.validateDate(dateDueOn, "DateDueOn");
+    } catch (e) {
+      errorMessages.dateDueOn = e.message;
+    }
+
+    try {
+      this.validatePriority(priority);
+    } catch (e) {
+      errorMessages.priority = e.message;
+    }
+
+    try {
+      this.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+    } catch (e) {
+      errorMessages.textBody = e.message;
+    }
+
+    try {
+      this.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
+    } catch (e) {
+      errorMessages.tag = e.message;
+    }
+    if (repeating === "true" || repeating === true) {
+      try {
+        this.validateBooleanInput(repeating, "repeating");
+      } catch (error) {
+        errorMessages.repeating = error.message;
+      }
+      try {
+        this.validateRepeatingCounterIncrement(repeatingCounterIncrement);
+      } catch (error) {
+        errorMessages.repeatingCounterIncrement = error.message;
+      }
+
+      try {
+        this.validateRepeatingIncrementBy(repeatingIncrementBy);
+      } catch (error) {
+        errorMessages.repeatingIncrementBy = error.message;
+      }
+    }
+    try {
+      this.validateDateRange(dateAddedTo, dateDueOn);
+    } catch (error) {
+      errorMessages.dateDueOn = error.message;
+    }
+    return errorMessages;
   },
 
   /**
@@ -242,7 +228,10 @@ const utils = {
    * @param {*} endDateTime
    * @param {*} dateTime
    */
-  isDateObjOverllaping(startDateTime, endDateTime, dateTime) {
+  isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
+    let startDateTime = utils.getNewDateStr(startDateTimeStr);
+    let endDateTime = utils.getNewDateStr(endDateTimeStr);
+    let dateTime = utils.getNewDateStr(dateTimeStr);
     if (
       startDateTime.getMinutes() === dateTime.getMinutes() &&
       startDateTime.getHours() === dateTime.getHours() &&
@@ -258,22 +247,11 @@ const utils = {
     return false;
   },
 
-  dateObjPersistDB(dateTime) {
-    this.validateDate(dateTime);
-    let standardisedDate = new Date();
-    standardisedDate.setFullYear(dateTime.getFullYear());
-    standardisedDate.setMonth(dateTime.getMonth());
-    standardisedDate.setDate(dateTime.getDate());
-    standardisedDate.setHours(dateTime.getHours());
-    standardisedDate.setMinutes(dateTime.getMinutes());
-    return standardisedDate;
-  },
-
   validateDate(date, paramName) {
     this.validateStringInput(date, paramName);
     date = date.trim();
-    date = new Date(date);
-
+    date = dayjs(date).toDate();
+    //TODO use datejs for validation
     if (!(date instanceof Date) || isNaN(date.getTime())) {
       throw new Error(
         `${paramName} must be a valid Date object or a string that can be parsed as a date`
@@ -281,6 +259,7 @@ const utils = {
     }
   },
 
+  //Dates are stored as string
   /**Changes Made to existing code */
   validateDateObj(date, paramName) {
     if (!(date instanceof Date) || isNaN(date.getTime())) {
@@ -291,6 +270,7 @@ const utils = {
   },
   validateAge(dob, min_age, max_age) {
     this.validateDate(dob, "dob");
+    //TODO use dayjs
     let today = new Date();
     dob = new Date(dob);
     let age = today.getFullYear() - dob.getFullYear();
@@ -304,15 +284,16 @@ const utils = {
       );
     }
   },
+  // validateDateObj(date, paramName) {
+  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
+  //     throw new Error(
+  //       `${paramName} must be a valid Date object or a string that can be parsed as a date`
+  //     );
+  //   }
+  // },
 
-  getNewDateObject(fullYear, month, date, hours, minutes) {
-    let dateObj = new Date();
-    dateObj.setFullYear(fullYear);
-    dateObj.setMonth(month);
-    dateObj.setDate(date);
-    dateObj.setHours(hours);
-    dateObj.setMinutes(minutes);
-    return dateObj;
+  getNewDateStr(dateObj) {
+    return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
   },
 
   /**

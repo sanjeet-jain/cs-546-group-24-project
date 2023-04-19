@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
-import constants from "../constants/constants.js";
+
 router
   .route("/:noteId")
   .get(async (req, res) => {
@@ -78,9 +78,7 @@ router
       );
       return res.status(200).json(updatednote);
     } catch (e) {
-      if (
-        e.message === "Error: same object passed for update with no changes"
-      ) {
+      if (e.message === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
