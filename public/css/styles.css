@@ -70,3 +70,7 @@ footer {
   top: 2px;
   height: 5vh;
 }
+
+i {
+  pointer-events: none;
+}
