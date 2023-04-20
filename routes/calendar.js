@@ -25,6 +25,7 @@ router.route("/month").get(async (req, res) => {
       weekdays: constants.weekdays,
       currYear: year,
       weeks: modalsData.weeks,
+      top50Items: modalsData.top50Data,
       modalsData: modalsData,
       prevMonth: prevMonth,
       prevYear: prevYear,
@@ -145,7 +146,7 @@ async function getWeeksData(req, currentDate = undefined) {
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
 
-  const modalsData = await getModalData(weeks, userId);
+  const modalsData = await getModalData(weeks, userId, now);
   // set global weeks data
 
   return {
@@ -239,7 +240,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   return weeks;
 }
 
-async function getModalData(weeks, userId) {
+async function getModalData(weeks, userId, now) {
   try {
     const response = await eventDataFunctions.getAllEvents(userId);
     weeks.forEach((week) => {
@@ -248,7 +249,7 @@ async function getModalData(weeks, userId) {
         delete response.userId;
         for (let eventType in response) {
           modalData[eventType] = response[eventType].filter((x) => {
-            const date = new Date(x.dateAddedTo);
+            const date = dayjs(x.dateAddedTo).toDate();
             const dayAddedTo = date.getDate();
             const monthAddedTo = date.getMonth();
             const yearAddedTo = date.getFullYear();
@@ -271,8 +272,22 @@ async function getModalData(weeks, userId) {
       });
     });
 
+    //filter based on top 50 items of month
+    let top50Items = [];
+    for (let eventType in response) {
+      const temp = response[eventType].filter((x) => {
+        const date = dayjs(x.dateAddedTo).toDate();
+        const monthAddedTo = date.getMonth();
+        const yearAddedTo = date.getFullYear();
+        return (
+          monthAddedTo === now.getMonth() && yearAddedTo === now.getFullYear()
+        );
+      });
+      top50Items = top50Items.concat(temp);
+    }
     return {
       weeks: weeks,
+      top50Data: top50Items,
     };
   } catch (error) {
     throw Error("Internal server error");

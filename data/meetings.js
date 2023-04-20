@@ -87,9 +87,11 @@ const meetingsDataFunctions = {
     dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
     priority = Number.parseInt(priority);
     textBody = textBody.trim();
-    repeatingCounterIncrement = Number.parseInt(repeatingCounterIncrement);
+    repeatingCounterIncrement = !repeatingCounterIncrement
+      ? repeatingCounterIncrement
+      : Number.parseInt(repeatingCounterIncrement);
     repeating = repeating === "true" || repeating === true ? true : false;
-    repeatingIncrementBy = repeatingIncrementBy.trim();
+    repeatingIncrementBy = repeatingIncrementBy?.trim();
 
     updatedMeeting.title = title;
     updatedMeeting.dateAddedTo = dateAddedTo;
