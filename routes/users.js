@@ -224,7 +224,6 @@ router
       const id = req.session.user.user_id;
       const first_name = req.body.first_name;
       const last_name = req.body.last_name;
-      const email = req.body.email;
       const disability = req.body.disability;
       const dob = req.body.dob;
       let errorMessages = {};
@@ -237,11 +236,6 @@ router
         utils.validateName(last_name, "Last name");
       } catch (e) {
         errorMessages.last_name = e.message;
-      }
-      try {
-        utils.validateEmail(email, "Email");
-      } catch (e) {
-        errorMessages.email = e.message;
       }
       if (disability) {
         try {
@@ -256,6 +250,11 @@ router
       } catch (e) {
         errorMessages.dob = "Please enter a valid date of birth.";
       }
+      try {
+        utils.validateAge(dob, constants.min_age, constants.max_age);
+      } catch (e) {
+        errorMessages.dob = e.message;
+      }
 
       if (Object.keys(errorMessages).length !== 0) {
         return res.status(400).render("user/edit", {
@@ -269,7 +268,6 @@ router
         await usersFunctions.updateUser(id, {
           first_name,
           last_name,
-          email,
           disability,
           dob,
         });
@@ -378,6 +376,7 @@ router.route("/logout").get(async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/user/login");
   }
+  res.clearCookie("AuthCookie");
   req.session.destroy();
   res.redirect("/user/login");
 });

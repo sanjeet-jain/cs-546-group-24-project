@@ -10,7 +10,7 @@
 
     <div class="form-floating">
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
-        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
         value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
