@@ -62,7 +62,7 @@ function checkValidations(event) {
 }
 
 function validate_name(name) {
-  const nameRegex = /^[a-zA-Z]+$/;
+  const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
 }
 validateEdits();

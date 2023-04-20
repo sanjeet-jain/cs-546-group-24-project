@@ -72,7 +72,7 @@ const utils = {
       inputName,
       constants.stringLimits["first_last_names"]
     );
-    if (!/^[a-zA-Z]+$/.test(name)) {
+    if (!/^(?=.{1,20}$)(?![\d])[\w\s]+$/.test(name)) {
       throw new Error(`${inputName} can only contain letters`);
     }
   },

@@ -96,7 +96,7 @@ function validatePassword(password) {
 }
 
 function validateName(name) {
-  const nameRegex = /^[a-zA-Z]{1,20}$/;
+  const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
 }
 
