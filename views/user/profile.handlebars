@@ -1,0 +1,29 @@
+<div id="profile-div" class="container w-100">
+
+  <h1>User Profile</h1>
+  <div>
+    <h2>Email: {{currUser.email}}</h2>
+  </div>
+  <div>
+    <h2>First name: {{currUser.first_name}}</h2>
+  </div>
+  <div>
+    <h2>Last name: {{currUser.last_name}}</h2>
+  </div>
+  <div>
+    <h2>Date of birth: {{currUser.dob}}</h2>
+  </div>
+  <div>
+    <h2>Disability: {{#if currUser.disability}}{{currUser.disability}}
+      {{else}}False{{/if}}</h2>
+  </div>
+
+  <br />
+  <a id="changePass" aria-current="page" href="/user/password">Change Password</a>
+  <br />
+
+  <a id="editProfile" aria-current="page" href="/user/edit">Edit Profile</a>
+
+</div>
+
+<script src="/public/scripts/signup.js" type="text/javascript"></script>
