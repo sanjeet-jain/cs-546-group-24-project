@@ -20,7 +20,6 @@ function validateEdits(event) {
 function checkValidations(event) {
   let firstNameInput = event.target.first_name;
   let lastNameInput = event.target.last_name;
-  let emailInput = event.target.email;
   let dob = event.target.dob;
 
   let passForm = event.target;
@@ -28,16 +27,11 @@ function checkValidations(event) {
 
   let first_name_error = document.getElementById("first_name_error");
   let last_name_error = document.getElementById("last_name_error");
-  let email_error = document.getElementById("email_error");
   let date_error = document.getElementById("date_error");
   let disability_error = document.getElementById("disability_error");
 
   let profileForm = document.getElementById("edit-form");
-  if (!validateEmail(emailInput.value)) {
-    email_error.innerText = "Please enter a valid email.";
-  } else {
-    email_error.innerText = "";
-  }
+
   if (!validate_name(firstNameInput.value)) {
     first_name_error.innerText = "Please enter a valid first name.";
   } else {
@@ -58,7 +52,6 @@ function checkValidations(event) {
     date_error.textContent = "";
   }
   if (
-    emailInput.checkValidity() &&
     firstNameInput.checkValidity() &&
     lastNameInput.checkValidity() &&
     dob.checkValidity()
@@ -67,11 +60,7 @@ function checkValidations(event) {
   }
   return;
 }
-function validateEmail(email) {
-  const emailRegex =
-    /^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email);
-}
+
 function validate_name(name) {
   const nameRegex = /^[a-zA-Z]+$/;
   return nameRegex.test(name);
