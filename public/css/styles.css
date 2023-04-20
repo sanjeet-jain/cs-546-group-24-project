@@ -16,7 +16,6 @@ main {
   text-align-last: end;
 }
 .center-div {
-  overflow-y: scroll;
   height: 85vh;
   width: 70vw;
 }
@@ -44,7 +43,6 @@ main {
 
 #calendar-div {
   height: 85vh;
-  overflow-y: scroll;
 }
 
 .greyed-out {
@@ -78,4 +76,8 @@ footer {
 
 i {
   pointer-events: none;
+}
+
+.overflow-scroll-y {
+  overflow-y: scroll;
 }
