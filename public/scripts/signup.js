@@ -86,7 +86,7 @@ function checkValidations(event) {
 
 function validateEmail(email) {
   const emailRegex =
-    /^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    /^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/;
   return emailRegex.test(email);
 }
 
@@ -96,7 +96,7 @@ function validatePassword(password) {
 }
 
 function validateName(name) {
-  const nameRegex = /^[a-zA-Z]{1,20}$/;
+  const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
 }
 

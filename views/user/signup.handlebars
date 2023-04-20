@@ -9,7 +9,7 @@
     <br />
     <div class="form-floating mb-3">
       <input required type="text" class="form-control" name="first_name" id="first_name"
-        aria-describedby="first_name_help_id" placeholder="First Name" pattern="^[a-zA-Z]{1,20}$"
+        aria-describedby="first_name_help_id" placeholder="First Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
         value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}" />
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
@@ -20,10 +20,8 @@
     </div>
     <div class="form-floating mb-3">
       <input required type="text" class="form-control" name="last_name" id="last_name"
-        aria-describedby="last_name_help_id" placeholder="Last Name" <<<<<<< HEAD
-        pattern="^[a-zA-Z]+$"=======pattern="^[a-zA-Z]{1,20}$">>>>>>> main
-      value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}"
-      />
+        aria-describedby="last_name_help_id" placeholder="Last Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
+        value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}" />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
@@ -35,7 +33,7 @@
 
     <div class="form-floating mb-3">
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
-        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
         value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">

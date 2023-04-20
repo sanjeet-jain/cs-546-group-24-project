@@ -72,13 +72,14 @@ const utils = {
       inputName,
       constants.stringLimits["first_last_names"]
     );
-    if (!/^[a-zA-Z]+$/.test(name)) {
+    if (!/^(?=.{1,20}$)(?![\d])[\w\s]+$/.test(name)) {
       throw new Error(`${inputName} can only contain letters`);
     }
   },
   validateEmail(email, inputName) {
     this.validateStringInput(email, inputName);
-    const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    const regex =
+      /^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/;
     if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
     }
