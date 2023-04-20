@@ -78,7 +78,8 @@ const utils = {
   },
   validateEmail(email, inputName) {
     this.validateStringInput(email, inputName);
-    const regex = "^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$";
+    const regex =
+      /^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/;
     if (!email.toLowerCase().match(regex)) {
       throw new Error(`${inputName} is not an email`);
     }

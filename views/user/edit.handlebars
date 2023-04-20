@@ -42,7 +42,7 @@
       </div>
       <div class="col-auto ">
         <input required type="text" class="form-control" name="email" id="email" placeholder="Email"
-          pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+          pattern="/^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$/"
           value="{{#if errorContent.email}}{{errorContent.email}}{{else}}{{currUser.email}}{{/if}}" />
       </div>
       <div class="col-auto ">
