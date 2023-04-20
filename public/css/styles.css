@@ -42,6 +42,11 @@ main {
   width: 15vw;
 }
 
+#calendar-div {
+  height: 85vh;
+  overflow-y: scroll;
+}
+
 .greyed-out {
   width: 8vw;
   height: 13vh;
