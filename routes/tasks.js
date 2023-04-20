@@ -31,8 +31,7 @@ router
       res.status(400).json({ error: e.message });
     }
     try {
-      const { title, textBody, dateAddedTo, dateDueOn, priority, tag } =
-        req.body;
+      const { title, textBody, dateAddedTo, priority, tag } = req.body;
       utils.checkObjectIdString(userId);
       utils.validateStringInputWithMaxLength(
         title,
@@ -45,7 +44,6 @@ router
         constants.stringLimits["textBody"]
       );
       utils.validateDate(dateAddedTo, "dateAddedTo");
-      utils.validateDate(dateDueOn, "dateDueOn");
       utils.validatePriority(priority);
       utils.validateStringInputWithMaxLength(
         tag,
@@ -57,7 +55,6 @@ router
         title,
         textBody,
         dateAddedTo,
-        dateDueOn,
         priority,
         tag
       );
@@ -85,8 +82,7 @@ router
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
       const taskPutData = req.body;
-      const { title, textBody, dateAddedTo, dateDueOn, priority, tag } =
-        taskPutData;
+      const { title, textBody, dateAddedTo, priority, tag } = taskPutData;
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)
@@ -103,7 +99,6 @@ router
         constants.stringLimits["textBody"]
       );
       utils.validateDate(dateAddedTo, "dateAddedTo");
-      utils.validateDate(dateDueOn, "dateDueOn");
       utils.validatePriority(priority);
       utils.validateStringInputWithMaxLength(
         tag,

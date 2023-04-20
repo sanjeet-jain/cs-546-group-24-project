@@ -119,7 +119,6 @@ export async function runSetup() {
       "Complete the final report for the project and submit it to the manager.",
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
-    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     priority: 1,
     tag: "work",
     checked: false,
@@ -131,7 +130,6 @@ export async function runSetup() {
     textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
-    dateDueOn: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     priority: 3,
     tag: "personal",
     checked: false,
@@ -142,7 +140,6 @@ export async function runSetup() {
     sampleTask.title,
     sampleTask.textBody,
     sampleTask.dateAddedTo,
-    sampleTask.dateDueOn,
     sampleTask.priority,
     sampleTask.tag
   );
@@ -152,7 +149,6 @@ export async function runSetup() {
     sampleTask2.title,
     sampleTask2.textBody,
     sampleTask2.dateAddedTo,
-    sampleTask2.dateDueOn,
     sampleTask2.priority,
     sampleTask2.tag
   );

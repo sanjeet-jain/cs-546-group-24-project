@@ -25,19 +25,10 @@ const tasksDataFunctions = {
    * @param {string} title - The title of the task
    * @param {string} textBody - The body text of the task
    * @param {Date} dateAddedTo - The date when the task was added to the collection
-   * @param {Date} dateDueOn - The date when the task is due
    * @param {number} priority - The priority of the task (1, 2, or 3)
    * @param {string} tag - The custom tag for the task
    */
-  async createTask(
-    userId,
-    title,
-    textBody,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    tag
-  ) {
+  async createTask(userId, title, textBody, dateAddedTo, priority, tag) {
     utils.checkObjectIdString(userId);
     utils.validateStringInputWithMaxLength(
       title,
@@ -50,7 +41,6 @@ const tasksDataFunctions = {
       constants.stringLimits["textBody"]
     );
     utils.validateDate(dateAddedTo, "dateAddedTo");
-    utils.validateDate(dateDueOn, "dateDueOn");
     utils.validatePriority(priority);
     utils.validateStringInputWithMaxLength(
       tag,
@@ -60,7 +50,6 @@ const tasksDataFunctions = {
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
-    dateDueOn = dateDueOn.trim();
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
 
@@ -74,7 +63,6 @@ const tasksDataFunctions = {
       textBody: textBody,
       dateCreated: dayjs().format("YYYY-MM-DDTHH:mm"),
       dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
-      dateDueOn: dayjs(dateDueOn).format("YYYY-MM-DDTHH:mm"),
       priority: priority,
       tag: tag,
       checked: false,
@@ -142,15 +130,6 @@ const tasksDataFunctions = {
       );
     } else {
       throw new Error("You must provide a dateAddedTo for the task.");
-    }
-
-    if (updatedTask.dateDueOn) {
-      utils.validateDate(updatedTask.dateDueOn, "dateDueOn");
-      updatedTaskData.dateDueOn = dayjs(updatedTask.dateDueOn).format(
-        "YYYY-MM-DDTHH:mm:ss"
-      );
-    } else {
-      throw new Error("You must provide a dateDueOn for the task.");
     }
 
     if (updatedTask.priority) {

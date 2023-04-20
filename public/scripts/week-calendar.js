@@ -486,7 +486,7 @@ function submitTaskForm() {
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
-            populateTasksModal(data.userId, data.taskId);
+            populateTasksModal(userIdGlobal, data._id);
             setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
