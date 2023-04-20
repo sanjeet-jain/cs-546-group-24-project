@@ -80,35 +80,28 @@ const meetingsDataFunctions = {
     let updatedMeeting = { ...oldMeeting };
     delete updatedMeeting._id;
 
-    title = title.trim();
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    priority = Number.parseInt(priority);
-    textBody = textBody.trim();
-    repeatingCounterIncrement = Number.parseInt(repeatingCounterIncrement);
-    repeating = repeating === "true" || repeating === true ? true : false;
-    repeatingIncrementBy = repeatingIncrementBy.trim();
 
-    updatedMeeting.title = title;
-    updatedMeeting.dateAddedTo = dateAddedTo;
-    updatedMeeting.dateDueOn = dateDueOn;
+    // only update the fields that have been provided as input
+    updatedMeeting.title = title.trim();
+    updatedMeeting.dateAddedTo = dateAddedTo.trim();
+    updatedMeeting.dateDueOn = dateDueOn.trim();
     updatedMeeting.priority = priority;
-    updatedMeeting.textBody = textBody;
-    updatedMeeting.tag = tag;
+    updatedMeeting.textBody = textBody.trim();
+    updatedMeeting.tag = tag.trim().toLowerCase();
     updatedMeeting.repeating = repeating;
     updatedMeeting.repeatingCounterIncrement = repeatingCounterIncrement;
     updatedMeeting.repeatingIncrementBy = repeatingIncrementBy;
 
-    // wasnt repeating but now is
     if (
-      repeating === true &&
+      (repeating === "true" || repeating === true) &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
-      updatedMeeting.repeatingGroup = repeatingGroup;
-      let dateAddedToObject = dayjs(dateAddedTo);
-      let dateDueOnObject = dayjs(dateDueOn);
+      dateAddedTo = dateAddedTo.trim();
+      let dateAddedToObject = new Date(dateAddedTo);
+      dateDueOn = dateDueOn.trim();
+      let dateDueOnObject = new Date(dateDueOn);
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];
       let newDateDueOn;
@@ -116,33 +109,57 @@ const meetingsDataFunctions = {
       for (let i = 0; i < repeatingCounterIncrement; i++) {
         switch (repeatingIncrementBy) {
           case "day":
-            newDateDueOn = dateDueOnObject.add(1, "day");
-            newDateAddedTo = dateAddedToObject.add(1, "day");
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 1)
+            );
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 7)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 7)
+            );
             break;
           case "month":
-            newDateDueOn = dateDueOnObject.add(1, "month");
-            newDateAddedTo = dateAddedToObject.add(1, "month");
+            newDateDueOn = new Date(
+              dateDueOnObject.setMonth(dateDueOnObject.getMonth() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setMonth(dateAddedToObject.getMonth() + 1)
+            );
             break;
           case "year":
-            newDateDueOn = dateDueOnObject.add(1, "year");
-            newDateAddedTo = dateAddedToObject.add(1, "year");
+            newDateDueOn = new Date(
+              dateDueOnObject.setFullYear(dateDueOnObject.getFullYear() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setFullYear(dateAddedToObject.getFullYear() + 1)
+            );
             break;
           default:
             throw new Error("Invalid repeatingIncrementBy value");
         }
-        dateDueOnObject = newDateDueOn.clone();
-        dateAddedToObject = newDateAddedTo.clone();
-        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+        dateDueOnObject = newDateDueOn;
+        dateAddedToObject = newDateAddedTo;
+        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
         const meeting = {
-          ...updatedMeeting,
+          title: title,
           dateCreated: dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm"),
+          priority: priority,
+          textBody: textBody,
+          tag: tag,
+          repeating: repeating,
+          repeatingCounterIncrement: repeatingCounterIncrement,
+          repeatingIncrementBy: repeatingIncrementBy,
           repeatingGroup: repeatingGroup,
+          expired: false,
+          type: "meeting",
         };
         meetingObjects.push(meeting);
       }
@@ -155,22 +172,20 @@ const meetingsDataFunctions = {
         { _id: new ObjectId(userId) },
         { $push: { meetingIds: { $each: insertedIds } } }
       );
+      updatedMeeting.repeatingGroup = repeatingGroup;
     }
-    // was repeating before and isnt now
     if (
-      !repeating &&
+      (repeating === "false" || !repeating) &&
       updatedMeeting.repeatingGroup?.toString()?.trim() &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
       await this.deleteAllRecurrences(
         userId,
         updatedMeeting.repeatingGroup.toString().trim(),
-        meetingId // which meeting to skip
+        meetingId
       );
       updatedMeeting.repeatingGroup = null;
     }
-    // if theres no change in repeating status means normal update
-
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
       { $set: updatedMeeting }
@@ -261,27 +276,22 @@ const meetingsDataFunctions = {
     if (Object.keys(errorMessages).length !== 0) {
       throw errorMessages;
     }
-
     title = title.trim();
+    dateAddedTo = dateAddedTo.trim();
+    let dateAddedToObject = new Date(dateAddedTo);
+    dateDueOn = dateDueOn.trim();
+    let dateDueOnObject = new Date(dateDueOn);
+
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    priority = Number.parseInt(priority);
-    textBody = textBody.trim();
-    repeatingCounterIncrement = Number.parseInt(repeatingCounterIncrement);
-    repeating = repeating === "true" || repeating === true ? true : false;
     repeatingIncrementBy = repeatingIncrementBy.trim();
-
-    let dateAddedToObject = dayjs(dateAddedTo);
-    let dateDueOnObject = dayjs(dateDueOn);
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -309,14 +319,20 @@ const meetingsDataFunctions = {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];
 
+      //TODO use dayjs
       for (let i = 0; i < repeatingCounterIncrement; i++) {
-        let newDateDueOn = dateDueOnObject.clone();
-        let newDateAddedTo = dateAddedToObject.clone();
+        let newDateDueOn = new Date(
+          dateDueOnObject.setDate(dateDueOnObject.getDate())
+        );
+        let newDateAddedTo = new Date(
+          dateAddedToObject.setDate(dateAddedToObject.getDate())
+        );
+
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: dayjs(newDateAddedTo).format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: dayjs(newDateDueOn).format("YYYY-MM-DDTHH:mm"),
           priority,
           textBody,
           tag,
@@ -331,26 +347,42 @@ const meetingsDataFunctions = {
         switch (repeatingIncrementBy) {
           //TODO use dayjs
           case "day":
-            newDateDueOn = dateDueOnObject.add(1, "day");
-            newDateAddedTo = dateAddedToObject.add(1, "day");
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 1)
+            );
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = new Date(
+              dateDueOnObject.setDate(dateDueOnObject.getDate() + 7)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setDate(dateAddedToObject.getDate() + 7)
+            );
             break;
           case "month":
-            newDateDueOn = dateDueOnObject.add(1, "month");
-            newDateAddedTo = dateAddedToObject.add(1, "month");
+            newDateDueOn = new Date(
+              dateDueOnObject.setMonth(dateDueOnObject.getMonth() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setMonth(dateAddedToObject.getMonth() + 1)
+            );
             break;
           case "year":
-            newDateDueOn = dateDueOnObject.add(1, "year");
-            newDateAddedTo = dateAddedToObject.add(1, "year");
+            newDateDueOn = new Date(
+              dateDueOnObject.setFullYear(dateDueOnObject.getFullYear() + 1)
+            );
+            newDateAddedTo = new Date(
+              dateAddedToObject.setFullYear(dateAddedToObject.getFullYear() + 1)
+            );
             break;
           default:
             throw new Error("Invalid repeatingIncrementBy value");
         }
-        dateDueOnObject = newDateDueOn.clone();
-        dateAddedToObject = newDateAddedTo.clone();
+        dateDueOnObject = newDateDueOn;
+        dateAddedToObject = newDateAddedTo;
       }
 
       const result = await meetings.insertMany(meetingObjects);
