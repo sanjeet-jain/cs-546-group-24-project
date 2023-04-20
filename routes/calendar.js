@@ -25,7 +25,7 @@ router.route("/month").get(async (req, res) => {
       weekdays: constants.weekdays,
       currYear: year,
       weeks: modalsData.weeks,
-      top50Items: modalsData.top50Data,
+      topDayItems: modalsData.top50Data,
       modalsData: modalsData,
       prevMonth: prevMonth,
       prevYear: prevYear,
@@ -273,7 +273,7 @@ async function getModalData(weeks, userId, now) {
     });
 
     //filter based on top 50 items of month
-    let top50Items = [];
+    let topDayItems = [];
     for (let eventType in response) {
       const temp = response[eventType].filter((x) => {
         const date = dayjs(x.dateAddedTo).toDate();
@@ -283,11 +283,11 @@ async function getModalData(weeks, userId, now) {
           monthAddedTo === now.getMonth() && yearAddedTo === now.getFullYear()
         );
       });
-      top50Items = top50Items.concat(temp);
+      topDayItems = topDayItems.concat(temp);
     }
     return {
       weeks: weeks,
-      top50Data: top50Items,
+      top50Data: topDayItems,
     };
   } catch (error) {
     throw Error("Internal server error");
