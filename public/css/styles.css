@@ -26,17 +26,8 @@ main {
   width: 9vw;
   height: 13vh;
 }
-.active-month:hover {
-  border: grey;
-  border-style: dashed;
-}
 
-.active-week {
-  text-align: center;
-  vertical-align: top;
-  width: 9vw;
-}
-.active-week:hover {
+.date-cell:hover {
   border: grey;
   border-style: dashed;
 }
@@ -92,11 +83,11 @@ i {
   overflow: auto;
 }
 
-#display_top_50_items {
-  overflow: auto;
-}
-
 .event-pill {
   text-overflow: ellipsis;
   overflow: hidden;
+}
+
+.display_current_items_card {
+  height: 50%;
 }

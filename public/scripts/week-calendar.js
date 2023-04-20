@@ -718,3 +718,78 @@ onReminderModalClose();
 repeatingCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
 enableReminderFormEdit();
+
+function clickableDateCells() {
+  dateCells = document.querySelectorAll("td.date-cell");
+  dateCells.forEach((date) => {
+    date.addEventListener("click", (event) => {
+      eventTarget = event.target.closest("td");
+      let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
+      let selected_date_div = document.getElementById("selected_date");
+      selected_date_div.innerText = `Items for Today: \n ${selectedDate}`;
+      $.ajax({
+        method: "GET",
+        url: `/calendar/getSelectedDayItems/${selectedDate}`,
+        success: function (data) {
+          userIdGlobal = data.userId;
+          console.log(data);
+          loadRightPaneCells(data);
+        },
+        error: function (data) {
+          console.log(data);
+        },
+      });
+    });
+  });
+}
+function loadRightPaneCells(data) {
+  let events = data.selectedDayItems.sort((a, b) => {
+    if (a.priority > b.priority) {
+      return -1;
+    }
+    if (a.priority < b.priority) {
+      return 1;
+    }
+    return 0;
+  });
+
+  display_current_items_div = document.getElementById("display_current_items");
+  display_current_items_div.innerHtml = "";
+  display_current_items_div.innerText = "";
+
+  //what if no events ?
+  if (events.length === 0) {
+    display_current_items_div.innerText = "There are no events for the day";
+    return;
+  }
+  events.forEach((event) => {
+    let eventDiv = document.createElement("div");
+    eventDiv.classList.add("d-grid", "gap-1");
+    let eventButton = document.createElement("button");
+    eventButton.classList.add(
+      "badge",
+      "event-pill",
+      "text-bg-primary",
+      "text-wrap",
+      "text-center",
+      "event-button"
+    );
+    eventButton.setAttribute("data-bs-toggle", "modal");
+    eventButton.setAttribute("data-bs-target", "#modal-meeting-display");
+    eventButton.setAttribute("data-bs-eventId", `${event._id}`);
+    eventButton.setAttribute("data-bs-userId", `${data.userId}`);
+    eventButton.setAttribute("data-bs-event-type", `${event.type}`);
+    let logo = document.createElement("i");
+    let logoClass = "";
+    if (event.type === "meeting") {
+      logoClass = "bi-calendar-event";
+    }
+    // add for other events
+    logo.classList.add(logoClass);
+    eventButton.appendChild(logo);
+    eventButton.innerText = `${event.title}`;
+    eventDiv.appendChild(eventButton);
+    display_current_items_div.appendChild(eventDiv);
+  });
+}
+clickableDateCells();

@@ -1,46 +1,46 @@
 {{#each weeks}}
-        <tr class="week-class" id="week-{{@index}}">
-          {{#each this}}
-            {{#if this.greyedOut}}
-              <td class="greyed-out"> {{this.day}}</td>
-            {{else}}
-              <td class="active-month">
-                <button id="{{this.dayjsDateId}}" class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}"
-                >{{this.day}}
-                </button>
-                <div class="day-events">
+<tr class="week-class" id="week-{{@index}}">
+  {{#each this}}
+  {{#if this.greyedOut}}
+  <td class="greyed-out"> {{this.day}}</td>
+  {{else}}
+  <td class="active-month date-cell" data-bs-day="{{this.dayjsDateId}}">
+    <button id="{{this.dayjsDateId}}"
+      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}">{{this.day}}
+    </button>
+    <div class="day-events">
 
-                  <div class="d-grid gap-1">
-                    {{#if this.modalData.meetings.length}}
-                      <span class="badge  text-bg-primary text-wrap text-start">
-                        <i class="bi-calendar-event"></i>
-                        {{this.modalData.meetings.length}}
-                        meetings</span>
-                    {{/if}}
-                    {{#if this.modalData.notes.length}}
-                      <span class="badge  text-bg-success text-wrap text-start">
-                        <i class="bi-file-text"></i>
-                        {{this.modalData.notes.length}}
-                        notes</span>
-                    {{/if}}
-                    {{#if this.modalData.reminders.length}}
-                      <span class="badge  text-bg-warning text-wrap text-start">
-                        <i class="bi-alarm"></i>
-                        {{this.modalData.reminders.length}}
-                        reminders</span>
-                    {{/if}}
-                    {{#if this.modalData.tasks.length}}
-                      <span class="badge  text-bg-danger text-wrap text-start">
-                        <i class="bi-check2-square"></i>
-                        {{this.modalData.tasks.length}}
-                        tasks</span>
-                    {{/if}}
-                  </div>
+      <div class="d-grid gap-1">
+        {{#if this.modalData.meetings.length}}
+        <span class="badge  text-bg-primary text-wrap text-start">
+          <i class="bi-calendar-event"></i>
+          {{this.modalData.meetings.length}}
+          meetings</span>
+        {{/if}}
+        {{#if this.modalData.notes.length}}
+        <span class="badge  text-bg-success text-wrap text-start">
+          <i class="bi-file-text"></i>
+          {{this.modalData.notes.length}}
+          notes</span>
+        {{/if}}
+        {{#if this.modalData.reminders.length}}
+        <span class="badge  text-bg-warning text-wrap text-start">
+          <i class="bi-alarm"></i>
+          {{this.modalData.reminders.length}}
+          reminders</span>
+        {{/if}}
+        {{#if this.modalData.tasks.length}}
+        <span class="badge  text-bg-danger text-wrap text-start">
+          <i class="bi-check2-square"></i>
+          {{this.modalData.tasks.length}}
+          tasks</span>
+        {{/if}}
+      </div>
 
-                </div>
+    </div>
 
-              </td>
-            {{/if}}
-          {{/each}}
-        </tr>
-      {{/each}}
+  </td>
+  {{/if}}
+  {{/each}}
+</tr>
+{{/each}}
