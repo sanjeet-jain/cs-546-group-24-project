@@ -376,6 +376,7 @@ router.route("/logout").get(async (req, res) => {
   if (!req.session.user) {
     return res.redirect("/user/login");
   }
+  res.clearCookie("AuthCookie");
   req.session.destroy();
   res.redirect("/user/login");
 });
