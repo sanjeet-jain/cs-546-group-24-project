@@ -736,9 +736,6 @@ function clickableDateCells() {
           console.log(data);
           loadRightPaneCells(data);
         },
-        error: function (data) {
-          console.log(data);
-        },
       });
     });
   });
@@ -794,3 +791,20 @@ function loadRightPaneCells(data) {
   });
 }
 clickableDateCells();
+$("#datepickerContainer")
+  .datepicker({
+    format: "yyyy-mm-dd",
+    autoclose: true,
+    todayHighlight: true,
+  })
+  .on("changeDate", function (e) {
+    $.ajax({
+      method: "GET",
+      url: `/calendar/getSelectedDayItems/${e.date}`,
+      success: function (data) {
+        userIdGlobal = data.userId;
+        console.log(data);
+        loadRightPaneCells(data);
+      },
+    });
+  });
