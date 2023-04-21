@@ -1,7 +1,7 @@
 <tr class="sticky-calendar-row bg-light">
   <td class="timeslots"></td>
 
-  <td class="text-center date-cell" data-bs-day="{{this.dayjsDateId}}">
+  <td class="text-center date-cell" data-bs-day="{{day.dayjsDateId}}">
     <button id="{{day.dayjsDateId}}"
       class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{else}} text-dark{{/if}}">
       {{day.day}}
