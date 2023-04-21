@@ -1,11 +1,16 @@
-<div>
-
+{{#if session}}
+{{#if (eq title "Calendar")}}
+<div id="calendar-container">
+    <div class="datepicker js-datepicker-inline" tabindex="0"></div>
 </div>
-
 <div class="card display_current_items_card">
     <div class="card-body">
-        <h4 class="card-title" id="selected_date">Select a Date to show events here!</h4>
+        <h5 class="card-title" id="selected_date">Select a Date to show events here!</h5>
         <div class="d-grid gap-1" id="display_current_items">
         </div>
     </div>
 </div>
+
+
+{{/if}}
+{{/if}}

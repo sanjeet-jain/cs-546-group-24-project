@@ -726,7 +726,8 @@ function clickableDateCells() {
       eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
       let selected_date_div = document.getElementById("selected_date");
-      selected_date_div.innerText = `Items for Today: \n ${selectedDate}`;
+      selected_date_div.innerText = `Items for
+      ${dayjs(selectedDate).format("MMMM DD YYYY")}`;
       $.ajax({
         method: "GET",
         url: `/calendar/getSelectedDayItems/${selectedDate}`,
