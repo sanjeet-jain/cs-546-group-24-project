@@ -233,22 +233,36 @@ export const updateReminder = async (
         dateAddedTo
       );
     }
+  } else if (!repeating && currReminder.repeating) {
+    await deleteReminderEventDAO(reminder_id);
+    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+    await createReminder(
+      user_id,
+      title,
+      textBody,
+      priority,
+      tag,
+      repeating,
+      endDateTime,
+      repeatingIncrementBy,
+      dateAddedTo
+    );
   }
 };
 
-export const deleteReminder = async (user_id, reminder_id, flag) => {
-  utils.checkObjectIdString(user_id);
-  user_id = user_id.trim();
-  utils.checkObjectIdString(reminder_id);
-  reminder_id = reminder_id.trim();
-  utils.validateBooleanInput(flag);
-  if (flag) {
-    await deleteReminderEventDAO(reminder_id);
-    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
-  } else {
-    await deleteAllRecurrences(user_id, reminder_id);
-  }
-};
+// export const deleteReminder = async (user_id, reminder_id, flag) => {
+//   utils.checkObjectIdString(user_id);
+//   user_id = user_id.trim();
+//   utils.checkObjectIdString(reminder_id);
+//   reminder_id = reminder_id.trim();
+//   utils.validateBooleanInput(flag);
+//   if (flag) {
+//     await deleteReminderEventDAO(reminder_id);
+//     await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+//   } else {
+//     await deleteAllRecurrences(user_id, reminder_id);
+//   }
+// };
 
 const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
   const reminderInstance = await remindersCollection();
@@ -546,6 +560,11 @@ const getReminderEventsByGroupDAO = async (group_id) => {
     throw new Error("Unexpected DB crash while accessing database");
   }
   return reminderEvents;
+};
+
+export const getDistinctTags = async () => {
+  const reminderInstance = await remindersCollection();
+  return reminderInstance.distinct("tag");
 };
 
 /** DAO Layer End */

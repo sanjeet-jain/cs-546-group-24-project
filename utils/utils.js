@@ -335,6 +335,24 @@ const utils = {
       constants.stringLimits["tag"]
     );
   },
+  isStrArrValid(stringArr) {
+    this.isOfTypeArr(stringArr);
+    for (let i = 0; i < stringArr.length; i++) {
+      if (!typeof stringArr[i] === "string") {
+        throw new Error("Not a string");
+      }
+      stringArr[i] = stringArr[i].trim();
+    }
+  },
+  isOfTypeArr(array) {
+    if (
+      !typeof array === "object" ||
+      typeof array === null ||
+      !Array.isArray(array)
+    ) {
+      throw new Error(`Error during applying filter condition`);
+    }
+  },
 };
 
 export default utils;

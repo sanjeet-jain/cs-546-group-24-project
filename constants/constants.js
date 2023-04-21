@@ -98,6 +98,7 @@ const constants = {
     "11:00 PM",
     "11:30 PM",
   ],
+  eventType: ["meetings", "reminders", "tasks", "notes"],
 };
 
 export default constants;

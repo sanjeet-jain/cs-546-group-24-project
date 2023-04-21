@@ -508,5 +508,10 @@ const meetingsDataFunctions = {
         throw new Error("Meetings delete was not successful");
     }
   },
+
+  async getDistinctTags() {
+    const meetings = await meetingsCollection();
+    return meetings.distinct("tag");
+  },
 };
 export default meetingsDataFunctions;
