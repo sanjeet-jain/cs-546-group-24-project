@@ -4,6 +4,16 @@ import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 import dayjs from "dayjs";
+
+/**
+ *
+ */
+const filter = {
+  eventType: constants.eventTypes,
+  tags: [],
+  eventTypeSelected: [],
+  tagsSelected: [],
+};
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -30,6 +40,7 @@ router.route("/month").get(async (req, res) => {
       prevYear: prevYear,
       nextMonth: nextMonth,
       nextYear: nextYear,
+      filter: filter,
     });
   } catch (error) {
     res.status(404).render("errors/error", {
@@ -67,6 +78,7 @@ router.route("/week").get(async (req, res) => {
     currentMonth: month,
     currYear: year,
     timeslots: constants.timeslots,
+    filter: filter,
   });
 });
 
@@ -112,7 +124,30 @@ router.route("/day/:currentDate?").get(async (req, res) => {
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
+    filter: filter,
   });
+});
+
+router.route("/filter").post((req, res) => {
+  //set filter data and call subsequent view
+  let incomingFilter = req.body.filter;
+  if (incomingFilter === undefined) {
+    return res.status(400).json({ error: "Filter object failure" });
+  }
+  let eventTypeSelected = incomingFilter.eventTypeSelected;
+  let tagsSelected = incomingFilter.tagsSelected;
+  try {
+    utils.isArrOfString(eventTypeSelected);
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
+  }
+  try {
+    utils.isArrOfString(tagsSelected);
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
+  }
+  filter.eventTypeSelected = eventTypeSelected;
+  filter.tagsSelected = tagsSelected;
 });
 async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
@@ -241,7 +276,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
 
 async function getModalData(weeks, userId) {
   try {
-    const response = await eventDataFunctions.getAllEvents(userId);
+    const response = await eventDataFunctions.getAllEvents(userId, filter);
     weeks.forEach((week) => {
       week.forEach((day) => {
         let modalData = {};
