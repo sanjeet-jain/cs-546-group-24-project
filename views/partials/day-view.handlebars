@@ -2,7 +2,8 @@
   <td class="timeslots"></td>
 
   <td class="text-center">
-    <button id="{{day.dayjsDateId}}" class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{else}} text-dark{{/if}}">
+    <button id="{{day.dayjsDateId}}"
+      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{else}} text-dark{{/if}}">
       {{day.day}}
     </button>
   </td>
@@ -13,51 +14,55 @@
   <td class=" timeslots">{{this}}</td>
 
 
-  <td >
+  <td>
     <div class="d-grid gap-1">
-    {{#if ../day.modalData.meetings.length}}
-    {{#each ../day.modalData.meetings}}
-    {{#if (eq this.timeslotStart ../this)}}
-    <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}"
-    >
-      <i class="bi-calendar-event"></i>
-      {{{this.title}}}</button>
-    {{/if}}
-    {{/each}}
-    {{/if}}
+      {{#if ../day.modalData.meetings.length}}
+      {{#each ../day.modalData.meetings}}
+      {{#if (eq this.timeslotStart ../this)}}
+      <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal"
+        data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
+        data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
+        <i class="bi-calendar-event"></i>
+        {{{this.title}}}</button>
+      {{/if}}
+      {{/each}}
+      {{/if}}
 
-    {{#if ../day.modalData.notes.length}}
-    {{#each ../day.modalData.notes}}
-    {{#if (eq this.timeslotStart ../this)}}
-   <button class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-note-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}"
-    >
-      <i class="bi-file-text"></i>
-     {{{this.title}}}</button>
-    {{/if}}
-    {{/each}}
-    {{/if}}
+      {{#if ../day.modalData.notes.length}}
+      {{#each ../day.modalData.notes}}
+      {{#if (eq this.timeslotStart ../this)}}
+      <button class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
+        data-bs-target="#modal-note-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}"
+        data-bs-event-type="{{this.type}}">
+        <i class="bi-file-text"></i>
+        {{{this.title}}}</button>
+      {{/if}}
+      {{/each}}
+      {{/if}}
 
-    {{#if ../day.modalData.reminders.length}}
-    {{#each ../day.modalData.reminders}}
-    {{#if (eq this.timeslotStart ../this)}}
-   <button class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}"
-    >
-            <i class="bi-alarm"></i>
-     {{{this.title}}}</button>
-    {{/if}}
-    {{/each}}
-    {{/if}}
+      {{#if ../day.modalData.reminders.length}}
+      {{#each ../day.modalData.reminders}}
+      {{#if (eq this.timeslotStart ../this)}}
+      <button class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal"
+        data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
+        data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
+        <i class="bi-alarm"></i>
+        {{{this.title}}}</button>
+      {{/if}}
+      {{/each}}
+      {{/if}}
 
-    {{#if ../day.modalData.tasks.length}}
-    {{#each ../day.modalData.tasks}}
-    {{#if (eq this.timeslotStart ../this)}}
-   <button class="badge event-pill text-bg-danger text-wrap text-center event-button" data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}"
-    >
-       <i class="bi-check2-square"></i>
-    {{{this.title}}}</button>
-    {{/if}}
-    {{/each}}
-    {{/if}}
+      {{#if ../day.modalData.tasks.length}}
+      {{#each ../day.modalData.tasks}}
+      {{#if (eq this.timeslotStart ../this)}}
+      <button class="badge event-pill text-bg-danger text-wrap text-center event-button" data-bs-toggle="modal"
+        data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}"
+        data-bs-event-type="{{this.type}}">
+        <i class="bi-check2-square"></i>
+        {{{this.title}}}</button>
+      {{/if}}
+      {{/each}}
+      {{/if}}
 
 
     </div>
