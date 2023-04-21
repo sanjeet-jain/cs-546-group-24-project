@@ -1,10 +1,10 @@
 <!-- calendarv2.handlebars -->
 
-<div id="calendar-div">
+<div id="calendar-div" {{#if timeslots.length}}class="overflow-scroll-y" {{/if}}>
   <div id="modal-div" class="modal-div">
-      {{>meetingsModal }}
-      {{>remindersModal}}
-      {{>tasksModal}}
+    {{>meetingsModal }}
+    {{>remindersModal}}
+    {{>tasksModal}}
   </div>
   <table class="table table-bordered ">
 
@@ -14,7 +14,7 @@
         <th class="timeslots"></th>
         {{/if}}
         {{#each weekdays}}
-          <th scope="col">{{this}}</th>
+        <th scope="col">{{this}}</th>
         {{/each}}
       </tr>
     </thead>
@@ -32,5 +32,5 @@
       {{/if}}
     </tbody>
   </table>
-<script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
+  <script src="/public/scripts/calendarv2.js" type="text/javascript"></script>
 </div>
