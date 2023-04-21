@@ -70,12 +70,14 @@ router.route("/week").get(async (req, res) => {
   });
 });
 
-router.route("/day/:currentDate?").get(async (req, res) => {
-  let currentDate = req.params?.currentDate;
+router.route("/day/:selectedDate?").get(async (req, res) => {
+  let currentDate;
+  let selectedDate = req.params?.selectedDate?.trim();
   try {
-    utils.validateDate(currentDate);
-    currentDate = dayjs(currentDate.trim()).toDate();
+    utils.validateDate(selectedDate);
+    currentDate = dayjs(selectedDate.trim()).toDate();
   } catch (e) {
+    selectedDate = dayjs().format("YYYY-MM-DD");
     currentDate = dayjs().toDate();
   }
 
@@ -106,12 +108,17 @@ router.route("/day/:currentDate?").get(async (req, res) => {
       days.year === currentDate.getFullYear()
     );
   });
-
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+  let displayItems = await getSelectedDayItems(userId, selectedDate);
+  selectedDate = dayjs(selectedDate).format("MMMM DD YYYY");
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
+    displayItems: displayItems,
+    selectedDate: selectedDate,
   });
 });
 
@@ -350,7 +357,7 @@ async function getSelectedDayItems(userId, selectedDate) {
       );
     });
     selectedDateItems = selectedDateItems.concat(temp);
-    return selectedDateItems;
   }
+  return selectedDateItems;
 }
 export default router;

@@ -46,7 +46,7 @@ function populateMeetingsModal(userId, meetingId) {
       // }
     },
     error: function (data) {
-      resultDiv = document.getElementById("update-result");
+      resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -59,32 +59,35 @@ function populateRemindersModal(userId, reminderId) {
   $.ajax({
     method: "GET",
     url: `/reminder/${userId}/reminder/${reminderId}`,
-  }).then(function (data) {
-    dataGlobal = data;
-    userIdGlobal = userId;
-    let event_modal = document.getElementById("modal-reminder-display");
+    success: function (data) {
+      dataGlobal = data;
+      userIdGlobal = userId;
+      let event_modal = document.getElementById("modal-reminder-display");
 
-    // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
-    //   data.title;
-    event_modal.querySelector("input#reminder_title").value = data.title;
-    event_modal.querySelector("input#reminder_textBody").value = data.textBody;
-    event_modal.querySelector("input#reminder_tag").value = data.tag;
-    event_modal.querySelector("select#reminder_priority").value = data.priority;
-    // issue with date time coming as a date string
-    // it needs an iso string
-    event_modal.querySelector("input#reminder_dateAddedTo").value =
-      data.dateAddedTo;
+      // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
+      //   data.title;
+      event_modal.querySelector("input#reminder_title").value = data.title;
+      event_modal.querySelector("input#reminder_textBody").value =
+        data.textBody;
+      event_modal.querySelector("input#reminder_tag").value = data.tag;
+      event_modal.querySelector("select#reminder_priority").value =
+        data.priority;
+      // issue with date time coming as a date string
+      // it needs an iso string
+      event_modal.querySelector("input#reminder_dateAddedTo").value =
+        data.dateAddedTo;
 
-    event_modal.querySelector("input#reminder_repeating").value =
-      data.repeating;
-    event_modal.querySelector("input#reminder_repeating").checked =
-      data.repeating;
+      event_modal.querySelector("input#reminder_repeating").value =
+        data.repeating;
+      event_modal.querySelector("input#reminder_repeating").checked =
+        data.repeating;
 
-    event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
-      data.repeatingIncrementBy;
+      event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
+        data.repeatingIncrementBy;
 
-    event_modal.querySelector("input#reminder_endDateTime").value =
-      data.endDateTime;
+      event_modal.querySelector("input#reminder_endDateTime").value =
+        data.endDateTime;
+    },
   });
 }
 
@@ -112,7 +115,7 @@ function populateTasksModal(userId, taskId) {
       event_modal.querySelector("input#task_dateDueOn").value = data.dateDueOn;
     },
     error: function (data) {
-      resultDiv = document.getElementById("update-result");
+      resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -445,7 +448,6 @@ function submitReminderForm() {
             setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
-            console.log(resultDiv);
             resultDiv.classList = "";
             resultDiv.innerText = data?.responseJSON?.error;
             resultDiv.classList.add("alert", "alert-danger");
@@ -536,28 +538,35 @@ function bindEventButtontoModal() {
   let event_pills = document.querySelectorAll("button.event-pill");
 
   event_pills.forEach((eventpill) => {
-    eventpill.addEventListener("click", (event) => {
-      let eventId = event.target.attributes["data-bs-eventid"]?.value;
-      let userId = event.target.attributes["data-bs-userid"].value;
-      let typeOfEventPill = event.target.attributes["data-bs-event-type"].value;
-      switch (typeOfEventPill) {
-        case "meeting":
-          populateMeetingsModal(userId, eventId);
-          break;
-        case "reminder":
-          populateRemindersModal(userId, eventId);
-          break;
-        case "task":
-          populateTasksModal(userId, eventId);
-        case "add-event":
-          dataGlobal = undefined;
-          userIdGlobal = userId;
-          break;
-        default:
-          break;
-      }
-    });
+    eventpill.addEventListener(
+      "click",
+      (event) => {
+        populateBasedOnEventType(event.target);
+      },
+      false
+    );
   });
+}
+function populateBasedOnEventType(target) {
+  let eventId = target.attributes["data-bs-eventid"]?.value;
+  let userId = target.attributes["data-bs-userid"].value;
+  let typeOfEventPill = target.attributes["data-bs-event-type"].value;
+  switch (typeOfEventPill) {
+    case "meeting":
+      populateMeetingsModal(userId, eventId);
+      break;
+    case "reminder":
+      populateRemindersModal(userId, eventId);
+      break;
+    case "task":
+      populateTasksModal(userId, eventId);
+    case "add-event":
+      dataGlobal = undefined;
+      userIdGlobal = userId;
+      break;
+    default:
+      break;
+  }
 }
 
 function checkMeetingValidations(form) {
@@ -705,38 +714,24 @@ function checkTaskValidations(form) {
     return true;
   } else return false;
 }
-
-submitMeetingForm();
-submitReminderForm();
-submitTaskForm();
-bindEventButtontoModal();
-enableMeetingFormEdit();
-enableTaskFormEdit();
-onMeetingModalClose();
-onTaskModalClose();
-onReminderModalClose();
-repeatingCheckBoxTogglerMeeting();
-repeatingCheckBoxTogglerReminder();
-enableReminderFormEdit();
-
 function clickableDateCells() {
   dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
     date.addEventListener("click", (event) => {
       eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
-      let selected_date_div = document.getElementById("selected_date");
-      selected_date_div.innerText = `Items for
-      ${dayjs(selectedDate).format("MMMM DD YYYY")}`;
-      $.ajax({
-        method: "GET",
-        url: `/calendar/getSelectedDayItems/${selectedDate}`,
-        success: function (data) {
-          userIdGlobal = data.userId;
-          console.log(data);
-          loadRightPaneCells(data);
-        },
-      });
+      setDatepickerValue(selectedDate);
+      // let selected_date_div = document.getElementById("selected_date");
+      // selected_date_div.innerText = `Items for
+      // ${dayjs(selectedDate).format("MMMM DD YYYY")}`;
+      // $.ajax({
+      //   method: "GET",
+      //   url: `/calendar/getSelectedDayItems/${selectedDate}`,
+      //   success: function (data) {
+      //     userIdGlobal = data.userId;
+      //     loadRightPaneCells(data);
+      //   },
+      // });
     });
   });
 }
@@ -764,47 +759,91 @@ function loadRightPaneCells(data) {
     let eventDiv = document.createElement("div");
     eventDiv.classList.add("d-grid", "gap-1");
     let eventButton = document.createElement("button");
+    let logoClass = "";
+    let buttonClass = "";
+    if (event.type === "meeting") {
+      logoClass = "bi-calendar-event";
+      buttonClass = "text-bg-primary";
+    } else if (event.type === "reminder") {
+      logoClass = "bi-alarm";
+      buttonClass = "text-bg-warning";
+    } else if (event.type === "task") {
+      logoClass = "bi-check2-square";
+      buttonClass = "text-bg-danger";
+    } else if (event.type === "notes") {
+      logoClass = "bi-file-text";
+      buttonClass = "text-bg-success";
+    }
+
     eventButton.classList.add(
       "badge",
       "event-pill",
-      "text-bg-primary",
+      buttonClass,
       "text-wrap",
       "text-center",
       "event-button"
     );
     eventButton.setAttribute("data-bs-toggle", "modal");
-    eventButton.setAttribute("data-bs-target", "#modal-meeting-display");
+    eventButton.setAttribute("data-bs-target", `#modal-${event.type}-display`);
     eventButton.setAttribute("data-bs-eventId", `${event._id}`);
     eventButton.setAttribute("data-bs-userId", `${data.userId}`);
     eventButton.setAttribute("data-bs-event-type", `${event.type}`);
     let logo = document.createElement("i");
-    let logoClass = "";
-    if (event.type === "meeting") {
-      logoClass = "bi-calendar-event";
-    }
+
     // add for other events
     logo.classList.add(logoClass);
+    logo.innerText = `${event.title}`;
     eventButton.appendChild(logo);
-    eventButton.innerText = `${event.title}`;
+    // add an eventlistener
+    eventButton.addEventListener(
+      "click",
+      (clickEvent) => {
+        populateBasedOnEventType(clickEvent.target);
+      },
+      false
+    );
     eventDiv.appendChild(eventButton);
     display_current_items_div.appendChild(eventDiv);
   });
 }
-clickableDateCells();
-$("#datepickerContainer")
-  .datepicker({
-    format: "yyyy-mm-dd",
-    autoclose: true,
-    todayHighlight: true,
-  })
-  .on("changeDate", function (e) {
-    $.ajax({
-      method: "GET",
-      url: `/calendar/getSelectedDayItems/${e.date}`,
-      success: function (data) {
-        userIdGlobal = data.userId;
-        console.log(data);
-        loadRightPaneCells(data);
-      },
+
+function miniCalendarLoader() {
+  $("#datepickerContainer")
+    .datepicker({
+      format: "yyyy-mm-dd",
+      autoclose: true,
+      todayHighlight: true,
+    })
+    .on("changeDate", function (e) {
+      let selected_date_div = document.getElementById("selected_date");
+      selected_date_div.innerText = `Items for
+      ${dayjs(e.date).format("MMMM DD YYYY")}`;
+      $.ajax({
+        method: "GET",
+        url: `/calendar/getSelectedDayItems/${e.date}`,
+        success: function (data) {
+          userIdGlobal = data.userId;
+          loadRightPaneCells(data);
+        },
+      });
     });
-  });
+}
+
+function setDatepickerValue(date) {
+  $("#datepickerContainer").datepicker("setDate", date);
+}
+
+submitMeetingForm();
+submitReminderForm();
+submitTaskForm();
+bindEventButtontoModal();
+enableMeetingFormEdit();
+enableTaskFormEdit();
+onMeetingModalClose();
+onTaskModalClose();
+onReminderModalClose();
+repeatingCheckBoxTogglerMeeting();
+repeatingCheckBoxTogglerReminder();
+enableReminderFormEdit();
+miniCalendarLoader();
+clickableDateCells();
