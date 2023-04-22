@@ -176,8 +176,8 @@ router.route("/filter").post((req, res) => {
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
-
-  return res.status(200).json({ success: true });
+  filter.eventTypeSelected = eventTypeSelected;
+  filter.tagsSelected = tagsSelected;
 });
 
 router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
