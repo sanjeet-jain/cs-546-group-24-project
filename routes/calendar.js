@@ -139,38 +139,41 @@ router.route("/filter").post((req, res) => {
   //set filter data and call subsequent view
   let incomingFilter = req.body.filter;
   if (incomingFilter === undefined) {
-    incomingFilter = {
-      eventTypeSelected: [],
-      tagsSelected: [],
-    };
+    incomingFilter = {};
+    incomingFilter.eventTypeSelected = [];
+    incomingFilter.tagsSelected = [];
   }
+  if (incomingFilter.eventTypeSelected === undefined) {
+    incomingFilter.eventTypeSelected = [];
+  }
+  if (incomingFilter.tagsSelected === undefined) {
+    incomingFilter.tagsSelected = [];
+  }
+
   let eventTypeSelected = incomingFilter.eventTypeSelected;
   let tagsSelected = incomingFilter.tagsSelected;
-  if (eventTypeSelected) {
-    try {
-      utils.isStrArrValid(eventTypeSelected);
-      eventTypeSelected.forEach((selected) => {
-        if (!filter.eventTypes.includes(selected.trim())) {
-          throw new Error();
-        }
-      });
-      filter.eventTypeSelected = eventTypeSelected;
-    } catch (e) {
-      return res.status(400).json({ error: "eventType selected in not valid" });
-    }
+  try {
+    utils.isStrArrValid(eventTypeSelected);
+    eventTypeSelected.forEach((selected) => {
+      if (!filter.eventTypes.includes(selected.trim())) {
+        throw new Error();
+      }
+    });
+    filter.eventTypeSelected = eventTypeSelected;
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
   }
-  if (tagsSelected) {
-    try {
-      utils.isStrArrValid(tagsSelected);
-      tagsSelected.forEach((selected) => {
-        if (!filter.tags.includes(selected.trim())) {
-          throw new Error();
-        }
-      });
-      filter.tagsSelected = tagsSelected;
-    } catch (e) {
-      return res.status(400).json({ error: "eventType selected in not valid" });
-    }
+
+  try {
+    utils.isStrArrValid(tagsSelected);
+    tagsSelected.forEach((selected) => {
+      if (!filter.tags.includes(selected.trim())) {
+        throw new Error();
+      }
+    });
+    filter.tagsSelected = tagsSelected;
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
   }
   return res.status(200).json({ success: true });
 });
