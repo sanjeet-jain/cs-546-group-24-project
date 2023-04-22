@@ -152,7 +152,6 @@ router.route("/filter").post((req, res) => {
 
   let eventTypeSelected = incomingFilter.eventTypeSelected;
   let tagsSelected = incomingFilter.tagsSelected;
-
   try {
     utils.isStrArrValid(eventTypeSelected);
     eventTypeSelected.forEach((selected) => {
@@ -176,8 +175,7 @@ router.route("/filter").post((req, res) => {
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
-  filter.eventTypeSelected = eventTypeSelected;
-  filter.tagsSelected = tagsSelected;
+  return res.status(200).json({ success: true });
 });
 
 router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
