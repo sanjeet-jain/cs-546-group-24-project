@@ -41,20 +41,6 @@ const exportedMethods = {
         return filter.tagsSelected.includes(note.tag);
       });
     }
-
-    // if (filter.eventTypeSelected.length > 0) {
-    //   for (let i = 0; i < constants.eventTypes.length; i++) {
-    //     if (!constants.eventTypes[i] in data) {
-    //       delete data[constants.eventTypes[i]];
-    //     } else if (filter.tagsSelected.length > 0) {
-    //       data[constants.eventTypes[i]] = data[constants.eventTypes[i]].filter(
-    //         (record) => {
-    //           return record["tag"] in filter.tagsSelected;
-    //         }
-    //       );
-    //     }
-    //   }
-    // }
     return data;
   },
 
