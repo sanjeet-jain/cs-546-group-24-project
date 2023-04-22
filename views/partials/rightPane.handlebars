@@ -8,5 +8,45 @@
   {{>addEventModal}}
 </div>
 
+
+
+
+<div class="dropdown">
+  <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+    data-bs-auto-close="false" aria-expanded="false">
+    Select Filter Options
+  </button>
+
+  <!-- Create a dropdown menu -->
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li>
+      <form id="filterForm" action="/calendar/filter" method="POST">
+        <div class="form-group d-grid gap-1">
+          {{#each filter.eventTypes}}
+          <div class="form-check  form-switch">
+            <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="event-filter-{{this}}"
+              name="event-filter-{{this}}" {{#if (includes ../filter.eventTypeSelected this)}} checked {{/if}}>
+            <label class="form-check-label" for="event-filter-{{this}}">
+              {{this}}
+            </label>
+          </div>
+          {{/each}}
+
+          {{#each filter.tags}}
+          <div class="form-check form-switch">
+            <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="tag-filter-{{this}}"
+              name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}} checked {{/if}}>
+            <label class="form-check-label" for="tag-filter-{{this}}">
+              {{this}}
+            </label>
+          </div>
+          {{/each}}
+          <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+      </form>
+    </li>
+  </ul>
+
+</div>
+
 {{/if}}
 {{/if}}

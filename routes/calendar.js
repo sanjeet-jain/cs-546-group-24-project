@@ -4,6 +4,16 @@ import constants from "./../constants/constants.js";
 import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 import dayjs from "dayjs";
+
+/**
+ *
+ */
+const filter = {
+  eventTypes: constants.eventTypes,
+  tags: [],
+  eventTypeSelected: [],
+  tagsSelected: [],
+};
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -30,6 +40,7 @@ router.route("/month").get(async (req, res) => {
       prevYear: prevYear,
       nextMonth: nextMonth,
       nextYear: nextYear,
+      filter: filter,
     });
   } catch (error) {
     res.status(404).render("errors/error", {
@@ -67,6 +78,7 @@ router.route("/week").get(async (req, res) => {
     currentMonth: month,
     currYear: year,
     timeslots: constants.timeslots,
+    filter: filter,
   });
 });
 
@@ -117,9 +129,53 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
+    filter: filter,
     displayItems: displayItems,
     selectedDate: selectedDate,
   });
+});
+
+router.route("/filter").post((req, res) => {
+  //set filter data and call subsequent view
+  let incomingFilter = req.body.filter;
+  if (incomingFilter === undefined) {
+    incomingFilter = {};
+    incomingFilter.eventTypeSelected = [];
+    incomingFilter.tagsSelected = [];
+  }
+  if (incomingFilter.eventTypeSelected === undefined) {
+    incomingFilter.eventTypeSelected = [];
+  }
+  if (incomingFilter.tagsSelected === undefined) {
+    incomingFilter.tagsSelected = [];
+  }
+
+  let eventTypeSelected = incomingFilter.eventTypeSelected;
+  let tagsSelected = incomingFilter.tagsSelected;
+  try {
+    utils.isStrArrValid(eventTypeSelected);
+    eventTypeSelected.forEach((selected) => {
+      if (!filter.eventTypes.includes(selected.trim())) {
+        throw new Error();
+      }
+    });
+    filter.eventTypeSelected = eventTypeSelected;
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
+  }
+
+  try {
+    utils.isStrArrValid(tagsSelected);
+    tagsSelected.forEach((selected) => {
+      if (!filter.tags.includes(selected.trim())) {
+        throw new Error();
+      }
+    });
+    filter.tagsSelected = tagsSelected;
+  } catch (e) {
+    return res.status(400).json({ error: "eventType selected in not valid" });
+  }
+  return res.status(200).json({ success: true });
 });
 
 router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
@@ -262,7 +318,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
 
 async function getModalData(weeks, userId, now) {
   try {
-    const response = await eventDataFunctions.getAllEvents(userId);
+    const response = await eventDataFunctions.getAllEvents(userId, filter);
     weeks.forEach((week) => {
       week.forEach((day) => {
         let modalData = {};
@@ -341,7 +397,8 @@ function getTimeSlot(dateString) {
 
 async function getSelectedDayItems(userId, selectedDate) {
   const now = dayjs(selectedDate).toDate();
-  const response = await eventDataFunctions.getAllEvents(userId);
+  const response = await eventDataFunctions.getAllEvents(userId, filter);
+
   delete response.userId;
   let selectedDateItems = [];
   for (let eventType in response) {

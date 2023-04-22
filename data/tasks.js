@@ -216,6 +216,11 @@ const tasksDataFunctions = {
       throw new Error("user not found");
     }
   },
+
+  async getDistinctTags() {
+    const tasks = await tasksCollection();
+    return tasks.distinct("tag");
+  },
 };
 
 export default tasksDataFunctions;
