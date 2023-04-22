@@ -9,7 +9,7 @@ import dayjs from "dayjs";
  *
  */
 const filter = {
-  eventType: constants.eventTypes,
+  eventTypes: constants.eventTypes,
   tags: [],
   eventTypeSelected: [],
   tagsSelected: [],
@@ -139,22 +139,40 @@ router.route("/filter").post((req, res) => {
   //set filter data and call subsequent view
   let incomingFilter = req.body.filter;
   if (incomingFilter === undefined) {
-    return res.status(400).json({ error: "Filter object failure" });
+    incomingFilter = {
+      eventTypeSelected: [],
+      tagsSelected: [],
+    };
   }
   let eventTypeSelected = incomingFilter.eventTypeSelected;
   let tagsSelected = incomingFilter.tagsSelected;
-  try {
-    utils.isArrOfString(eventTypeSelected);
-  } catch (e) {
-    return res.status(400).json({ error: "eventType selected in not valid" });
+  if (eventTypeSelected) {
+    try {
+      utils.isStrArrValid(eventTypeSelected);
+      eventTypeSelected.forEach((selected) => {
+        if (!filter.eventTypes.includes(selected.trim())) {
+          throw new Error();
+        }
+      });
+      filter.eventTypeSelected = eventTypeSelected;
+    } catch (e) {
+      return res.status(400).json({ error: "eventType selected in not valid" });
+    }
   }
-  try {
-    utils.isArrOfString(tagsSelected);
-  } catch (e) {
-    return res.status(400).json({ error: "eventType selected in not valid" });
+  if (tagsSelected) {
+    try {
+      utils.isStrArrValid(tagsSelected);
+      tagsSelected.forEach((selected) => {
+        if (!filter.tags.includes(selected.trim())) {
+          throw new Error();
+        }
+      });
+      filter.tagsSelected = tagsSelected;
+    } catch (e) {
+      return res.status(400).json({ error: "eventType selected in not valid" });
+    }
   }
-  filter.eventTypeSelected = eventTypeSelected;
-  filter.tagsSelected = tagsSelected;
+  return res.status(200).json({ success: true });
 });
 
 router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
@@ -376,7 +394,8 @@ function getTimeSlot(dateString) {
 
 async function getSelectedDayItems(userId, selectedDate) {
   const now = dayjs(selectedDate).toDate();
-  const response = await eventDataFunctions.getAllEvents(userId);
+  const response = await eventDataFunctions.getAllEvents(userId, filter);
+
   delete response.userId;
   let selectedDateItems = [];
   for (let eventType in response) {

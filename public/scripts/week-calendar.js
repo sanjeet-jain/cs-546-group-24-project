@@ -833,6 +833,48 @@ function setDatepickerValue(date) {
   $("#datepickerContainer").datepicker("setDate", date);
 }
 
+function filterForm() {
+  filterFormElement = document.getElementById("filterForm");
+  const checkboxes = filterFormElement.querySelectorAll(
+    '.dropdown-menu input[type="checkbox"]'
+  );
+
+  filterFormElement.addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    // const selectedOptions = [];
+    // checkboxes.forEach((checkbox) => {
+    //   if (checkbox.checked) {
+    //     selectedOptions.push(checkbox.value);
+    //   }
+    // });
+    // console.log(selectedOptions);
+    let formData = new FormData(event.target);
+    const filter = {
+      eventTypeSelected: [],
+      tagsSelected: [],
+    };
+    for (var [key, value] of formData.entries()) {
+      if (key.startsWith("event-filter")) {
+        filter.eventTypeSelected.push(value);
+      } else if (key.startsWith("tag-filter")) {
+        filter.tagsSelected.push(value);
+      }
+    }
+    console.log(filter);
+    $.ajax({
+      method: "POST",
+      url: `${event.target.action}`,
+      data: { filter },
+      success: function (data) {
+        location.reload();
+      },
+    });
+  });
+}
+
+filterForm();
+
 submitMeetingForm();
 submitReminderForm();
 submitTaskForm();

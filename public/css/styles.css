@@ -17,7 +17,8 @@ main {
 }
 .center-div {
   height: 85vh;
-  width: 70vw;
+  max-width: 60vw;
+  min-width: 50vw;
 }
 
 .active-month {
