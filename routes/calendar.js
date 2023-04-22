@@ -9,7 +9,7 @@ import dayjs from "dayjs";
  *
  */
 const filter = {
-  eventType: constants.eventTypes,
+  eventTypes: constants.eventTypes,
   tags: [],
   eventTypeSelected: [],
   tagsSelected: [],
@@ -82,12 +82,14 @@ router.route("/week").get(async (req, res) => {
   });
 });
 
-router.route("/day/:currentDate?").get(async (req, res) => {
-  let currentDate = req.params?.currentDate;
+router.route("/day/:selectedDate?").get(async (req, res) => {
+  let currentDate;
+  let selectedDate = req.params?.selectedDate?.trim();
   try {
-    utils.validateDate(currentDate);
-    currentDate = dayjs(currentDate.trim()).toDate();
+    utils.validateDate(selectedDate);
+    currentDate = dayjs(selectedDate.trim()).toDate();
   } catch (e) {
+    selectedDate = dayjs().format("YYYY-MM-DD");
     currentDate = dayjs().toDate();
   }
 
@@ -118,13 +120,18 @@ router.route("/day/:currentDate?").get(async (req, res) => {
       days.year === currentDate.getFullYear()
     );
   });
-
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+  let displayItems = await getSelectedDayItems(userId, selectedDate);
+  selectedDate = dayjs(selectedDate).format("MMMM DD YYYY");
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
     filter: filter,
+    displayItems: displayItems,
+    selectedDate: selectedDate,
   });
 });
 
@@ -132,22 +139,54 @@ router.route("/filter").post((req, res) => {
   //set filter data and call subsequent view
   let incomingFilter = req.body.filter;
   if (incomingFilter === undefined) {
-    return res.status(400).json({ error: "Filter object failure" });
+    incomingFilter = {
+      eventTypeSelected: [],
+      tagsSelected: [],
+    };
   }
   let eventTypeSelected = incomingFilter.eventTypeSelected;
   let tagsSelected = incomingFilter.tagsSelected;
-  try {
-    utils.isArrOfString(eventTypeSelected);
-  } catch (e) {
-    return res.status(400).json({ error: "eventType selected in not valid" });
+  if (eventTypeSelected) {
+    try {
+      utils.isStrArrValid(eventTypeSelected);
+      eventTypeSelected.forEach((selected) => {
+        if (!filter.eventTypes.includes(selected.trim())) {
+          throw new Error();
+        }
+      });
+      filter.eventTypeSelected = eventTypeSelected;
+    } catch (e) {
+      return res.status(400).json({ error: "eventType selected in not valid" });
+    }
   }
-  try {
-    utils.isArrOfString(tagsSelected);
-  } catch (e) {
-    return res.status(400).json({ error: "eventType selected in not valid" });
+  if (tagsSelected) {
+    try {
+      utils.isStrArrValid(tagsSelected);
+      tagsSelected.forEach((selected) => {
+        if (!filter.tags.includes(selected.trim())) {
+          throw new Error();
+        }
+      });
+      filter.tagsSelected = tagsSelected;
+    } catch (e) {
+      return res.status(400).json({ error: "eventType selected in not valid" });
+    }
   }
-  filter.eventTypeSelected = eventTypeSelected;
-  filter.tagsSelected = tagsSelected;
+  return res.status(200).json({ success: true });
+});
+
+router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
+  let selectedDate = req.params?.selectedDate;
+  try {
+    utils.validateDate(selectedDate);
+    selectedDate = dayjs(selectedDate.trim()).toDate();
+  } catch (e) {
+    selectedDate = dayjs().toDate();
+  }
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+  const selectedDayItems = await getSelectedDayItems(userId, selectedDate);
+  res.status(200).json({ selectedDayItems, userId });
 });
 async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
@@ -180,7 +219,7 @@ async function getWeeksData(req, currentDate = undefined) {
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
 
-  const modalsData = await getModalData(weeks, userId);
+  const modalsData = await getModalData(weeks, userId, now);
   // set global weeks data
 
   return {
@@ -274,7 +313,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   return weeks;
 }
 
-async function getModalData(weeks, userId) {
+async function getModalData(weeks, userId, now) {
   try {
     const response = await eventDataFunctions.getAllEvents(userId, filter);
     weeks.forEach((week) => {
@@ -283,7 +322,7 @@ async function getModalData(weeks, userId) {
         delete response.userId;
         for (let eventType in response) {
           modalData[eventType] = response[eventType].filter((x) => {
-            const date = new Date(x.dateAddedTo);
+            const date = dayjs(x.dateAddedTo).toDate();
             const dayAddedTo = date.getDate();
             const monthAddedTo = date.getMonth();
             const yearAddedTo = date.getFullYear();
@@ -306,6 +345,15 @@ async function getModalData(weeks, userId) {
       });
     });
 
+    //filter based on top 50 items of month
+    // let top50Data = [];
+    // for (let eventType in response) {
+    //   const temp = response[eventType].filter((x) => {
+    //     // get unassigned items
+    //     return dayjs(x.dateAddedTo).format() === "Invalid Date";
+    //   });
+    //   top50Data = top50Data.concat(temp);
+    // }
     return {
       weeks: weeks,
     };
@@ -344,4 +392,26 @@ function getTimeSlot(dateString) {
   return time;
 }
 
+async function getSelectedDayItems(userId, selectedDate) {
+  const now = dayjs(selectedDate).toDate();
+  const response = await eventDataFunctions.getAllEvents(userId, filter);
+
+  delete response.userId;
+  let selectedDateItems = [];
+  for (let eventType in response) {
+    const temp = response[eventType].filter((x) => {
+      const date = dayjs(x.dateAddedTo).toDate();
+      const dayAddedTo = date.getDate();
+      const monthAddedTo = date.getMonth();
+      const yearAddedTo = date.getFullYear();
+      return (
+        dayAddedTo === now.getDate() &&
+        monthAddedTo === now.getMonth() &&
+        yearAddedTo === now.getFullYear()
+      );
+    });
+    selectedDateItems = selectedDateItems.concat(temp);
+  }
+  return selectedDateItems;
+}
 export default router;

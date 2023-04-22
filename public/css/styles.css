@@ -16,9 +16,9 @@ main {
   text-align-last: end;
 }
 .center-div {
-  overflow-y: scroll;
   height: 85vh;
-  width: 70vw;
+  max-width: 60vw;
+  min-width: 50vw;
 }
 
 .active-month {
@@ -27,7 +27,8 @@ main {
   width: 9vw;
   height: 13vh;
 }
-.active-month:hover {
+
+.date-cell:hover {
   border: grey;
   border-style: dashed;
 }
@@ -40,6 +41,10 @@ main {
 #right-menu-div {
   /* height: 90vh; */
   width: 15vw;
+}
+
+#calendar-div {
+  height: 85vh;
 }
 
 .greyed-out {
@@ -73,4 +78,17 @@ footer {
 
 i {
   pointer-events: none;
+}
+
+.overflow-scroll-y {
+  overflow: auto;
+}
+
+.event-pill {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.display_current_items_card {
+  height: 50%;
 }
