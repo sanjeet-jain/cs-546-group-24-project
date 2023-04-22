@@ -10,7 +10,7 @@ const exportedMethods = {
     const reminders = await reminderDataFunctions.getAllReminders(userId);
     const tasks = await tasksDataFunctions.getAllTasks(userId);
     const notes = await notesDataFunctions.getAll(userId);
-    filter.tags = await this.getUniqueTagsForAllEvents();
+
     let data = {
       userId: userId,
       meetings: meetings,
@@ -18,38 +18,43 @@ const exportedMethods = {
       tasks: tasks,
       notes: notes,
     };
-    if (filter.eventTypeSelected.length !== 0) {
-      // filter by event type
-      for (let et of filter.eventTypes) {
-        if (!filter.eventTypeSelected.includes(et)) {
-          data[et] = [];
+
+    let tagsToRender = [];
+    for (let i = 0; i < constants.eventTypes.length; i++) {
+      if (
+        !(filter.eventTypeSelected.length === 0) &&
+        !filter.eventTypeSelected.includes(constants.eventTypes[i])
+      ) {
+        delete data[constants.eventTypes[i]];
+      } else {
+        tagsToRender = tagsToRender.concat(
+          await this.getUniqueTagsForEvents(constants.eventTypes[i])
+        );
+        if (filter.tagsSelected.length > 0) {
+          data[constants.eventTypes[i]] = data[constants.eventTypes[i]].filter(
+            (record) => {
+              return filter.tagsSelected.includes(record.tag);
+            }
+          );
         }
       }
     }
-    if (filter.tagsSelected.length !== 0) {
-      // filter by tag
-      data.meetings = data.meetings.filter((meeting) => {
-        return filter.tagsSelected.includes(meeting.tag);
-      });
-      data.reminders = data.meetings.filter((reminder) => {
-        return filter.tagsSelected.includes(reminder.tag);
-      });
-      data.tasks = data.meetings.filter((task) => {
-        return filter.tagsSelected.includes(task.tag);
-      });
-      data.notes = data.meetings.filter((note) => {
-        return filter.tagsSelected.includes(note.tag);
-      });
-    }
+    filter.tags = tagsToRender;
     return data;
   },
 
-  async getUniqueTagsForAllEvents() {
-    let meetingsTags = await meetingsDataFunctions.getDistinctTags();
-    let reminderTags = await reminderDataFunctions.getDistinctTags();
-    let taskTags = await tasksDataFunctions.getDistinctTags();
-    let notesTags = await notesDataFunctions.getDistinctTags();
-    return meetingsTags.concat(reminderTags).concat(taskTags).concat(notesTags);
+  async getUniqueTagsForEvents(eventTypeStr) {
+    let obj = [];
+    if (eventTypeStr === "reminders") {
+      obj = await reminderDataFunctions.getDistinctTags();
+    } else if (eventTypeStr === "meetings") {
+      obj = await meetingsDataFunctions.getDistinctTags();
+    } else if (eventTypeStr === "notes") {
+      obj = await notesDataFunctions.getDistinctTags();
+    } else if (eventTypeStr === "tasks") {
+      obj = await tasksDataFunctions.getDistinctTags();
+    }
+    return obj;
   },
 };
 
