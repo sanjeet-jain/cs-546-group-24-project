@@ -41,6 +41,9 @@ const handlebarsInstance = exphbs.create({
     json: function (context) {
       return JSON.stringify(context);
     },
+    includes: function (array, itemToCheck) {
+      return array.includes(itemToCheck);
+    },
   },
 });
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {

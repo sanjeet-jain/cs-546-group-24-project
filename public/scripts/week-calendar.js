@@ -842,13 +842,6 @@ function filterForm() {
   filterFormElement.addEventListener("submit", (event) => {
     event.preventDefault();
     event.stopPropagation();
-    // const selectedOptions = [];
-    // checkboxes.forEach((checkbox) => {
-    //   if (checkbox.checked) {
-    //     selectedOptions.push(checkbox.value);
-    //   }
-    // });
-    // console.log(selectedOptions);
     let formData = new FormData(event.target);
     const filter = {
       eventTypeSelected: [],

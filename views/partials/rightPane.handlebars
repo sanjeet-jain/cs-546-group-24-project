@@ -26,7 +26,7 @@
           <div class="form-check">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="{{this}}" id="event-filter-{{this}}"
-                name="event-filter-{{this}}">
+                name="event-filter-{{this}}" {{#if (includes ../filter.eventTypeSelected this)}} checked {{/if}}>
               <label class="form-check-label" for="event-filter-{{this}}">
                 {{this}}
               </label>
@@ -38,7 +38,7 @@
           <div class="form-check">
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="{{this}}" id="tag-filter-{{this}}"
-                name="tag-filter-{{this}}">
+                name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}} checked {{/if}}>
               <label class="form-check-label" for="tag-filter-{{this}}">
                 {{this}}
               </label>
