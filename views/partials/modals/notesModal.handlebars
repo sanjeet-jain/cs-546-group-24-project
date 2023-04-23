@@ -5,8 +5,7 @@
 
       <div class="modal-header">
         <h4 class="modal-title" id="modal-note-label">
-          <i class="">note Event</i>
-
+          <i class="bi-file-text">note Event</i>
         </h4>
         <button type="button" class="btn btn-edit" aria-label="Edit" {{! onclick="enableFormEdit()" }}>
           <i class="bi-pencil-fill"></i>
@@ -80,19 +79,20 @@
             {{! repeating }}
             <div class="form-check">
               <input class="form-check-input" type="checkbox" name="repeating" id="note_repeating"
-                aria-describedby="repeating_help_id" value="false" />
+                aria-describedby="note_repeating_help_id" value="false" />
               <label class="form-check-label" for="note_repeating">
                 Is the event repeating?
               </label>
-              <small id="repeating_help_id" class="form-text text-muted">
+              <small id="note_repeating_help_id" class="form-text text-muted">
                 Please check if you need the event to repeat. if it is already
                 checked and you uncheck it it will cause deletion of all other
                 recurrences</small>
             </div>
             {{! repeatingIncrementBy }}
             <div class="mb-3">
-              <label for="repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
-              <select class="form-select form-select-sm" name="repeatingIncrementBy" id="note_repeatingIncrementBy">
+              <label for="note_repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
+              <select class="form-select form-select-sm" name="note_repeatingIncrementBy"
+                id="note_repeatingIncrementBy">
                 <option value="">Please select an option</option>
                 <option value="day">day</option>
                 <option value="week">week</option>
