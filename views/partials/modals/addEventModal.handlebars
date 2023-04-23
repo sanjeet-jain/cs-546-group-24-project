@@ -1,11 +1,5 @@
-<div
-  class="modal fade"
-  id="add-event-modal"
-  tabindex="-1"
-  aria-labelledby="add-event-modal-label"
-  aria-hidden="true"
-  data-bs-backdrop="static"
->
+<div class="modal fade" id="add-event-modal" tabindex="-1" aria-labelledby="add-event-modal-label" aria-hidden="true"
+  data-bs-backdrop="static">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -13,49 +7,20 @@
         <h4 class="modal-title" id="add-event-modal-label">
           <i class="">Pick an Event </i>
         </h4>
-        <button
-          id="add-event-modal-top-close-button"
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button id="add-event-modal-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <button
-          id="button-open-reminder-modal"
-          type="button"
-          class="btn btn-primary event-pill"
-          data-bs-toggle="modal"
-          data-bs-event-type="add-event"
-          data-bs-target="#modal-reminder-display"
-          data-bs-userid="{{session.user_id}}"
-        >Add Reminder</button>
-        <button
-          type="button"
-          class="btn btn-primary event-pill"
-          data-bs-toggle="modal"
-          data-bs-event-type="add-event"
-          data-bs-target="#modal-meeting-display"
-          data-bs-userid="{{session.user_id}}"
-        >Add Meeting</button>
-        <button
-          type="button"
-          class="btn btn-primary event-pill"
-          data-bs-toggle="modal"
-          data-bs-event-type="add-event"
-          data-bs-target="#modal-task-display"
-          data-bs-userid="{{session.user_id}}"
-        >Add Task</button>
-        <button
-          type="button"
-          class="btn btn-primary event-pill"
-          data-bs-toggle="modal"
-          data-bs-event-type="add-event"
-          data-bs-target="#add-notes-new"
-          data-bs-userid="{{session.user_id}}"
-        >Add Notes</button>
+        <button id="button-open-reminder-modal" type="button" class="btn btn-primary event-pill" data-bs-toggle="modal"
+          data-bs-event-type="add-event" data-bs-target="#modal-reminder-display"
+          data-bs-userid="{{session.user_id}}">Add Reminder</button>
+        <button type="button" class="btn btn-primary event-pill" data-bs-toggle="modal" data-bs-event-type="add-event"
+          data-bs-target="#modal-meeting-display" data-bs-userid="{{session.user_id}}">Add Meeting</button>
+        <button type="button" class="btn btn-primary event-pill" data-bs-toggle="modal" data-bs-event-type="add-event"
+          data-bs-target="#modal-task-display" data-bs-userid="{{session.user_id}}">Add Task</button>
+        <button type="button" class="btn btn-primary event-pill" data-bs-toggle="modal" data-bs-event-type="add-event"
+          data-bs-target="#add-notes-new" data-bs-userid="{{session.user_id}}">Add Notes</button>
       </div>
 
     </div>

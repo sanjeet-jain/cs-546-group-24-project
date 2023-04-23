@@ -1,11 +1,5 @@
-<div
-  class="modal fade"
-  id="modal-reminder-display"
-  tabindex="-1"
-  aria-labelledby="modal-reminder-label"
-  aria-hidden="true"
-  data-bs-backdrop="static"
->
+<div class="modal fade" id="modal-reminder-display" tabindex="-1" aria-labelledby="modal-reminder-label"
+  aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog">
     <div class="modal-content">
 
@@ -16,13 +10,8 @@
         <button type="button" class="btn btn-edit" aria-label="Edit">
           <i class="bi-pencil-fill"></i>
         </button>
-        <button
-          id="reminder-top-close-button"
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <button id="reminder-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
       </div>
 
       <fieldset id="reminder-form-enabler" disabled>
@@ -31,49 +20,24 @@
             {{! title }}
             <div class="mb-3">
               <label for="reminder_title" class="form-label">Title</label>
-              <input
-                required
-                type="text"
-                class="form-control"
-                name="title"
-                id="reminder_title"
-                placeholder="Title"
-                value=""
-                maxlength="100"
-              />
+              <input required type="text" class="form-control" name="title" id="reminder_title" placeholder="Title"
+                value="" maxlength="100" />
               <div id="reminder_title_error" class="invalid-feedback">
               </div>
             </div>
             {{! textBody }}
             <div class="mb-3">
-              <label
-                for="reminder_textBody"
-                class="form-label"
-              >Description</label>
-              <input
-                type="text"
-                class="form-control"
-                name="textBody"
-                id="reminder_textBody"
-                placeholder="Description"
-                value=""
-                maxlength="200"
-              />
+              <label for="reminder_textBody" class="form-label">Description</label>
+              <input type="text" class="form-control" name="textBody" id="reminder_textBody" placeholder="Description"
+                value="" maxlength="200" />
               <div id="reminder_textBody_error" class="invalid-feedback">
               </div>
             </div>
             {{! tag }}
             <div class="mb-3">
               <label for="reminder_tag" class="form-label">Tag</label>
-              <input
-                type="text"
-                class="form-control"
-                name="tag"
-                id="reminder_tag"
-                placeholder="Tag"
-                value=""
-                maxlength="20"
-              />
+              <input type="text" class="form-control" name="tag" id="reminder_tag" placeholder="Tag" value=""
+                maxlength="20" />
               <div id="reminder_tag_error" class="invalid-feedback">
 
               </div>
@@ -81,12 +45,7 @@
             {{! priority }}
             <div class="mb-3">
               <label for="reminder_priority" class="form-label">Priority</label>
-              <select
-                required
-                class="form-select form-select-sm"
-                name="priority"
-                id="reminder_priority"
-              >
+              <select required class="form-select form-select-sm" name="priority" id="reminder_priority">
                 <option value="">Please select an option</option>
                 <option value="1">Low</option>
                 <option value="2">Medium</option>
@@ -95,14 +54,8 @@
             </div>
             {{! dateAddedTo }}
             <div class="form-floating mb-3">
-              <input
-                required
-                type="datetime-local"
-                class="form-control"
-                name="dateAddedTo"
-                id="reminder_dateAddedTo"
-                value=""
-              />
+              <input required type="datetime-local" class="form-control" name="dateAddedTo" id="reminder_dateAddedTo"
+                value="" />
               <label for="reminer_dateAddedTo" class="form-label">Date to Add
                 event to
               </label>
@@ -114,14 +67,8 @@
 
             {{! repeating }}
             <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="repeating"
-                id="reminder_repeating"
-                aria-describedby="repeating_help_id"
-                value="false"
-              />
+              <input class="form-check-input" type="checkbox" name="repeating" id="reminder_repeating"
+                aria-describedby="repeating_help_id" value="false" />
               <label class="form-check-label" for="reminer_repeating">
                 Is the event repeating?
               </label>
@@ -132,38 +79,22 @@
             </div>
             {{! repeatingIncrementBy }}
             <div class="mb-3">
-              <label
-                for="repeatingIncrementBy"
-                class="form-label"
-              >repeatingIncrementBy</label>
-              <select
-                class="form-select form-select-sm"
-                name="repeatingIncrementBy"
-                id="reminder_repeatingIncrementBy"
-              >
+              <label for="repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
+              <select class="form-select form-select-sm" name="repeatingIncrementBy" id="reminder_repeatingIncrementBy">
                 <option value="">Please select an option</option>
                 <option value="day">day</option>
                 <option value="week">week</option>
                 <option value="month">month</option>
                 <option value="year">Year</option>
               </select>
-              <div
-                id="reminder_repeatingIncrementBy_error"
-                class="invalid-feedback"
-              >
+              <div id="reminder_repeatingIncrementBy_error" class="invalid-feedback">
               </div>
             </div>
 
             {{! add more fields for other events }}
             {{! dateAddedTo }}
             <div class="form-floating mb-3">
-              <input
-                type="datetime-local"
-                class="form-control"
-                name="endDateTime"
-                id="reminder_endDateTime"
-                value=""
-              />
+              <input type="datetime-local" class="form-control" name="endDateTime" id="reminder_endDateTime" value="" />
               <label for="reminder_endDateTime" class="form-label">End Date Time
                 of Last Recurrence
               </label>
@@ -175,13 +106,8 @@
         <div class="modal-footer">
           <div id="reminder-update-result">
           </div>
-          <input
-            id="reminder-bottom-submit-button"
-            type="submit"
-            form="reminder-form"
-            value="Save Changes"
-            class="btn btn-primary"
-          />
+          <input id="reminder-bottom-submit-button" type="submit" form="reminder-form" value="Save Changes"
+            class="btn btn-primary" />
         </div>
       </fieldset>
     </div>
