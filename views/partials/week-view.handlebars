@@ -34,9 +34,16 @@
       {{#if this.modalData.notes.length}}
       {{#each this.modalData.notes}}
       {{#if (eq this.timeslotStart ../../this)}}
+      <button class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
+        data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}"
+        data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
+        <i class="bi-file-text"></i>
+        {{{this.title}}}</button>
+
+      {{!--
       <span class="badge event-pill text-bg-success text-wrap text-center">
         <i class="bi-file-text"></i>
-        {{{this.title}}}</span>
+        {{{this.title}}}</span> --}}
       {{/if}}
       {{/each}}
       {{/if}}

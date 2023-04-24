@@ -124,6 +124,32 @@ function populateTasksModal(userId, taskId) {
   });
 }
 
+function populateNotesModal(userId, notesId) {
+  $.ajax({
+    method: "GET",
+    url: `/notes/${userId}/${notesId}`,
+    success: function (data) {
+      dataGlobal = data;
+      userIdGlobal = userId;
+
+      let event_modal = document.getElementById("modal-notes-display");
+
+      event_modal.querySelector("input#notes_title").value = data.title;
+      event_modal.querySelector("input#notes_tag").value = data.tag;
+      event_modal.querySelector("input#notes_dateAddedTo").value =
+        data.dateAddedTo;
+      tinymce.get("notes_editor").setContent(data.textBody);
+    },
+    error: function (data) {
+      resultDiv = document.getElementById("notes-update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText =
+        data?.responseJSON?.error || "Update wasnt Successful";
+      resultDiv.classList.add("alert", "alert-danger");
+    },
+  });
+}
+
 function repeatingCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
   let repeating = event_modal.querySelector("input#meeting_repeating");
@@ -240,6 +266,23 @@ function enableTaskFormEdit() {
   });
 }
 
+function enableNotesFormEdit() {
+  let event_modal = document.getElementById("modal-notes-display");
+  editButtons = event_modal.querySelectorAll("button.btn-edit");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      let event_modal = document.getElementById("modal-notes-display");
+      let fieldset = event_modal.querySelector("#notes-form-enabler");
+      fieldset.disabled = fieldset.disabled ? false : true;
+      if (fieldset.disabled) {
+        tinymce.get("notes_editor").mode.set("readonly");
+      } else {
+        tinymce.get("notes_editor").mode.set("design");
+      }
+    });
+  });
+}
+
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
   modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
@@ -320,6 +363,30 @@ function onTaskModalClose() {
       resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
+      dataGlobal = undefined;
+    });
+  });
+}
+
+function onNotesModalClose() {
+  let event_modal = document.getElementById("modal-notes-display");
+  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  modalCloseButtons.forEach((button) => {
+    button.addEventListener("click", function () {
+      let fieldset = event_modal.querySelector("#notes-form-enabler");
+      fieldset.disabled = true;
+      // event_modal.querySelector("#modal-notes-label.modal-title").innerText =
+      //   "";
+      event_modal.querySelector("input#notes_title").value = "";
+      event_modal.querySelector("input#notes_tag").value = "";
+      event_modal.querySelector("input#notes_dateAddedTo").value = "";
+      tinymce.get("notes_editor").resetContent();
+      tinymce.get("notes_editor").setContent("");
+      tinymce.get("notes_editor").mode.set("readonly");
+      resultDiv = document.getElementById("notes-update-result");
+      resultDiv.classList = "";
+      resultDiv.innerText = "";
+      resultDiv.innerHtml = "";
       dataGlobal = undefined;
     });
   });
@@ -535,6 +602,33 @@ function submitTaskForm() {
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
   // let calender_div = document.getElementById("calendar-div");
+  let notes_editor = tinymce.init({
+    selector: "textarea#notes_editor",
+    skin: "bootstrap",
+    plugins: "lists, link, image, media wordcount",
+    toolbar:
+      "h1 h2 bold italic strikethrough blockquote bullist numlist backcolor | link image media | removeformat help",
+    menubar: true,
+    // readonly: true,
+    setup: function (editor) {
+      editor.on("change", function (e) {
+        var maxChars = 200;
+        var currentContentLength = editor.getContent({ format: "text" }).length;
+
+        if (
+          currentContentLength >= maxChars &&
+          e.inputType !== "deleteContentBackward"
+        ) {
+          e.preventDefault();
+          e.stopPropagation();
+          editor.notificationManager.open({
+            text: "Text needs to be under 200 characters",
+            type: "error",
+          });
+        }
+      });
+    },
+  });
   let event_pills = document.querySelectorAll("button.event-pill");
 
   event_pills.forEach((eventpill) => {
@@ -560,6 +654,10 @@ function populateBasedOnEventType(target) {
       break;
     case "task":
       populateTasksModal(userId, eventId);
+      break;
+    case "notes":
+      populateNotesModal(userId, eventId);
+      break;
     case "add-event":
       dataGlobal = undefined;
       userIdGlobal = userId;
@@ -882,3 +980,5 @@ repeatingCheckBoxTogglerReminder();
 enableReminderFormEdit();
 miniCalendarLoader();
 clickableDateCells();
+enableNotesFormEdit();
+onNotesModalClose();

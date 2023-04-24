@@ -4,12 +4,15 @@ import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
 
 router
-  .route("/:noteId")
+  .route("/:userId/:noteId")
   .get(async (req, res) => {
     let noteId = "";
+    let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
       noteId = req.params.noteId.trim();
+      utils.checkObjectIdString(req.params.userId);
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -22,9 +25,12 @@ router
   })
   .delete(async (req, res) => {
     let noteId = "";
+    let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
       noteId = req.params.noteId.trim();
+      utils.checkObjectIdString(req.params.userId);
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -38,9 +44,12 @@ router
   .put(async (req, res) => {
     //code here for PUT
     let noteId = "";
+    let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
       noteId = req.params.noteId.trim();
+      utils.checkObjectIdString(req.params.userId);
+      userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
