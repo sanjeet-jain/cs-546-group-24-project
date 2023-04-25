@@ -599,17 +599,86 @@ function submitTaskForm() {
   );
 }
 
+function submitNotesForm() {
+  notesform = document.getElementById("notes-form");
+  notesform.addEventListener(
+    "submit",
+    (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      let formData = new FormData(event.target);
+      let jsonData = {};
+      for (var [key, value] of formData.entries()) {
+        jsonData[key] = value.trim();
+      }
+      jsonData["textBody"] = tinymce.get("notes_editor").getContent();
+
+      let reqType = "PUT";
+      let ajaxURL = `/notes/${userIdGlobal}/${dataGlobal?._id}`;
+      if (dataGlobal === undefined) {
+        reqType = "POST";
+        ajaxURL = `/notes/user/${userIdGlobal}`;
+      }
+      //todo validations
+      if (checkNotesValidations(event.target)) {
+        $.ajax({
+          method: reqType,
+          url: ajaxURL,
+          data: jsonData,
+          success: function (data) {
+            resultDiv = document.getElementById("notes-update-result");
+            resultDiv.innerText =
+              "notes updated Successfully! Page will refresh automatically";
+            resultDiv.classList = "";
+            resultDiv.classList.add("alert", "alert-success");
+            // if status code 200 update modal
+            // populateNotesModal(data.userId, data.notesId);
+
+            setTimeout(location.reload.bind(location), 2000);
+          },
+          error: function (data) {
+            resultDiv = document.getElementById("notes-update-result");
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              data?.responseJSON?.error || "Update wasnt Successful";
+            resultDiv.classList.add("alert", "alert-danger");
+            notes_title_error = document.getElementById("notes_title_error");
+            notes_editor_error = document.getElementById("notes_editor_error");
+            notes_tag_error = document.getElementById("notes_tag_error");
+            notes_dateAddedTo_error = document.getElementById(
+              "notes_dateAddedTo_error"
+            );
+
+            notes_title_error.innerText =
+              data.responseJSON?.errorMessages?.title || "";
+            notes_editor_error.innerText =
+              data.responseJSON?.errorMessages?.textBody || "";
+            notes_tag_error.innerText =
+              data.responseJSON?.errorMessages?.tag || "";
+            notes_dateAddedTo_error.innerText =
+              data.responseJSON?.errorMessages?.dateAddedTo || "";
+          },
+        });
+      }
+
+      event.target.classList.add("was-validated");
+    },
+    false
+  );
+}
+
 //bind all event pills to respective modal generators
 function bindEventButtontoModal() {
   // let calender_div = document.getElementById("calendar-div");
   let notes_editor = tinymce.init({
     selector: "textarea#notes_editor",
     skin: "bootstrap",
-    plugins: "lists, link, image, media wordcount",
+    plugins: "lists, link, image, media wordcount fullscreen",
     toolbar:
-      "h1 h2 bold italic strikethrough blockquote bullist numlist backcolor | link image media | removeformat help",
-    menubar: true,
-    // readonly: true,
+      " fullscreen h1 h2 bold italic strikethrough blockquote bullist numlist backcolor  link image media  removeformat",
+    // menubar: true,
+    readonly: true,
+
     setup: function (editor) {
       editor.on("change", function (e) {
         var maxChars = 200;
@@ -628,6 +697,83 @@ function bindEventButtontoModal() {
         }
       });
     },
+    image_title: true,
+    /* enable automatic uploads of images represented by blob or data URIs*/
+    automatic_uploads: true,
+    /*
+      URL of our upload handler (for more details check: https://www.tiny.cloud/docs/configure/file-image-upload/#images_upload_url)
+      images_upload_url: 'postAcceptor.php',
+      here we add custom filepicker only to Image dialog
+    */
+    file_picker_types: "file image media",
+    /* and here's our custom image picker*/
+
+    file_picker_callback: function (cb, value, meta) {
+      var input = document.createElement("input");
+      input.setAttribute("type", "file");
+      input.setAttribute("accept", "image/*,application/pdf"); // accept both images and PDFs
+
+      input.onchange = function () {
+        var file = this.files[0];
+
+        var formData = new FormData();
+        formData.append("image", file);
+
+        $.ajax({
+          url: `/notes/api/upload-image/${userIdGlobal}/${file.name}`,
+          type: "POST",
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (data) {
+            /* call the callback and populate the Title field with the file name */
+            cb(data.location, { title: file.name });
+          },
+          error: function (xhr, status, error) {
+            tinymce.activeEditor.notificationManager.open({
+              text: error,
+              type: "error",
+            });
+          },
+        });
+      };
+
+      input.click();
+    },
+    // images_upload_handler: async function (blobInfo, success, failure) {
+    //   const userId = userIdGlobal; // replace with the actual user ID
+    //   const filename = `${Date.now()}-${blobInfo.filename()}`;
+    //   const formData = new FormData();
+    //   formData.append("image", blobInfo.blob(), blobInfo.filename());
+    //   const url = `/notes/api/upload-image/${userId}/${filename}`;
+
+    //   await $.ajax({
+    //     url: url,
+    //     type: "POST",
+    //     data: formData,
+    //     processData: false,
+    //     contentType: false,
+    //     success: function (data) {
+    //       const imgElm = document.querySelector(
+    //         `img[src="data:${
+    //           blobInfo.blob().type
+    //         };base64,${blobInfo.base64()}"]`
+    //       );
+    //       if (imgElm) {
+    //         imgElm.src = data.location;
+    //       }
+    //       success(data.location);
+    //     },
+    //     error: function (xhr, status, error) {
+    //       console.error(error);
+    //       editor.notificationManager.open({
+    //         text: "Text needs to be under 200 characters",
+    //         type: "error",
+    //       });
+    //       failure(error);
+    //     },
+    //   });
+    // },
   });
   let event_pills = document.querySelectorAll("button.event-pill");
 
@@ -683,13 +829,13 @@ function checkMeetingValidations(form) {
     "meeting_repeatingIncrementBy_error"
   );
 
-  if (form.title.length > 100) {
+  if (form.title.value.length > 100) {
     meeting_title_error.innerText = "Title cant be longer than 100 characters";
   }
 
-  if (form.textBody.length > 100) {
+  if (form.textBody.value.length > 200) {
     meeting_textBody_error.innerText =
-      "Title cant be longer than 100 characters";
+      "TextBody cant be longer than 200 characters";
   }
 
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
@@ -720,6 +866,56 @@ function checkMeetingValidations(form) {
   } else return false;
 }
 
+function checkNotesValidations(form) {
+  //get all error divs
+  notes_title_error = document.getElementById("notes_title_error");
+  notes_editor_error = document.getElementById("notes_editor_error");
+  notes_tag_error = document.getElementById("notes_tag_error");
+  notes_dateAddedTo_error = document.getElementById("notes_dateAddedTo_error");
+
+  notes_title_error.innerText = "";
+  notes_editor_error.innerText = "";
+  notes_editor_error.classList = "";
+  notes_tag_error.innerText = "";
+  notes_dateAddedTo_error.innerText = "";
+  form.title.setCustomValidity("");
+  form.textBody.setCustomValidity("");
+  form.dateAddedTo.setCustomValidity("");
+  form.tag.setCustomValidity("");
+  if (form.tag.value.length > 20) {
+    notes_tag_error.innerText = "tag cant be longer than 50 characters";
+    form.tag.setCustomValidity("overflow");
+  }
+  if (form.title.value.length > 100) {
+    notes_title_error.innerText = "Title cant be longer than 100 characters";
+    form.title.setCustomValidity("overflow");
+  }
+
+  const parser = new DOMParser();
+  const parsedHtml = parser.parseFromString(
+    tinymce.get("notes_editor").getContent(),
+    "text/html"
+  );
+
+  if (parsedHtml.body.textContent.trim().length === 0) {
+    notes_editor_error.classList.add("alert", "alert-danger");
+
+    notes_editor_error.innerText = "TextBody cant be empty";
+    form.textBody.setCustomValidity("underflow");
+  }
+
+  if (parsedHtml.body.textContent.trim() > 200) {
+    notes_editor_error.classList.add("alert", "alert-danger");
+
+    notes_editor_error.innerText =
+      "TextBody cant be longer than 200 characters";
+    form.textBody.setCustomValidity("overflow");
+  }
+
+  if (form.checkValidity()) {
+    return true;
+  } else return false;
+}
 function checkReminderValidations(form) {
   let reminder_title_error = document.getElementById("reminder_title_error");
   let reminder_textBody_error = document.getElementById(
@@ -737,13 +933,13 @@ function checkReminderValidations(form) {
     "reminder_endDateTime_error"
   );
 
-  if (form.title.length > 100) {
+  if (form.title.value.length > 100) {
     reminder_title_error.innerText = "Title cant be longer than 100 characters";
     form.title.setCustomValidity("title can't be longer than 100 chars");
   } else {
     form.dateAddedTo.setCustomValidity("");
   }
-  if (form.textBody.length > 200) {
+  if (form.textBody.value.length > 200) {
     reminder_textBody_error.innerText =
       "Body of text can't be longer than 200 characters";
     form.textBody.setCustomValidity("text body can't be longer than 200 chars");
@@ -788,11 +984,11 @@ function checkTaskValidations(form) {
   task_dateAddedTo_error = document.getElementById("task_dateAddedTo_error");
   task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
 
-  if (form.title.length > 100) {
+  if (form.title.value.length > 100) {
     task_title_error.innerText = "Title cant be longer than 100 characters";
   }
 
-  if (form.textBody.length > 100) {
+  if (form.textBody.value.length > 100) {
     task_textBody_error.innerText = "Title cant be longer than 100 characters";
   }
 
@@ -969,6 +1165,7 @@ filterForm();
 submitMeetingForm();
 submitReminderForm();
 submitTaskForm();
+
 bindEventButtontoModal();
 enableMeetingFormEdit();
 enableTaskFormEdit();
@@ -978,7 +1175,10 @@ onReminderModalClose();
 repeatingCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
 enableReminderFormEdit();
+
 miniCalendarLoader();
 clickableDateCells();
+
 enableNotesFormEdit();
 onNotesModalClose();
+submitNotesForm();

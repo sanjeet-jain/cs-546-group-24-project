@@ -2,7 +2,7 @@ import { Router } from "express";
 const router = Router();
 import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
-
+import xss from "xss";
 router
   .route("/:userId/:noteId")
   .get(async (req, res) => {
@@ -60,30 +60,34 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+    notePutData.textBody = xss(notePutData.textBody);
+    notePutData.title = xss(notePutData.title);
+    notePutData.tag = xss(notePutData.tag);
     try {
       //validation
       utils.checkObjectIdString(noteId);
       // utils.checkObjectIdString(userId);
-      utils.validateNotesInputs(
+      let errorMessages = utils.validateNotesInputs(
         notePutData.title,
         notePutData.dateAddedTo,
         notePutData.textBody,
-        notePutData.tag,
-        notePutData.documentLinks // how to use this ???????
+        notePutData.tag
       );
+      if (Object.keys(errorMessages).length !== 0) {
+        return res.status(400).json({ errorMessages: errorMessages });
+      }
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      const { title, dateAddedTo, textBody, tag, documentLinks } = notePutData;
+      const { title, dateAddedTo, textBody, tag } = notePutData;
       const updatednote = await notesDataFunctions.update(
         // userId,
         noteId,
         title,
         dateAddedTo,
         textBody,
-        tag,
-        documentLinks
+        tag
       );
       return res.status(200).json(updatednote);
     } catch (e) {
@@ -95,7 +99,7 @@ router
   });
 
 router
-  .route("/notes/:userId")
+  .route("/user/:userId")
   .get(async (req, res) => {
     let userId = "";
     try {
@@ -127,6 +131,9 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+    notePostData.textBody = xss(notePostData.textBody);
+    notePostData.title = xss(notePostData.title);
+    notePostData.tag = xss(notePostData.tag);
     try {
       //validation
       utils.checkObjectIdString(userId);
@@ -134,21 +141,19 @@ router
         notePostData.title,
         notePostData.dateAddedTo,
         notePostData.textBody,
-        notePostData.tag,
-        notePostData.documentLinks // how to use this ???????
+        notePostData.tag
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      const { title, dateAddedTo, textBody, tag, documentLinks } = notePostData;
+      const { title, dateAddedTo, textBody, tag } = notePostData;
       const createdNote = await notesDataFunctions.create(
         userId,
         title,
         dateAddedTo,
         textBody,
-        tag,
-        documentLinks
+        tag
       );
       return res.status(200).json(createdNote);
     } catch (e) {
@@ -157,6 +162,71 @@ router
       }
       return res.status(500).json({ error: e.message });
     }
+  });
+
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// create the directory if it doesn't exist
+const uploadDirectory = "uploads";
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory);
+}
+// configure multer middleware to handle multipart form data
+// configure multer middleware to handle multipart form data
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const userUploadDir = path.join(uploadDirectory, req.params.userId);
+    if (!fs.existsSync(userUploadDir)) {
+      fs.mkdirSync(userUploadDir);
+    }
+    cb(null, userUploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage: storage });
+
+router
+  .route("/api/upload-image/:userId/:filename")
+  .post(upload.single("image"), (req, res) => {
+    try {
+      utils.checkObjectIdString(req.params.userId);
+      const userId = req.params.userId;
+      if (userId !== req.session.user.user_id)
+        throw new Error("You dont have permission to access that image");
+    } catch (error) {
+      return res.status(403).send(error.message);
+    }
+    const file = req.file;
+    if (!file) {
+      return res.status(400).send("No image file");
+    }
+    return res.status(200).json({
+      location: `/notes/api/upload-image/${req.params.userId}/${file.filename}`,
+    });
+  })
+  .get((req, res) => {
+    //add error case for file not found
+    try {
+      utils.checkObjectIdString(req.params.userId);
+      const userId = req.params.userId;
+      if (userId !== req.session.user.user_id)
+        throw new Error("You dont have permission to access that image");
+    } catch (error) {
+      return res.status(403).json({ error: error.message });
+    }
+    const file = path.join(
+      __dirname,
+      `../uploads/${req.params.userId}/${req.params.filename}`
+    );
+    return res.sendFile(file);
   });
 
 export default router;
