@@ -219,14 +219,15 @@ router
       const userId = req.params.userId;
       if (userId !== req.session.user.user_id)
         throw new Error("You dont have permission to access that image");
+
+      const file = path.join(
+        __dirname,
+        `../uploads/${req.params.userId}/${req.params.filename}`
+      );
+      return res.sendFile(file);
     } catch (error) {
       return res.status(403).json({ error: error.message });
     }
-    const file = path.join(
-      __dirname,
-      `../uploads/${req.params.userId}/${req.params.filename}`
-    );
-    return res.sendFile(file);
   });
 
 export default router;
