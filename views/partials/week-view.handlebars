@@ -2,16 +2,13 @@
   <td class="timeslots"></td>
 
   {{#each week}}
-  <<<<<<< HEAD <td class="text-center">
-    =======
-    <td class="text-center date-cell" data-bs-day="{{this.dayjsDateId}}">
-      >>>>>>> main
-      <button id="{{this.dayjsDateId}}"
-        class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}">
-        {{this.day}}
-      </button>
-    </td>
-    {{/each}}
+  <td class="text-center date-cell" data-bs-day="{{this.dayjsDateId}}">
+    <button id="{{this.dayjsDateId}}"
+      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}">
+      {{this.day}}
+    </button>
+  </td>
+  {{/each}}
 
 </tr>
 {{#each timeslots}}
@@ -25,7 +22,7 @@
       {{#each this.modalData.meetings}}
       {{#if (eq this.timeslotStart ../../this)}}
 
-      <button class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal"
+      <button class="badge event-pill bg-primary text-wrap text-center event-button" data-bs-toggle="modal"
         data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-calendar-event"></i>
@@ -37,14 +34,14 @@
       {{#if this.modalData.notes.length}}
       {{#each this.modalData.notes}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <button class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
+      <button class="badge event-pill bg-success text-wrap text-center event-button" data-bs-toggle="modal"
         data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-file-text"></i>
         {{{this.title}}}</button>
 
       {{!--
-      <span class="badge event-pill text-bg-success text-wrap text-center">
+      <span class="badge event-pill bg-success text-wrap text-center">
         <i class="bi-file-text"></i>
         {{{this.title}}}</span> --}}
       {{/if}}
@@ -55,7 +52,7 @@
       {{#if this.modalData.reminders.length}}
       {{#each this.modalData.reminders}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <button class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal"
+      <button class="badge event-pill bg-warning text-wrap text-center event-button" data-bs-toggle="modal"
         data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-alarm"></i>
@@ -67,7 +64,7 @@
       {{#if this.modalData.tasks.length}}
       {{#each this.modalData.tasks}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <span class="badge event-pill text-bg-danger text-wrap text-center">
+      <span class="badge event-pill bg-danger text-wrap text-center">
         <i class="bi-check2-square"></i>
         {{{this.title}}}</span>
       {{/if}}
