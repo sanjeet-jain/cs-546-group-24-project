@@ -9,7 +9,7 @@
       </div>
       <div class="col-auto ">
         <input required type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name"
-          pattern="^[a-zA-Z]+$"
+          pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{else}}{{currUser.first_name}}{{/if}}" />
       </div>
       <div class="col-auto ">
@@ -26,7 +26,7 @@
       </div>
       <div class="col-auto ">
         <input required type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name"
-          pattern="^[a-zA-Z]+$"
+          pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{else}}{{currUser.last_name}}{{/if}}" />
       </div>
       <div class="col-auto ">
@@ -38,26 +38,11 @@
     <br />
     <div class="row g-3 align-items-center">
       <div class="col-auto ">
-        <label for="email" class="col-form-label">Email: </label>
-      </div>
-      <div class="col-auto ">
-        <input required type="text" class="form-control" name="email" id="email" placeholder="Email"
-          pattern="^[a-zA-Z]+[._%+-]*[a-zA-Z0-9]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-          value="{{#if errorContent.email}}{{errorContent.email}}{{else}}{{currUser.email}}{{/if}}" />
-      </div>
-      <div class="col-auto ">
-        <div id="email_error" class="invalid-feedback">
-          {{errorMessages.email}}
-        </div>
-      </div>
-    </div>
-    <br />
-    <div class="row g-3 align-items-center">
-      <div class="col-auto ">
         <label for="dob" class="col-form-label">Date of Birth: </label>
       </div>
       <div class="col-auto ">
-        <input required type="text" class="form-control" name="dob" id="dob" placeholder="MM/DD/YYYY"
+        <input required type="date" class="form-control" name="dob" id="dob" placeholder="MM/DD/YYYY"
+          max="{{minDobDate}}" min="{{maxDobDate}}"
           value="{{#if errorContent.dob}}{{errorContent.dob}}{{else}}{{currUser.dob}}{{/if}}" />
       </div>
       <div class="col-auto ">

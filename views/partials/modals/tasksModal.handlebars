@@ -22,7 +22,7 @@
             <div class="mb-3">
               <label for="task_title" class="form-label">Title</label>
               <input required type="text" class="form-control" name="title" id="task_title" placeholder="Title" value=""
-                maxlength="100" />
+                maxlength="100" pattern="^(?=.{1,100}$)(?![\d])[\w\s]+$" />
               <div id="task_title_error" class="invalid-feedback">
 
               </div>
@@ -39,8 +39,8 @@
             {{! tag }}
             <div class="mb-3">
               <label for="task_tag" class="form-label">Tag</label>
-              <input type="text" class="form-control" name="tag" id="task_tag" placeholder="Tag" value=""
-                maxlength="20" />
+              <input required type="text" class="form-control" name="tag" id="task_tag" placeholder="Tag" value=""
+                maxlength="20" pattern="^[a-z]+$" />
               <div id="task_tag_error" class="invalid-feedback">
 
               </div>
@@ -49,7 +49,8 @@
             <div class="mb-3">
               <label for="task_priority" class="form-label">Priority</label>
               <select required class="form-select form-select-sm" name="priority" id="task_priority">
-                <option selected value="1">Low</option>
+                <option value="">Please select an option</option>
+                <option value="1">Low</option>
                 <option value="2">Medium</option>
                 <option value="3">High</option>
               </select>

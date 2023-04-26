@@ -1,10 +1,12 @@
 <!-- calendarv2.handlebars -->
 
-<div id="calendar-div">
+<div id="calendar-div" {{#if timeslots.length}}class="overflow-scroll-y" {{/if}}>
   <div id="modal-div" class="modal-div">
     {{>meetingsModal }}
     {{>remindersModal}}
     {{>tasksModal}}
+    {{>notesModal}}
+    {{>summaryView}}
   </div>
   <table class="table table-bordered ">
 

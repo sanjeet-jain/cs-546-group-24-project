@@ -27,19 +27,18 @@ router
     let user_id = req.params.user_id;
     let title = reminder.title;
     let textBody = reminder.textBody;
-    let priority = reminder.priority;
+    let priority = Number.parseInt(reminder.priority);
     let tag = reminder.tag;
-    let repeating = reminder.repeating;
+    let repeating =
+      reminder.repeating === "true" ||
+      reminder.repeating === true ||
+      !(reminder.repeating === "false")
+        ? true
+        : false;
     let dateAddedTo = reminder.dateAddedTo;
     let endDateTime;
-
-    if (typeof reminder.endDateTime !== "undefined") {
-      endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
-    }
-
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
     dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       console.log(typeof user_id);
       utils.checkObjectIdString(user_id);
@@ -69,6 +68,7 @@ router
       utils.validateDate(dateAddedTo, "date time value");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
+        endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
         utils.validateDate(endDateTime, "end time value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
@@ -119,9 +119,11 @@ router
     let tag = reminder.tag;
     let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     let repeating =
-      reminder.repeating === "undefined" || reminder.repeating === "false"
-        ? false
-        : true;
+      reminder.repeating === "true" ||
+      reminder.repeating === true ||
+      !(reminder.repeating === "false")
+        ? true
+        : false;
     let endDateTime;
     if (repeating) {
       endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");

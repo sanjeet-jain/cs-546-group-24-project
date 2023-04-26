@@ -84,11 +84,10 @@ const exportedMethods = {
     const user = await users.findOne({ _id: new ObjectId(id) });
     return user;
   },
-  async updateUser(id, { first_name, last_name, email, disability, dob }) {
+  async updateUser(id, { first_name, last_name, disability, dob }) {
     utils.checkObjectIdString(id);
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
-    utils.validateEmail(email, "Email");
     if (disability) {
       utils.validateBooleanInput(disability, "Disability");
     }
@@ -97,7 +96,6 @@ const exportedMethods = {
     id = id.trim();
     first_name = first_name.trim();
     last_name = last_name.trim();
-    email = email.trim().toLowerCase();
     dob = dob.trim();
     const users = await usersCollection();
     const currUser = await this.getUser(id);
@@ -105,7 +103,7 @@ const exportedMethods = {
     let updatedUser = {
       first_name: first_name,
       last_name: last_name,
-      email: email,
+      email: currUser.email,
       password: currUser.password,
       disability: disability,
       dob: dob,

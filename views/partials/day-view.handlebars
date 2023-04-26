@@ -1,12 +1,15 @@
 <tr class="sticky-calendar-row bg-light">
   <td class="timeslots"></td>
 
-  <td class="text-center">
-    <button id="{{day.dayjsDateId}}"
-      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{else}} text-dark{{/if}}">
-      {{day.day}}
-    </button>
-  </td>
+  <<<<<<< HEAD <td class="text-center">
+    =======
+    <td class="text-center date-cell" data-bs-day="{{day.dayjsDateId}}">
+      >>>>>>> main
+      <button id="{{day.dayjsDateId}}"
+        class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{else}} text-dark{{/if}}">
+        {{day.day}}
+      </button>
+    </td>
 
 </tr>
 {{#each timeslots}}
@@ -32,7 +35,7 @@
       {{#each ../day.modalData.notes}}
       {{#if (eq this.timeslotStart ../this)}}
       <button class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
-        data-bs-target="#modal-note-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}"
+        data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}"
         data-bs-event-type="{{this.type}}">
         <i class="bi-file-text"></i>
         {{{this.title}}}</button>

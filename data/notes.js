@@ -49,22 +49,9 @@ const exportedMethods = {
       throw new Error("user not found");
     }
   },
-  async create(
-    userId,
-    title,
-    dateAddedTo,
-    textBody,
-    tag,
-    documentLinks // how to use this ???????
-  ) {
+  async create(userId, title, dateAddedTo, textBody, tag) {
     utils.checkObjectIdString(userId);
-    utils.validateNotesInputs(
-      title,
-      dateAddedTo,
-      textBody,
-      tag,
-      documentLinks // how to use this ???????
-    );
+    utils.validateNotesInputs(title, dateAddedTo, textBody, tag);
 
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
@@ -83,7 +70,6 @@ const exportedMethods = {
       dateAddedTo: dateAddedTo,
       textBody: textBody,
       tag: tag,
-      documentLink: [],
       type: "notes",
     });
     const insertedId = result.insertedId;
@@ -91,7 +77,7 @@ const exportedMethods = {
       { _id: new ObjectId(userId) },
       { $push: { noteIds: insertedId } }
     );
-    return this.get(insertedId.toString());
+    return { userId: userId, notesId: insertedId.toString() };
   },
   async update(
     // userId,
@@ -99,19 +85,12 @@ const exportedMethods = {
     title,
     dateAddedTo,
     textBody,
-    tag,
-    documentLinks // how to use this ???????
+    tag
   ) {
     utils.checkObjectIdString(noteId);
     noteId = noteId.trim();
     // utils.checkObjectIdString(userId);
-    utils.validateNotesInputs(
-      title,
-      dateAddedTo,
-      textBody,
-      tag,
-      documentLinks // how to use this ???????
-    );
+    utils.validateNotesInputs(title, dateAddedTo, textBody, tag);
 
     const notes = await notesCollection();
     const note = await this.get(noteId);
@@ -120,7 +99,6 @@ const exportedMethods = {
     updatednote.dateAddedTo = dateAddedTo.trim();
     updatednote.textBody = textBody.trim();
     updatednote.tag = tag.trim().toLowerCase();
-    updatednote.documentLinks = documentLinks;
 
     const result = await notes.updateOne(
       { _id: new ObjectId(noteId) },
@@ -163,6 +141,10 @@ const exportedMethods = {
 
     // if the note exists in collection then return it else throw an error
     return `${deletionInfo.value._id} has been successfully deleted!`;
+  },
+  async getDistinctTags() {
+    const notes = await notesCollection();
+    return notes.distinct("tag");
   },
 };
 
