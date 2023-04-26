@@ -1,0 +1,87 @@
+<div class="modal fade" id="modal-summary-display" tabindex="-1" aria-labelledby="modal-summary-label"
+  aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-summary-label">
+          Summary for Today
+        </h4>
+
+        <button id="summary-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="card display_current_items_card">
+          <div class="card-body">
+            {{#if todayItems.length includeZero=true}}
+            <h5 class="card-title" id="summary_selected_date">Items for<br> {{today}}</h5>
+            <div class="d-grid gap-1" id="summary_display_current_items">
+              {{#if todayItems.length includeZero=false}}
+              {{#each todayItems}}
+              {{#if (eq this.type "reminder")}}
+              <div class="d-grid gap-1"><button
+                  class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal"
+                  data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
+                    class="bi-alarm">{{this.title}}</i></button></div>
+              {{/if}}
+              {{#if (eq this.type "task")}}
+              <div class="d-grid gap-1"><button
+                  class="badge event-pill text-bg-danger text-wrap text-center event-button" data-bs-toggle="modal"
+                  data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+                    class="bi-check2-square">{{this.title}}</i></button></div>
+              {{/if}}
+              {{#if (eq this.type "meeting")}}
+              <div class="d-grid gap-1"><button
+                  class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal"
+                  data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+                    class="bi-calendar-event">{{this.title}}</i></button></div>
+              {{/if}}
+              {{#if (eq this.type "notes")}}
+              <div class="d-grid gap-1"><button
+                  class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
+                  data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
+                    class="bi-file-text">{{this.title}}</i></button></div>
+              {{/if}}
+              {{/each}}
+              {{else}}There are no events for the day
+              {{/if}}
+            </div>
+
+            {{else}}
+
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{{#if session.firstTimeLogin }}
+<script>
+  const modal = document.getElementById("modal-summary-display");
+  const myModal = new bootstrap.Modal(modal);
+  myModal.show();
+  $.ajax({
+    method: "GET",
+    url: "/firstLogin",
+    success: function (data) {
+      console.log("no more summary")
+    },
+    error: function (data) {
+      console.log(" idk why more summary")
+
+    },
+  });
+</script>
+{{/if}}

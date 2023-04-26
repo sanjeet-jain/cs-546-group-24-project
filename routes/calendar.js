@@ -25,7 +25,10 @@ router.route("/month").get(async (req, res) => {
       nextMonth,
       nextYear,
     } = await getWeeksData(req);
-
+    const userId = req?.session?.user?.user_id.trim();
+    utils.checkObjectIdString(userId);
+    let today = dayjs().format("YYYY-MM-DD");
+    let todayItems = await getSelectedDayItems(userId, today);
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
       title: "Calendar",
@@ -41,6 +44,8 @@ router.route("/month").get(async (req, res) => {
       nextMonth: nextMonth,
       nextYear: nextYear,
       filter: filter,
+      todayItems: todayItems,
+      today: today,
     });
   } catch (error) {
     res.status(404).render("errors/error", {
@@ -71,6 +76,10 @@ router.route("/week").get(async (req, res) => {
       );
     });
   });
+  const userId = req?.session?.user?.user_id.trim();
+  utils.checkObjectIdString(userId);
+  let today = dayjs().format("YYYY-MM-DD");
+  let todayItems = await getSelectedDayItems(userId, today);
   res.render("calendar/calendarv2", {
     title: "Calendar",
     weekdays: constants.weekdays,
@@ -79,6 +88,8 @@ router.route("/week").get(async (req, res) => {
     currYear: year,
     timeslots: constants.timeslots,
     filter: filter,
+    todayItems: todayItems,
+    today: today,
   });
 });
 
@@ -124,6 +135,10 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
   utils.checkObjectIdString(userId);
   let displayItems = await getSelectedDayItems(userId, selectedDate);
   selectedDate = dayjs(selectedDate).format("MMMM DD YYYY");
+
+  utils.checkObjectIdString(userId);
+  let today = dayjs().format("YYYY-MM-DD");
+  let todayItems = await getSelectedDayItems(userId, today);
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
@@ -132,6 +147,8 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     filter: filter,
     displayItems: displayItems,
     selectedDate: selectedDate,
+    todayItems: todayItems,
+    today: today,
   });
 });
 

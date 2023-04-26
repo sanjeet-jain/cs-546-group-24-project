@@ -12,6 +12,7 @@ function createSessionObject(user) {
     user_id: user._id.toString(),
     userFirstName: user.first_name,
     email: user.email,
+    firstTimeLogin: true,
   };
 }
 

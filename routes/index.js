@@ -11,6 +11,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
+  app.get("/firstLogin", validateUser, (req, res, next) => {
+    if (res.locals?.session?.firstTimeLogin === true) {
+      res.locals.session.firstTimeLogin = false;
+    }
+    return res.status(200).json();
+  });
   app.use("/user", userRoutes);
   app.use("/calendar", validateUser, calendarRoutes);
   app.use("/meeting", validateUser, meetingRoutes);
