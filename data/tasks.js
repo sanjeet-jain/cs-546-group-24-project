@@ -28,7 +28,16 @@ const tasksDataFunctions = {
    * @param {number} priority - The priority of the task (1, 2, or 3)
    * @param {string} tag - The custom tag for the task
    */
-  async createTask(userId, title, textBody, dateAddedTo, priority, tag) {
+  async createTask(
+    userId,
+    title,
+    textBody,
+    dateAddedTo,
+    priority,
+    tag,
+    expired,
+    checked
+  ) {
     utils.checkObjectIdString(userId);
     utils.validateStringInputWithMaxLength(
       title,
@@ -47,6 +56,8 @@ const tasksDataFunctions = {
       "tag",
       constants.stringLimits["tag"]
     );
+    utils.validateBooleanInput(expired, "expired");
+    utils.validateBooleanInput(checked, "checked");
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
@@ -67,6 +78,7 @@ const tasksDataFunctions = {
       tag: tag,
       checked: false,
       type: "task",
+      expired: false,
     };
 
     const tasks = await tasksCollection();
@@ -93,14 +105,15 @@ const tasksDataFunctions = {
 
   async updateTask(id, updatedTask) {
     utils.checkObjectIdString(id);
-    const updatedTaskData = {};
+    let updatedTaskData = {};
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
-    updatedTaskData.type = task.type;
-    updatedTaskData.dateCreated = task.dateCreated;
-    updatedTask.title = updatedTask.title.trim();
-    updatedTask.textBody = updatedTask.textBody.trim();
-    updatedTask.tag = updatedTask.tag.trim().toLowerCase();
+    updatedTaskData = { ...task };
+
+    if (updatedTask.checked) {
+      utils.validateBooleanInput(updatedTask.checked, "checked");
+      updatedTaskData.checked = updatedTask.checked;
+    }
 
     if (updatedTask.title) {
       utils.validateStringInputWithMaxLength(
@@ -108,7 +121,7 @@ const tasksDataFunctions = {
         "title",
         constants.stringLimits["title"]
       );
-      updatedTaskData.title = updatedTask.title;
+      updatedTaskData.title = updatedTask.title.trim();
     } else {
       throw new Error("You must provide a title for the task.");
     }
@@ -119,7 +132,7 @@ const tasksDataFunctions = {
         "textBody",
         constants.stringLimits["textBody"]
       );
-      updatedTaskData.textBody = updatedTask.textBody;
+      updatedTaskData.textBody = updatedTask.textBody.trim();
     } else {
       throw new Error("You must provide a textBody for the task.");
     }
@@ -133,8 +146,7 @@ const tasksDataFunctions = {
     }
 
     if (updatedTask.priority) {
-      utils.validatePriority(updatedTask.priority);
-      updatedTaskData.priority = updatedTask.priority;
+      updatedTaskData.priority = utils.validatePriority(updatedTask.priority);
     } else {
       throw new Error("You must provide a priority for the task.");
     }
@@ -145,14 +157,16 @@ const tasksDataFunctions = {
         "tag",
         constants.stringLimits["tag"]
       );
-      updatedTaskData.tag = updatedTask.tag;
+      updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
       throw new Error("You must provide a tag for the task.");
     }
 
     if (typeof updatedTask.checked !== "undefined") {
-      utils.validateBooleanInput(updatedTask.checked, "checked");
-      updatedTaskData.checked = updatedTask.checked;
+      updatedTaskData.checked = utils.validateBooleanInput(
+        updatedTask.checked,
+        "checked"
+      );
     } else {
       throw new Error("You must provide a checked value for the task.");
     }

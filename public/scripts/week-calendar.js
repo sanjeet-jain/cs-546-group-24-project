@@ -473,14 +473,13 @@ function submitTaskForm() {
         reqType = "POST";
         ajaxURL = `/task/tasks/${userIdGlobal}`;
       }
-      //todo validations
       if (checkTaskValidations(event.target)) {
         $.ajax({
           method: reqType,
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
-            resultDiv = document.getElementById("task-update-result");
+            let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
               "Task updated Successfully! Please refresh the page!";
             resultDiv.classList = "";
@@ -490,17 +489,17 @@ function submitTaskForm() {
             setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
-            resultDiv = document.getElementById("task-update-result");
+            let resultDiv = document.getElementById("task-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
               data?.responseJSON?.error || "Update wasnt Successful";
             resultDiv.classList.add("alert", "alert-danger");
-            task_title_error = document.getElementById("task_title_error");
-            task_textBody_error = document.getElementById(
+            let task_title_error = document.getElementById("task_title_error");
+            let task_textBody_error = document.getElementById(
               "task_textBody_error"
             );
-            task_tag_error = document.getElementById("task_tag_error");
-            task_dateAddedTo_error = document.getElementById(
+            let task_tag_error = document.getElementById("task_tag_error");
+            let task_dateAddedTo_error = document.getElementById(
               "task_dateAddedTo_error"
             );
             task_title_error.innerText =
@@ -511,7 +510,6 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
-            ("");
           },
         });
       }
