@@ -16,7 +16,7 @@ const constructorMethod = (app) => {
   app.use("/meeting", validateUser, meetingRoutes);
   app.use("/task", validateUser, taskRoutes);
   app.use("/reminder", validateUser, reminderRoutes);
-  app.use("/note", validateUser, noteRoutes);
+  app.use("/notes", validateUser, noteRoutes);
 
   app.get("/contact", (req, res) => {
     res.render("contact", {

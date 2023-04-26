@@ -62,7 +62,7 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
 app.use("/public", express.static(path.join(__dirname, "/public")));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: "1024kb" }));
 app.use(rewriteUnsupportedBrowserMethods);
 
 app.use(

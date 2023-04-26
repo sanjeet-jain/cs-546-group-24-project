@@ -1,0 +1,80 @@
+<div class="modal fade" id="modal-notes-display" tabindex="-1" aria-labelledby="modal-notes-label" aria-hidden="true"
+  data-bs-backdrop="static" data-bs-focus="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-notes-label">
+          <i class="bi-file-text">notes Event</i>
+        </h4>
+        <button type="button" class="btn btn-edit" aria-label="Edit" {{! onclick="enableFormEdit()" }}>
+          <i class="bi-pencil-fill"></i>
+        </button>
+        <button id="notes-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <fieldset id="notes-form-enabler" disabled>
+        <div class="modal-body">
+          <form id="notes-form" class="needs-validation" novalidate>
+            {{! title }}
+            <div class="mb-3">
+              <label for="notes_title" class="form-label">Title</label>
+              <input required type="text" class="form-control" name="title" id="notes_title" placeholder="Title"
+                value="" maxlength="100" pattern="^(?=.{1,100}$)(?![\d])[\w\s]+$" />
+              <div id="notes_title_error" class="invalid-feedback">
+
+              </div>
+            </div>
+            {{! textBody }}
+            <div class="container mt-4 mb-4">
+              <div class="row justify-content-md-center">
+                <label for="notes_editor" class="form-label">Description</label>
+                <div class="form-group">
+                  <textarea id="notes_editor" name="textBody" placeholder="Description"></textarea>
+                </div>
+              </div>
+              <div id="notes_editor_error" class="invalid-feedback">
+
+              </div>
+            </div>
+
+
+            {{! tag }}
+            <div class="mb-3">
+              <label for="notes_tag" class="form-label">Tag</label>
+              <input required type="text" class="form-control" name="tag" id="notes_tag" placeholder="Tag" value=""
+                maxlength="20" pattern="^[a-z]+$" />
+              <div id="notes_tag_error" class="invalid-feedback">
+
+              </div>
+            </div>
+
+            {{! dateAddedTo }}
+            <div class="form-floating mb-3">
+              <input required type="datetime-local" class="form-control" name="dateAddedTo" id="notes_dateAddedTo"
+                value="" />
+              <label for="notes_dateAddedTo" class="form-label">Date to Add
+                event to
+              </label>
+
+              <div id="notes_dateAddedTo_error" class="invalid-feedback">
+
+              </div>
+            </div>
+
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div id="notes-update-result">
+
+          </div>
+          <input id="notes-bottom-submit-button" type="submit" form="notes-form" value="Save Changes"
+            class="btn btn-primary" />
+        </div>
+      </fieldset>
+
+    </div>
+  </div>
+</div>

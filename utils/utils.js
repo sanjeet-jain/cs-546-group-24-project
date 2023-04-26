@@ -2,6 +2,7 @@
 import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import { JSDOM } from "jsdom";
 const utils = {
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
@@ -19,6 +20,29 @@ const utils = {
   },
   validateStringInputWithMaxLength(input, inputName, maxLength) {
     this.validateStringInput(input, inputName);
+    if (
+      inputName === "tag" &&
+      !input
+        .trim()
+        .toLowerCase()
+        .match(/^[a-z]+$/gi)
+    ) {
+      throw new Error(
+        `${inputName} can not have spaces and contains only letters`
+      );
+    }
+    if (
+      inputName === "title" &&
+      !input
+        .trim()
+        .toLowerCase()
+        .match(/^(?![\d])[\w\s]+$/gi)
+    ) {
+      throw new Error(
+        `${inputName} can not have spaces and contains only letters`
+      );
+    }
+
     if (input.trim().length > maxLength) {
       throw new Error(
         `${inputName} cannot be longer than ${maxLength} characters`
@@ -314,26 +338,49 @@ const utils = {
       Number.parseInt(timeStr[1])
     );
   },
-  validateNotesInputs(
-    title,
-    dateAddedTo,
-    textBody,
-    tag,
-    documentLinks // how to use this ???????
-  ) {
-    utils.validateStringInputWithMaxLength(
-      title,
-      "title",
-      constants.stringLimits["title"]
-    );
-    utils.validateDate(dateAddedTo, "DateAddedTo");
-    // textbody?
-    //doc links ?
-    utils.validateStringInputWithMaxLength(
-      tag,
-      "tag",
-      constants.stringLimits["tag"]
-    );
+  validateNotesInputs(title, dateAddedTo, textBody, tag) {
+    let errorMessages = {};
+    try {
+      this.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+    } catch (e) {
+      errorMessages.title = e.message;
+    }
+
+    try {
+      utils.validateDate(dateAddedTo, "DateAddedTo");
+    } catch (e) {
+      errorMessages.dateAddedTo = e.message;
+    }
+
+    try {
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
+    } catch (e) {
+      errorMessages.tag = e.message;
+    }
+
+    try {
+      const dom = new JSDOM();
+      const parser = new dom.window.DOMParser();
+
+      const doc = parser.parseFromString(textBody, "text/html");
+      const text = doc.documentElement.textContent;
+      utils.validateStringInputWithMaxLength(
+        text,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+    } catch (e) {
+      errorMessages.textBody = e.message;
+    }
+    return errorMessages;
   },
   isStrArrValid(stringArr) {
     this.isOfTypeArr(stringArr);
