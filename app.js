@@ -17,7 +17,8 @@ import { MongoClient } from "mongodb";
 
 import * as collections from "./config/mongoCollections.js";
 
-cron.schedule("0 * * * * *", async () => {
+//can be reduced to an an hour by setting it as "0 * * * * *"
+cron.schedule("*/10 * * * * *", async () => {
   const currentDate = dayjs().format("YYYY-MM-DDTHH:mm:ss");
   const meetingsCollection = await collections.meetingsCollection();
   const remindersCollection = await collections.remindersCollection();
