@@ -15,28 +15,29 @@
             {{#each displayItems}}
             {{#if (eq this.type "reminder")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill text-bg-warning text-wrap text-center event-button" data-bs-toggle="modal"
-                    data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
+                    class="badge event-pill bg-warning{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
                         class="bi-alarm">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "task")}}
-            <div class="d-grid gap-1"><button class="badge event-pill text-bg-danger text-wrap text-center event-button"
+            <div class="d-grid gap-1"><button
+                    class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
                     data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
                         class="bi-check2-square">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "meeting")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill text-bg-primary text-wrap text-center event-button" data-bs-toggle="modal"
-                    data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+                    class="badge event-pill bg-primary{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
                         class="bi-calendar-event">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "notes")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill text-bg-success text-wrap text-center event-button" data-bs-toggle="modal"
-                    data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
+                    class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
                         class="bi-file-text">{{this.title}}</i></button></div>
             {{/if}}
