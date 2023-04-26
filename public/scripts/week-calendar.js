@@ -815,27 +815,56 @@ function populateBasedOnEventType(target) {
 
 function checkMeetingValidations(form) {
   //get all error divs
-  meeting_title_error = document.getElementById("meeting_title_error");
-  meeting_textBody_error = document.getElementById("meeting_textBody_error");
-  meeting_tag_error = document.getElementById("meeting_tag_error");
-  meeting_dateAddedTo_error = document.getElementById(
+  let meeting_title_error = document.getElementById("meeting_title_error");
+  let meeting_textBody_error = document.getElementById(
+    "meeting_textBody_error"
+  );
+  let meeting_tag_error = document.getElementById("meeting_tag_error");
+  let meeting_dateAddedTo_error = document.getElementById(
     "meeting_dateAddedTo_error"
   );
-  meeting_dateDueOn_error = document.getElementById("meeting_dateDueOn_error");
-  repeatingCounterIncrement_error = document.getElementById(
+  let meeting_dateDueOn_error = document.getElementById(
+    "meeting_dateDueOn_error"
+  );
+  let meeting_repeatingCounterIncrement_error = document.getElementById(
     "meeting_repeatingCounterIncrement_error"
   );
-  repeatingIncrementBy_error = document.getElementById(
+  let meeting_repeatingIncrementBy_error = document.getElementById(
     "meeting_repeatingIncrementBy_error"
   );
+  meeting_title_error.innerText = "";
+  meeting_textBody_error.innerText = "";
+  meeting_tag_error.innerText = "";
+  meeting_dateAddedTo_error.innerText = "";
+  meeting_dateDueOn_error.innerText = "";
+  meeting_repeatingCounterIncrement_error.innerText = "";
+  meeting_repeatingIncrementBy_error.innerText = "";
+  form.tag.setCustomValidity("");
+  form.title.setCustomValidity("");
+  form.dateAddedTo.setCustomValidity("");
+  form.dateDueOn.setCustomValidity("");
+  form.repeating.setCustomValidity("");
+  form.repeatingIncrementBy.setCustomValidity("");
+  form.repeatingCounterIncrement.setCustomValidity("");
+
+  if (form.tag.value.length > 20) {
+    meeting_tag_error.innerText = "tag cant be longer than 20 characters";
+    form.tag.setCustomValidity("error");
+  }
+  if (!form.tag.value.match(/^[a-z]+$/)) {
+    meeting_tag_error.innerText = "tag has only letters with no spaces";
+    form.tag.setCustomValidity("error");
+  }
 
   if (form.title.value.length > 100) {
     meeting_title_error.innerText = "Title cant be longer than 100 characters";
+    form.title.setCustomValidity("error");
   }
 
-  if (form.textBody.value.length > 200) {
+  if (form.dateAddedTo.value.length > 200) {
     meeting_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
+    form.textBody.setCustomValidity("error");
   }
 
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
@@ -853,12 +882,14 @@ function checkMeetingValidations(form) {
   }
   if (form.repeating.checked) {
     if (form.repeatingCounterIncrement.value < 0) {
-      repeatingCounterIncrement_error.innerText =
+      meeting_repeatingCounterIncrement_error.innerText =
         "the counter needs to be greater than 0";
+      form.repeatingCounterIncrement.setCustomValidity("error");
     }
     if (!/^(day|week|month|year)$/.test(form.repeatingIncrementBy.value)) {
-      repeatingIncrementBy_error.innerText =
+      meeting_repeatingIncrementBy_error.innerText =
         "the counter needs to be greater a value from the drop down!";
+      form.repeatingIncrementBy.setCustomValidity("error");
     }
   }
   if (form.checkValidity()) {
@@ -868,10 +899,12 @@ function checkMeetingValidations(form) {
 
 function checkNotesValidations(form) {
   //get all error divs
-  notes_title_error = document.getElementById("notes_title_error");
-  notes_editor_error = document.getElementById("notes_editor_error");
-  notes_tag_error = document.getElementById("notes_tag_error");
-  notes_dateAddedTo_error = document.getElementById("notes_dateAddedTo_error");
+  let notes_title_error = document.getElementById("notes_title_error");
+  let notes_editor_error = document.getElementById("notes_editor_error");
+  let notes_tag_error = document.getElementById("notes_tag_error");
+  let notes_dateAddedTo_error = document.getElementById(
+    "notes_dateAddedTo_error"
+  );
 
   notes_title_error.innerText = "";
   notes_editor_error.innerText = "";
@@ -978,11 +1011,13 @@ function checkReminderValidations(form) {
 
 function checkTaskValidations(form) {
   //get all error divs
-  task_title_error = document.getElementById("task_title_error");
-  task_textBody_error = document.getElementById("task_textBody_error");
-  task_tag_error = document.getElementById("task_tag_error");
-  task_dateAddedTo_error = document.getElementById("task_dateAddedTo_error");
-  task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
+  let task_title_error = document.getElementById("task_title_error");
+  let task_textBody_error = document.getElementById("task_textBody_error");
+  let task_tag_error = document.getElementById("task_tag_error");
+  let task_dateAddedTo_error = document.getElementById(
+    "task_dateAddedTo_error"
+  );
+  let task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
 
   if (form.title.value.length > 100) {
     task_title_error.innerText = "Title cant be longer than 100 characters";
@@ -1165,20 +1200,23 @@ filterForm();
 submitMeetingForm();
 submitReminderForm();
 submitTaskForm();
+submitNotesForm();
 
 bindEventButtontoModal();
+
 enableMeetingFormEdit();
 enableTaskFormEdit();
+enableReminderFormEdit();
+enableNotesFormEdit();
+
 onMeetingModalClose();
 onTaskModalClose();
 onReminderModalClose();
-repeatingCheckBoxTogglerMeeting();
-repeatingCheckBoxTogglerReminder();
-enableReminderFormEdit();
+onNotesModalClose();
 
 miniCalendarLoader();
+
 clickableDateCells();
 
-enableNotesFormEdit();
-onNotesModalClose();
-submitNotesForm();
+repeatingCheckBoxTogglerReminder();
+repeatingCheckBoxTogglerMeeting();

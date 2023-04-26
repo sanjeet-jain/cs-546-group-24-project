@@ -20,6 +20,29 @@ const utils = {
   },
   validateStringInputWithMaxLength(input, inputName, maxLength) {
     this.validateStringInput(input, inputName);
+    if (
+      inputName === "tag" &&
+      !input
+        .trim()
+        .toLowerCase()
+        .match(/^[a-z]+$/gi)
+    ) {
+      throw new Error(
+        `${inputName} can not have spaces and contains only letters`
+      );
+    }
+    if (
+      inputName === "title" &&
+      !input
+        .trim()
+        .toLowerCase()
+        .match(/^(?![\d])[\w\s]+$/gi)
+    ) {
+      throw new Error(
+        `${inputName} can not have spaces and contains only letters`
+      );
+    }
+
     if (input.trim().length > maxLength) {
       throw new Error(
         `${inputName} cannot be longer than ${maxLength} characters`

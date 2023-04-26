@@ -21,7 +21,7 @@
             <div class="mb-3">
               <label for="reminder_title" class="form-label">Title</label>
               <input required type="text" class="form-control" name="title" id="reminder_title" placeholder="Title"
-                value="" maxlength="100" />
+                value="" maxlength="100" pattern="^(?=.{1,100}$)(?![\d])[\w\s]+$" />
               <div id="reminder_title_error" class="invalid-feedback">
               </div>
             </div>
@@ -37,7 +37,7 @@
             <div class="mb-3">
               <label for="reminder_tag" class="form-label">Tag</label>
               <input type="text" class="form-control" name="tag" id="reminder_tag" placeholder="Tag" value=""
-                maxlength="20" />
+                maxlength="20" pattern="^[a-z]+$" />
               <div id="reminder_tag_error" class="invalid-feedback">
 
               </div>
@@ -56,7 +56,7 @@
             <div class="form-floating mb-3">
               <input required type="datetime-local" class="form-control" name="dateAddedTo" id="reminder_dateAddedTo"
                 value="" />
-              <label for="reminer_dateAddedTo" class="form-label">Date to Add
+              <label for="reminder_dateAddedTo" class="form-label">Date to Add
                 event to
               </label>
 
@@ -69,7 +69,7 @@
             <div class="form-check">
               <input class="form-check-input" type="checkbox" name="repeating" id="reminder_repeating"
                 aria-describedby="repeating_help_id" value="false" />
-              <label class="form-check-label" for="reminer_repeating">
+              <label class="form-check-label" for="reminder_repeating">
                 Is the event repeating?
               </label>
               <small id="repeating_help_id" class="form-text text-muted">
@@ -79,7 +79,7 @@
             </div>
             {{! repeatingIncrementBy }}
             <div class="mb-3">
-              <label for="repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
+              <label for="reminder_repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
               <select class="form-select form-select-sm" name="repeatingIncrementBy" id="reminder_repeatingIncrementBy">
                 <option value="">Please select an option</option>
                 <option value="day">day</option>

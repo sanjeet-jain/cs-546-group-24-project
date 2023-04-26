@@ -21,7 +21,7 @@
             <div class="mb-3">
               <label for="notes_title" class="form-label">Title</label>
               <input required type="text" class="form-control" name="title" id="notes_title" placeholder="Title"
-                value="" maxlength="100" />
+                value="" maxlength="100" pattern="^(?=.{1,100}$)(?![\d])[\w\s]+$" />
               <div id="notes_title_error" class="invalid-feedback">
 
               </div>
@@ -44,7 +44,7 @@
             <div class="mb-3">
               <label for="notes_tag" class="form-label">Tag</label>
               <input required type="text" class="form-control" name="tag" id="notes_tag" placeholder="Tag" value=""
-                maxlength="20" />
+                maxlength="20" pattern="^[a-z]+$" />
               <div id="notes_tag_error" class="invalid-feedback">
 
               </div>
