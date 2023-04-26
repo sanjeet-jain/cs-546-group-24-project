@@ -12,6 +12,36 @@ import dayjs from "dayjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import cron from "node-cron";
+import { MongoClient } from "mongodb";
+
+import * as collections from "./config/mongoCollections.js";
+
+cron.schedule("0 * * * * *", async () => {
+  const currentDate = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+  const meetingsCollection = await collections.meetingsCollection();
+  const remindersCollection = await collections.remindersCollection();
+  const tasksCollection = await collections.tasksCollection();
+  const updateResultmeetings = await meetingsCollection.updateMany(
+    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    { $set: { expired: true } }
+  );
+  // console.log(updateResultmeetings);
+  const updateResultreminders = await remindersCollection.updateMany(
+    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    { $set: { expired: true } }
+  );
+  // console.log(updateResultreminders);
+
+  const updateResulttasks = await tasksCollection.updateMany(
+    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    { $set: { expired: true } }
+  );
+  // console.log(updateResulttasks);
+
+  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
+});
+
 const handlebarsInstance = exphbs.create({
   defaultLayout: "main",
   layoutsDir: "views/layouts",

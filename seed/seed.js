@@ -22,7 +22,7 @@ export async function runSetup() {
  meetingIds: [ObjectId]
 */
 
-  let dt = dayjs().set("hours", 14).toDate();
+  let dt = dayjs("2023-04-22").set("hours", 14).toDate();
 
   const sampleUser = {
     first_name: "Sample",
