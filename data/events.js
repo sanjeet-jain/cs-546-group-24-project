@@ -39,7 +39,7 @@ const exportedMethods = {
         }
       }
     }
-    filter.tags = tagsToRender;
+    filter.tags = [...new Set(tagsToRender)];
     return data;
   },
 
