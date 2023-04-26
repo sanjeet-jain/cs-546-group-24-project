@@ -861,7 +861,7 @@ function checkMeetingValidations(form) {
     form.title.setCustomValidity("error");
   }
 
-  if (form.dateAddedTo.value.length > 200) {
+  if (form.textBody.value.length > 200) {
     meeting_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
@@ -907,21 +907,33 @@ function checkNotesValidations(form) {
   );
 
   notes_title_error.innerText = "";
-  notes_editor_error.innerText = "";
-  notes_editor_error.classList = "";
   notes_tag_error.innerText = "";
   notes_dateAddedTo_error.innerText = "";
-  form.title.setCustomValidity("");
+  notes_editor_error.innerText = "";
+  notes_editor_error.classList = "";
   form.textBody.setCustomValidity("");
-  form.dateAddedTo.setCustomValidity("");
   form.tag.setCustomValidity("");
+  form.title.setCustomValidity("");
+  form.dateAddedTo.setCustomValidity("");
+
   if (form.tag.value.length > 20) {
-    notes_tag_error.innerText = "tag cant be longer than 50 characters";
-    form.tag.setCustomValidity("overflow");
+    notes_tag_error.innerText = "tag cant be longer than 20 characters";
+    form.tag.setCustomValidity("error");
   }
+  if (!form.tag.value.match(/^[a-z]+$/)) {
+    notes_tag_error.innerText = "tag has only letters with no spaces";
+    form.tag.setCustomValidity("error");
+  }
+
   if (form.title.value.length > 100) {
     notes_title_error.innerText = "Title cant be longer than 100 characters";
-    form.title.setCustomValidity("overflow");
+    form.title.setCustomValidity("error");
+  }
+
+  if (form.dateAddedTo.value.length > 200) {
+    notes_textBody_error.innerText =
+      "TextBody cant be longer than 200 characters";
+    form.textBody.setCustomValidity("error");
   }
 
   const parser = new DOMParser();
@@ -965,17 +977,28 @@ function checkReminderValidations(form) {
   let reminder_endDateTime_error = document.getElementById(
     "reminder_endDateTime_error"
   );
+  form.textBody.setCustomValidity("");
+  form.tag.setCustomValidity("");
+  form.title.setCustomValidity("");
+  form.dateAddedTo.setCustomValidity("");
+  if (form.tag.value.length > 20) {
+    reminder_tag_error.innerText = "tag cant be longer than 20 characters";
+    form.tag.setCustomValidity("error");
+  }
+  if (!form.tag.value.match(/^[a-z]+$/)) {
+    reminder_tag_error.innerText = "tag has only letters with no spaces";
+    form.tag.setCustomValidity("error");
+  }
 
   if (form.title.value.length > 100) {
     reminder_title_error.innerText = "Title cant be longer than 100 characters";
-    form.title.setCustomValidity("title can't be longer than 100 chars");
-  } else {
-    form.dateAddedTo.setCustomValidity("");
+    form.title.setCustomValidity("error");
   }
+
   if (form.textBody.value.length > 200) {
     reminder_textBody_error.innerText =
-      "Body of text can't be longer than 200 characters";
-    form.textBody.setCustomValidity("text body can't be longer than 200 chars");
+      "TextBody cant be longer than 200 characters";
+    form.textBody.setCustomValidity("error");
   }
   if (!dayjs(form.dateAddedTo.value).isValid()) {
     reminder_dateAddedTo_error.innerText = "The date added should be valid";
