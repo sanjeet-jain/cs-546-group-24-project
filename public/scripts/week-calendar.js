@@ -1107,16 +1107,19 @@ function loadRightPaneCells(data) {
     let buttonClass = "";
     if (event.type === "meeting") {
       logoClass = "bi-calendar-event";
-      buttonClass = "text-bg-primary";
+      buttonClass = "bg-primary";
     } else if (event.type === "reminder") {
       logoClass = "bi-alarm";
-      buttonClass = "text-bg-warning";
+      buttonClass = "bg-warning";
     } else if (event.type === "task") {
       logoClass = "bi-check2-square";
-      buttonClass = "text-bg-danger";
+      buttonClass = "bg-danger";
     } else if (event.type === "notes") {
       logoClass = "bi-file-text";
-      buttonClass = "text-bg-success";
+      buttonClass = "bg-success";
+    }
+    if (event.expired) {
+      buttonClass = buttonClass + "-subtle";
     }
 
     eventButton.classList.add(

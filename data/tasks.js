@@ -83,13 +83,13 @@ const tasksDataFunctions = {
     };
 
     const tasks = await tasksCollection();
-    const taskExists = await tasks.findOne({ title: title });
+    // const taskExists = await tasks.findOne({ title: title });
 
-    if (taskExists) {
-      throw new Error(
-        `Task title already exists for the User ${user.first_name}`
-      );
-    }
+    // if (taskExists) {
+    //   throw new Error(
+    //     `Task title already exists for the User ${user.first_name}`
+    //   );
+    // }
     const insertInfo = await tasks.insertOne(newTask);
 
     if (insertInfo.insertedCount === 0) {

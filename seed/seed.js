@@ -5,25 +5,8 @@ import usersDataFunctions from "../data/users.js";
 import notesDataFunctions from "../data/notes.js";
 import * as reminderDataFunctions from "../data/reminder.js";
 import dayjs from "dayjs";
-export async function runSetup() {
-  /*
-  UsersCollection
- _id: ObjectId,
- first_name: String,
- last_name: String,
- email: String,
- password: String,
- Disability:boolean,
- Dob:date,
- Consent:boolean
- taskIds: [ObjectId],
- reminderIds: [ObjectId],
- noteIds: [ObjectId],
- meetingIds: [ObjectId]
-*/
 
-  let dt = dayjs().set("hours", 14).toDate();
-
+async function createUser() {
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
@@ -50,6 +33,26 @@ export async function runSetup() {
     sampleUser.dob,
     sampleUser.consent
   );
+  return user;
+}
+export async function runSetup(datestring, user) {
+  /*
+  UsersCollection
+ _id: ObjectId,
+ first_name: String,
+ last_name: String,
+ email: String,
+ password: String,
+ Disability:boolean,
+ Dob:date,
+ Consent:boolean
+ taskIds: [ObjectId],
+ reminderIds: [ObjectId],
+ noteIds: [ObjectId],
+ meetingIds: [ObjectId]
+*/
+
+  let dt = dayjs(datestring).set("hours", 14).toDate();
 
   // ideally use the CRUD functions in data/ to initialise and seed all the data we have !
 
@@ -185,7 +188,7 @@ export async function runSetup() {
     title: "sample note",
     dateAddedTo: sampleMeeting.dateAddedTo,
     textBody: "     sample Note body      ",
-    tag: "cs_546",
+    tag: "cs546",
     documentLinks: [],
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     type: "notes",
@@ -207,6 +210,8 @@ export async function runSetup() {
 export async function seed() {
   const db = await dbConnection();
   await db.dropDatabase();
-  await runSetup();
+  const user = await createUser();
+  await runSetup("2023-04-22", user);
+  await runSetup(undefined, user);
   await closeConnection();
 }
