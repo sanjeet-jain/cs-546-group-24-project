@@ -141,7 +141,8 @@ export async function runSetup() {
     sampleTask.textBody,
     sampleTask.dateAddedTo,
     sampleTask.priority,
-    sampleTask.tag
+    sampleTask.tag,
+    sampleTask.checked
   );
 
   await tasksDataFunctions.createTask(
@@ -150,7 +151,8 @@ export async function runSetup() {
     sampleTask2.textBody,
     sampleTask2.dateAddedTo,
     sampleTask2.priority,
-    sampleTask2.tag
+    sampleTask2.tag,
+    sampleTask2.checked
   );
 
   // Seed reminders

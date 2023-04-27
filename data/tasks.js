@@ -35,7 +35,6 @@ const tasksDataFunctions = {
     dateAddedTo,
     priority,
     tag,
-    expired,
     checked
   ) {
     utils.checkObjectIdString(userId);
@@ -56,14 +55,16 @@ const tasksDataFunctions = {
       "tag",
       constants.stringLimits["tag"]
     );
-    utils.validateBooleanInput(expired, "expired");
-    utils.validateBooleanInput(checked, "checked");
+    checked = utils.validateBooleanInput(checked, "checked");
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
-
+    let expired = false;
+    if (checked) {
+      expired = true;
+    }
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (!user) {
@@ -76,9 +77,9 @@ const tasksDataFunctions = {
       dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
       priority: priority,
       tag: tag,
-      checked: false,
+      checked: checked,
       type: "task",
-      expired: false,
+      expired: expired,
     };
 
     const tasks = await tasksCollection();
@@ -109,10 +110,12 @@ const tasksDataFunctions = {
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
     updatedTaskData = { ...task };
-
+    updatedTaskData.expired = false;
     if (updatedTask.checked) {
-      utils.validateBooleanInput(updatedTask.checked, "checked");
-      updatedTaskData.checked = updatedTask.checked;
+      updatedTaskData.checked = utils.validateBooleanInput(
+        updatedTask.checked,
+        "checked"
+      );
     }
 
     if (updatedTask.title) {
@@ -167,6 +170,7 @@ const tasksDataFunctions = {
         updatedTask.checked,
         "checked"
       );
+      updatedTaskData.expired = updatedTaskData.checked ? true : false;
     } else {
       throw new Error("You must provide a checked value for the task.");
     }
@@ -175,7 +179,7 @@ const tasksDataFunctions = {
       { $set: updatedTaskData }
     );
     if (updateInfo.modifiedCount === 0) {
-      throw new Error("Could not update task successfully");
+      throw new Error("No Changes Made to the Task.");
     }
 
     return await this.getTaskById(id);

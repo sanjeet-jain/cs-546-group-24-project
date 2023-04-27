@@ -111,6 +111,7 @@ function populateTasksModal(userId, taskId) {
       // it needs an iso string
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
+      event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
       resultDiv = document.getElementById("task-update-result");
@@ -357,6 +358,7 @@ function onTaskModalClose() {
       event_modal.querySelector("input#task_tag").value = "";
       event_modal.querySelector("select#task_priority").value = "";
       event_modal.querySelector("input#task_dateAddedTo").value = "";
+      event_modal.querySelector("input#task_checked").value = "";
       resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
@@ -1030,7 +1032,10 @@ function checkTaskValidations(form) {
   let task_dateAddedTo_error = document.getElementById(
     "task_dateAddedTo_error"
   );
-
+  let task_checked_error = document.getElementById("task_checked_error");
+  if (typeof form.checked.value === "boolean") {
+    task_checked_error.innerText = "checked must be a boolean";
+  }
   if (form.title.value.length > 100) {
     task_title_error.innerText = "Title can't be longer than 100 characters";
   }

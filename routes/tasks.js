@@ -31,8 +31,7 @@ router
       res.status(400).json({ error: e.message });
     }
     try {
-      const { title, textBody, dateAddedTo, priority, tag, expired, checked } =
-        req.body;
+      let { title, textBody, dateAddedTo, priority, tag, checked } = req.body;
       utils.checkObjectIdString(userId);
       utils.validateStringInputWithMaxLength(
         title,
@@ -51,6 +50,9 @@ router
         "tag",
         constants.stringLimits["tag"]
       );
+      if (typeof checked === "undefined") {
+        checked = false;
+      }
       utils.validateBooleanInput(checked, "checked");
       const newTask = await tasksDataFunctions.createTask(
         userId,
@@ -85,7 +87,7 @@ router
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
       const taskPutData = req.body;
-      const { title, textBody, dateAddedTo, priority, tag, checked } =
+      let { title, textBody, dateAddedTo, priority, tag, checked } =
         taskPutData;
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
@@ -109,7 +111,10 @@ router
         "tag",
         constants.stringLimits["tag"]
       );
-      utils.validateBooleanInput(checked, "checked");
+      if (typeof checked === "undefined") {
+        checked = false;
+      }
+      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
