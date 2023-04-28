@@ -25,7 +25,7 @@ const utils = {
       !input
         .trim()
         .toLowerCase()
-        .match(/^[a-z]+$/gi)
+        .match(/^[a-zA-Z]+$/gi)
     ) {
       throw new Error(
         `${inputName} can not have spaces and contains only letters`
