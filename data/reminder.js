@@ -250,6 +250,16 @@ export const updateReminder = async (
   }
 };
 
+export const deleteReminderSingle = async (user_id, reminder_id) => {
+  await deleteReminderEventDAO(reminder_id);
+  await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+};
+
+export const getDistinctTags = async () => {
+  const reminderInstance = await remindersCollection();
+  return reminderInstance.distinct("tag");
+};
+
 // export const deleteReminder = async (user_id, reminder_id, flag) => {
 //   utils.checkObjectIdString(user_id);
 //   user_id = user_id.trim();
@@ -298,7 +308,7 @@ const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
   }
 };
 
-const deleteAllRecurrences = async (user_id, reminder_id) => {
+export const deleteAllRecurrences = async (user_id, reminder_id) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
   utils.checkObjectIdString(reminder_id);
@@ -560,11 +570,6 @@ const getReminderEventsByGroupDAO = async (group_id) => {
     throw new Error("Unexpected DB crash while accessing database");
   }
   return reminderEvents;
-};
-
-export const getDistinctTags = async () => {
-  const reminderInstance = await remindersCollection();
-  return reminderInstance.distinct("tag");
 };
 
 /** DAO Layer End */

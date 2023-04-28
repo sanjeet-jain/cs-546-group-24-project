@@ -1253,7 +1253,9 @@ function deleteButton() {
             deleteUrl = `/meeting/user/${userIdGlobal}/meetings/repeating/${dataGlobal.repeatingGroup}`;
           }
           // TODO add delete URL for reminders
-
+          if (dataGlobal.type === "reminder") {
+            deleteUrl = `/reminder/${userIdGlobal}/reminders/${dataGlobal._id}`;
+          }
           await $.ajax({
             method: "DELETE",
             url: deleteUrl,
