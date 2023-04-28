@@ -3,7 +3,10 @@ import { ObjectId } from "mongodb";
 import utils from "../utils/utils.js";
 import bcrypt from "bcrypt";
 import constants from "../constants/constants.js";
-
+import tasksDataFunctions from "./tasks.js";
+import * as remindersDataFunctions from "./reminder.js";
+import notesDataFunctions from "./notes.js";
+import meetingsDataFunctions from "./meetings.js";
 /*
   UsersCollection {
     _id: ObjectId,
@@ -186,6 +189,48 @@ const exportedMethods = {
     const users = await usersCollection();
     const user = await users.findOne({ email: email });
     return user;
+  },
+  async deleteAllEvents(userId) {
+    utils.checkObjectIdString(userId);
+    let user = await this.getUser(userId);
+
+    let tasks = user.taskIds;
+    let reminders = user.reminderIds;
+    let notes = user.noteIds;
+    let meetings = user.meetingIds;
+
+    for (let i = 0; i < tasks.length; i++) {
+      let taskId = tasks[i].toString();
+      await tasksDataFunctions.removeTask(taskId);
+    }
+    //TODO delete reminders
+    /*for (let i = 0; i < reminders.length; i++) {
+      let reminderId = reminders[i].toString();
+      await remindersDataFunctions.deleteAllRecurrences(id, reminderId);
+    }*/
+    for (let i = 0; i < notes.length; i++) {
+      let noteId = notes[i].toString();
+      await notesDataFunctions.delete(noteId, userId);
+    }
+    for (let i = 0; i < meetings.length; i++) {
+      let meetingId = meetings[i].toString();
+      await meetingsDataFunctions.delete(meetingId);
+    }
+  },
+  async deleteUser(userId) {
+    utils.checkObjectIdString(userId);
+    let user = await this.getUser(userId);
+
+    await this.deleteAllEvents(userId);
+
+    const users = await usersCollection();
+    const deletionInfo = await users.findOneAndDelete({
+      _id: new ObjectId(userId),
+    });
+    if (deletionInfo.lastErrorObject.n === 0) {
+      throw new Error(`${userId} not found for deletion`);
+    }
+    return `User has been successfully deleted!`;
   },
 };
 export default exportedMethods;

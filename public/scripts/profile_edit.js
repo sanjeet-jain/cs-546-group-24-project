@@ -17,6 +17,7 @@ function validateEdits(event) {
     );
   });
 }
+
 function checkValidations(event) {
   let firstNameInput = event.target.first_name;
   let lastNameInput = event.target.last_name;
@@ -31,6 +32,7 @@ function checkValidations(event) {
   let disability_error = document.getElementById("disability_error");
 
   let profileForm = document.getElementById("edit-form");
+  let deleteButton = document.getElementById("delete-profile-button");
 
   if (!validate_name(firstNameInput.value)) {
     first_name_error.innerText = "Please enter a valid first name.";
@@ -65,4 +67,27 @@ function validate_name(name) {
   const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
 }
+
+// Add event listener for delete profile button
+const deleteButton = document.getElementById("delete-profile-button");
+deleteButton.addEventListener("click", function (event) {
+  event.preventDefault();
+  const confirmDelete = confirm(
+    "Are you sure you want to delete your profile? This action cannot be undone."
+  );
+  if (confirmDelete) {
+    window.location.href = "/user/deleteUser";
+  }
+});
+const deleteEvents = document.getElementById("delete-events-button");
+deleteEvents.addEventListener("click", function (event) {
+  event.preventDefault();
+  const confirmDelete = confirm(
+    "Are you sure you want to delete all events? This action cannot be undone."
+  );
+  if (confirmDelete) {
+    window.location.href = "/user/deleteEvents";
+  }
+});
+
 validateEdits();
