@@ -2,7 +2,7 @@
 let yeaRangeRef = new Date().getFullYear();
 
 const constants = {
-  pwRounds: 16,
+  pwRounds: 2,
   min_age: 13,
   max_age: 150,
   weekdays: [
