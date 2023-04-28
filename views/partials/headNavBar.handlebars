@@ -15,13 +15,13 @@
             Radio">
             <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio"
               value="month">
-            <label class="btn btn-outline-dark" for="monthViewRadio">Month</label>
+            <label class="btn btn-outline" for="monthViewRadio">Month</label>
             <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio"
               value="week">
-            <label class="btn btn-outline-dark" for="weekViewRadio">Week</label>
+            <label class="btn btn-outline" for="weekViewRadio">Week</label>
             <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio"
               value="day">
-            <label class="btn btn-outline-dark" for="dayViewRadio">Day</label>
+            <label class="btn btn-outline" for="dayViewRadio">Day</label>
           </div>
         </form>
       </li>
@@ -48,7 +48,7 @@
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
-          <button type="submit" id="prevMonth" class="btn btn-outline-dark" style="border:
+          <button type="submit" id="prevMonth" class="btn btn-outline" style="border:
             none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
@@ -75,7 +75,7 @@
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
-          <button type="submit" id="nextMonth" class="btn btn-outline-dark" style="border:
+          <button type="submit" id="nextMonth" class="btn btn-outline" style="border:
             none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
@@ -88,7 +88,7 @@
         <form id="yearCalendarForm" method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{prevYear}}">
-          <button type="submit" id="prevYear" class="btn btn-outline-dark" style="border: none">
+          <button type="submit" id="prevYear" class="btn btn-outline" style="border: none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
@@ -110,7 +110,7 @@
         <form method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{nextYear}}">
-          <button type="submit" id="nextYear" class="btn btn-outline-dark" style="border: none">
+          <button type="submit" id="nextYear" class="btn btn-outline" style="border: none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
           </button>
@@ -127,8 +127,8 @@
   {{/if}}
   {{/if}}
   <div>
-    <button class="btn btn-outline-dark" style="border: none" type="button" data-bs-toggle="offcanvas"
-      data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+    <button class="btn border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+      aria-controls="offcanvasNavbar">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
@@ -162,6 +162,71 @@
           <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
 
           <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+
+          <li class="nav-item">
+            Theme
+            <div class="btn-group dropend">
+              <button id="themeDropDownButton" type="button" class="btn btn-secondary dropdown-toggle"
+                data-bs-toggle="dropdown" aria-expanded="false">
+
+              </button>
+              <ul class="dropdown-menu">
+                <li><button class="dropdown-item btn " data-bs-theme-value="light" aria-pressed="true"><i
+                      class="bi-sun-fill">Light</i></button>
+                </li>
+
+                <li><button class="dropdown-item btn" data-bs-theme-value="dark" aria-pressed="true"><i
+                      class="bi-moon-stars">Dark</i></button>
+                </li>
+              </ul>
+              <script>
+                // referenced from official documentation https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
+                // Get the <html> element
+                const html = document.querySelector('html');
+
+                // Get the <button> elements inside the dropdown menu
+                const themeButtons = document.querySelectorAll('.dropdown-item[data-bs-theme-value]');
+
+                // Function to set the Bootstrap theme
+                function setTheme(theme) {
+                  html.dataset.bsTheme = theme;
+                  localStorage.setItem('theme', theme);
+                }
+                const themeDropDownButton = document.getElementById("themeDropDownButton")
+                // Function to handle clicks on the theme buttons
+                function handleThemeClick(event) {
+                  // Get the value of the clicked button
+                  const theme = event.currentTarget.dataset.bsThemeValue;
+                  themeDropDownButton.innerHTML = event.currentTarget.innerHTML
+                  // Set the Bootstrap theme
+                  setTheme(theme);
+
+                  // Mark the clicked button as active and the others as inactive
+                  themeButtons.forEach(button => {
+                    button.classList.toggle('active', button === event.currentTarget);
+                    button.setAttribute('aria-pressed', button === event.currentTarget);
+                  });
+                }
+
+                // Add event listeners to the theme buttons
+                themeButtons.forEach(button => {
+                  button.addEventListener('click', handleThemeClick);
+                });
+
+                // Check if the theme is saved in localStorage and set it if it is
+                const savedTheme = localStorage.getItem('theme');
+                if (savedTheme) {
+                  setTheme(savedTheme);
+                  themeButtons.forEach(button => {
+                    button.classList.toggle('active', button.dataset.bsThemeValue === savedTheme);
+                    button.setAttribute('aria-pressed', button.dataset.bsThemeValue === savedTheme);
+                  });
+                }
+                themeDropDownButton.innerHTML = Array.from(themeButtons).filter(x => x.getAttribute('aria-pressed') === "true")[0].innerHTML;
+
+              </script>
+            </div>
+          </li>
         </ul>
         <!-- <form class="d-flex mt-3" role="search">
               <input
