@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "seed": "node -e \"import('./seed/seed.js').then(seed => seed.seed());\"",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "dev": "nodemon app.js"
   },
   "repository": {
