@@ -3,7 +3,7 @@ const router = Router();
 
 import usersFunctions from "../data/users.js";
 import utils from "../utils/utils.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { usersCollection } from "../config/mongoCollections.js";
 
 import constants from "../constants/constants.js";

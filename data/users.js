@@ -1,7 +1,7 @@
 import { usersCollection } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import utils from "../utils/utils.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import constants from "../constants/constants.js";
 
 /*
