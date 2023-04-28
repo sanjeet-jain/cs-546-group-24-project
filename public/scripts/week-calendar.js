@@ -851,7 +851,7 @@ function checkMeetingValidations(form) {
     meeting_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     meeting_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -920,7 +920,7 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     notes_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -985,7 +985,7 @@ function checkReminderValidations(form) {
     reminder_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     reminder_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
