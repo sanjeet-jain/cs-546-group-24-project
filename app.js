@@ -1,7 +1,6 @@
 import express from "express";
 const app = express();
 import session from "express-session";
-import cookieParser from "cookie-parser";
 import configRoutes from "./routes/index.js";
 
 import exphbs from "express-handlebars";
