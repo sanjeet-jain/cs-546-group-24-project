@@ -1,5 +1,5 @@
 function validatelogin() {
-  var forms = document.querySelectorAll(".needs-validation");
+  let forms = document.querySelectorAll(".needs-validation");
 
   Array.prototype.slice.call(forms).forEach(function (form) {
     form.addEventListener(
@@ -40,7 +40,7 @@ function checkValidations(event) {
   if (emailInput.checkValidity() && passwordInput.checkValidity()) {
     passForm.submit();
   }
-  return;
+  return true;
 }
 
 function validateEmail(email) {
