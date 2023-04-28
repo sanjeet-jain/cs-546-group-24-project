@@ -20,16 +20,6 @@ function viewRadioButtons() {
 }
 
 function clickableDates() {
-  const form = document.getElementById("viewRadioForm");
-
-  const radioButtons = form.elements["viewBtnRadio"];
-  let selectedValue = "";
-  for (var i = 0; i < radioButtons.length; i++) {
-    if (radioButtons[i].checked) {
-      selectedValue = radioButtons[i].value;
-      break;
-    }
-  }
   document.querySelectorAll(".date-clickable").forEach((td) => {
     td.addEventListener("click", (event) => {
       const form = document.getElementById("viewRadioForm");
