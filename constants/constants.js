@@ -93,6 +93,7 @@ const constants = {
     "11:30 PM",
   ],
   eventTypes: ["meetings", "reminders", "tasks", "notes"],
+  defaultTag: "timewise",
 };
 
 export default constants;

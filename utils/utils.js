@@ -11,15 +11,19 @@ const utils = {
       throw new Error("object id is not valid");
     }
   },
-  validateStringInput(input, inputName) {
+  validateStringInput(input, inputName, isOptional) {
+    isOptional =
+      isOptional === undefined || typeof isOptional !== "boolean"
+        ? false
+        : true;
     if (input && typeof input !== "string") {
       throw new Error(`${inputName} must be a string`);
-    } else if (input.trim().length === 0) {
+    } else if (!isOptional && input.trim().length === 0) {
       throw new Error(`${inputName} cannot be an empty string`);
     }
   },
-  validateStringInputWithMaxLength(input, inputName, maxLength) {
-    this.validateStringInput(input, inputName);
+  validateStringInputWithMaxLength(input, inputName, maxLength, isOptional) {
+    this.validateStringInput(input, inputName, isOptional);
     if (
       inputName === "tag" &&
       !input

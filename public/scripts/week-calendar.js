@@ -341,10 +341,13 @@ function onReminderModalClose() {
       resultDiv.classList = "";
       resultDiv.innerText = "";
       reminderForm.classList.remove("was-validated");
-      reminderForm.dateAddedTo.setCustomValidity("");
-      reminderForm.endDateTime.setCustomValidity("");
-      reminderForm.title.setCustomValidity("");
-      reminderForm.textBody.setCustomValidity("");
+      form.title.setCustomValidity("");
+      form.textBody.setCustomValidity("");
+      form.tag.setCustomValidity("");
+      form.priority.setCustomValidity("");
+      form.dateAddedTo.setCustomValidity("");
+      form.endDateTime.setCustomValidity("");
+      form.repeatingIncrementBy.setCustomValidity("");
       dataGlobal = undefined;
     });
   });
@@ -972,6 +975,7 @@ function checkNotesValidations(form) {
     return true;
   } else return false;
 }
+
 function checkReminderValidations(form) {
   let reminder_title_error = document.getElementById("reminder_title_error");
   let reminder_textBody_error = document.getElementById(
@@ -985,37 +989,50 @@ function checkReminderValidations(form) {
     "reminder_repeatingIncrementBy_error"
   );
 
+  let reminder_priority_error = document.getElementById(
+    "reminder_priority_error"
+  );
   let reminder_endDateTime_error = document.getElementById(
     "reminder_endDateTime_error"
   );
-  form.textBody.setCustomValidity("");
-  form.tag.setCustomValidity("");
-  form.title.setCustomValidity("");
-  form.dateAddedTo.setCustomValidity("");
+
   if (form.tag.value.length > 20) {
     reminder_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
+  } else {
+    reminder_tag_error.innerText = "";
   }
-  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
-    reminder_tag_error.innerText = "tag has only letters with no spaces";
-    form.tag.setCustomValidity("error");
-  }
+  // if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
+  //   reminder_tag_error.innerText = "tag has only letters with no spaces";
+  //   form.tag.setCustomValidity("error");
+  // }
 
   if (form.title.value.length > 100) {
     reminder_title_error.innerText = "Title cant be longer than 100 characters";
     form.title.setCustomValidity("error");
+  } else {
+    reminder_title_error.innerText = "";
+  }
+
+  if (!/^(1|2|3)$/.test(form.priority.value)) {
+    reminder_priority_error.innerText = "Priority can only be any of 1 2 3";
+    form.priority.setCustomValidity("error");
+  } else {
+    reminder_priority_error.innerText = "";
   }
 
   if (form.textBody.value.length > 200) {
     reminder_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
+  } else {
+    reminder_textBody_error.innerText = "";
   }
   if (!dayjs(form.dateAddedTo.value).isValid()) {
     reminder_dateAddedTo_error.innerText = "The date added should be valid";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
   } else {
-    form.dateAddedTo.setCustomValidity("");
+    reminder_dateAddedTo_error.innerText = "";
   }
 
   if (form.repeating.value === "true") {
@@ -1023,6 +1040,8 @@ function checkReminderValidations(form) {
       reminder_endDateTime_error.innerText =
         "The end recurrence date should be valid";
       form.endDateTime.setCustomValidity("Error");
+    } else {
+      reminder_endDateTime_error.innerText = "";
     }
     if (
       dayjs(form.dateAddedTo.value).isValid() &&
@@ -1036,8 +1055,15 @@ function checkReminderValidations(form) {
       form.dateAddedTo.setCustomValidity("Error");
       form.endDateTime.setCustomValidity("Error");
     } else {
-      form.dateAddedTo.setCustomValidity("");
-      form.endDateTime.setCustomValidity("");
+      reminder_endDateTime_error.innerText = "";
+      reminder_dateAddedTo_error.innerText = "";
+    }
+    if (!/^(day|week|month|year)$/.test(form.repeatingIncrementBy.value)) {
+      reminder_repeatingIncrementBy_error.innerText =
+        "The type of recurrence an only be a day, week, month and year";
+      form.repeatingIncrementBy.setCustomValidity("error");
+    } else {
+      reminder_repeatingIncrementBy_error.innerText = "";
     }
   }
   return form.checkValidity();

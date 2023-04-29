@@ -40,7 +40,6 @@ router
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
     dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
-      console.log(typeof user_id);
       utils.checkObjectIdString(user_id);
       user_id = user_id.trim();
       utils.validateStringInputWithMaxLength(
@@ -49,22 +48,33 @@ router
         constants.stringLimits["title"]
       );
       title = title.trim();
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "text body",
-        constants.stringLimits["textBody"]
-      );
-      textBody = textBody.trim();
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "text body",
+          constants.stringLimits["textBody"],
+          true
+        );
+        textBody = textBody.trim();
+      } else {
+        textBody = null;
+      }
+
       utils.validatePriority(priority, "priority");
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      tag = tag.trim().toLowerCase();
+
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        tag = tag.trim().toLowerCase();
+      } else {
+        tag = constants.defaultTag;
+      }
       utils.validateDate(dateAddedTo, "date time value");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
@@ -139,29 +149,40 @@ router
         constants.stringLimits["title"]
       );
       title = title.trim();
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "text body",
-        constants.stringLimits["textBody"]
-      );
-      textBody = textBody.trim();
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "text body",
+          constants.stringLimits["textBody"],
+          true
+        );
+        textBody = textBody.trim();
+      } else {
+        textBody = null;
+      }
       utils.validatePriority(priority, "priority");
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      tag = tag.trim().toLowerCase();
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        tag = tag.trim().toLowerCase();
+      } else {
+        tag = constants.defaultTag;
+      }
+
       utils.validateDate(dateAddedTo, "date time added to value");
-      utils.validateBooleanInput(repeating);
+      repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
         utils.validateDate(endDateTime, "end date value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {
         repeatingIncrementBy = null;
+        endDateTime = null;
       }
     } catch (e) {
       return res.status(400).json({ error: e.message });

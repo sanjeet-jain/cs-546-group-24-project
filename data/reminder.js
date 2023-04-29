@@ -29,22 +29,36 @@ export const createReminder = async (
     constants.stringLimits["title"]
   );
   title = title.trim();
-  utils.validateStringInputWithMaxLength(
-    textBody,
-    "text body",
-    constants.stringLimits["textBody"]
-  );
-  textBody = textBody.trim();
+
+  if (
+    textBody != null &&
+    typeof textBody === "string" &&
+    textBody.trim().length > 0
+  ) {
+    utils.validateStringInputWithMaxLength(
+      textBody,
+      "text body",
+      constants.stringLimits["textBody"],
+      true
+    );
+    textBody = textBody.trim();
+  } else {
+    textBody = null;
+  }
+
   utils.validatePriority(priority, "priority");
-  /**
-   * Tags should be case insensitive and all tags should be converted to lowercase
-   */
-  utils.validateStringInputWithMaxLength(
-    tag,
-    "tag",
-    constants.stringLimits["tag"]
-  );
-  tag = tag.trim().toLowerCase();
+
+  if (typeof tag === "string" && tag.trim().length > 0) {
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
+    tag = tag.trim().toLowerCase();
+  } else {
+    tag = constants.defaultTag;
+  }
+
   let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
@@ -62,7 +76,7 @@ export const createReminder = async (
   let reminderEvents = await getAllReminderEventsDAO(user_id);
   for (let i = 0; i < reminderEvents.length; i++) {
     if (
-      dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
+      dayjs(dateAddedTo).diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
       title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
       tag === reminderEvents[i].tag
     ) {
@@ -90,7 +104,7 @@ export const createReminder = async (
     priority: priority,
     tag: tag,
     repeating: repeating,
-    endDateTime: endDateTime /** TODO Add counter later */,
+    endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
     expired: false,
     dateAddedTo: dateAddedTo,
@@ -147,25 +161,41 @@ export const updateReminder = async (
     constants.stringLimits["title"]
   );
   title = title.trim();
-  utils.validateStringInputWithMaxLength(
-    textBody,
-    "text body",
-    constants.stringLimits["textBody"]
-  );
-  textBody = textBody.trim();
+
+  if (
+    textBody != null &&
+    typeof textBody === "string" &&
+    textBody.trim().length > 0
+  ) {
+    utils.validateStringInputWithMaxLength(
+      textBody,
+      "text body",
+      constants.stringLimits["textBody"],
+      true
+    );
+    textBody = textBody.trim();
+  } else {
+    textBody = null;
+  }
+
   utils.validatePriority(priority, "priority");
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInputWithMaxLength(
-    tag,
-    "tag",
-    constants.stringLimits["tag"]
-  );
-  tag = tag.trim().toLowerCase();
+  if (typeof tag === "string" && tag.trim().length > 0) {
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
+    tag = tag.trim().toLowerCase();
+  } else {
+    tag = constants.defaultTag;
+  }
   let dateCreated = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
+
   if (repeating) {
     utils.validateDate(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
