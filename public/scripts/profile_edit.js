@@ -76,7 +76,14 @@ deleteButton.addEventListener("click", function (event) {
     "Are you sure you want to delete your profile? This action cannot be undone."
   );
   if (confirmDelete) {
-    window.location.href = "/user/deleteUser";
+    $.ajax({
+      type: "DELETE",
+      url: "/user/deleteUser",
+      success: function (data) {},
+      error: function (data) {
+        console.log(data);
+      },
+    });
   }
 });
 const deleteEvents = document.getElementById("delete-events-button");

@@ -378,12 +378,13 @@ router.route("/deleteEvents").get(async (req, res) => {
   await usersFunctions.deleteAllEvents(id);
   res.redirect("/calendar/month");
 });
-router.route("/deleteUser").get(async (req, res) => {
+router.route("/deleteUser").delete(async (req, res) => {
   const id = req.session.user.user_id;
   await usersFunctions.deleteUser(id);
   res.clearCookie("AuthCookie");
   req.session.destroy();
-  res.redirect("/user/login");
+  res.status(200).json("Successful");
+  //res.redirect("/user/login");
 });
 router.route("/logout").get(async (req, res) => {
   if (!req.session.user) {
