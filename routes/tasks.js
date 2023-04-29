@@ -53,7 +53,7 @@ router
       if (typeof checked === "undefined") {
         checked = false;
       }
-      utils.validateBooleanInput(checked, "checked");
+      checked = utils.validateBooleanInput(checked, "checked");
       const newTask = await tasksDataFunctions.createTask(
         userId,
         title,
@@ -63,29 +63,31 @@ router
         tag,
         checked
       );
-      res.status(201).json(newTask);
+      res.status(201).json({ userId: userId, taskId: newTask._id });
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
   });
 
-router
-  .route("/:taskId")
-  .get(async (req, res) => {
-    try {
-      const taskId = req.params.taskId.trim();
-      utils.checkObjectIdString(taskId);
-      const task = await tasksDataFunctions.getTaskById(taskId);
-      res.json(task);
-    } catch (e) {
-      res.status(404).json({ error: e.message });
-    }
-  })
+router.route("/:taskId").get(async (req, res) => {
+  try {
+    const taskId = req.params.taskId.trim();
+    utils.checkObjectIdString(taskId);
+    const task = await tasksDataFunctions.getTaskById(taskId);
+    res.json(task);
+  } catch (e) {
+    res.status(404).json({ error: e.message });
+  }
+});
 
+router
+  .route("/:taskId/:userId")
   .put(async (req, res) => {
     try {
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
+      const userId = req.params.userId.trim();
+      utils.checkObjectIdString(userId);
       const taskPutData = req.body;
       let { title, textBody, dateAddedTo, priority, tag, checked } =
         taskPutData;
@@ -121,7 +123,7 @@ router
         taskPutData
       );
 
-      res.json(updatedTask);
+      res.json({ userId: userId, taskId: updatedTask._id });
     } catch (e) {
       res.status(400).json({ error: e.message });
     }

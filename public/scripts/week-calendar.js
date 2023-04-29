@@ -101,20 +101,16 @@ function populateTasksModal(userId, taskId) {
 
       let event_modal = document.getElementById("modal-task-display");
 
-      // event_modal.querySelector("#modal-task-label.modal-title").innerText =
-      //   data.title;
       event_modal.querySelector("input#task_title").value = data.title;
       event_modal.querySelector("input#task_textBody").value = data.textBody;
       event_modal.querySelector("input#task_tag").value = data.tag;
       event_modal.querySelector("select#task_priority").value = data.priority;
-      // issue with date time coming as a date string
-      // it needs an iso string
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
       event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
-      resultDiv = document.getElementById("task-update-result");
+      let resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -347,8 +343,9 @@ function onReminderModalClose() {
 
 function onTaskModalClose() {
   let event_modal = document.getElementById("modal-task-display");
-  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
-  //let taskForm = document.getElementById("task-form");
+  let modalCloseButtons = event_modal.querySelectorAll(
+    '[data-bs-dismiss="modal"]'
+  );
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#task-form-enabler");
@@ -359,7 +356,7 @@ function onTaskModalClose() {
       event_modal.querySelector("select#task_priority").value = "";
       event_modal.querySelector("input#task_dateAddedTo").value = "";
       event_modal.querySelector("input#task_checked").value = "";
-      resultDiv = document.getElementById("task-update-result");
+      let resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
       dataGlobal = undefined;
@@ -527,7 +524,7 @@ function submitReminderForm() {
 }
 
 function submitTaskForm() {
-  taskform = document.getElementById("task-form");
+  let taskform = document.getElementById("task-form");
   taskform.addEventListener(
     "submit",
     (event) => {
@@ -535,11 +532,11 @@ function submitTaskForm() {
       event.stopPropagation();
       let formData = new FormData(event.target);
       let jsonData = {};
-      for (var [key, value] of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
       let reqType = "PUT";
-      let ajaxURL = `/task/${dataGlobal?._id}`;
+      let ajaxURL = `/task/${dataGlobal?._id}/${userIdGlobal}`;
       if (dataGlobal === undefined) {
         reqType = "POST";
         ajaxURL = `/task/tasks/${userIdGlobal}`;
@@ -550,13 +547,14 @@ function submitTaskForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            console.log(data);
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
               "Task updated Successfully! Please refresh the page!";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
-            populateTasksModal(userIdGlobal, data._id);
+            populateTasksModal(data.userId, data.taskId);
             setTimeout(location.reload.bind(location), 5000);
           },
           error: function (data) {
@@ -581,6 +579,7 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
+            setTimeout(location.reload.bind(location), 5000);
           },
         });
       }

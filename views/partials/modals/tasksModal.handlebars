@@ -69,8 +69,11 @@
             {{! add more fields for other events }}
             <div class="mb-3">
               <label for="task_checked" class="form-label">Completed</label>
-              <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" />
+              <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" {{#if
+                checked}}checked{{/if}} />
               <div id="task_checked_error" class="invalid-feedback">
+                <input type="hidden" id="task_checked_state" value="false">
+
               </div>
 
           </form>

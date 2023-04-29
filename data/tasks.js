@@ -27,6 +27,8 @@ const tasksDataFunctions = {
    * @param {Date} dateAddedTo - The date when the task was added to the collection
    * @param {number} priority - The priority of the task (1, 2, or 3)
    * @param {string} tag - The custom tag for the task
+   * @param {boolean} checked - Whether the task is checked off or not
+   * @returns {Object} The newly created task
    */
   async createTask(
     userId,
@@ -55,16 +57,18 @@ const tasksDataFunctions = {
       "tag",
       constants.stringLimits["tag"]
     );
-    checked = utils.validateBooleanInput(checked, "checked");
+
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
-    let expired = false;
-    if (checked) {
-      expired = true;
+
+    if (typeof checked === "undefined") {
+      checked = false;
     }
+    let expired = utils.validateBooleanInput(checked, "checked");
+
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (!user) {
@@ -83,13 +87,6 @@ const tasksDataFunctions = {
     };
 
     const tasks = await tasksCollection();
-    // const taskExists = await tasks.findOne({ title: title });
-
-    // if (taskExists) {
-    //   throw new Error(
-    //     `Task title already exists for the User ${user.first_name}`
-    //   );
-    // }
     const insertInfo = await tasks.insertOne(newTask);
 
     if (insertInfo.insertedCount === 0) {
@@ -110,14 +107,15 @@ const tasksDataFunctions = {
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
     updatedTaskData = { ...task };
-    updatedTaskData.expired = false;
-    if (updatedTask.checked) {
-      updatedTaskData.checked = utils.validateBooleanInput(
-        updatedTask.checked,
-        "checked"
-      );
-    }
 
+    if (typeof updatedTask.checked === "undefined") {
+      updatedTaskData.checked = false;
+    }
+    updatedTaskData.checked = utils.validateBooleanInput(
+      updatedTask.checked,
+      "checked"
+    );
+    updatedTaskData.expired = updatedTaskData.checked;
     if (updatedTask.title) {
       utils.validateStringInputWithMaxLength(
         updatedTask.title,
@@ -164,15 +162,16 @@ const tasksDataFunctions = {
     } else {
       throw new Error("You must provide a tag for the task.");
     }
-
-    if (typeof updatedTask.checked !== "undefined") {
-      updatedTaskData.checked = utils.validateBooleanInput(
-        updatedTask.checked,
-        "checked"
-      );
-      updatedTaskData.expired = updatedTaskData.checked ? true : false;
-    } else {
-      throw new Error("You must provide a checked value for the task.");
+    //Added this to pre check if there are any changes made to the task without making unnecessary DB call
+    if (
+      updatedTaskData.title === task.title &&
+      updatedTaskData.textBody === task.textBody &&
+      updatedTaskData.dateAddedTo === task.dateAddedTo &&
+      updatedTaskData.priority === task.priority &&
+      updatedTaskData.tag === task.tag &&
+      updatedTaskData.checked === task.checked
+    ) {
+      throw new Error("No Changes Made to the Task.");
     }
     const updateInfo = await tasks.updateOne(
       { _id: new ObjectId(id) },
@@ -180,6 +179,12 @@ const tasksDataFunctions = {
     );
     if (updateInfo.modifiedCount === 0) {
       throw new Error("No Changes Made to the Task.");
+    }
+    if (updateInfo.matchedCount === 0) {
+      throw new Error("No Task Found to Update.");
+    }
+    if (updateInfo.acknowledged !== true) {
+      throw new Error("Update wasn't successful.");
     }
 
     return await this.getTaskById(id);
