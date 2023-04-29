@@ -3,13 +3,15 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="modal-header gap-2">
         <h4 class="modal-title" id="modal-meeting-label">
           <i class="bi-calendar-event">Meeting Event</i>
-
         </h4>
-        <button type="button" class="btn btn-edit" aria-label="Edit" {{! onclick="enableFormEdit()" }}>
+        <button type="button" class="btn btn-dark btn-edit" aria-label="Edit">
           <i class="bi-pencil-fill"></i>
+        </button>
+        <button type="button" class="btn btn-danger btn-delete" aria-label="Delete">
+          <i class="bi-trash3-fill"></i>
         </button>
         <button id="meeting-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
           aria-label="Close"></button>

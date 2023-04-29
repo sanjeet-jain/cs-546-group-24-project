@@ -46,7 +46,7 @@ function populateMeetingsModal(userId, meetingId) {
       // }
     },
     error: function (data) {
-      resultDiv = document.getElementById("meeting-update-result");
+      let resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -423,7 +423,7 @@ function submitMeetingForm() {
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             populateMeetingsModal(data.userId, data.meetingId);
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
             resultDiv = document.getElementById("meeting-update-result");
@@ -508,7 +508,7 @@ function submitReminderForm() {
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
 
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
             resultDiv.classList = "";
@@ -555,7 +555,7 @@ function submitTaskForm() {
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             populateTasksModal(data.userId, data.taskId);
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
             let resultDiv = document.getElementById("task-update-result");
@@ -1211,6 +1211,115 @@ function filterForm() {
     });
   });
 }
+
+function deleteButton() {
+  editButtons = document.querySelectorAll("button.btn-delete");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.target.disabled = true;
+      const oldHtml = event.target.innerHTML;
+      // Add the spinner to the button
+      event.target.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+      let event_modal = document.getElementById(
+        `modal-${dataGlobal.type}-display`
+      );
+      const isRepeating = event_modal.querySelector(
+        `input#${dataGlobal.type}_repeating`
+      )?.checked;
+
+      const modalFooter = document.querySelector("#deleteModal .modal-footer");
+      const deleteModal = new bootstrap.Modal(
+        document.getElementById("deleteModal")
+      );
+
+      if (isRepeating) {
+        const deleteAllButton = document.createElement("button");
+        deleteAllButton.classList.add("btn", "btn-danger");
+        deleteAllButton.textContent = "Delete all events";
+        modalFooter.appendChild(deleteAllButton);
+
+        deleteAllButton.addEventListener("click", async function () {
+          // Delete all events
+          let deleteUrl = "";
+          if (dataGlobal.type === "meeting") {
+            deleteUrl = `/meeting/user/${userIdGlobal}/meetings/repeating/${dataGlobal.repeatingGroup}`;
+          }
+          // TODO add delete URL for reminders
+
+          await $.ajax({
+            method: "DELETE",
+            url: deleteUrl,
+            success: function (data) {
+              let resultDiv = document.getElementById(
+                `${dataGlobal.type}-update-result`
+              );
+              resultDiv.classList = "";
+              resultDiv.innerText =
+                "All Event recurrences Successfully deleted, Page will reload now";
+              resultDiv.classList.add("alert", "alert-danger");
+              event.target.innerHTML = oldHtml;
+              setTimeout(location.reload.bind(location), 3000);
+            },
+          });
+          deleteModal.hide();
+        });
+      }
+
+      const deleteOneButton = document.createElement("button");
+      deleteOneButton.classList.add("btn", "btn-danger");
+      deleteOneButton.textContent = "Delete one event";
+
+      modalFooter.appendChild(deleteOneButton);
+
+      deleteOneButton.addEventListener("click", async function () {
+        let deleteUrl = "";
+        if (dataGlobal.type === "meeting") {
+          deleteUrl = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "reminder") {
+          deleteUrl = `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "task") {
+          deleteUrl = `/task/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "notes") {
+          deleteUrl = `/notes/${userIdGlobal}/${dataGlobal._id}`;
+        }
+
+        // Delete one event
+        await $.ajax({
+          method: "DELETE",
+          url: deleteUrl,
+          success: function (data) {
+            let resultDiv = document.getElementById(
+              `${dataGlobal.type}-update-result`
+            );
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              "Single Event Successfully delete, Page will reload now";
+            resultDiv.classList.add("alert", "alert-danger");
+            event.target.innerHTML = oldHtml;
+            setTimeout(location.reload.bind(location), 3000);
+          },
+        });
+        deleteModal.hide();
+      });
+      deleteModal.show();
+      // await $.ajax({
+      //   method: "DELETE",
+      //   url: `/meeting/${userIdGlobal}/${dataGlobal._id}`,
+      //   success: function (data) {
+      //     let resultDiv = document.getElementById("meeting-update-result");
+      //     resultDiv.classList = "";
+      //     resultDiv.innerText =
+      //       "Meeting Successfully delete, Page will reload now";
+      //     resultDiv.classList.add("alert", "alert-danger");
+      //     setTimeout(location.reload.bind(location), 3000);
+      //   },
+      // });
+      // event.target.innerHTML = oldHtml;
+    });
+  });
+}
+
+deleteButton();
 
 filterForm();
 
