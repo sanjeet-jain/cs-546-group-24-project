@@ -4,11 +4,9 @@ import taskRoutes from "./tasks.js";
 import reminderRoutes from "./reminder.js";
 import noteRoutes from "./notes.js";
 import userRoutes from "./users.js";
-import * as path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
-import constants from "../constants/constants.js";
 
 const constructorMethod = (app) => {
   app.get("/firstLogin", validateUser, (req, res, next) => {

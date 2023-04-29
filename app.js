@@ -1,7 +1,6 @@
 import express from "express";
 const app = express();
 import session from "express-session";
-import cookieParser from "cookie-parser";
 import configRoutes from "./routes/index.js";
 
 import exphbs from "express-handlebars";
@@ -13,7 +12,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 import cron from "node-cron";
-import { MongoClient } from "mongodb";
 
 import * as collections from "./config/mongoCollections.js";
 
