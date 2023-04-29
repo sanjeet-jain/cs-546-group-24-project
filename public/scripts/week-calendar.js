@@ -865,7 +865,10 @@ function checkMeetingValidations(form) {
     meeting_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
+  if (
+    form.tag.value.trim().length > 0 &&
+    !form.tag.value.match(/^[a-zA-Z]+$/)
+  ) {
     meeting_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -879,6 +882,17 @@ function checkMeetingValidations(form) {
     meeting_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
+  }
+
+  if (form.dateAddedTo.value !== "" && form.dateDueOn.value === "") {
+    meeting_dateDueOn_error.innerText =
+      "Due data must be entered as date added to is populated";
+    form.dateDueOn.setCustomValidity("error");
+  }
+
+  if (form.dateAddedTo.value === "" && form.dateDueOn.value !== "") {
+    meeting_dateAddedTo_error.innerText = "Date Added to must be populated";
+    form.dateAddedTo.setCustomValidity("error");
   }
 
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
@@ -895,6 +909,14 @@ function checkMeetingValidations(form) {
     }
   }
   if (form.repeating.checked) {
+    if (form.dateAddedTo.value === "" || form.dateDueOn.value === "") {
+      form.dateAddedTo.setCustomValidity("mandatory");
+      form.dateDueOn.setCustomValidity("mandatory");
+      meeting_dateDueOn_error.innerText =
+        "This field is mandatory in order to access the recurrence feature";
+      meeting_dateAddedTo_error.innerText =
+        "This field is mandatory in order to access the recurrence feature";
+    }
     if (form.repeatingCounterIncrement.value < 0) {
       meeting_repeatingCounterIncrement_error.innerText =
         "the counter needs to be greater than 0";

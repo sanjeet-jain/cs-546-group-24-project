@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
 import { JSDOM } from "jsdom";
+import { type } from "os";
 const utils = {
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
@@ -188,16 +189,18 @@ const utils = {
     } catch (e) {
       errorMessages.title = e.message;
     }
-    try {
-      this.validateDate(dateAddedTo, "DateAddedTo");
-    } catch (e) {
-      errorMessages.dateAddedTo = e.message;
-    }
 
-    try {
-      this.validateDate(dateDueOn, "DateDueOn");
-    } catch (e) {
-      errorMessages.dateDueOn = e.message;
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      try {
+        this.validateDate(dateAddedTo, "DateAddedTo");
+      } catch (e) {
+        errorMessages.dateAddedTo = e.message;
+      }
+      try {
+        this.validateDate(dateDueOn, "DateDueOn");
+      } catch (e) {
+        errorMessages.dateDueOn = e.message;
+      }
     }
 
     try {
@@ -206,26 +209,63 @@ const utils = {
       errorMessages.priority = e.message;
     }
 
-    try {
-      this.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-    } catch (e) {
-      errorMessages.textBody = e.message;
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      try {
+        this.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+      } catch (e) {
+        errorMessages.textBody = e.message;
+      }
+    } else {
+      textBody = null;
     }
 
-    try {
-      this.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-    } catch (e) {
-      errorMessages.tag = e.message;
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      try {
+        this.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+      } catch (e) {
+        errorMessages.tag = e.message;
+      }
+    } else {
+      tag = constants.defaultTag;
     }
+
+    if (
+      typeof dateAddedTo === "string" &&
+      typeof dateDueOn === "string" &&
+      dateAddedTo.trim().length === 0 &&
+      dateDueOn.trim().length > 0
+    ) {
+      errorMessages.dateAddedTo =
+        "This field is mandatory if due date is populated";
+    }
+
+    if (
+      typeof dateAddedTo === "string" &&
+      typeof dateDueOn === "string" &&
+      dateAddedTo.trim().length > 0 &&
+      dateDueOn.trim().length === 0
+    ) {
+      errorMessages.dateDueOn =
+        "This field is mandatory if due date is populated";
+    }
+
     if (repeating === "true" || repeating === true) {
+      if (dateAddedTo === null && dateDueOn === null) {
+        if (!"dateAddedTo" in errorMessages && !"dateDueOn" in errorMessages) {
+          errorMessages.dateAddedTo =
+            "This field is mandatory in order to access the recurrence feature";
+          errorMessages.dateDueOn =
+            "This field is mandatory in order to access the recurrence feature";
+        }
+      }
       try {
         this.validateBooleanInput(repeating, "repeating");
       } catch (error) {
@@ -243,11 +283,14 @@ const utils = {
         errorMessages.repeatingIncrementBy = error.message;
       }
     }
-    try {
-      this.validateDateRange(dateAddedTo, dateDueOn);
-    } catch (error) {
-      errorMessages.dateDueOn = error.message;
+    if (dateAddedTo.trim().length > 0 && dateDueOn.trim().length > 0) {
+      try {
+        this.validateDateRange(dateAddedTo, dateDueOn);
+      } catch (error) {
+        errorMessages.dateDueOn = error.message;
+      }
     }
+
     return errorMessages;
   },
 
