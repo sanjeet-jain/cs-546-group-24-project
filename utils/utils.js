@@ -325,9 +325,7 @@ const utils = {
     date = dayjs(date).toDate();
     //TODO use datejs for validation
     if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
+      throw new Error(`${paramName} must be a valid Date`);
     }
   },
 
@@ -335,9 +333,7 @@ const utils = {
   /**Changes Made to existing code */
   validateDateObj(date, paramName) {
     if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
+      throw new Error(`${paramName} must be a valid Date`);
     }
   },
   validateAge(dob, min_age, max_age) {
