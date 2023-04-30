@@ -467,6 +467,9 @@ function submitMeetingForm() {
             let meeting_repeatingIncrementBy_error = document.getElementById(
               "meeting_repeatingIncrementBy_error"
             );
+            // if some error message is coming form the back end
+            // set the inner text and customValidity()
+
             meeting_title_error.innerText =
               data.responseJSON?.errorMessages?.title || "";
             meeting_textBody_error.innerText =
@@ -483,6 +486,50 @@ function submitMeetingForm() {
               data.responseJSON?.errorMessages?.repeatingIncrementBy ||
               "" ||
               "";
+            let event_modal = document.getElementById("modal-meeting-display");
+
+            event_modal
+              .querySelector("input#meeting_title")
+              .setCustomValidity(data.responseJSON?.errorMessages?.title || "");
+            event_modal
+              .querySelector("input#meeting_textBody")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.textBody || ""
+              );
+            event_modal
+              .querySelector("input#meeting_tag")
+              .setCustomValidity(data.responseJSON?.errorMessages?.tag || "");
+            event_modal
+              .querySelector("select#meeting_priority")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.priority || ""
+              );
+            event_modal
+              .querySelector("input#meeting_dateAddedTo")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.dateAddedTo || ""
+              );
+            event_modal
+              .querySelector("input#meeting_dateDueOn")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.dateDueOn || ""
+              );
+            event_modal
+              .querySelector("input#meeting_repeating")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.repeating || ""
+              );
+            event_modal
+              .querySelector("select#meeting_repeatingIncrementBy")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.repeatingIncrementBy || ""
+              );
+            event_modal
+              .querySelector("input#meeting_repeatingCounterIncrement")
+              .setCustomValidity(
+                data.responseJSON?.errorMessages?.repeatingCounterIncrement ||
+                  ""
+              );
           },
         });
       }
@@ -883,18 +930,20 @@ function checkMeetingValidations(form) {
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
   }
-
+  //dateAdded to passed dateDue on not passed
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value === "") {
     meeting_dateDueOn_error.innerText =
       "Due data must be entered as date added to is populated";
     form.dateDueOn.setCustomValidity("error");
   }
+  //dateDue to passed dateAdded on not passed
 
   if (form.dateAddedTo.value === "" && form.dateDueOn.value !== "") {
     meeting_dateAddedTo_error.innerText = "Date Added to must be populated";
     form.dateAddedTo.setCustomValidity("error");
   }
 
+  //both passed validate range
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
     if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
       form.dateAddedTo.setCustomValidity("invalid_range");
@@ -910,12 +959,15 @@ function checkMeetingValidations(form) {
   }
   if (form.repeating.checked) {
     if (form.dateAddedTo.value === "" || form.dateDueOn.value === "") {
-      form.dateAddedTo.setCustomValidity("mandatory");
-      form.dateDueOn.setCustomValidity("mandatory");
-      meeting_dateDueOn_error.innerText =
-        "This field is mandatory in order to access the recurrence feature";
-      meeting_dateAddedTo_error.innerText =
-        "This field is mandatory in order to access the recurrence feature";
+      if (!form.dateAddedTo.checkValidity()) {
+        form.dateAddedTo.setCustomValidity("mandatory");
+        meeting_dateDueOn_error.innerText =
+          "This field is mandatory in order to access the recurrence feature";
+      } else if (!form.dateDueOn.checkValidity()) {
+        form.dateDueOn.setCustomValidity("mandatory");
+        meeting_dateAddedTo_error.innerText =
+          "This field is mandatory in order to access the recurrence feature";
+      }
     }
     if (form.repeatingCounterIncrement.value < 0) {
       meeting_repeatingCounterIncrement_error.innerText =
