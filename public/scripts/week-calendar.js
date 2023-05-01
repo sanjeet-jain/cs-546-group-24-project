@@ -544,7 +544,7 @@ function submitTaskForm() {
         jsonData[key] = value.trim();
       }
       let reqType = "PUT";
-      let ajaxURL = `/task/${dataGlobal?._id}/${userIdGlobal}`;
+      let ajaxURL = `/task/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
         reqType = "POST";
         ajaxURL = `/task/tasks/${userIdGlobal}`;
@@ -1274,7 +1274,7 @@ function deleteButton() {
         } else if (dataGlobal.type === "reminder") {
           deleteUrl = `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`;
         } else if (dataGlobal.type === "task") {
-          deleteUrl = `/task/${dataGlobal._id}`;
+          deleteUrl = `/task/${userIdGlobal}/${dataGlobal._id}`;
         } else if (dataGlobal.type === "notes") {
           deleteUrl = `/notes/${userIdGlobal}/${dataGlobal._id}`;
         }

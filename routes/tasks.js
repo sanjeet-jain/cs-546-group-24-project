@@ -81,7 +81,7 @@ router.route("/:taskId").get(async (req, res) => {
 });
 
 router
-  .route("/:taskId/:userId")
+  .route("/:userId/:taskId")
   .put(async (req, res) => {
     try {
       const taskId = req.params.taskId.trim();
