@@ -84,6 +84,7 @@ router
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/signup", {
+        title: "Sign Up",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -104,16 +105,17 @@ router
       if (user) {
         req.session.user = createSessionObject(user);
       }
-      return res.status(200).redirect("/calendar/month");
+      return res.redirect("/calendar/month");
     } catch (e) {
       return res.status(404).render("user/signup", {
+        title: "Sign Up",
         error: "Something went wrong, please try again later",
         errorContent: req.body,
       });
     }
   })
   .get(async (req, res) => {
-    if (req.session.user) {
+    if (req?.session?.user) {
       return res.redirect("/calendar/month");
     }
     res.render("user/signup", {
@@ -124,15 +126,12 @@ router
 router
   .route("/login")
   .post(async (req, res) => {
-    if (req.session.user) {
+    if (req?.session?.user) {
       return res.redirect("/calendar/month");
     }
     let email = req.body.email;
     let password = req.body.password;
 
-    if (req.session.user) {
-      return res.redirect("/calendar");
-    }
     let errorMessages = {};
     try {
       utils.validateEmail(email);
@@ -149,6 +148,7 @@ router
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/login", {
+        title: "Login",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -165,6 +165,7 @@ router
         return res.redirect("/calendar/month");
       } else {
         return res.status(500).render("user/login", {
+          title: "Login",
           error: "Something went wrong on the server, please try again later",
           is_invalid: true,
           errorContent: req.body,
@@ -172,6 +173,7 @@ router
       }
     } catch (e) {
       return res.status(400).render("user/login", {
+        title: "Login",
         error: "Invalid Credentials",
         is_invalid: true,
         errorContent: req.body,
@@ -179,48 +181,60 @@ router
     }
   })
   .get(async (req, res) => {
-    if (req.session.user) {
+    if (req?.session?.user) {
       return res.redirect("/calendar/month");
     }
     res.render("user/login", {
       title: "Login",
     });
   });
-router
-  .route("/profile")
 
-  .get(async (req, res) => {
-    try {
-      if (req.session.user) {
-        const id = req.session.user.user_id;
-        const currUser = await usersFunctions.getUser(id);
+function validateUser(req, res, next) {
+  if (!req?.session?.user) {
+    return res.status(403).render("errors/error", {
+      title: "Error",
+      error: new Error("HTTP Error 403 : please Login"),
+    });
+  }
+  next();
+}
+router.route("/profile").get(validateUser, async (req, res) => {
+  try {
+    if (req?.session?.user) {
+      const id = req.session.user.user_id;
+      const currUser = await usersFunctions.getUser(id);
 
-        return res.render("user/profile", { currUser });
-      }
-    } catch (e) {
-      return res.status(500).json({ error: e.message });
+      return res.render("user/profile", {
+        title: "Profile",
+        currUser,
+      });
+    } else {
+      return res.render("user/login", { title: "Login" });
     }
-  });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
 
 router
   .route("/edit")
-  .get(async (req, res) => {
-    if (!req.session.user) {
-      res.render("user/login");
+  .get(validateUser, async (req, res) => {
+    if (!req?.session?.user) {
+      res.status(403).render("user/login", { title: "Login" });
     } else {
       const id = req.session.user.user_id;
       try {
         const currUser = await usersFunctions.getUser(id);
 
-        return res.render("user/edit", { currUser });
+        return res.render("user/edit", { currUser, title: "Edit Profile" });
       } catch (e) {
         return res.status(400).json({ error: e.message });
       }
     }
   })
   .post(async (req, res) => {
-    if (!req.session.user) {
-      res.render("user/login");
+    if (!req?.session?.user) {
+      res.render("user/login", { title: "Login" });
     } else {
       const id = req.session.user.user_id;
       const first_name = req.body.first_name;
@@ -259,6 +273,7 @@ router
 
       if (Object.keys(errorMessages).length !== 0) {
         return res.status(400).render("user/edit", {
+          title: "Edit Profile",
           errorMessages: errorMessages,
           is_invalid: true,
           errorContent: req.body,
@@ -280,18 +295,14 @@ router
   });
 router
   .route("/password")
-  .get(async (req, res) => {
-    if (req.session.user) {
-      return res.render("user/password");
-    }
-
-    res.redirect("/");
+  .get(validateUser, async (req, res) => {
+    return res.render("user/password", { title: "Password" });
   })
-  .post(async (req, res) => {
+  .post(validateUser, async (req, res) => {
     let errorMessages = {};
 
     if (!req?.session?.user || !req.session.user.user_id) {
-      return res.render("user/login");
+      return res.render("user/login", { title: "Login" });
     }
     let id = req.session.user.user_id;
     let oldPassword = req?.body?.oldPassword;
@@ -332,6 +343,7 @@ router
       errorMessages?.reEnterNewPassword
     ) {
       return res.status(400).render("user/password", {
+        title: "Password",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -349,6 +361,7 @@ router
     }
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/password", {
+        title: "Password",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -363,22 +376,63 @@ router
         req.body.newPassword,
         req.body.reEnterNewPassword
       );
-      return res.status(200).redirect("user/password", {
+      return res.redirect("user/password", {
         success: "password successfully changed",
       });
     } catch (e) {
       return res.status(500).render("user/password", {
+        title: "Password",
         error: "error changing password",
         is_invalid: true,
       });
     }
   });
-router.route("/logout").get(async (req, res) => {
-  if (!req.session.user) {
-    return res.redirect("/user/login");
-  }
+router
+  .route("/deleteEvents/:confirmDelete")
+  .delete(validateUser, async (req, res) => {
+    const id = req.session.user.user_id;
+    const confirmDelete = utils.validateBooleanInput(
+      req?.params?.confirmDelete
+    );
+    if (confirmDelete) {
+      try {
+        await usersFunctions.deleteAllEvents(id);
+
+        return res.status(200).json({ message: "All Events Deleted" });
+      } catch (error) {
+        return res.status(500).render("errors/error", {
+          title: "Error",
+          error: new Error("Something went wrong. Please try again later"),
+        });
+      }
+    } else {
+      res.status(403).json({ error: "No confirmation was given" });
+    }
+  });
+router
+  .route("/deleteUser/:confirmDelete")
+  .get(validateUser, async (req, res) => {
+    const id = req.session.user.user_id;
+    const confirmDelete = utils.validateBooleanInput(
+      req?.params?.confirmDelete
+    );
+    if (confirmDelete) {
+      try {
+        await usersFunctions.deleteUser(id);
+        res.clearCookie("AuthCookie");
+        req.session.destroy();
+        return res.redirect("/user/login");
+      } catch (error) {
+        return res.status(500).render("errors/error", {
+          title: "Error",
+          error: new Error("Something went wrong. Please try again later"),
+        });
+      }
+    }
+  });
+router.route("/logout").get(validateUser, async (req, res) => {
   res.clearCookie("AuthCookie");
   req.session.destroy();
-  res.redirect("/user/login");
+  return res.redirect("/user/login");
 });
 export default router;
