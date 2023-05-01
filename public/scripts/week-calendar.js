@@ -586,7 +586,6 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
-            setTimeout(location.reload.bind(location), 5000);
           },
         });
       }
