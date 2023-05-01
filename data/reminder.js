@@ -201,6 +201,7 @@ export const updateReminder = async (
     endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
     type: "reminder",
+    expired: false,
   };
   /**
    * This code causes update for single recurrence and normal update
