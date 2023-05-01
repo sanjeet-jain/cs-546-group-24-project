@@ -91,7 +91,7 @@ const meetingsDataFunctions = {
     if (typeof tag === "string" && tag.trim().length > 0) {
       tag = tag.trim().toLowerCase();
     } else {
-      tag = constants.defaultTag;
+      tag = "meetings";
     }
     if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
       dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
@@ -294,7 +294,7 @@ const meetingsDataFunctions = {
     if (typeof tag === "string" && tag.trim().length > 0) {
       tag = tag.trim().toLowerCase();
     } else {
-      tag = constants.defaultTag;
+      tag = "meetings";
     }
     if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
       dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");

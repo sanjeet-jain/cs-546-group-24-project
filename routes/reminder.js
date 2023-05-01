@@ -52,19 +52,16 @@ router
         utils.validateStringInputWithMaxLength(
           textBody,
           "text body",
-          constants.stringLimits["textBody"],
-          true
+          constants.stringLimits["textBody"]
         );
         textBody = textBody.trim();
       } else {
         textBody = null;
       }
-
       utils.validatePriority(priority, "priority");
       /**
        * Tags should be case insensitive and all tags should be converted to lowercase
        */
-
       if (typeof tag === "string" && tag.trim().length > 0) {
         utils.validateStringInputWithMaxLength(
           tag,
@@ -73,7 +70,7 @@ router
         );
         tag = tag.trim().toLowerCase();
       } else {
-        tag = constants.defaultTag;
+        tag = "reminders";
       }
       utils.validateDate(dateAddedTo, "date time value");
       repeating = utils.validateBooleanInput(repeating);
@@ -172,7 +169,7 @@ router
         );
         tag = tag.trim().toLowerCase();
       } else {
-        tag = constants.defaultTag;
+        tag = "reminders";
       }
 
       utils.validateDate(dateAddedTo, "date time added to value");

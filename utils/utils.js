@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
 import { JSDOM } from "jsdom";
-import { type } from "os";
 const utils = {
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
@@ -12,14 +11,10 @@ const utils = {
       throw new Error("object id is not valid");
     }
   },
-  validateStringInput(input, inputName, isOptional) {
-    isOptional =
-      isOptional === undefined || typeof isOptional !== "boolean"
-        ? false
-        : true;
+  validateStringInput(input, inputName) {
     if (input && typeof input !== "string") {
       throw new Error(`${inputName} must be a string`);
-    } else if (!isOptional && input.trim().length === 0) {
+    } else if (input.trim().length === 0) {
       throw new Error(`${inputName} cannot be an empty string`);
     }
   },
@@ -294,48 +289,54 @@ const utils = {
     return errorMessages;
   },
 
-  /**
-   * Created for reminders to find id there are reminders that are overlapping with eachother
-   * @param {*} startDateTime
-   * @param {*} endDateTime
-   * @param {*} dateTime
-   */
-  isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
-    let startDateTime = utils.getNewDateStr(startDateTimeStr);
-    let endDateTime = utils.getNewDateStr(endDateTimeStr);
-    let dateTime = utils.getNewDateStr(dateTimeStr);
-    if (
-      startDateTime.getMinutes() === dateTime.getMinutes() &&
-      startDateTime.getHours() === dateTime.getHours() &&
-      dateTime.getDate() >= startDateTime.getDate() &&
-      dateTime.getDate() <= endDateTime.getDate() &&
-      dateTime.getMonth() >= startDateTime.getMonth() &&
-      dateTime.getMonth() <= endDateTime.getMonth() &&
-      dateTime.getFullYear() >= startDateTime.getFullYear() &&
-      dateTime.getFullYear() <= endDateTime.getFullYear()
-    ) {
-      return true;
-    }
-    return false;
-  },
+  // /**
+  //  * Created for reminders to find id there are reminders that are overlapping with eachother
+  //  * @param {*} startDateTime
+  //  * @param {*} endDateTime
+  //  * @param {*} dateTime
+  //  */
+  // isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
+  //   let startDateTime = utils.getNewDateStr(startDateTimeStr);
+  //   let endDateTime = utils.getNewDateStr(endDateTimeStr);
+  //   let dateTime = utils.getNewDateStr(dateTimeStr);
+  //   if (
+  //     startDateTime.getMinutes() === dateTime.getMinutes() &&
+  //     startDateTime.getHours() === dateTime.getHours() &&
+  //     dateTime.getDate() >= startDateTime.getDate() &&
+  //     dateTime.getDate() <= endDateTime.getDate() &&
+  //     dateTime.getMonth() >= startDateTime.getMonth() &&
+  //     dateTime.getMonth() <= endDateTime.getMonth() &&
+  //     dateTime.getFullYear() >= startDateTime.getFullYear() &&
+  //     dateTime.getFullYear() <= endDateTime.getFullYear()
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // },
 
+  // validateDate(date, paramName) {
+  //   this.validateStringInput(date, paramName);
+  //   date = date.trim();
+  //   date = dayjs(date).toDate();
+  //   //TODO use datejs for validation
+  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
+  //     throw new Error(`${paramName} must be a valid Date`);
+  //   }
+  // },
   validateDate(date, paramName) {
-    this.validateStringInput(date, paramName);
-    date = date.trim();
-    date = dayjs(date).toDate();
-    //TODO use datejs for validation
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
+    if (!(this.isValidDateString(date) && dayjs(date).isValid())) {
       throw new Error(`${paramName} must be a valid Date`);
     }
   },
 
   //Dates are stored as string
   /**Changes Made to existing code */
-  validateDateObj(date, paramName) {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(`${paramName} must be a valid Date`);
-    }
-  },
+  // validateDateObj(date, paramName) {
+  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
+  //     throw new Error(`${paramName} must be a valid Date`);
+  //   }
+  // },
+
   validateAge(dob, min_age, max_age) {
     this.validateDate(dob, "dob");
     //TODO use dayjs
@@ -360,26 +361,47 @@ const utils = {
   //   }
   // },
 
-  getNewDateStr(dateObj) {
-    return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
-  },
+  // getNewDateStr(dateObj) {
+  //   return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
+  // },
 
   /**
-   * MM/DD/YYYY 12:13
+   * YYYY-MM-DDTHH:mm
    * @param {*} dateTimeString
    */
-  getNewDateObjectFromString(dateTimeString) {
-    this.validateStringInput(dateTimeString);
-    let strList = dateTimeString.split(" ");
-    let timeStr = strList[1].split(":");
-    let dateStr = strList[0].split("/");
-    return this.getNewDateObject(
-      Number.parseInt(dateStr[2]),
-      Number.parseInt(dateStr[0]),
-      Number.parseInt(dateStr[1]),
-      Number.parseInt(timeStr[0]),
-      Number.parseInt(timeStr[1])
-    );
+  isValidDateString(dateTimeString) {
+    try {
+      this.validateStringInput(dateTimeString);
+      let strList = dateTimeString.split("T");
+      let dateStr = strList[0].split("-");
+      let timeStr = strList[1].split(":");
+      if (
+        !(dateStr.length === 3) ||
+        !(timeStr.length === 2) ||
+        !(dateStr[0].length === 4) ||
+        !(
+          dateStr[1].length === 2 &&
+          dateStr[1] >= "01" &&
+          dateStr[1] <= "12"
+        ) ||
+        !(
+          dateStr[2].length === 2 &&
+          dateStr[2] >= "01" &&
+          dateStr[2] <= "31"
+        ) ||
+        !(
+          timeStr[0].length === 2 &&
+          timeStr[0] >= "00" &&
+          timeStr[0] <= "23"
+        ) ||
+        !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
+      ) {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
+    return true;
   },
   validateNotesInputs(title, dateAddedTo, textBody, tag) {
     let errorMessages = {};

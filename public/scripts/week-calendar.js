@@ -325,8 +325,6 @@ function onReminderModalClose() {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#reminder-form-enabler");
       fieldset.disabled = true;
-      // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
-      //   "";
       event_modal.querySelector("input#reminder_title").value = "";
       event_modal.querySelector("input#reminder_textBody").value = "";
       event_modal.querySelector("input#reminder_tag").value = "";
@@ -341,13 +339,13 @@ function onReminderModalClose() {
       resultDiv.classList = "";
       resultDiv.innerText = "";
       reminderForm.classList.remove("was-validated");
-      form.title.setCustomValidity("");
-      form.textBody.setCustomValidity("");
-      form.tag.setCustomValidity("");
-      form.priority.setCustomValidity("");
-      form.dateAddedTo.setCustomValidity("");
-      form.endDateTime.setCustomValidity("");
-      form.repeatingIncrementBy.setCustomValidity("");
+      reminderForm.title.setCustomValidity("");
+      reminderForm.textBody.setCustomValidity("");
+      reminderForm.tag.setCustomValidity("");
+      reminderForm.priority.setCustomValidity("");
+      reminderForm.dateAddedTo.setCustomValidity("");
+      reminderForm.endDateTime.setCustomValidity("");
+      reminderForm.repeatingIncrementBy.setCustomValidity("");
       dataGlobal = undefined;
     });
   });
@@ -1070,74 +1068,104 @@ function checkReminderValidations(form) {
     "reminder_endDateTime_error"
   );
 
-  if (form.tag.value.length > 20) {
-    reminder_tag_error.innerText = "tag cant be longer than 20 characters";
-    form.tag.setCustomValidity("error");
-  } else {
-    reminder_tag_error.innerText = "";
+  form.title.setCustomValidity("");
+  reminder_title_error.innerText = "";
+
+  form.textBody.setCustomValidity("");
+  reminder_textBody_error.innerText = "";
+
+  form.tag.setCustomValidity("");
+  reminder_tag_error.innerText = "";
+
+  form.priority.setCustomValidity("");
+  reminder_priority_error.innerText = "";
+
+  form.dateAddedTo.setCustomValidity("");
+  reminder_dateAddedTo_error.innerText = "";
+
+  reminder_dateAddedTo_error.innerText = "";
+  form.dateAddedTo.setCustomValidity("");
+
+  reminder_endDateTime_error.innerText = "";
+  form.endDateTime.setCustomValidity("");
+
+  reminder_repeatingIncrementBy_error.innerText = "";
+  form.repeatingIncrementBy.setCustomValidity("");
+
+  if (form.title.value.length < 1) {
+    reminder_title_error.innerText = "Title cannot be left empty";
+    form.title.setCustomValidity("error");
   }
-  // if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
-  //   reminder_tag_error.innerText = "tag has only letters with no spaces";
-  //   form.tag.setCustomValidity("error");
-  // }
 
   if (form.title.value.length > 100) {
-    reminder_title_error.innerText = "Title cant be longer than 100 characters";
-    form.title.setCustomValidity("error");
-  } else {
-    reminder_title_error.innerText = "";
-  }
-
-  if (!/^(1|2|3)$/.test(form.priority.value)) {
-    reminder_priority_error.innerText = "Priority can only be any of 1 2 3";
-    form.priority.setCustomValidity("error");
-  } else {
-    reminder_priority_error.innerText = "";
+    if (form.title.checkValidity()) {
+      reminder_title_error.innerText =
+        "Title cant be longer than 100 characters";
+      form.title.setCustomValidity("error");
+    }
   }
 
   if (form.textBody.value.length > 200) {
     reminder_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
-  } else {
-    reminder_textBody_error.innerText = "";
   }
-  if (!dayjs(form.dateAddedTo.value).isValid()) {
-    reminder_dateAddedTo_error.innerText = "The date added should be valid";
-    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
-  } else {
-    reminder_dateAddedTo_error.innerText = "";
+
+  if (form.tag.value.length > 20) {
+    reminder_tag_error.innerText = "tag cant be longer than 20 characters";
+    form.tag.setCustomValidity("error");
+  }
+  if (
+    typeof form.tag.value === "String" &&
+    form.tag.value.trim().length > 0 &&
+    !form.tag.value.match(/^[a-zA-Z]+$/)
+  ) {
+    if (form.tag.checkValidity) {
+      reminder_tag_error.innerText = "tag has only letters with no spaces";
+      form.tag.setCustomValidity("error");
+    }
+  }
+
+  if (!/^(1|2|3)$/.test(form.priority.value)) {
+    reminder_priority_error.innerText =
+      "Priority can only be selected as low medium or high";
+    form.priority.setCustomValidity("error");
+  }
+
+  if (!validateDate(form.dateAddedTo.value)) {
+    reminder_dateAddedTo_error.innerText =
+      "The date time value passed is invalid";
+    form.dateAddedTo.setCustomValidity("invalid date");
   }
 
   if (form.repeating.value === "true") {
-    if (!dayjs(form.endDateTime.value).isValid()) {
+    if (!validateDate(form.endDateTime.value)) {
       reminder_endDateTime_error.innerText =
         "The end recurrence date should be valid";
       form.endDateTime.setCustomValidity("Error");
-    } else {
-      reminder_endDateTime_error.innerText = "";
     }
     if (
-      dayjs(form.dateAddedTo.value).isValid() &&
-      dayjs(form.endDateTime.value).isValid() &&
-      dayjs(form.dateAddedTo.value) > dayjs(form.endDateTime.value)
+      validateDate(form.dateAddedTo.value) &&
+      validateDate(form.endDateTime.value) &&
+      dayjs(form.dateAddedTo.value).diff(dayjs(form.endDateTime.value)) >= 0
     ) {
-      reminder_endDateTime_error.innerText =
-        "End Date must be after date added to";
-      reminder_dateAddedTo_error.innerText =
-        "Date Added to must be before date Due On";
-      form.dateAddedTo.setCustomValidity("Error");
-      form.endDateTime.setCustomValidity("Error");
-    } else {
-      reminder_endDateTime_error.innerText = "";
-      reminder_dateAddedTo_error.innerText = "";
+      if (
+        form.dateAddedTo.checkValidity() &&
+        form.endDateTime.checkValidity()
+      ) {
+        reminder_endDateTime_error.innerText =
+          "End Date must be after date added to";
+        reminder_dateAddedTo_error.innerText =
+          "Date Added to must be before date Due On";
+        form.dateAddedTo.setCustomValidity("Error");
+        form.endDateTime.setCustomValidity("Error");
+      }
     }
+
     if (!/^(day|week|month|year)$/.test(form.repeatingIncrementBy.value)) {
       reminder_repeatingIncrementBy_error.innerText =
         "The type of recurrence an only be a day, week, month and year";
       form.repeatingIncrementBy.setCustomValidity("error");
-    } else {
-      reminder_repeatingIncrementBy_error.innerText = "";
     }
   }
   return form.checkValidity();
@@ -1414,6 +1442,47 @@ function deleteButton() {
       deleteModal.show();
     });
   });
+}
+
+function validateStringInput(input, inputName) {
+  if (input && typeof input !== "string") {
+    throw new Error(`${inputName} must be a string`);
+  } else if (input.trim().length === 0) {
+    throw new Error(`${inputName} cannot be an empty string`);
+  }
+}
+
+/** Valid Date String is YYYY-MM-DDTHH:MM */
+function isValidDateString(dateTimeString) {
+  try {
+    this.validateStringInput(dateTimeString);
+    let strList = dateTimeString.split("T");
+    let dateStr = strList[0].split("-");
+    let timeStr = strList[1].split(":");
+    if (
+      !(dateStr.length === 3) ||
+      !(timeStr.length === 2) ||
+      !(dateStr[0].length === 4) ||
+      !(dateStr[1].length === 2 && dateStr[1] >= "01" && dateStr[1] <= "12") ||
+      !(dateStr[2].length === 2 && dateStr[2] >= "01" && dateStr[2] <= "31") ||
+      !(timeStr[0].length === 2 && timeStr[0] >= "00" && timeStr[0] <= "23") ||
+      !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
+    ) {
+      return false;
+    }
+  } catch (e) {
+    return false;
+  }
+
+  return true;
+}
+
+function validateDate(date) {
+  if (isValidDateString(date)) {
+    return dayjs(date).isValid();
+  } else {
+    return false;
+  }
 }
 
 deleteButton();

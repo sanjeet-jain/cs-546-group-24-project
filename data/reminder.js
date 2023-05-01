@@ -56,7 +56,7 @@ export const createReminder = async (
     );
     tag = tag.trim().toLowerCase();
   } else {
-    tag = constants.defaultTag;
+    tag = "reminders";
   }
 
   let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
@@ -190,7 +190,7 @@ export const updateReminder = async (
     );
     tag = tag.trim().toLowerCase();
   } else {
-    tag = constants.defaultTag;
+    tag = "reminders";
   }
   let dateCreated = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
