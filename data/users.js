@@ -193,7 +193,9 @@ const exportedMethods = {
   async deleteAllEvents(userId) {
     utils.checkObjectIdString(userId);
     let user = await this.getUser(userId);
-
+    if (!user) {
+      throw new Error("No user found");
+    }
     let tasks = user.taskIds;
     let reminders = user.reminderIds;
     let notes = user.noteIds;
@@ -204,10 +206,10 @@ const exportedMethods = {
       await tasksDataFunctions.removeTask(taskId);
     }
     //TODO delete reminders
-    /*for (let i = 0; i < reminders.length; i++) {
+    for (let i = 0; i < reminders.length; i++) {
       let reminderId = reminders[i].toString();
-      await remindersDataFunctions.deleteAllRecurrences(id, reminderId);
-    }*/
+      // await remindersDataFunctions.deleteReminderSingle(id, reminderId);
+    }
     for (let i = 0; i < notes.length; i++) {
       let noteId = notes[i].toString();
       await notesDataFunctions.delete(noteId, userId);

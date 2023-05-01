@@ -77,9 +77,12 @@ deleteButton.addEventListener("click", function (event) {
   );
   if (confirmDelete) {
     $.ajax({
-      type: "DELETE",
-      url: "/user/deleteUser",
-      success: function (data) {},
+      type: "GET",
+      url: `/user/deleteUser/${confirmDelete}`,
+      success: function (data, status, xhr) {
+        alert("You will now be logged out");
+        window.location.href = "/user/logout";
+      },
       error: function (data) {
         console.log(data);
       },
@@ -93,7 +96,16 @@ deleteEvents.addEventListener("click", function (event) {
     "Are you sure you want to delete all events? This action cannot be undone."
   );
   if (confirmDelete) {
-    window.location.href = "/user/deleteEvents";
+    $.ajax({
+      type: "DELETE",
+      url: `/user/deleteEvents/${confirmDelete}`,
+      success: function (data) {
+        alert(data.message);
+      },
+      error: function (data) {
+        console.log(data);
+      },
+    });
   }
 });
 

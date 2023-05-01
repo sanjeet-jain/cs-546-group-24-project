@@ -108,6 +108,8 @@ app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
     //todo extend cookie
+  } else {
+    res.clearCookie("AuthCookie");
   }
   next();
 });
