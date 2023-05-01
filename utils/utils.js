@@ -18,8 +18,8 @@ const utils = {
       throw new Error(`${inputName} cannot be an empty string`);
     }
   },
-  validateStringInputWithMaxLength(input, inputName, maxLength, isOptional) {
-    this.validateStringInput(input, inputName, isOptional);
+  validateStringInputWithMaxLength(input, inputName, maxLength) {
+    this.validateStringInput(input, inputName);
     if (
       inputName === "tag" &&
       !input
@@ -289,53 +289,11 @@ const utils = {
     return errorMessages;
   },
 
-  // /**
-  //  * Created for reminders to find id there are reminders that are overlapping with eachother
-  //  * @param {*} startDateTime
-  //  * @param {*} endDateTime
-  //  * @param {*} dateTime
-  //  */
-  // isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
-  //   let startDateTime = utils.getNewDateStr(startDateTimeStr);
-  //   let endDateTime = utils.getNewDateStr(endDateTimeStr);
-  //   let dateTime = utils.getNewDateStr(dateTimeStr);
-  //   if (
-  //     startDateTime.getMinutes() === dateTime.getMinutes() &&
-  //     startDateTime.getHours() === dateTime.getHours() &&
-  //     dateTime.getDate() >= startDateTime.getDate() &&
-  //     dateTime.getDate() <= endDateTime.getDate() &&
-  //     dateTime.getMonth() >= startDateTime.getMonth() &&
-  //     dateTime.getMonth() <= endDateTime.getMonth() &&
-  //     dateTime.getFullYear() >= startDateTime.getFullYear() &&
-  //     dateTime.getFullYear() <= endDateTime.getFullYear()
-  //   ) {
-  //     return true;
-  //   }
-  //   return false;
-  // },
-
-  // validateDate(date, paramName) {
-  //   this.validateStringInput(date, paramName);
-  //   date = date.trim();
-  //   date = dayjs(date).toDate();
-  //   //TODO use datejs for validation
-  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
-  //     throw new Error(`${paramName} must be a valid Date`);
-  //   }
-  // },
   validateDate(date, paramName) {
     if (!(this.isValidDateString(date) && dayjs(date).isValid())) {
       throw new Error(`${paramName} must be a valid Date`);
     }
   },
-
-  //Dates are stored as string
-  /**Changes Made to existing code */
-  // validateDateObj(date, paramName) {
-  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
-  //     throw new Error(`${paramName} must be a valid Date`);
-  //   }
-  // },
 
   validateAge(dob, min_age, max_age) {
     this.validateDate(dob, "dob");
@@ -353,17 +311,6 @@ const utils = {
       );
     }
   },
-  // validateDateObj(date, paramName) {
-  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
-  //     throw new Error(
-  //       `${paramName} must be a valid Date object or a string that can be parsed as a date`
-  //     );
-  //   }
-  // },
-
-  // getNewDateStr(dateObj) {
-  //   return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
-  // },
 
   /**
    * YYYY-MM-DDTHH:mm

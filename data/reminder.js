@@ -38,8 +38,7 @@ export const createReminder = async (
     utils.validateStringInputWithMaxLength(
       textBody,
       "text body",
-      constants.stringLimits["textBody"],
-      true
+      constants.stringLimits["textBody"]
     );
     textBody = textBody.trim();
   } else {
@@ -85,19 +84,6 @@ export const createReminder = async (
       );
     }
   }
-
-  //  else {
-  //   if (
-  //     dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
-  //     title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
-  //     tag === reminderEvents[i].tag
-  //   ) {
-  //     throw new Error(
-  //       "Error : No Two reminders can have same title tag and time"
-  //     );
-  //   }
-  // }
-
   const reminder = {
     title: title,
     textBody: textBody,
@@ -170,8 +156,7 @@ export const updateReminder = async (
     utils.validateStringInputWithMaxLength(
       textBody,
       "text body",
-      constants.stringLimits["textBody"],
-      true
+      constants.stringLimits["textBody"]
     );
     textBody = textBody.trim();
   } else {

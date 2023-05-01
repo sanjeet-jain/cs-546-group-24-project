@@ -22,7 +22,6 @@ router
     }
   })
   .post(async (req, res) => {
-    console.log("Inside Post Method");
     const reminder = req.body;
     let user_id = req.params.user_id;
     let title = reminder.title;
@@ -136,7 +135,6 @@ router
       endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
     }
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
-    let repeatingCounterIncrement = reminder.repeatingCounterIncrement;
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
@@ -150,8 +148,7 @@ router
         utils.validateStringInputWithMaxLength(
           textBody,
           "text body",
-          constants.stringLimits["textBody"],
-          true
+          constants.stringLimits["textBody"]
         );
         textBody = textBody.trim();
       } else {
