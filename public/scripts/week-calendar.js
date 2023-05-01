@@ -46,7 +46,7 @@ function populateMeetingsModal(userId, meetingId) {
       // }
     },
     error: function (data) {
-      resultDiv = document.getElementById("meeting-update-result");
+      let resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -101,21 +101,16 @@ function populateTasksModal(userId, taskId) {
 
       let event_modal = document.getElementById("modal-task-display");
 
-      // event_modal.querySelector("#modal-task-label.modal-title").innerText =
-      //   data.title;
       event_modal.querySelector("input#task_title").value = data.title;
       event_modal.querySelector("input#task_textBody").value = data.textBody;
       event_modal.querySelector("input#task_tag").value = data.tag;
       event_modal.querySelector("select#task_priority").value = data.priority;
-      // issue with date time coming as a date string
-      // it needs an iso string
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
-
-      event_modal.querySelector("input#task_dateDueOn").value = data.dateDueOn;
+      event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
-      resultDiv = document.getElementById("task-update-result");
+      let resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -141,7 +136,7 @@ function populateNotesModal(userId, notesId) {
       tinymce.get("notes_editor").setContent(data.textBody);
     },
     error: function (data) {
-      resultDiv = document.getElementById("notes-update-result");
+      let resultDiv = document.getElementById("notes-update-result");
       resultDiv.classList = "";
       resultDiv.innerText =
         data?.responseJSON?.error || "Update wasnt Successful";
@@ -212,7 +207,7 @@ function repeatingCheckBoxTogglerReminder() {
 
 function enableMeetingFormEdit() {
   let event_modal = document.getElementById("modal-meeting-display");
-  editButtons = event_modal.querySelectorAll("button.btn-edit");
+  let editButtons = event_modal.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let event_modal = document.getElementById("modal-meeting-display");
@@ -256,7 +251,7 @@ function enableReminderFormEdit() {
 }
 function enableTaskFormEdit() {
   let event_modal = document.getElementById("modal-task-display");
-  editButtons = event_modal.querySelectorAll("button.btn-edit");
+  let editButtons = event_modal.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let event_modal = document.getElementById("modal-task-display");
@@ -268,7 +263,7 @@ function enableTaskFormEdit() {
 
 function enableNotesFormEdit() {
   let event_modal = document.getElementById("modal-notes-display");
-  editButtons = event_modal.querySelectorAll("button.btn-edit");
+  let editButtons = event_modal.querySelectorAll("button.btn-edit");
   editButtons.forEach((button) => {
     button.addEventListener("click", () => {
       let event_modal = document.getElementById("modal-notes-display");
@@ -285,7 +280,9 @@ function enableNotesFormEdit() {
 
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
-  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  let modalCloseButtons = event_modal.querySelectorAll(
+    '[data-bs-dismiss="modal"]'
+  );
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#meeting-form-enabler");
@@ -305,7 +302,7 @@ function onMeetingModalClose() {
       event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       ).value = "";
-      resultDiv = document.getElementById("meeting-update-result");
+      let resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
       dataGlobal = undefined;
@@ -315,7 +312,9 @@ function onMeetingModalClose() {
 
 function onReminderModalClose() {
   let event_modal = document.getElementById("modal-reminder-display");
-  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  let modalCloseButtons = event_modal.querySelectorAll(
+    '[data-bs-dismiss="modal"]'
+  );
   let reminderForm = document.getElementById("reminder-form");
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
@@ -333,7 +332,7 @@ function onReminderModalClose() {
       event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
         "";
       event_modal.querySelector("input#reminder_endDateTime").value = "";
-      resultDiv = document.getElementById("reminder-update-result");
+      let resultDiv = document.getElementById("reminder-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
       reminderForm.classList.remove("was-validated");
@@ -348,8 +347,9 @@ function onReminderModalClose() {
 
 function onTaskModalClose() {
   let event_modal = document.getElementById("modal-task-display");
-  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
-  //let taskForm = document.getElementById("task-form");
+  let modalCloseButtons = event_modal.querySelectorAll(
+    '[data-bs-dismiss="modal"]'
+  );
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#task-form-enabler");
@@ -359,8 +359,8 @@ function onTaskModalClose() {
       event_modal.querySelector("input#task_tag").value = "";
       event_modal.querySelector("select#task_priority").value = "";
       event_modal.querySelector("input#task_dateAddedTo").value = "";
-      event_modal.querySelector("input#task_dateDueOn").value = "";
-      resultDiv = document.getElementById("task-update-result");
+      event_modal.querySelector("input#task_checked").value = "";
+      let resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
       dataGlobal = undefined;
@@ -370,7 +370,9 @@ function onTaskModalClose() {
 
 function onNotesModalClose() {
   let event_modal = document.getElementById("modal-notes-display");
-  modalCloseButtons = event_modal.querySelectorAll('[data-bs-dismiss="modal"]');
+  let modalCloseButtons = event_modal.querySelectorAll(
+    '[data-bs-dismiss="modal"]'
+  );
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#notes-form-enabler");
@@ -383,7 +385,7 @@ function onNotesModalClose() {
       tinymce.get("notes_editor").resetContent();
       tinymce.get("notes_editor").setContent("");
       tinymce.get("notes_editor").mode.set("readonly");
-      resultDiv = document.getElementById("notes-update-result");
+      let resultDiv = document.getElementById("notes-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
       resultDiv.innerHtml = "";
@@ -393,7 +395,7 @@ function onNotesModalClose() {
 }
 
 function submitMeetingForm() {
-  meetingform = document.getElementById("meeting-form");
+  let meetingform = document.getElementById("meeting-form");
   meetingform.addEventListener(
     "submit",
     (event) => {
@@ -401,7 +403,7 @@ function submitMeetingForm() {
       event.stopPropagation();
       let formData = new FormData(event.target);
       let jsonData = {};
-      for (var [key, value] of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
       if (jsonData["repeating"] === undefined) {
@@ -420,38 +422,40 @@ function submitMeetingForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
-            resultDiv = document.getElementById("meeting-update-result");
+            let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
               "Meeting updated Successfully! Please refresh the page!";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             populateMeetingsModal(data.userId, data.meetingId);
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
-            resultDiv = document.getElementById("meeting-update-result");
+            let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
               data?.responseJSON?.error || "Update wasnt Successful";
             resultDiv.classList.add("alert", "alert-danger");
-            meeting_title_error = document.getElementById(
+            let meeting_title_error = document.getElementById(
               "meeting_title_error"
             );
-            meeting_textBody_error = document.getElementById(
+            let meeting_textBody_error = document.getElementById(
               "meeting_textBody_error"
             );
-            meeting_tag_error = document.getElementById("meeting_tag_error");
-            meeting_dateAddedTo_error = document.getElementById(
+            let meeting_tag_error =
+              document.getElementById("meeting_tag_error");
+            let meeting_dateAddedTo_error = document.getElementById(
               "meeting_dateAddedTo_error"
             );
-            meeting_dateDueOn_error = document.getElementById(
+            let meeting_dateDueOn_error = document.getElementById(
               "meeting_dateDueOn_error"
             );
-            meeting_repeatingCounterIncrement_error = document.getElementById(
-              "meeting_repeatingCounterIncrement_error"
-            );
-            meeting_repeatingIncrementBy_error = document.getElementById(
+            let meeting_repeatingCounterIncrement_error =
+              document.getElementById(
+                "meeting_repeatingCounterIncrement_error"
+              );
+            let meeting_repeatingIncrementBy_error = document.getElementById(
               "meeting_repeatingIncrementBy_error"
             );
             meeting_title_error.innerText =
@@ -512,7 +516,7 @@ function submitReminderForm() {
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
 
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
             resultDiv.classList = "";
@@ -528,7 +532,7 @@ function submitReminderForm() {
 }
 
 function submitTaskForm() {
-  taskform = document.getElementById("task-form");
+  let taskform = document.getElementById("task-form");
   taskform.addEventListener(
     "submit",
     (event) => {
@@ -536,47 +540,43 @@ function submitTaskForm() {
       event.stopPropagation();
       let formData = new FormData(event.target);
       let jsonData = {};
-      for (var [key, value] of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
       let reqType = "PUT";
-      let ajaxURL = `/task/${dataGlobal?._id}`;
+      let ajaxURL = `/task/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
         reqType = "POST";
         ajaxURL = `/task/tasks/${userIdGlobal}`;
       }
-      //todo validations
       if (checkTaskValidations(event.target)) {
         $.ajax({
           method: reqType,
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
-            resultDiv = document.getElementById("task-update-result");
+            let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
               "Task updated Successfully! Please refresh the page!";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             populateTasksModal(data.userId, data.taskId);
-            setTimeout(location.reload.bind(location), 5000);
+            setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
-            resultDiv = document.getElementById("task-update-result");
+            let resultDiv = document.getElementById("task-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
               data?.responseJSON?.error || "Update wasnt Successful";
             resultDiv.classList.add("alert", "alert-danger");
-            task_title_error = document.getElementById("task_title_error");
-            task_textBody_error = document.getElementById(
+            let task_title_error = document.getElementById("task_title_error");
+            let task_textBody_error = document.getElementById(
               "task_textBody_error"
             );
-            task_tag_error = document.getElementById("task_tag_error");
-            task_dateAddedTo_error = document.getElementById(
+            let task_tag_error = document.getElementById("task_tag_error");
+            let task_dateAddedTo_error = document.getElementById(
               "task_dateAddedTo_error"
-            );
-            task_dateDueOn_error = document.getElementById(
-              "task_dateDueOn_error"
             );
             task_title_error.innerText =
               data.responseJSON?.errorMessages?.title || "";
@@ -586,9 +586,6 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
-            task_dateDueOn_error.innerText =
-              data.responseJSON?.errorMessages?.dateDueOn || "";
-            ("");
           },
         });
       }
@@ -600,7 +597,7 @@ function submitTaskForm() {
 }
 
 function submitNotesForm() {
-  notesform = document.getElementById("notes-form");
+  let notesform = document.getElementById("notes-form");
   notesform.addEventListener(
     "submit",
     (event) => {
@@ -608,7 +605,7 @@ function submitNotesForm() {
       event.stopPropagation();
       let formData = new FormData(event.target);
       let jsonData = {};
-      for (var [key, value] of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
       jsonData["textBody"] = tinymce.get("notes_editor").getContent();
@@ -626,7 +623,7 @@ function submitNotesForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
-            resultDiv = document.getElementById("notes-update-result");
+            let resultDiv = document.getElementById("notes-update-result");
             resultDiv.innerText =
               "notes updated Successfully! Page will refresh automatically";
             resultDiv.classList = "";
@@ -637,15 +634,17 @@ function submitNotesForm() {
             setTimeout(location.reload.bind(location), 2000);
           },
           error: function (data) {
-            resultDiv = document.getElementById("notes-update-result");
+            let resultDiv = document.getElementById("notes-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
               data?.responseJSON?.error || "Update wasnt Successful";
             resultDiv.classList.add("alert", "alert-danger");
-            notes_title_error = document.getElementById("notes_title_error");
-            notes_editor_error = document.getElementById("notes_editor_error");
-            notes_tag_error = document.getElementById("notes_tag_error");
-            notes_dateAddedTo_error = document.getElementById(
+            let notes_title_error =
+              document.getElementById("notes_title_error");
+            let notes_editor_error =
+              document.getElementById("notes_editor_error");
+            let notes_tag_error = document.getElementById("notes_tag_error");
+            let notes_dateAddedTo_error = document.getElementById(
               "notes_dateAddedTo_error"
             );
 
@@ -681,8 +680,8 @@ function bindEventButtontoModal() {
 
     setup: function (editor) {
       editor.on("change", function (e) {
-        var maxChars = 200;
-        var currentContentLength = editor.getContent({ format: "text" }).length;
+        let maxChars = 200;
+        let currentContentLength = editor.getContent({ format: "text" }).length;
 
         if (
           currentContentLength >= maxChars &&
@@ -709,14 +708,14 @@ function bindEventButtontoModal() {
     /* and here's our custom image picker*/
 
     file_picker_callback: function (cb, value, meta) {
-      var input = document.createElement("input");
+      let input = document.createElement("input");
       input.setAttribute("type", "file");
       input.setAttribute("accept", "image/*,application/pdf"); // accept both images and PDFs
 
       input.onchange = function () {
-        var file = this.files[0];
+        let file = this.files[0];
 
-        var formData = new FormData();
+        let formData = new FormData();
         formData.append("image", file);
 
         $.ajax({
@@ -851,7 +850,7 @@ function checkMeetingValidations(form) {
     meeting_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     meeting_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -920,7 +919,7 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     notes_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -970,7 +969,7 @@ function checkReminderValidations(form) {
   let reminder_dateAddedTo_error = document.getElementById(
     "reminder_dateAddedTo_error"
   );
-  let repeatingIncrementBy_error = document.getElementById(
+  let reminder_repeatingIncrementBy_error = document.getElementById(
     "reminder_repeatingIncrementBy_error"
   );
 
@@ -985,7 +984,7 @@ function checkReminderValidations(form) {
     reminder_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-z]+$/)) {
+  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
     reminder_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
   }
@@ -1040,50 +1039,39 @@ function checkTaskValidations(form) {
   let task_dateAddedTo_error = document.getElementById(
     "task_dateAddedTo_error"
   );
-  let task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
-
+  let task_checked_error = document.getElementById("task_checked_error");
+  if (typeof form.checked.value === "boolean") {
+    task_checked_error.innerText = "checked must be a boolean";
+  }
   if (form.title.value.length > 100) {
-    task_title_error.innerText = "Title cant be longer than 100 characters";
+    task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
-  if (form.textBody.value.length > 100) {
-    task_textBody_error.innerText = "Title cant be longer than 100 characters";
+  if (form.textBody.value.length > 200) {
+    task_textBody_error.innerText = "Text can't be longer than 100 characters";
+  }
+  if (form.tag.value.length > 20) {
+    task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
-  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
-    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
-      form.dateAddedTo.setCustomValidity("invalid_range");
-      form.dateDueOn.setCustomValidity("invalid_range");
-      task_dateDueOn_error.innerText = "Date Due to must be after date Due On";
-      task_dateAddedTo_error.innerText =
-        "Date Added to must be before date Due On";
-    } else {
-      form.dateAddedTo.setCustomValidity("");
-      form.dateDueOn.setCustomValidity("");
-    }
+  if (!dayjs(form.dateAddedTo.value).isValid()) {
+    task_dateAddedTo_error.innerText = "The date added should be valid";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
+  } else {
+    form.dateAddedTo.setCustomValidity("");
   }
+
   if (form.checkValidity()) {
     return true;
   } else return false;
 }
 function clickableDateCells() {
-  dateCells = document.querySelectorAll("td.date-cell");
+  let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
     date.addEventListener("click", (event) => {
-      eventTarget = event.target.closest("td");
+      let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
       setDatepickerValue(selectedDate);
-      // let selected_date_div = document.getElementById("selected_date");
-      // selected_date_div.innerText = `Items for
-      // ${dayjs(selectedDate).format("MMMM DD YYYY")}`;
-      // $.ajax({
-      //   method: "GET",
-      //   url: `/calendar/getSelectedDayItems/${selectedDate}`,
-      //   success: function (data) {
-      //     userIdGlobal = data.userId;
-      //     loadRightPaneCells(data);
-      //   },
-      // });
     });
   });
 }
@@ -1098,7 +1086,9 @@ function loadRightPaneCells(data) {
     return 0;
   });
 
-  display_current_items_div = document.getElementById("display_current_items");
+  let display_current_items_div = document.getElementById(
+    "display_current_items"
+  );
   display_current_items_div.innerHtml = "";
   display_current_items_div.innerText = "";
 
@@ -1189,10 +1179,7 @@ function setDatepickerValue(date) {
 }
 
 function filterForm() {
-  filterFormElement = document.getElementById("filterForm");
-  const checkboxes = filterFormElement.querySelectorAll(
-    '.dropdown-menu input[type="checkbox"]'
-  );
+  let filterFormElement = document.getElementById("filterForm");
 
   filterFormElement.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -1202,7 +1189,7 @@ function filterForm() {
       eventTypeSelected: [],
       tagsSelected: [],
     };
-    for (var [key, value] of formData.entries()) {
+    for (let [key, value] of formData.entries()) {
       if (key.startsWith("event-filter")) {
         filter.eventTypeSelected.push(value);
       } else if (key.startsWith("tag-filter")) {
@@ -1220,6 +1207,102 @@ function filterForm() {
     });
   });
 }
+
+function deleteButton() {
+  let editButtons = document.querySelectorAll("button.btn-delete");
+  editButtons.forEach((button) => {
+    button.addEventListener("click", async (event) => {
+      event.target.disabled = true;
+      const oldHtml = event.target.innerHTML;
+      // Add the spinner to the button
+      event.target.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+      let event_modal = document.getElementById(
+        `modal-${dataGlobal.type}-display`
+      );
+      const isRepeating = event_modal.querySelector(
+        `input#${dataGlobal.type}_repeating`
+      )?.checked;
+
+      const modalFooter = document.querySelector("#deleteModal .modal-footer");
+      const deleteModal = new bootstrap.Modal(
+        document.getElementById("deleteModal")
+      );
+
+      if (isRepeating) {
+        const deleteAllButton = document.createElement("button");
+        deleteAllButton.classList.add("btn", "btn-danger");
+        deleteAllButton.textContent = "Delete all events";
+        modalFooter.appendChild(deleteAllButton);
+
+        deleteAllButton.addEventListener("click", async function () {
+          // Delete all events
+          let deleteUrl = "";
+          if (dataGlobal.type === "meeting") {
+            deleteUrl = `/meeting/user/${userIdGlobal}/meetings/repeating/${dataGlobal.repeatingGroup}`;
+          }
+          // TODO add delete URL for reminders
+
+          await $.ajax({
+            method: "DELETE",
+            url: deleteUrl,
+            success: function (data) {
+              let resultDiv = document.getElementById(
+                `${dataGlobal.type}-update-result`
+              );
+              resultDiv.classList = "";
+              resultDiv.innerText =
+                "All Event recurrences Successfully deleted, Page will reload now";
+              resultDiv.classList.add("alert", "alert-danger");
+              event.target.innerHTML = oldHtml;
+              setTimeout(location.reload.bind(location), 3000);
+            },
+          });
+          deleteModal.hide();
+        });
+      }
+
+      const deleteOneButton = document.createElement("button");
+      deleteOneButton.classList.add("btn", "btn-danger");
+      deleteOneButton.textContent = "Delete one event";
+
+      modalFooter.appendChild(deleteOneButton);
+
+      deleteOneButton.addEventListener("click", async function () {
+        let deleteUrl = "";
+        if (dataGlobal.type === "meeting") {
+          deleteUrl = `/meeting/${userIdGlobal}/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "reminder") {
+          deleteUrl = `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "task") {
+          deleteUrl = `/task/${userIdGlobal}/${dataGlobal._id}`;
+        } else if (dataGlobal.type === "notes") {
+          deleteUrl = `/notes/${userIdGlobal}/${dataGlobal._id}`;
+        }
+
+        // Delete one event
+        await $.ajax({
+          method: "DELETE",
+          url: deleteUrl,
+          success: function (data) {
+            let resultDiv = document.getElementById(
+              `${dataGlobal.type}-update-result`
+            );
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              "Single Event Successfully delete, Page will reload now";
+            resultDiv.classList.add("alert", "alert-danger");
+            event.target.innerHTML = oldHtml;
+            setTimeout(location.reload.bind(location), 3000);
+          },
+        });
+        deleteModal.hide();
+      });
+      deleteModal.show();
+    });
+  });
+}
+
+deleteButton();
 
 filterForm();
 

@@ -25,7 +25,7 @@ const utils = {
       !input
         .trim()
         .toLowerCase()
-        .match(/^[a-z]+$/gi)
+        .match(/^[a-zA-Z]+$/g)
     ) {
       throw new Error(
         `${inputName} can not have spaces and contains only letters`
@@ -73,6 +73,7 @@ const utils = {
     if (!priority || priority < 1 || priority > 3) {
       throw new Error("Priority must be a number between 1 and 3");
     }
+    return priority;
   },
 
   validateBooleanInput(input, inputName) {

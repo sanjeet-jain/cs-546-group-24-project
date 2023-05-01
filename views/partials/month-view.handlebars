@@ -2,11 +2,11 @@
 <tr class="week-class" id="week-{{@index}}">
   {{#each this}}
   {{#if this.greyedOut}}
-  <td class="greyed-out"> {{this.day}}</td>
+  <td class="text-body-tertiary"> {{this.day}}</td>
   {{else}}
   <td class="active-month date-cell" data-bs-day="{{this.dayjsDateId}}">
     <button id="{{this.dayjsDateId}}"
-      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{else}} text-dark{{/if}}">{{this.day}}
+      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday this.year this.month this.day)}} bg-info {{/if}}">{{this.day}}
     </button>
     <div class="day-events">
 

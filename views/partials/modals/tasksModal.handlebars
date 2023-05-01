@@ -11,6 +11,9 @@
         <button type="button" class="btn btn-edit" aria-label="Edit" {{! onclick="enableFormEdit()" }}>
           <i class="bi-pencil-fill"></i>
         </button>
+        <button type="button" class="btn btn-danger btn-delete" aria-label="Delete">
+          <i class="bi-trash3-fill"></i>
+        </button>
         <button id="task-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
           aria-label="Close"></button>
       </div>
@@ -40,7 +43,7 @@
             <div class="mb-3">
               <label for="task_tag" class="form-label">Tag</label>
               <input required type="text" class="form-control" name="tag" id="task_tag" placeholder="Tag" value=""
-                maxlength="20" pattern="^[a-z]+$" />
+                maxlength="20" pattern="^[a-zA-Z]+$" />
               <div id="task_tag_error" class="invalid-feedback">
 
               </div>
@@ -66,20 +69,16 @@
 
               </div>
             </div>
-            {{! dateDueOn }}
-            <div class="form-floating mb-3">
-              <input type="datetime-local" class="form-control" name="dateDueOn" id="task_dateDueOn" value="" />
-              <label for="task_dateDueOn" class="form-label">Date event is
-                due on
-              </label>
-
-              <div id="task_dateDueOn_error" class="invalid-feedback">
+            {{! add more fields for other events }}
+            <div class="mb-3">
+              <label for="task_checked" class="form-label">Completed</label>
+              <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" {{#if
+                checked}}checked{{/if}} />
+              <div id="task_checked_error" class="invalid-feedback">
+                <input type="hidden" id="task_checked_state" value="false">
 
               </div>
             </div>
-
-            {{! add more fields for other events }}
-
           </form>
         </div>
         <div class="modal-footer">
@@ -90,7 +89,6 @@
             class="btn btn-primary" />
         </div>
       </fieldset>
-
     </div>
   </div>
 </div>

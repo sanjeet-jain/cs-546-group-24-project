@@ -50,7 +50,6 @@ main {
 .greyed-out {
   width: 8vw;
   height: 13vh;
-  color: #ccc;
 }
 .day-events span {
   text-align: left !important;
@@ -91,4 +90,14 @@ i {
 
 .display_current_items_card {
   height: 50%;
+}
+
+html[data-bs-theme="dark"] {
+  --text-color: white;
+}
+html[data-bs-theme="light"] {
+  --text-color: black;
+}
+.date-clickable {
+  color: var(--text-color);
 }
