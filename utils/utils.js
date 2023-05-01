@@ -214,8 +214,6 @@ const utils = {
       } catch (e) {
         errorMessages.textBody = e.message;
       }
-    } else {
-      textBody = null;
     }
 
     if (typeof tag === "string" && tag.trim().length > 0) {
@@ -228,8 +226,6 @@ const utils = {
       } catch (e) {
         errorMessages.tag = e.message;
       }
-    } else {
-      tag = constants.defaultTag;
     }
 
     if (
