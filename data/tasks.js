@@ -198,7 +198,12 @@ const tasksDataFunctions = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`Could not delete task with ID ${id}`);
     }
-
+    const users = await usersCollection();
+    //update the userCollection by removing the same id from the taskIds array in user collection
+    await users.updateOne(
+      { taskIds: new ObjectId(id) },
+      { $pull: { taskIds: new ObjectId(id) } }
+    );
     return `${deletionInfo.value.title} has been successfully deleted!`;
   },
 
