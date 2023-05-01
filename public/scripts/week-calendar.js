@@ -101,18 +101,13 @@ function populateTasksModal(userId, taskId) {
 
       let event_modal = document.getElementById("modal-task-display");
 
-      // event_modal.querySelector("#modal-task-label.modal-title").innerText =
-      //   data.title;
       event_modal.querySelector("input#task_title").value = data.title;
       event_modal.querySelector("input#task_textBody").value = data.textBody;
       event_modal.querySelector("input#task_tag").value = data.tag;
       event_modal.querySelector("select#task_priority").value = data.priority;
-      // issue with date time coming as a date string
-      // it needs an iso string
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
-
-      event_modal.querySelector("input#task_dateDueOn").value = data.dateDueOn;
+      event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
       let resultDiv = document.getElementById("task-update-result");
@@ -355,7 +350,6 @@ function onTaskModalClose() {
   let modalCloseButtons = event_modal.querySelectorAll(
     '[data-bs-dismiss="modal"]'
   );
-  //let taskForm = document.getElementById("task-form");
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
       let fieldset = event_modal.querySelector("#task-form-enabler");
@@ -365,7 +359,7 @@ function onTaskModalClose() {
       event_modal.querySelector("input#task_tag").value = "";
       event_modal.querySelector("select#task_priority").value = "";
       event_modal.querySelector("input#task_dateAddedTo").value = "";
-      event_modal.querySelector("input#task_dateDueOn").value = "";
+      event_modal.querySelector("input#task_checked").value = "";
       let resultDiv = document.getElementById("task-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
@@ -550,12 +544,11 @@ function submitTaskForm() {
         jsonData[key] = value.trim();
       }
       let reqType = "PUT";
-      let ajaxURL = `/task/${dataGlobal?._id}`;
+      let ajaxURL = `/task/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
         reqType = "POST";
         ajaxURL = `/task/tasks/${userIdGlobal}`;
       }
-      //todo validations
       if (checkTaskValidations(event.target)) {
         $.ajax({
           method: reqType,
@@ -585,9 +578,6 @@ function submitTaskForm() {
             let task_dateAddedTo_error = document.getElementById(
               "task_dateAddedTo_error"
             );
-            let task_dateDueOn_error = document.getElementById(
-              "task_dateDueOn_error"
-            );
             task_title_error.innerText =
               data.responseJSON?.errorMessages?.title || "";
             task_textBody_error.innerText =
@@ -596,8 +586,6 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
-            task_dateDueOn_error.innerText =
-              data.responseJSON?.errorMessages?.dateDueOn || "";
           },
         });
       }
@@ -1051,28 +1039,28 @@ function checkTaskValidations(form) {
   let task_dateAddedTo_error = document.getElementById(
     "task_dateAddedTo_error"
   );
-  let task_dateDueOn_error = document.getElementById("task_dateDueOn_error");
-
+  let task_checked_error = document.getElementById("task_checked_error");
+  if (typeof form.checked.value === "boolean") {
+    task_checked_error.innerText = "checked must be a boolean";
+  }
   if (form.title.value.length > 100) {
-    task_title_error.innerText = "Title cant be longer than 100 characters";
+    task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
-  if (form.textBody.value.length > 100) {
-    task_textBody_error.innerText = "Title cant be longer than 100 characters";
+  if (form.textBody.value.length > 200) {
+    task_textBody_error.innerText = "Text can't be longer than 100 characters";
+  }
+  if (form.tag.value.length > 20) {
+    task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
-  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
-    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
-      form.dateAddedTo.setCustomValidity("invalid_range");
-      form.dateDueOn.setCustomValidity("invalid_range");
-      task_dateDueOn_error.innerText = "Date Due to must be after date Due On";
-      task_dateAddedTo_error.innerText =
-        "Date Added to must be before date Due On";
-    } else {
-      form.dateAddedTo.setCustomValidity("");
-      form.dateDueOn.setCustomValidity("");
-    }
+  if (!dayjs(form.dateAddedTo.value).isValid()) {
+    task_dateAddedTo_error.innerText = "The date added should be valid";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
+  } else {
+    form.dateAddedTo.setCustomValidity("");
   }
+
   if (form.checkValidity()) {
     return true;
   } else return false;
@@ -1286,7 +1274,7 @@ function deleteButton() {
         } else if (dataGlobal.type === "reminder") {
           deleteUrl = `/reminder/${userIdGlobal}/reminder/${dataGlobal._id}`;
         } else if (dataGlobal.type === "task") {
-          deleteUrl = `/task/${dataGlobal._id}`;
+          deleteUrl = `/task/${userIdGlobal}/${dataGlobal._id}`;
         } else if (dataGlobal.type === "notes") {
           deleteUrl = `/notes/${userIdGlobal}/${dataGlobal._id}`;
         }
