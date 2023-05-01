@@ -25,18 +25,19 @@ const tasksDataFunctions = {
    * @param {string} title - The title of the task
    * @param {string} textBody - The body text of the task
    * @param {Date} dateAddedTo - The date when the task was added to the collection
-   * @param {Date} dateDueOn - The date when the task is due
    * @param {number} priority - The priority of the task (1, 2, or 3)
    * @param {string} tag - The custom tag for the task
+   * @param {boolean} checked - Whether the task is checked off or not
+   * @returns {Object} The newly created task
    */
   async createTask(
     userId,
     title,
     textBody,
     dateAddedTo,
-    dateDueOn,
     priority,
-    tag
+    tag,
+    checked
   ) {
     utils.checkObjectIdString(userId);
     utils.validateStringInputWithMaxLength(
@@ -50,19 +51,23 @@ const tasksDataFunctions = {
       constants.stringLimits["textBody"]
     );
     utils.validateDate(dateAddedTo, "dateAddedTo");
-    utils.validateDate(dateDueOn, "dateDueOn");
     utils.validatePriority(priority);
     utils.validateStringInputWithMaxLength(
       tag,
       "tag",
       constants.stringLimits["tag"]
     );
+
     userId = userId.trim();
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
-    dateDueOn = dateDueOn.trim();
     textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
+
+    if (typeof checked === "undefined") {
+      checked = false;
+    }
+    let expired = utils.validateBooleanInput(checked, "checked");
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
@@ -74,21 +79,14 @@ const tasksDataFunctions = {
       textBody: textBody,
       dateCreated: dayjs().format("YYYY-MM-DDTHH:mm"),
       dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
-      dateDueOn: dayjs(dateDueOn).format("YYYY-MM-DDTHH:mm"),
       priority: priority,
       tag: tag,
-      checked: false,
+      checked: checked,
       type: "task",
+      expired: expired,
     };
 
     const tasks = await tasksCollection();
-    // const taskExists = await tasks.findOne({ title: title });
-
-    // if (taskExists) {
-    //   throw new Error(
-    //     `Task title already exists for the User ${user.first_name}`
-    //   );
-    // }
     const insertInfo = await tasks.insertOne(newTask);
 
     if (insertInfo.insertedCount === 0) {
@@ -105,22 +103,26 @@ const tasksDataFunctions = {
 
   async updateTask(id, updatedTask) {
     utils.checkObjectIdString(id);
-    const updatedTaskData = {};
+    let updatedTaskData = {};
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
-    updatedTaskData.type = task.type;
-    updatedTaskData.dateCreated = task.dateCreated;
-    updatedTask.title = updatedTask.title.trim();
-    updatedTask.textBody = updatedTask.textBody.trim();
-    updatedTask.tag = updatedTask.tag.trim().toLowerCase();
+    updatedTaskData = { ...task };
 
+    if (typeof updatedTask.checked === "undefined") {
+      updatedTaskData.checked = false;
+    }
+    updatedTaskData.checked = utils.validateBooleanInput(
+      updatedTask.checked,
+      "checked"
+    );
+    updatedTaskData.expired = updatedTaskData.checked;
     if (updatedTask.title) {
       utils.validateStringInputWithMaxLength(
         updatedTask.title,
         "title",
         constants.stringLimits["title"]
       );
-      updatedTaskData.title = updatedTask.title;
+      updatedTaskData.title = updatedTask.title.trim();
     } else {
       throw new Error("You must provide a title for the task.");
     }
@@ -131,7 +133,7 @@ const tasksDataFunctions = {
         "textBody",
         constants.stringLimits["textBody"]
       );
-      updatedTaskData.textBody = updatedTask.textBody;
+      updatedTaskData.textBody = updatedTask.textBody.trim();
     } else {
       throw new Error("You must provide a textBody for the task.");
     }
@@ -144,18 +146,8 @@ const tasksDataFunctions = {
       throw new Error("You must provide a dateAddedTo for the task.");
     }
 
-    if (updatedTask.dateDueOn) {
-      utils.validateDate(updatedTask.dateDueOn, "dateDueOn");
-      updatedTaskData.dateDueOn = dayjs(updatedTask.dateDueOn).format(
-        "YYYY-MM-DDTHH:mm:ss"
-      );
-    } else {
-      throw new Error("You must provide a dateDueOn for the task.");
-    }
-
     if (updatedTask.priority) {
-      utils.validatePriority(updatedTask.priority);
-      updatedTaskData.priority = updatedTask.priority;
+      updatedTaskData.priority = utils.validatePriority(updatedTask.priority);
     } else {
       throw new Error("You must provide a priority for the task.");
     }
@@ -166,23 +158,33 @@ const tasksDataFunctions = {
         "tag",
         constants.stringLimits["tag"]
       );
-      updatedTaskData.tag = updatedTask.tag;
+      updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
       throw new Error("You must provide a tag for the task.");
     }
-
-    if (typeof updatedTask.checked !== "undefined") {
-      utils.validateBooleanInput(updatedTask.checked, "checked");
-      updatedTaskData.checked = updatedTask.checked;
-    } else {
-      throw new Error("You must provide a checked value for the task.");
+    //Added this to pre check if there are any changes made to the task without making unnecessary DB call
+    if (
+      updatedTaskData.title === task.title &&
+      updatedTaskData.textBody === task.textBody &&
+      updatedTaskData.dateAddedTo === task.dateAddedTo &&
+      updatedTaskData.priority === task.priority &&
+      updatedTaskData.tag === task.tag &&
+      updatedTaskData.checked === task.checked
+    ) {
+      throw new Error("No Changes Made to the Task.");
     }
     const updateInfo = await tasks.updateOne(
       { _id: new ObjectId(id) },
       { $set: updatedTaskData }
     );
     if (updateInfo.modifiedCount === 0) {
-      throw new Error("Could not update task successfully");
+      throw new Error("No Changes Made to the Task.");
+    }
+    if (updateInfo.matchedCount === 0) {
+      throw new Error("No Task Found to Update.");
+    }
+    if (updateInfo.acknowledged !== true) {
+      throw new Error("Update wasn't successful.");
     }
 
     return await this.getTaskById(id);
@@ -196,7 +198,12 @@ const tasksDataFunctions = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`Could not delete task with ID ${id}`);
     }
-
+    const users = await usersCollection();
+    //update the userCollection by removing the same id from the taskIds array in user collection
+    await users.updateOne(
+      { taskIds: new ObjectId(id) },
+      { $pull: { taskIds: new ObjectId(id) } }
+    );
     return `${deletionInfo.value.title} has been successfully deleted!`;
   },
 

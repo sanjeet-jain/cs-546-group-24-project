@@ -73,6 +73,7 @@ const utils = {
     if (!priority || priority < 1 || priority > 3) {
       throw new Error("Priority must be a number between 1 and 3");
     }
+    return priority;
   },
 
   validateBooleanInput(input, inputName) {
