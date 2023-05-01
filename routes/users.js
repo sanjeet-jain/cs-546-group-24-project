@@ -84,6 +84,7 @@ router
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/signup", {
+        title: "Sign Up",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -107,6 +108,7 @@ router
       return res.status(200).redirect("/calendar/month");
     } catch (e) {
       return res.status(404).render("user/signup", {
+        title: "Sign Up",
         error: "Something went wrong, please try again later",
         errorContent: req.body,
       });
@@ -149,6 +151,7 @@ router
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/login", {
+        title: "Login",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -165,6 +168,7 @@ router
         return res.redirect("/calendar/month");
       } else {
         return res.status(500).render("user/login", {
+          title: "Login",
           error: "Something went wrong on the server, please try again later",
           is_invalid: true,
           errorContent: req.body,
@@ -172,6 +176,7 @@ router
       }
     } catch (e) {
       return res.status(400).render("user/login", {
+        title: "Login",
         error: "Invalid Credentials",
         is_invalid: true,
         errorContent: req.body,
@@ -195,7 +200,12 @@ router
         const id = req.session.user.user_id;
         const currUser = await usersFunctions.getUser(id);
 
-        return res.render("user/profile", { currUser });
+        return res.render("user/profile", {
+          title: "Profile",
+          currUser,
+        });
+      } else {
+        return res.render("user/login", { title: "Login" });
       }
     } catch (e) {
       return res.status(500).json({ error: e.message });
@@ -206,13 +216,13 @@ router
   .route("/edit")
   .get(async (req, res) => {
     if (!req.session.user) {
-      res.render("user/login");
+      res.render("user/login", { title: "Login" });
     } else {
       const id = req.session.user.user_id;
       try {
         const currUser = await usersFunctions.getUser(id);
 
-        return res.render("user/edit", { currUser });
+        return res.render("user/edit", { currUser, title: "Edit Profile" });
       } catch (e) {
         return res.status(400).json({ error: e.message });
       }
@@ -220,7 +230,7 @@ router
   })
   .post(async (req, res) => {
     if (!req.session.user) {
-      res.render("user/login");
+      res.render("user/login", { title: "Login" });
     } else {
       const id = req.session.user.user_id;
       const first_name = req.body.first_name;
@@ -259,6 +269,7 @@ router
 
       if (Object.keys(errorMessages).length !== 0) {
         return res.status(400).render("user/edit", {
+          title: "Edit Profile",
           errorMessages: errorMessages,
           is_invalid: true,
           errorContent: req.body,
@@ -282,7 +293,7 @@ router
   .route("/password")
   .get(async (req, res) => {
     if (req.session.user) {
-      return res.render("user/password");
+      return res.render("user/password", { title: "Password" });
     }
 
     res.redirect("/");
@@ -291,7 +302,7 @@ router
     let errorMessages = {};
 
     if (!req?.session?.user || !req.session.user.user_id) {
-      return res.render("user/login");
+      return res.render("user/login", { title: "Login" });
     }
     let id = req.session.user.user_id;
     let oldPassword = req?.body?.oldPassword;
@@ -332,6 +343,7 @@ router
       errorMessages?.reEnterNewPassword
     ) {
       return res.status(400).render("user/password", {
+        title: "Password",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -349,6 +361,7 @@ router
     }
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).render("user/password", {
+        title: "Password",
         errorMessages: errorMessages,
         is_invalid: true,
         errorContent: req.body,
@@ -368,6 +381,7 @@ router
       });
     } catch (e) {
       return res.status(500).render("user/password", {
+        title: "Password",
         error: "error changing password",
         is_invalid: true,
       });
