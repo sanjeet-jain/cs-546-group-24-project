@@ -1474,10 +1474,15 @@ function validateStringInput(input, inputName) {
 }
 
 function validateDateTime(date) {
-  validateStringInput(date);
+  try {
+    validateStringInput(date);
+  } catch (e) {
+    return false;
+  }
   if (!dayjs(date, "YYYY-MM-DDTHH:mm", true).isValid()) {
     return false;
   }
+  return true;
 }
 
 deleteButton();
