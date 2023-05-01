@@ -930,7 +930,7 @@ function checkMeetingValidations(form) {
 
   if (
     form.dateAddedTo.value.trim().length > 0 &&
-    !validateDate(form.dateAddedTo.value)
+    !validateDateTime(form.dateAddedTo.value)
   ) {
     meeting_dateAddedTo_error.innerText =
       "The date time value passed is invalid";
@@ -939,7 +939,7 @@ function checkMeetingValidations(form) {
 
   if (
     form.dateDueOn.value.trim().length > 0 &&
-    !validateDate(form.dateDueOn.value)
+    !validateDateTime(form.dateDueOn.value)
   ) {
     meeting_dateDueOn_error.innerText = "The date time value passed is invalid";
     form.dateDueOn.setCustomValidity("invalid date");
@@ -1153,21 +1153,21 @@ function checkReminderValidations(form) {
     form.priority.setCustomValidity("error");
   }
 
-  if (!validateDate(form.dateAddedTo.value)) {
+  if (!validateDateTime(form.dateAddedTo.value)) {
     reminder_dateAddedTo_error.innerText =
       "The date time value passed is invalid";
     form.dateAddedTo.setCustomValidity("invalid date");
   }
 
   if (form.repeating.value === "true") {
-    if (!validateDate(form.endDateTime.value)) {
+    if (!validateDateTime(form.endDateTime.value)) {
       reminder_endDateTime_error.innerText =
         "The end recurrence date should be valid";
       form.endDateTime.setCustomValidity("Error");
     }
     if (
-      validateDate(form.dateAddedTo.value) &&
-      validateDate(form.endDateTime.value) &&
+      validateDateTime(form.dateAddedTo.value) &&
+      validateDateTime(form.endDateTime.value) &&
       dayjs(form.dateAddedTo.value).diff(dayjs(form.endDateTime.value)) >= 0
     ) {
       if (
@@ -1473,35 +1473,9 @@ function validateStringInput(input, inputName) {
   }
 }
 
-/** Valid Date String is YYYY-MM-DDTHH:MM */
-function isValidDateString(dateTimeString) {
-  try {
-    this.validateStringInput(dateTimeString);
-    let strList = dateTimeString.split("T");
-    let dateStr = strList[0].split("-");
-    let timeStr = strList[1].split(":");
-    if (
-      !(dateStr.length === 3) ||
-      !(timeStr.length === 2) ||
-      !(dateStr[0].length === 4) ||
-      !(dateStr[1].length === 2 && dateStr[1] >= "01" && dateStr[1] <= "12") ||
-      !(dateStr[2].length === 2 && dateStr[2] >= "01" && dateStr[2] <= "31") ||
-      !(timeStr[0].length === 2 && timeStr[0] >= "00" && timeStr[0] <= "23") ||
-      !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
-    ) {
-      return false;
-    }
-  } catch (e) {
-    return false;
-  }
-
-  return true;
-}
-
-function validateDate(date) {
-  if (isValidDateString(date)) {
-    return dayjs(date).isValid();
-  } else {
+function validateDateTime(date) {
+  validateStringInput(date);
+  if (!dayjs(date, "YYYY-MM-DDTHH:mm", true).isValid()) {
     return false;
   }
 }

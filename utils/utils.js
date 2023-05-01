@@ -2,6 +2,9 @@
 import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+dayjs.extend(customParseFormat);
+
 import { JSDOM } from "jsdom";
 const utils = {
   checkObjectIdString(stringObjectId) {
@@ -287,13 +290,21 @@ const utils = {
   },
 
   validateDate(date, paramName) {
-    if (!(this.isValidDateString(date) && dayjs(date).isValid())) {
+    this.validateStringInput(date);
+    if (
+      !(paramName === "D.O.B") &&
+      !dayjs(date, "YYYY-MM-DDTHH:mm", true).isValid()
+    ) {
+      throw new Error(`${paramName} must be a valid Date`);
+    }
+
+    if (paramName === "D.O.B" && !dayjs(date, "YYYY-MM-DD", true).isValid()) {
       throw new Error(`${paramName} must be a valid Date`);
     }
   },
 
   validateAge(dob, min_age, max_age) {
-    this.validateDate(dob, "dob");
+    this.validateDate(dob, "D.O.B");
     //TODO use dayjs
     let today = new Date();
     dob = new Date(dob);
@@ -309,44 +320,44 @@ const utils = {
     }
   },
 
-  /**
-   * YYYY-MM-DDTHH:mm
-   * @param {*} dateTimeString
-   */
-  isValidDateString(dateTimeString) {
-    try {
-      this.validateStringInput(dateTimeString);
-      let strList = dateTimeString.split("T");
-      let dateStr = strList[0].split("-");
-      let timeStr = strList[1].split(":");
-      if (
-        !(dateStr.length === 3) ||
-        !(timeStr.length === 2) ||
-        !(dateStr[0].length === 4) ||
-        !(
-          dateStr[1].length === 2 &&
-          dateStr[1] >= "01" &&
-          dateStr[1] <= "12"
-        ) ||
-        !(
-          dateStr[2].length === 2 &&
-          dateStr[2] >= "01" &&
-          dateStr[2] <= "31"
-        ) ||
-        !(
-          timeStr[0].length === 2 &&
-          timeStr[0] >= "00" &&
-          timeStr[0] <= "23"
-        ) ||
-        !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
-      ) {
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-    return true;
-  },
+  // /**
+  //  * YYYY-MM-DDTHH:mm
+  //  * @param {*} dateTimeString
+  //  */
+  // isValidDateString(dateTimeString) {
+  //   try {
+  //     this.validateStringInput(dateTimeString);
+  //     let strList = dateTimeString.split("T");
+  //     let dateStr = strList[0].split("-");
+  //     let timeStr = strList[1].split(":");
+  //     if (
+  //       !(dateStr.length === 3) ||
+  //       !(timeStr.length === 2) ||
+  //       !(dateStr[0].length === 4) ||
+  //       !(
+  //         dateStr[1].length === 2 &&
+  //         dateStr[1] >= "01" &&
+  //         dateStr[1] <= "12"
+  //       ) ||
+  //       !(
+  //         dateStr[2].length === 2 &&
+  //         dateStr[2] >= "01" &&
+  //         dateStr[2] <= "31"
+  //       ) ||
+  //       !(
+  //         timeStr[0].length === 2 &&
+  //         timeStr[0] >= "00" &&
+  //         timeStr[0] <= "23"
+  //       ) ||
+  //       !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
+  //     ) {
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     return false;
+  //   }
+  //   return true;
+  // },
   validateNotesInputs(title, dateAddedTo, textBody, tag) {
     let errorMessages = {};
     try {
