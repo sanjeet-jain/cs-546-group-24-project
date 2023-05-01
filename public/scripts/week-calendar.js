@@ -918,7 +918,12 @@ function checkMeetingValidations(form) {
     form.tag.setCustomValidity("error");
   }
 
-  if (form.title.value.length > 100) {
+  if (form.title.value.length < 1) {
+    reminder_title_error.innerText = "Title cannot be left empty";
+    form.title.setCustomValidity("error");
+  }
+
+  if (form.title.checkValidity() && form.title.value.length > 100) {
     meeting_title_error.innerText = "Title cant be longer than 100 characters";
     form.title.setCustomValidity("error");
   }
@@ -928,6 +933,30 @@ function checkMeetingValidations(form) {
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
   }
+
+  if (!/^(1|2|3)$/.test(form.priority.value)) {
+    reminder_priority_error.innerText =
+      "Priority can only be selected as low medium or high";
+    form.priority.setCustomValidity("error");
+  }
+
+  if (
+    form.dateAddedTo.value.trim().length > 0 &&
+    !validateDate(form.dateAddedTo.value)
+  ) {
+    meeting_dateAddedTo_error.innerText =
+      "The date time value passed is invalid";
+    form.dateAddedTo.setCustomValidity("invalid date");
+  }
+
+  if (
+    form.dateDueOn.value.trim().length > 0 &&
+    !validateDate(form.dateDueOn.value)
+  ) {
+    meeting_dateDueOn_error.innerText = "The date time value passed is invalid";
+    form.dateDueOn.setCustomValidity("invalid date");
+  }
+
   //dateAdded to passed dateDue on not passed
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value === "") {
     meeting_dateDueOn_error.innerText =
@@ -942,7 +971,12 @@ function checkMeetingValidations(form) {
   }
 
   //both passed validate range
-  if (form.dateAddedTo.value !== "" && form.dateDueOn.value !== "") {
+  if (
+    form.dateAddedTo.value !== "" &&
+    form.dateDueOn.value !== "" &&
+    form.dateAddedTo.checkValidity() &&
+    form.dateAddedTo.checkValidity()
+  ) {
     if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
       form.dateAddedTo.setCustomValidity("invalid_range");
       form.dateDueOn.setCustomValidity("invalid_range");
@@ -950,22 +984,21 @@ function checkMeetingValidations(form) {
         "Date Due to must be after date Due On";
       meeting_dateAddedTo_error.innerText =
         "Date Added to must be before date Due On";
-    } else {
-      form.dateAddedTo.setCustomValidity("");
-      form.dateDueOn.setCustomValidity("");
     }
   }
   if (form.repeating.checked) {
-    if (form.dateAddedTo.value === "" || form.dateDueOn.value === "") {
-      if (!form.dateAddedTo.checkValidity()) {
-        form.dateAddedTo.setCustomValidity("mandatory");
-        meeting_dateDueOn_error.innerText =
-          "This field is mandatory in order to access the recurrence feature";
-      } else if (!form.dateDueOn.checkValidity()) {
-        form.dateDueOn.setCustomValidity("mandatory");
-        meeting_dateAddedTo_error.innerText =
-          "This field is mandatory in order to access the recurrence feature";
-      }
+    if (
+      form.dateAddedTo.checkValidity() &&
+      form.dateAddedTo.trim().length === 0
+    ) {
+      form.dateAddedTo.setCustomValidity("mandatory");
+      meeting_dateDueOn_error.innerText =
+        "This field is mandatory in order to access the recurrence feature";
+    }
+    if (form.dateDueOn.checkValidity() && form.dateDueOn.trim().length === 0) {
+      form.dateDueOn.setCustomValidity("mandatory");
+      meeting_dateAddedTo_error.innerText =
+        "This field is mandatory in order to access the recurrence feature";
     }
     if (form.repeatingCounterIncrement.value < 0) {
       meeting_repeatingCounterIncrement_error.innerText =
