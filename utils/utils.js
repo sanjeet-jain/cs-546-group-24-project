@@ -253,10 +253,14 @@ const utils = {
     }
 
     if (repeating === "true" || repeating === true) {
-      if (dateAddedTo === null && dateDueOn === null) {
-        if (!"dateAddedTo" in errorMessages && !"dateDueOn" in errorMessages) {
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length === 0) {
+        if (!"dateAddedTo" in errorMessages) {
           errorMessages.dateAddedTo =
             "This field is mandatory in order to access the recurrence feature";
+        }
+      }
+      if (typeof dateDueOn === "string" && dateDueOn.trim().length === 0) {
+        if (!"dateDueOn" in errorMessages) {
           errorMessages.dateDueOn =
             "This field is mandatory in order to access the recurrence feature";
         }

@@ -879,6 +879,10 @@ function checkMeetingValidations(form) {
   let meeting_repeatingIncrementBy_error = document.getElementById(
     "meeting_repeatingIncrementBy_error"
   );
+  let meeting_priority_error = document.getElementById(
+    "reminder_priority_error"
+  );
+
   meeting_title_error.innerText = "";
   meeting_textBody_error.innerText = "";
   meeting_tag_error.innerText = "";
@@ -923,7 +927,7 @@ function checkMeetingValidations(form) {
   }
 
   if (!/^(1|2|3)$/.test(form.priority.value)) {
-    reminder_priority_error.innerText =
+    meeting_priority_error.innerText =
       "Priority can only be selected as low medium or high";
     form.priority.setCustomValidity("error");
   }
