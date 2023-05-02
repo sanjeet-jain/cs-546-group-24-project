@@ -1326,7 +1326,9 @@ function miniCalendarLoader() {
       ${dayjs(e.date).format("MMMM DD YYYY")}`;
       $.ajax({
         method: "GET",
-        url: `/calendar/getSelectedDayItems/${e.date}`,
+        url: `/calendar/getSelectedDayItems/${dayjs(e.date).format(
+          "YYYY-MM-DD"
+        )}`,
         success: function (data) {
           userIdGlobal = data.userId;
           loadRightPaneCells(data);
@@ -1373,10 +1375,8 @@ function deleteButton() {
   let editButtons = document.querySelectorAll("button.btn-delete");
   editButtons.forEach((button) => {
     button.addEventListener("click", async (event) => {
-      event.target.disabled = true;
       const oldHtml = event.target.innerHTML;
-      // Add the spinner to the button
-      event.target.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
+
       let event_modal = document.getElementById(
         `modal-${dataGlobal.type}-display`
       );
@@ -1385,6 +1385,8 @@ function deleteButton() {
       )?.checked;
 
       const modalFooter = document.querySelector("#deleteModal .modal-footer");
+      modalFooter.innerHTML = "";
+      modalFooter.innerText = "";
       const deleteModal = new bootstrap.Modal(
         document.getElementById("deleteModal")
       );
@@ -1405,6 +1407,9 @@ function deleteButton() {
           if (dataGlobal.type === "reminder") {
             deleteUrl = `/reminder/${userIdGlobal}/reminders/${dataGlobal._id}`;
           }
+          event.target.disabled = true;
+          // Add the spinner to the button
+          event.target.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
           await $.ajax({
             method: "DELETE",
             url: deleteUrl,
@@ -1415,9 +1420,21 @@ function deleteButton() {
               resultDiv.classList = "";
               resultDiv.innerText =
                 "All Event recurrences Successfully deleted, Page will reload now";
-              resultDiv.classList.add("alert", "alert-danger");
+              resultDiv.classList.add("alert", "alert-success");
+              event.target.disabled = false;
               event.target.innerHTML = oldHtml;
-              setTimeout(location.reload.bind(location), 3000);
+              setTimeout(location.reload.bind(location), 2000);
+            },
+            error: function (data) {
+              let resultDiv = document.getElementById(
+                `${dataGlobal.type}-update-result`
+              );
+              resultDiv.classList = "";
+              resultDiv.innerText =
+                "Some Error in deleting the Event, Please try again later";
+              resultDiv.classList.add("alert", "alert-danger");
+              event.target.disabled = false;
+              event.target.innerHTML = oldHtml;
             },
           });
           deleteModal.hide();
@@ -1442,6 +1459,9 @@ function deleteButton() {
           deleteUrl = `/notes/${userIdGlobal}/${dataGlobal._id}`;
         }
 
+        event.target.disabled = true;
+        // Add the spinner to the button
+        event.target.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
         // Delete one event
         await $.ajax({
           method: "DELETE",
@@ -1453,9 +1473,21 @@ function deleteButton() {
             resultDiv.classList = "";
             resultDiv.innerText =
               "Single Event Successfully delete, Page will reload now";
-            resultDiv.classList.add("alert", "alert-danger");
+            resultDiv.classList.add("alert", "alert-success");
+            event.target.disabled = false;
             event.target.innerHTML = oldHtml;
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 2000);
+          },
+          error: function (data) {
+            let resultDiv = document.getElementById(
+              `${dataGlobal.type}-update-result`
+            );
+            resultDiv.classList = "";
+            resultDiv.innerText =
+              "Some Error in deleting the Event, Please try again later";
+            resultDiv.classList.add("alert", "alert-danger");
+            event.target.disabled = false;
+            event.target.innerHTML = oldHtml;
           },
         });
         deleteModal.hide();
