@@ -42,7 +42,7 @@ const exportedMethods = {
     if (disability) {
       utils.validateBooleanInput(disability, "Disability");
     }
-    utils.validateDate(dob, "D.O.B");
+    utils.validateDate(dob, "Date of Birth");
     utils.validateBooleanInput(consent, "Consent");
 
     const users = await usersCollection();
@@ -95,7 +95,7 @@ const exportedMethods = {
       utils.validateBooleanInput(disability, "Disability");
     }
 
-    utils.validateDate(dob, "D.O.B");
+    utils.validateDate(dob, "Date of Birth");
     id = id.trim();
     first_name = first_name.trim();
     last_name = last_name.trim();

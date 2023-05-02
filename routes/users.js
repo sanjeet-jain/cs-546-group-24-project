@@ -64,7 +64,7 @@ router
       }
     }
     try {
-      utils.validateDate(dob, "D.O.B");
+      utils.validateDate(dob, "Date of Birth");
     } catch (e) {
       errorMessages.dob = "Please enter a valid date of birth.";
     }
@@ -261,7 +261,7 @@ router
       }
 
       try {
-        utils.validateDate(dob, "D.O.B");
+        utils.validateDate(dob, "Date of Birth");
       } catch (e) {
         errorMessages.dob = "Please enter a valid date of birth.";
       }

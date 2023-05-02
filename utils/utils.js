@@ -292,19 +292,22 @@ const utils = {
   validateDate(date, paramName) {
     this.validateStringInput(date);
     if (
-      !(paramName === "D.O.B") &&
+      !(paramName === "Date of Birth") &&
       !dayjs(date, "YYYY-MM-DDTHH:mm", true).isValid()
     ) {
       throw new Error(`${paramName} must be a valid Date`);
     }
 
-    if (paramName === "D.O.B" && !dayjs(date, "YYYY-MM-DD", true).isValid()) {
+    if (
+      paramName === "Date of Birth" &&
+      !dayjs(date, "YYYY-MM-DD", true).isValid()
+    ) {
       throw new Error(`${paramName} must be a valid Date`);
     }
   },
 
   validateAge(dob, min_age, max_age) {
-    this.validateDate(dob, "D.O.B");
+    this.validateDate(dob, "Date of Birth");
     //TODO use dayjs
     let today = new Date();
     dob = new Date(dob);
