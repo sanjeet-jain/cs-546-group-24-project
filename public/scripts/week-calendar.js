@@ -1326,7 +1326,9 @@ function miniCalendarLoader() {
       ${dayjs(e.date).format("MMMM DD YYYY")}`;
       $.ajax({
         method: "GET",
-        url: `/calendar/getSelectedDayItems/${e.date}`,
+        url: `/calendar/getSelectedDayItems/${dayjs(e.date).format(
+          "YYYY-MM-DD"
+        )}`,
         success: function (data) {
           userIdGlobal = data.userId;
           loadRightPaneCells(data);
