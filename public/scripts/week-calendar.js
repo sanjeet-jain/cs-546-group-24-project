@@ -928,6 +928,7 @@ function checkMeetingValidations(form) {
   form.dateAddedTo.setCustomValidity("");
   form.dateDueOn.setCustomValidity("");
   form.repeating.setCustomValidity("");
+  form.priority.setCustomValidity("");
   form.repeatingIncrementBy.setCustomValidity("");
   form.repeatingCounterIncrement.setCustomValidity("");
   form.priority.setCustomValidity("");
