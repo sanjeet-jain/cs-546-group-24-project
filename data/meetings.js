@@ -25,7 +25,6 @@ import {
 import constants from "./../constants/constants.js";
 
 const meetingsDataFunctions = {
-  //meetingId only needed
   async get(userId, meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
@@ -260,8 +259,6 @@ const meetingsDataFunctions = {
     // if the meeting exists in collection then return it else throw an error
     return `${deletionInfo.value._id} has been successfully deleted!`;
   },
-
-  // only userId needed
 
   /**
    * @param {string} userId userId of which the meeting is being created for
