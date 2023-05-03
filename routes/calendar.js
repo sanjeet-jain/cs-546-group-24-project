@@ -97,7 +97,8 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
   let currentDate;
   let selectedDate = req.params?.selectedDate?.trim();
   try {
-    utils.validateDate(selectedDate);
+    selectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
+    utils.validateDate(selectedDate, "Date of Birth");
     currentDate = dayjs(selectedDate.trim()).toDate();
   } catch (e) {
     selectedDate = dayjs().format("YYYY-MM-DD");
@@ -198,7 +199,8 @@ router.route("/filter").post((req, res) => {
 router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
   let selectedDate = req.params?.selectedDate;
   try {
-    utils.validateDate(selectedDate);
+    selectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
+    utils.validateDate(selectedDate, "Date of Birth");
     selectedDate = dayjs(selectedDate.trim()).toDate();
   } catch (e) {
     selectedDate = dayjs().toDate();

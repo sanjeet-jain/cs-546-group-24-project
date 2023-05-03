@@ -29,22 +29,35 @@ export const createReminder = async (
     constants.stringLimits["title"]
   );
   title = title.trim();
-  utils.validateStringInputWithMaxLength(
-    textBody,
-    "text body",
-    constants.stringLimits["textBody"]
-  );
-  textBody = textBody.trim();
+
+  if (
+    textBody != null &&
+    typeof textBody === "string" &&
+    textBody.trim().length > 0
+  ) {
+    utils.validateStringInputWithMaxLength(
+      textBody,
+      "text body",
+      constants.stringLimits["textBody"]
+    );
+    textBody = textBody.trim();
+  } else {
+    textBody = null;
+  }
+
   utils.validatePriority(priority, "priority");
-  /**
-   * Tags should be case insensitive and all tags should be converted to lowercase
-   */
-  utils.validateStringInputWithMaxLength(
-    tag,
-    "tag",
-    constants.stringLimits["tag"]
-  );
-  tag = tag.trim().toLowerCase();
+
+  if (typeof tag === "string" && tag.trim().length > 0) {
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
+    tag = tag.trim().toLowerCase();
+  } else {
+    tag = "reminders";
+  }
+
   let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
@@ -62,7 +75,7 @@ export const createReminder = async (
   let reminderEvents = await getAllReminderEventsDAO(user_id);
   for (let i = 0; i < reminderEvents.length; i++) {
     if (
-      dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
+      dayjs(dateAddedTo).diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
       title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
       tag === reminderEvents[i].tag
     ) {
@@ -71,26 +84,13 @@ export const createReminder = async (
       );
     }
   }
-
-  //  else {
-  //   if (
-  //     dayjs(dateAddedTo) === dayjs(reminderEvents[i].dateAddedTo) &&
-  //     title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
-  //     tag === reminderEvents[i].tag
-  //   ) {
-  //     throw new Error(
-  //       "Error : No Two reminders can have same title tag and time"
-  //     );
-  //   }
-  // }
-
   const reminder = {
     title: title,
     textBody: textBody,
     priority: priority,
     tag: tag,
     repeating: repeating,
-    endDateTime: endDateTime /** TODO Add counter later */,
+    endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
     expired: false,
     dateAddedTo: dateAddedTo,
@@ -147,25 +147,40 @@ export const updateReminder = async (
     constants.stringLimits["title"]
   );
   title = title.trim();
-  utils.validateStringInputWithMaxLength(
-    textBody,
-    "text body",
-    constants.stringLimits["textBody"]
-  );
-  textBody = textBody.trim();
+
+  if (
+    textBody != null &&
+    typeof textBody === "string" &&
+    textBody.trim().length > 0
+  ) {
+    utils.validateStringInputWithMaxLength(
+      textBody,
+      "text body",
+      constants.stringLimits["textBody"]
+    );
+    textBody = textBody.trim();
+  } else {
+    textBody = null;
+  }
+
   utils.validatePriority(priority, "priority");
   /**
    * Tags should be case insensitive and all tags should be converted to lowercase
    */
-  utils.validateStringInputWithMaxLength(
-    tag,
-    "tag",
-    constants.stringLimits["tag"]
-  );
-  tag = tag.trim().toLowerCase();
+  if (typeof tag === "string" && tag.trim().length > 0) {
+    utils.validateStringInputWithMaxLength(
+      tag,
+      "tag",
+      constants.stringLimits["tag"]
+    );
+    tag = tag.trim().toLowerCase();
+  } else {
+    tag = "reminders";
+  }
   let dateCreated = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
+
   if (repeating) {
     utils.validateDate(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
@@ -186,6 +201,7 @@ export const updateReminder = async (
     endDateTime: endDateTime,
     repeatingIncrementBy: repeatingIncrementBy,
     type: "reminder",
+    expired: false,
   };
   /**
    * This code causes update for single recurrence and normal update
@@ -250,6 +266,16 @@ export const updateReminder = async (
   }
 };
 
+export const deleteReminderSingle = async (user_id, reminder_id) => {
+  await deleteReminderEventDAO(reminder_id);
+  await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+};
+
+export const getDistinctTags = async () => {
+  const reminderInstance = await remindersCollection();
+  return reminderInstance.distinct("tag");
+};
+
 // export const deleteReminder = async (user_id, reminder_id, flag) => {
 //   utils.checkObjectIdString(user_id);
 //   user_id = user_id.trim();
@@ -298,7 +324,7 @@ const updateAllRecurrencesDAO = async (user_id, reminder_id, reminder) => {
   }
 };
 
-const deleteAllRecurrences = async (user_id, reminder_id) => {
+export const deleteAllRecurrences = async (user_id, reminder_id) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
   utils.checkObjectIdString(reminder_id);
@@ -560,11 +586,6 @@ const getReminderEventsByGroupDAO = async (group_id) => {
     throw new Error("Unexpected DB crash while accessing database");
   }
   return reminderEvents;
-};
-
-export const getDistinctTags = async () => {
-  const reminderInstance = await remindersCollection();
-  return reminderInstance.distinct("tag");
 };
 
 /** DAO Layer End */
