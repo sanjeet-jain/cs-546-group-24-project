@@ -192,6 +192,7 @@ const exportedMethods = {
   },
   async deleteAllEvents(userId) {
     utils.checkObjectIdString(userId);
+    userId = userId.trim();
     let user = await this.getUser(userId);
     if (!user) {
       throw new Error("No user found");
@@ -203,12 +204,11 @@ const exportedMethods = {
 
     for (let i = 0; i < tasks.length; i++) {
       let taskId = tasks[i].toString();
-      await tasksDataFunctions.removeTask(taskId);
+      await tasksDataFunctions.removeTask(taskId, userId);
     }
-    //TODO delete reminders
     for (let i = 0; i < reminders.length; i++) {
       let reminderId = reminders[i].toString();
-      // await remindersDataFunctions.deleteReminderSingle(id, reminderId);
+      await remindersDataFunctions.deleteReminderSingle(userId, reminderId);
     }
     for (let i = 0; i < notes.length; i++) {
       let noteId = notes[i].toString();
@@ -216,7 +216,7 @@ const exportedMethods = {
     }
     for (let i = 0; i < meetings.length; i++) {
       let meetingId = meetings[i].toString();
-      await meetingsDataFunctions.delete(meetingId);
+      await meetingsDataFunctions.delete(meetingId, userId);
     }
   },
   async deleteUser(userId) {

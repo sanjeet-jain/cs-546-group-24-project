@@ -20,9 +20,21 @@ import {
 } from "../config/mongoCollections.js";
 
 const exportedMethods = {
-  async get(noteId) {
+  async get(noteId, userId) {
     utils.checkObjectIdString(noteId);
     noteId = noteId.trim();
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.noteIds.find((x) => {
+        return x.toString() === noteId;
+      })
+    ) {
+      throw new Error("Note not found");
+    }
+
     const notes = await notesCollection();
     const note = await notes.findOne({ _id: new ObjectId(noteId) });
 
@@ -30,7 +42,7 @@ const exportedMethods = {
     if (note) {
       return note;
     } else {
-      throw new Error("note not found");
+      throw new Error("Note not found");
     }
   },
   async getAll(userId) {
@@ -79,21 +91,24 @@ const exportedMethods = {
     );
     return { userId: userId, notesId: insertedId.toString() };
   },
-  async update(
-    // userId,
-    noteId,
-    title,
-    dateAddedTo,
-    textBody,
-    tag
-  ) {
+  async update(userId, noteId, title, dateAddedTo, textBody, tag) {
     utils.checkObjectIdString(noteId);
     noteId = noteId.trim();
-    // utils.checkObjectIdString(userId);
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.noteIds.find((x) => {
+        return x.toString() === noteId;
+      })
+    ) {
+      throw new Error("Note not found");
+    }
     utils.validateNotesInputs(title, dateAddedTo, textBody, tag);
 
     const notes = await notesCollection();
-    const note = await this.get(noteId);
+    const note = await this.get(noteId, userId);
     let updatednote = { ...note };
     updatednote.title = title.trim();
     updatednote.dateAddedTo = dateAddedTo.trim();
@@ -124,7 +139,17 @@ const exportedMethods = {
   async delete(noteId, userId) {
     utils.checkObjectIdString(noteId);
     noteId = noteId.trim();
-
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.noteIds.find((x) => {
+        return x.toString() === noteId;
+      })
+    ) {
+      throw new Error("Note not found");
+    }
     const notes = await notesCollection();
     const deletionInfo = await notes.findOneAndDelete({
       _id: new ObjectId(noteId),
@@ -132,7 +157,6 @@ const exportedMethods = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`${noteId} not found for deletion`);
     }
-    const users = await usersCollection();
     //update the userCollection by removing the same id from the noteIds array in user collection
     await users.updateOne(
       { noteIds: new ObjectId(noteId) },

@@ -6,11 +6,11 @@ import notesDataFunctions from "../data/notes.js";
 import * as reminderDataFunctions from "../data/reminder.js";
 import dayjs from "dayjs";
 
-async function createUser() {
+async function createUser(email) {
   const sampleUser = {
     first_name: "Sample",
     last_name: "User",
-    email: "sampleuser@gmail.com",
+    email: email,
     // password will be hashed when being passed from UI to the API and then stored ( done by Jonathan)
     password: "abcDefgh2i",
     disability: false,
@@ -210,8 +210,11 @@ export async function runSetup(datestring, user) {
 export async function seed() {
   const db = await dbConnection();
   // await db.dropDatabase();
-  const user = await createUser();
+  const user = await createUser("sampleuser@gmail.com");
   await runSetup("2023-04-22", user);
   await runSetup(undefined, user);
+  const user2 = await createUser("sampleuser2@gmail.com");
+  await runSetup("2023-04-22", user2);
+  await runSetup(undefined, user2);
   await closeConnection();
 }
