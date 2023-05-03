@@ -285,6 +285,7 @@ function onMeetingModalClose() {
   );
   modalCloseButtons.forEach((button) => {
     button.addEventListener("click", function () {
+      let meetingsForm = document.getElementById("meeting-form");
       let fieldset = event_modal.querySelector("#meeting-form-enabler");
       fieldset.disabled = true;
       // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
@@ -305,6 +306,14 @@ function onMeetingModalClose() {
       let resultDiv = document.getElementById("meeting-update-result");
       resultDiv.classList = "";
       resultDiv.innerText = "";
+      meetingsForm.title.setCustomValidity("");
+      meetingsForm.textBody.setCustomValidity("");
+      meetingsForm.tag.setCustomValidity("");
+      meetingsForm.priority.setCustomValidity("");
+      meetingsForm.dateAddedTo.setCustomValidity("");
+      meetingsForm.dateDueOn.setCustomValidity("");
+      meetingsForm.repeatingIncrementBy.setCustomValidity("");
+      meetingsForm.repeatingCounterIncrement.setCustomValidity("");
       dataGlobal = undefined;
     });
   });
@@ -981,13 +990,16 @@ function checkMeetingValidations(form) {
   if (form.repeating.checked) {
     if (
       form.dateAddedTo.checkValidity() &&
-      form.dateAddedTo.trim().length === 0
+      form.dateAddedTo.value.trim().length === 0
     ) {
       form.dateAddedTo.setCustomValidity("mandatory");
       meeting_dateDueOn_error.innerText =
         "This field is mandatory in order to access the recurrence feature";
     }
-    if (form.dateDueOn.checkValidity() && form.dateDueOn.trim().length === 0) {
+    if (
+      form.dateDueOn.checkValidity() &&
+      form.dateDueOn.value.trim().length === 0
+    ) {
       form.dateDueOn.setCustomValidity("mandatory");
       meeting_dateAddedTo_error.innerText =
         "This field is mandatory in order to access the recurrence feature";
