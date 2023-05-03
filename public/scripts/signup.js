@@ -20,6 +20,7 @@ function validatesignup(event) {
 function checkValidations(event) {
   let emailInput = event.target.email;
   let passwordInput = event.target.password;
+  let passwordReEnterInput = event.target.reEnterPassword;
   let firstNameInput = event.target.first_name;
   let lastNameInput = event.target.last_name;
   let dob = event.target.dob;
@@ -28,6 +29,7 @@ function checkValidations(event) {
 
   let email_error = document.getElementById("email_error");
   let password_error = document.getElementById("password_error");
+  let reEnter_error = document.getElementById("reEnterPassword_error");
   let firstName_error = document.getElementById("first_name_error");
   let lastName_error = document.getElementById("last_name_error");
   let date_error = document.getElementById("date_error");
@@ -45,7 +47,9 @@ function checkValidations(event) {
   } else {
     password_error.innerText = "";
   }
-
+  if (!confirmPassword(passwordInput.value, passwordReEnterInput.value)) {
+    reEnter_error = "Passwords do not match.";
+  }
   if (!validateName(firstNameInput.value)) {
     firstName_error.innerText = "Please enter a valid first name.";
   } else {
@@ -60,7 +64,9 @@ function checkValidations(event) {
   if (!consent.value !== "true") {
     consent_error.innerText = "Please consent to data collection";
   }
-
+  if (passwordInput.value !== reEnterPassword.value) {
+    reEnter_error = "Passwords do not match.";
+  }
   if (dob.validity.valueMissing) {
     date_error.textContent = "Please enter a date of birth.";
   } else if (dob.validity.rangeUnderflow) {
@@ -98,6 +104,14 @@ function validatePassword(password) {
 function validateName(name) {
   const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
+}
+
+function confirmPassword(password, reEnter) {
+  if (password !== reEnter) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 validatesignup();

@@ -26,6 +26,7 @@ router
     const last_name = req.body.last_name;
     const email = req.body.email;
     const password = req.body.password;
+    const reEnterPassword = req.body.reEnterPassword;
     const disability = req.body.disability;
     const dob = req.body.dob;
     const consent = req.body.consent;
@@ -42,11 +43,15 @@ router
     } catch (e) {
       errorMessages.last_name = "Please enter a valid last name.";
     }
-
-    try {
-      utils.validateEmail(email, "Email");
-    } catch (e) {
-      errorMessages.email = "Please enter a valid email.";
+    const emailCheck = await usersFunctions.getUserByEmail(email);
+    if (!emailCheck) {
+      try {
+        utils.validateEmail(email, "Email");
+      } catch (e) {
+        errorMessages.email = "Please enter a valid email.";
+      }
+    } else {
+      errorMessages.email = "Email already in use.";
     }
 
     try {
@@ -55,7 +60,9 @@ router
       errorMessages.password =
         "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
     }
-
+    if (password !== reEnterPassword) {
+      errorMessages.reEnterPassword = "Passwords do not match.";
+    }
     if (disability) {
       try {
         utils.validateBooleanInput(disability, "Disability");
@@ -376,11 +383,9 @@ router
         req.body.newPassword,
         req.body.reEnterNewPassword
       );
-      return res.redirect("user/password", {
-        success: "password successfully changed",
-      });
+      return res.redirect("password");
     } catch (e) {
-      return res.status(500).render("user/password", {
+      return res.status(500).render("/password", {
         title: "Password",
         error: "error changing password",
         is_invalid: true,
