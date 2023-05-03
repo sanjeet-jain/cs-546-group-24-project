@@ -108,7 +108,7 @@ const exportedMethods = {
     utils.validateNotesInputs(title, dateAddedTo, textBody, tag);
 
     const notes = await notesCollection();
-    const note = await this.get(noteId);
+    const note = await this.get(noteId, userId);
     let updatednote = { ...note };
     updatednote.title = title.trim();
     updatednote.dateAddedTo = dateAddedTo.trim();
