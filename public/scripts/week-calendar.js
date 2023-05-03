@@ -314,7 +314,8 @@ function onMeetingModalClose() {
       meetingsForm.dateDueOn.setCustomValidity("");
       meetingsForm.repeatingIncrementBy.setCustomValidity("");
       meetingsForm.repeatingCounterIncrement.setCustomValidity("");
-      reminderForm.classList.remove("was-validated");
+
+      meetingsForm.classList.remove("was-validated");
       dataGlobal = undefined;
     });
   });
@@ -900,11 +901,13 @@ function checkMeetingValidations(form) {
   meeting_dateDueOn_error.innerText = "";
   meeting_repeatingCounterIncrement_error.innerText = "";
   meeting_repeatingIncrementBy_error.innerText = "";
+  meeting_priority_error.innerText = "";
   form.tag.setCustomValidity("");
   form.title.setCustomValidity("");
   form.dateAddedTo.setCustomValidity("");
   form.dateDueOn.setCustomValidity("");
   form.repeating.setCustomValidity("");
+  form.priority.setCustomValidity("");
   form.repeatingIncrementBy.setCustomValidity("");
   form.repeatingCounterIncrement.setCustomValidity("");
 
