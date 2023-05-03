@@ -17,7 +17,7 @@ router
       return res.status(400).json({ error: e.message });
     }
     try {
-      let note = await notesDataFunctions.get(noteId);
+      let note = await notesDataFunctions.get(noteId, userId);
       return res.status(200).json(note);
     } catch (e) {
       return res.status(404).json({ error: e.message });
@@ -35,7 +35,7 @@ router
       return res.status(400).json({ error: e.message });
     }
     try {
-      let note = await notesDataFunctions.delete(noteId, "");
+      let note = await notesDataFunctions.delete(noteId, userId);
       return res.status(200).json(note);
     } catch (e) {
       return res.status(404).json({ error: e.message });
@@ -64,9 +64,7 @@ router
     notePutData.title = xss(notePutData.title);
     notePutData.tag = xss(notePutData.tag);
     try {
-      //validation
       utils.checkObjectIdString(noteId);
-      // utils.checkObjectIdString(userId);
       let errorMessages = utils.validateNotesInputs(
         notePutData.title,
         notePutData.dateAddedTo,
@@ -82,7 +80,7 @@ router
     try {
       const { title, dateAddedTo, textBody, tag } = notePutData;
       const updatednote = await notesDataFunctions.update(
-        // userId,
+        userId,
         noteId,
         title,
         dateAddedTo,
@@ -176,7 +174,6 @@ const uploadDirectory = "uploads";
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory);
 }
-// configure multer middleware to handle multipart form data
 // configure multer middleware to handle multipart form data
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
