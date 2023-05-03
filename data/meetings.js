@@ -22,6 +22,7 @@ import {
   meetingsCollection,
   usersCollection,
 } from "../config/mongoCollections.js";
+import constants from "./../constants/constants.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
@@ -81,12 +82,30 @@ const meetingsDataFunctions = {
     delete updatedMeeting._id;
 
     title = title.trim();
-    textBody = textBody.trim();
-    tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      tag = tag.trim().toLowerCase();
+    } else {
+      tag = "meetings";
+    }
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    } else {
+      dateAddedTo = null;
+    }
+
+    if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    } else {
+      dateDueOn = null;
+    }
+
     priority = Number.parseInt(priority);
-    textBody = textBody.trim();
     repeatingCounterIncrement = !repeatingCounterIncrement
       ? repeatingCounterIncrement
       : Number.parseInt(repeatingCounterIncrement);
@@ -105,6 +124,8 @@ const meetingsDataFunctions = {
 
     // wasnt repeating but now is
     if (
+      dateAddedTo !== null &&
+      dateDueOn !== null &&
       repeating === true &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
@@ -265,12 +286,28 @@ const meetingsDataFunctions = {
     }
 
     title = title.trim();
-    textBody = textBody.trim();
-    tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      tag = tag.trim().toLowerCase();
+    } else {
+      tag = "meetings";
+    }
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    } else {
+      dateAddedTo = null;
+    }
+
+    if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    } else {
+      dateDueOn = null;
+    }
     priority = Number.parseInt(priority);
-    textBody = textBody.trim();
     repeatingCounterIncrement = !repeatingCounterIncrement
       ? repeatingCounterIncrement
       : Number.parseInt(repeatingCounterIncrement);
