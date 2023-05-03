@@ -26,16 +26,29 @@ import constants from "./../constants/constants.js";
 
 const meetingsDataFunctions = {
   //meetingId only needed
-  async get(meetingId) {
+  async get(userId, meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
     meetingId = meetingId.trim();
-    const meetings = await meetingsCollection();
-    const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
-    // if the meeting exists in collection then return it else throw an error
-    if (meeting) {
-      return meeting;
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      const meetings = await meetingsCollection();
+      const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
+
+      // if the meeting exists in collection then return it else throw an error
+      if (meeting) {
+        return meeting;
+      } else {
+        throw new Error("Meeting not found");
+      }
     } else {
       throw new Error("Meeting not found");
     }
@@ -77,7 +90,7 @@ const meetingsDataFunctions = {
     }
 
     const meetings = await meetingsCollection();
-    const oldMeeting = await this.get(meetingId);
+    const oldMeeting = await this.get(userId, meetingId);
     let updatedMeeting = { ...oldMeeting };
     delete updatedMeeting._id;
 
@@ -345,7 +358,7 @@ const meetingsDataFunctions = {
         { _id: new ObjectId(userId) },
         { $push: { meetingIds: insertedId } }
       );
-      return this.get(insertedId.toString());
+      return this.get(userId, insertedId.toString());
     } else {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];

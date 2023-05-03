@@ -6,7 +6,7 @@ import meetingsDataFunctions from "../data/meetings.js";
 router
   .route("/:userId/:meetingId")
   .get(utils.validateUserId, async (req, res) => {
-    userId = req.params.userId.trim();
+    let userId = req.params.userId.trim();
     let meetingId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
@@ -15,7 +15,7 @@ router
       return res.status(400).json({ error: e.message });
     }
     try {
-      let meeting = await meetingsDataFunctions.get(meetingId);
+      let meeting = await meetingsDataFunctions.get(userId, meetingId);
       return res.status(200).json(meeting);
     } catch (e) {
       return res.status(404).json({ error: e.message });
@@ -23,7 +23,7 @@ router
   })
   .delete(utils.validateUserId, async (req, res) => {
     let meetingId = "";
-    userId = req.params.userId.trim();
+    let userId = req.params.userId.trim();
 
     try {
       utils.checkObjectIdString(req.params.meetingId);

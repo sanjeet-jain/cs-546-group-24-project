@@ -209,7 +209,7 @@ export async function runSetup(datestring, user) {
 
 export async function seed() {
   const db = await dbConnection();
-  await db.dropDatabase();
+  // await db.dropDatabase();
   const user = await createUser();
   await runSetup("2023-04-22", user);
   await runSetup(undefined, user);
