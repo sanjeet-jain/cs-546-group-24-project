@@ -314,6 +314,7 @@ function onMeetingModalClose() {
       meetingsForm.dateDueOn.setCustomValidity("");
       meetingsForm.repeatingIncrementBy.setCustomValidity("");
       meetingsForm.repeatingCounterIncrement.setCustomValidity("");
+      reminderForm.classList.remove("was-validated");
       dataGlobal = undefined;
     });
   });
