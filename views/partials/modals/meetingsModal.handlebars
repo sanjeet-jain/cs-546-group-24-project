@@ -61,22 +61,20 @@
               </div>
             </div>
             {{! dateAddedTo }}
-            <div class="form-floating mb-3">
-              <input type="datetime-local" class="form-control" name="dateAddedTo" id="meeting_dateAddedTo" value="" />
-              <label for="meeting_dateAddedTo" class="form-label">Date to Add
-                event to
+            <div class=" mb-3">
+              <label for="meeting_dateAddedTo" class="form-label">Date to Add event to
               </label>
+              <input type="datetime-local" class="form-control" name="dateAddedTo" id="meeting_dateAddedTo" value="" />
 
               <div id="meeting_dateAddedTo_error" class="invalid-feedback">
 
               </div>
             </div>
             {{! dateDueOn }}
-            <div class="form-floating mb-3">
-              <input type="datetime-local" class="form-control" name="dateDueOn" id="meeting_dateDueOn" value="" />
-              <label for="meeting_dateDueOn" class="form-label">Date event is
-                due on
+            <div class=" mb-3">
+              <label for="meeting_dateDueOn" class="form-label">Date event is due on
               </label>
+              <input type="datetime-local" class="form-control" name="dateDueOn" id="meeting_dateDueOn" value="" />
 
               <div id="meeting_dateDueOn_error" class="invalid-feedback">
 
@@ -109,12 +107,12 @@
               </div>
             </div>
             {{! repeatingCounterIncrement }}
-            <div class="form-floating mb-3">
-              <input type="number" class="form-control" {{! change max to depending on the drop down }} min="1" max="5"
-                id="meeting_repeatingCounterIncrement" name="repeatingCounterIncrement" value="0" />
+            <div class=" mb-3">
               <label for="meeting_repeatingCounterIncrement" class="form-label">
                 How Many times to repeat the event ? ( number )
               </label>
+              <input type="number" class="form-control" {{! change max to depending on the drop down }} min="1" max="5"
+                id="meeting_repeatingCounterIncrement" name="repeatingCounterIncrement" value="0" />
               <div id="meeting_repeatingCounterIncrement_error" class="invalid-feedback">
 
               </div>

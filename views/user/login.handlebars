@@ -8,11 +8,11 @@
     </h1>
     <br />
 
-    <div class="form-floating">
+    <div>
+      <label for="email">Email address</label>
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
         aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
         value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
-      <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter Email Here</small>
       <div id="email_error" class="invalid-feedback">
@@ -20,11 +20,11 @@
       </div>
     </div>
     <br />
-    <div class="form-floating">
+    <div>
+      <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
         minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" aria-describedby="password_help_id"
         value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
-      <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
@@ -41,10 +41,10 @@
     {{/if}}
   </form>
   <br />
-  <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
+  <a id="forgot" href="/forgot">Forgot Password?</a>
   <br />
 
-  <a id="signup_link" class="link-secondary" href="/user/signup">Not Registered?
+  <a id="signup_link" href="/user/signup">Not Registered?
     Click here to Signup</a>
 
 </div>
