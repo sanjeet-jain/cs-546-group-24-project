@@ -57,38 +57,40 @@
                 <option value="2">Medium</option>
                 <option value="3">High</option>
               </select>
+              <div id="task_priority_error" class="invalid-feedback"></div>
             </div>
-            {{! dateAddedTo }}
-            <div class="form-floating mb-3">
-              <input type="datetime-local" class="form-control" name="dateAddedTo" id="task_dateAddedTo" value="" />
-              <label for="task_dateAddedTo" class="form-label">Date to Add
-                event to
-              </label>
-
-              <div id="task_dateAddedTo_error" class="invalid-feedback">
-
-              </div>
-            </div>
-            {{! add more fields for other events }}
-            <div class="mb-3">
-              <label for="task_checked" class="form-label">Completed</label>
-              <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" {{#if
-                checked}}checked{{/if}} />
-              <div id="task_checked_error" class="invalid-feedback">
-                <input type="hidden" id="task_checked_state" value="false">
-
-              </div>
-            </div>
-          </form>
         </div>
-        <div class="modal-footer">
-          <div id="task-update-result">
+        {{! dateAddedTo }}
+        <div class="form-floating mb-3">
+          <input type="datetime-local" class="form-control" name="dateAddedTo" id="task_dateAddedTo" value="" />
+          <label for="task_dateAddedTo" class="form-label">Date to Add
+            event to
+          </label>
+
+          <div id="task_dateAddedTo_error" class="invalid-feedback">
 
           </div>
-          <input id="task-bottom-submit-button" type="submit" form="task-form" value="Save Changes"
-            class="btn btn-primary" />
         </div>
-      </fieldset>
+        {{! add more fields for other events }}
+        <div class="mb-3">
+          <label for="task_checked" class="form-label">Completed</label>
+          <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" {{#if
+            checked}}checked{{/if}} />
+          <div id="task_checked_error" class="invalid-feedback">
+            <input type="hidden" id="task_checked_state" value="false">
+
+          </div>
+        </div>
+        </form>
     </div>
+    <div class="modal-footer">
+      <div id="task-update-result">
+
+      </div>
+      <input id="task-bottom-submit-button" type="submit" form="task-form" value="Save Changes"
+        class="btn btn-primary" />
+    </div>
+    </fieldset>
   </div>
+</div>
 </div>

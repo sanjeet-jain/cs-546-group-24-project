@@ -6,24 +6,24 @@ import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
 
 router
-  .route("/:user_id")
+  .route("/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let user_id = req.params.user_id;
+    let userId = req.params.userId;
     try {
-      utils.checkObjectIdString(user_id);
-      user_id = user_id.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      res.json(await reminderManager.getAllReminders(user_id));
+      res.json(await reminderManager.getAllReminders(userId));
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }
   })
   .post(utils.validateUserId, async (req, res) => {
     const reminder = req.body;
-    let user_id = req.params.user_id;
+    let userId = req.params.userId;
     let title = reminder.title;
     let textBody = reminder.textBody;
     let priority = Number.parseInt(reminder.priority);
@@ -39,8 +39,8 @@ router
     let repeatingIncrementBy = reminder.repeatingIncrementBy;
     dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
-      utils.checkObjectIdString(user_id);
-      user_id = user_id.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -83,7 +83,7 @@ router
     }
     try {
       await reminderManager.createReminder(
-        user_id,
+        userId,
         title,
         textBody,
         priority,
@@ -100,7 +100,7 @@ router
   });
 
 router
-  .route("/:user_id/reminder/:reminder_id")
+  .route("/:userId/reminder/:reminder_id")
   .get(utils.validateUserId, async (req, res) => {
     let reminder_id = req.params.reminder_id;
     try {
@@ -118,7 +118,7 @@ router
   .put(utils.validateUserId, async (req, res) => {
     let reminder_id = req.params.reminder_id;
     let reminder = req.body;
-    let user_id = req.params.user_id;
+    let userId = req.params.userId;
     let title = reminder.title;
     let textBody = reminder.textBody;
     let priority = Number.parseInt(reminder.priority);
@@ -183,7 +183,7 @@ router
     }
     try {
       await reminderManager.updateReminder(
-        user_id,
+        userId,
         reminder_id,
         title,
         textBody,
@@ -201,17 +201,17 @@ router
   })
   .delete(utils.validateUserId, async (req, res) => {
     let reminder_id = req.params.reminder_id;
-    let user_id = req.params.user_id;
+    let userId = req.params.userId;
     try {
       utils.checkObjectIdString(reminder_id);
-      utils.checkObjectIdString(user_id);
+      utils.checkObjectIdString(userId);
       reminder_id = reminder_id.trim();
-      user_id = user_id.trim();
+      userId = userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      reminderManager.deleteReminderSingle(user_id, reminder_id);
+      reminderManager.deleteReminderSingle(userId, reminder_id);
       res.json("The Reminder Events were successfully deleted in the db");
     } catch (e) {
       return res.status(404).json({ error: e.message });
@@ -219,19 +219,19 @@ router
   });
 
 router
-  .route("/:user_id/reminders/:reminder_id")
+  .route("/:userId/reminders/:reminder_id")
   .delete(utils.validateUserId, async (req, res) => {
     let reminder_id = req.params.reminder_id;
-    let user_id = req.params.user_id;
+    let userId = req.params.userId;
     try {
       utils.checkObjectIdString(reminder_id);
-      utils.checkObjectIdString(user_id);
+      utils.checkObjectIdString(userId);
       reminder_id = reminder_id.trim();
-      user_id = user_id.trim();
+      userId = userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-    reminderManager.deleteAllRecurrences(user_id, reminder_id);
+    reminderManager.deleteAllRecurrences(userId, reminder_id);
     res.json("All reminder events have been successfully deleted");
   });
 
