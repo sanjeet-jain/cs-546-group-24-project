@@ -94,7 +94,7 @@ function populateRemindersModal(userId, reminderId) {
 function populateTasksModal(userId, taskId) {
   $.ajax({
     method: "GET",
-    url: `/task/${taskId}`,
+    url: `/task/${userId}/${taskId}`,
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
@@ -1240,7 +1240,7 @@ function clickableDateCells() {
     });
   });
 }
-function loadRightPaneCells(data) {
+function loadLeftPaneCells(data) {
   let events = data.selectedDayItems.sort((a, b) => {
     if (a.priority > b.priority) {
       return -1;
@@ -1335,7 +1335,7 @@ function miniCalendarLoader() {
         )}`,
         success: function (data) {
           userIdGlobal = data.userId;
-          loadRightPaneCells(data);
+          loadLeftPaneCells(data);
         },
       });
     });

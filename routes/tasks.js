@@ -69,17 +69,6 @@ router
     }
   });
 
-router.route("/:taskId").get(async (req, res) => {
-  try {
-    const taskId = req.params.taskId.trim();
-    utils.checkObjectIdString(taskId);
-    const task = await tasksDataFunctions.getTaskById(taskId);
-    res.json(task);
-  } catch (e) {
-    res.status(404).json({ error: e.message });
-  }
-});
-
 router
   .route("/:userId/:taskId")
   .put(async (req, res) => {
@@ -135,6 +124,16 @@ router
       utils.checkObjectIdString(taskId);
       const removedTask = await tasksDataFunctions.removeTask(taskId);
       res.json(removedTask);
+    } catch (e) {
+      res.status(404).json({ error: e.message });
+    }
+  })
+  .get(async (req, res) => {
+    try {
+      const taskId = req.params.taskId.trim();
+      utils.checkObjectIdString(taskId);
+      const task = await tasksDataFunctions.getTaskById(taskId);
+      res.json(task);
     } catch (e) {
       res.status(404).json({ error: e.message });
     }
