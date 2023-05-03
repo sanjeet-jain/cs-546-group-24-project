@@ -7,7 +7,7 @@ const router = Router();
 
 router
   .route("/tasks/:userId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let userId = req.params.userId;
     try {
       utils.checkObjectIdString(userId);
@@ -22,7 +22,7 @@ router
       res.status(404).json({ error: e.message });
     }
   })
-  .post(async (req, res) => {
+  .post(utils.validateUserId, async (req, res) => {
     let userId = req.params.userId;
     try {
       utils.checkObjectIdString(userId);
@@ -71,7 +71,7 @@ router
 
 router
   .route("/:userId/:taskId")
-  .put(async (req, res) => {
+  .put(utils.validateUserId, async (req, res) => {
     try {
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
@@ -118,7 +118,7 @@ router
     }
   })
 
-  .delete(async (req, res) => {
+  .delete(utils.validateUserId, async (req, res) => {
     try {
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);
@@ -128,7 +128,7 @@ router
       res.status(404).json({ error: e.message });
     }
   })
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     try {
       const taskId = req.params.taskId.trim();
       utils.checkObjectIdString(taskId);

@@ -5,7 +5,7 @@ import notesDataFunctions from "../data/notes.js";
 import xss from "xss";
 router
   .route("/:userId/:noteId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let noteId = "";
     let userId = "";
     try {
@@ -23,7 +23,7 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .delete(async (req, res) => {
+  .delete(utils.validateUserId, async (req, res) => {
     let noteId = "";
     let userId = "";
     try {
@@ -41,7 +41,7 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .put(async (req, res) => {
+  .put(utils.validateUserId, async (req, res) => {
     //code here for PUT
     let noteId = "";
     let userId = "";
@@ -100,7 +100,7 @@ router
 
 router
   .route("/user/:userId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
@@ -115,7 +115,7 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .post(async (req, res) => {
+  .post(utils.validateUserId, async (req, res) => {
     //code here for PUT
     let userId = "";
     try {
@@ -194,7 +194,7 @@ const upload = multer({ storage: storage });
 
 router
   .route("/api/upload-image/:userId/:filename")
-  .post(upload.single("image"), (req, res) => {
+  .post(utils.validateUserId, upload.single("image"), (req, res) => {
     try {
       utils.checkObjectIdString(req.params.userId);
       const userId = req.params.userId;
@@ -211,7 +211,7 @@ router
       location: `/notes/api/upload-image/${req.params.userId}/${file.filename}`,
     });
   })
-  .get((req, res) => {
+  .get(utils.validateUserId, (req, res) => {
     //add error case for file not found
     try {
       utils.checkObjectIdString(req.params.userId);

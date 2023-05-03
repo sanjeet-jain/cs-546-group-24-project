@@ -5,7 +5,8 @@ import meetingsDataFunctions from "../data/meetings.js";
 
 router
   .route("/:userId/:meetingId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
+    userId = req.params.userId.trim();
     let meetingId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
@@ -20,8 +21,10 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .delete(async (req, res) => {
+  .delete(utils.validateUserId, async (req, res) => {
     let meetingId = "";
+    userId = req.params.userId.trim();
+
     try {
       utils.checkObjectIdString(req.params.meetingId);
       meetingId = req.params.meetingId.trim();
@@ -35,7 +38,7 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .put(async (req, res) => {
+  .put(utils.validateUserId, async (req, res) => {
     //code here for PUT
     let meetingId = "";
     let userId = "";
@@ -108,7 +111,7 @@ router
 
 router
   .route("/user/:userId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
@@ -123,7 +126,7 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .post(async (req, res) => {
+  .post(utils.validateUserId, async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
@@ -190,7 +193,7 @@ router
 
 router
   .route("/user/:userId/meetings/repeating/:repeatingGroup")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let userId = "";
     let repeatingGroup = "";
     try {
@@ -211,7 +214,7 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .put(async (req, res) => {
+  .put(utils.validateUserId, async (req, res) => {
     //code here for PUT
     let userId = "";
     let repeatingGroup = "";
@@ -265,7 +268,7 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .delete(async (req, res) => {
+  .delete(utils.validateUserId, async (req, res) => {
     let userId = "";
     let repeatingGroup = "";
     try {
