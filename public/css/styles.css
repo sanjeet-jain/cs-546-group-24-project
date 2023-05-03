@@ -100,3 +100,35 @@ html[data-bs-theme="light"] {
 .date-clickable {
   color: var(--text-color);
 }
+
+/* taken from bootstap 5 docs */
+.swatch-indigo {
+  color: #fff;
+  background-color: #6610f2;
+}
+
+.swatch-cyan {
+  color: #000;
+  background-color: #0dcaf0;
+}
+
+.swatch-indigo-subtle {
+  color: #000;
+  text-decoration: line-through;
+  background-color: #c5b3e6;
+}
+
+.swatch-cyan-subtle {
+  color: #000;
+  text-decoration: line-through;
+  background-color: #9eeaf9;
+}
+.bg-success-subtle {
+  color: var(--text-color);
+  text-decoration: line-through;
+}
+
+.bg-danger-subtle {
+  color: var(--text-color);
+  text-decoration: line-through;
+}
