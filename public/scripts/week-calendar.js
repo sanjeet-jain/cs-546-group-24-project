@@ -720,9 +720,9 @@ function bindEventButtontoModal() {
   let notes_editor = tinymce.init({
     selector: "textarea#notes_editor",
     skin: "bootstrap",
-    plugins: "lists, link, image, media wordcount fullscreen",
+    plugins: "lists, link image,  wordcount, fullscreen",
     toolbar:
-      " fullscreen h1 h2 bold italic strikethrough blockquote bullist numlist backcolor  link image media  removeformat",
+      " fullscreen h1 h2 bold italic strikethrough blockquote bullist numlist backcolor  link image   removeformat",
     // menubar: true,
     readonly: true,
 
@@ -752,7 +752,7 @@ function bindEventButtontoModal() {
       images_upload_url: 'postAcceptor.php',
       here we add custom filepicker only to Image dialog
     */
-    file_picker_types: "file image media",
+    file_picker_types: "file image ",
     /* and here's our custom image picker*/
 
     file_picker_callback: function (cb, value, meta) {
