@@ -132,3 +132,13 @@ html[data-bs-theme="light"] {
   color: var(--text-color);
   text-decoration: line-through;
 }
+
+.datepicker table tr td.new,
+.datepicker table tr td.old {
+  color: currentcolor !important;
+}
+
+.swatch-orange {
+  color: #000;
+  background-color: #fd7e14;
+}
