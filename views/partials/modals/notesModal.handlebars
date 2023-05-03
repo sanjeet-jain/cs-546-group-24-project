@@ -4,9 +4,9 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h4 class="modal-title" id="modal-notes-label">
+        <span class="modal-title" id="modal-notes-label">
           <i class="bi-file-text">notes Event</i>
-        </h4>
+        </span>
         <button type="button" class="btn btn-edit" aria-label="Edit" {{! onclick="enableFormEdit()" }}>
           <i class="bi-pencil-fill"></i>
         </button>
@@ -54,12 +54,11 @@
             </div>
 
             {{! dateAddedTo }}
-            <div class="form-floating mb-3">
+            <div class=" mb-3">
+              <label for="notes_dateAddedTo" class="form-label">Date to Add event to
+              </label>
               <input required type="datetime-local" class="form-control" name="dateAddedTo" id="notes_dateAddedTo"
                 value="" />
-              <label for="notes_dateAddedTo" class="form-label">Date to Add
-                event to
-              </label>
 
               <div id="notes_dateAddedTo_error" class="invalid-feedback">
 

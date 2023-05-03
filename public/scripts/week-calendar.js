@@ -1310,10 +1310,10 @@ function loadLeftPaneCells(data) {
     let buttonClass = "";
     if (event.type === "meeting") {
       logoClass = "bi-calendar-event";
-      buttonClass = "bg-primary";
+      buttonClass = "swatch-cyan";
     } else if (event.type === "reminder") {
       logoClass = "bi-alarm";
-      buttonClass = "bg-warning";
+      buttonClass = "swatch-indigo";
     } else if (event.type === "task") {
       logoClass = "bi-check2-square";
       buttonClass = "bg-danger";
