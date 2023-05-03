@@ -36,19 +36,18 @@ const meetingsDataFunctions = {
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (
-      user.meetingIds.find((x) => {
+      !user.meetingIds.find((x) => {
         return x.toString() === meetingId;
       })
     ) {
-      const meetings = await meetingsCollection();
-      const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
+      throw new Error("Meeting not found");
+    }
+    const meetings = await meetingsCollection();
+    const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
-      // if the meeting exists in collection then return it else throw an error
-      if (meeting) {
-        return meeting;
-      } else {
-        throw new Error("Meeting not found");
-      }
+    // if the meeting exists in collection then return it else throw an error
+    if (meeting) {
+      return meeting;
     } else {
       throw new Error("Meeting not found");
     }
@@ -229,10 +228,21 @@ const meetingsDataFunctions = {
         throw new Error("Meeting update wasnt successfull");
     }
   },
-  async delete(meetingId) {
+  async delete(meetingId, userId) {
     utils.checkObjectIdString(meetingId);
     meetingId = meetingId.trim();
 
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      throw new Error("Meeting not found");
+    }
     const meetings = await meetingsCollection();
     const deletionInfo = await meetings.findOneAndDelete({
       _id: new ObjectId(meetingId),
@@ -240,7 +250,6 @@ const meetingsDataFunctions = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`${meetingId} not found for deletion`);
     }
-    const users = await usersCollection();
 
     //update the userCollection by removing the same id from the meetingIds array in user collection
     await users.updateOne(

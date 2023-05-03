@@ -32,7 +32,7 @@ router
       return res.status(400).json({ error: e.message });
     }
     try {
-      let meeting = await meetingsDataFunctions.delete(meetingId);
+      let meeting = await meetingsDataFunctions.delete(meetingId, userId);
       return res.status(200).json(meeting);
     } catch (e) {
       return res.status(404).json({ error: e.message });
