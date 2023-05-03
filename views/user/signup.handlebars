@@ -7,7 +7,7 @@
     </h1>
 
     <br />
-    <div class="form-floating mb-3">
+    <div class=" mb-3">
       <input required type="text" class="form-control" name="first_name" id="first_name"
         aria-describedby="first_name_help_id" placeholder="First Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
         value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}" />
@@ -18,7 +18,7 @@
         {{errorMessages.first_name}}
       </div>
     </div>
-    <div class="form-floating mb-3">
+    <div class=" mb-3">
       <input required type="text" class="form-control" name="last_name" id="last_name"
         aria-describedby="last_name_help_id" placeholder="Last Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
         value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}" />
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="form-floating mb-3">
+    <div class=" mb-3">
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
         aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
         value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
@@ -45,11 +45,11 @@
       </div>
     </div>
 
-    <div class="form-floating">
+    <div>
+      <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
         minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" aria-describedby="password_help_id"
         value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
-      <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
@@ -58,10 +58,10 @@
     </div>
     <br />
 
-    <div class="form-floating mb-3">
+    <div class="mb-3">
+      <label for="dob" class="form-label">Date Of Birth</label>
       <input required type="date" class="form-control" name="dob" id="dob" aria-describedby="dob_help_id"
         max="{{minDobDate}}" min="{{maxDobDate}}" value="{{#if errorContent.dob}}{{errorContent.dob}}{{/if}}" />
-      <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">
@@ -99,10 +99,10 @@
 
 
   </form>
-  <a id="forgot" class="link-primary" href="/forgot">Forgot Password?</a>
+  <a id="forgot" href="/forgot">Forgot Password?</a>
   <br />
 
-  <a id="signup_link" class="link-secondary" href="/user/signup">Not Registered?
+  <a id="signup_link" href="/user/signup">Not Registered?
     Click here to Signup</a>
 </div>
 

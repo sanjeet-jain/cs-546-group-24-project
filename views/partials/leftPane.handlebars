@@ -9,34 +9,34 @@
 <div class="card display_current_items_card">
     <div class="card-body">
         {{#if displayItems.length includeZero=true}}
-        <h5 class="card-title" id="selected_date">Items for<br> {{selectedDate}}</h5>
+        <span class="card-title" id="selected_date">Items for<br> {{selectedDate}}</span>
         <div class="d-grid gap-1" id="display_current_items">
             {{#if displayItems.length includeZero=false}}
             {{#each displayItems}}
             {{#if (eq this.type "reminder")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill bg-warning{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
                     data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
                         class="bi-alarm">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "task")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
                     data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
                         class="bi-check2-square">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "meeting")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill bg-primary{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
                     data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
                         class="bi-calendar-event">{{this.title}}</i></button></div>
             {{/if}}
             {{#if (eq this.type "notes")}}
             <div class="d-grid gap-1"><button
-                    class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+                    class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
                     data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
                     data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
                         class="bi-file-text">{{this.title}}</i></button></div>
@@ -47,7 +47,7 @@
         </div>
 
         {{else}}
-        <h5 class="card-title" id="selected_date">Select a Date to show events here!</h5>
+        <span class="card-title" id="selected_date">Select a Date to show events here!</span>
         <div class="d-grid gap-1" id="display_current_items">
         </div>
         {{/if}}
