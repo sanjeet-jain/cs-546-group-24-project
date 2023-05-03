@@ -204,7 +204,7 @@ const exportedMethods = {
 
     for (let i = 0; i < tasks.length; i++) {
       let taskId = tasks[i].toString();
-      await tasksDataFunctions.removeTask(taskId);
+      await tasksDataFunctions.removeTask(taskId, userId);
     }
     for (let i = 0; i < reminders.length; i++) {
       let reminderId = reminders[i].toString();

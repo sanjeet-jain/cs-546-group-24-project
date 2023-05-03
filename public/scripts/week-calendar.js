@@ -354,6 +354,8 @@ function onTaskModalClose() {
     fieldset.disabled = true;
     let taskForm = document.getElementById("task-form");
     taskForm.reset();
+    taskForm.classList.remove("was-validated");
+
     event_modal.querySelector("input#task_title").value = "";
     event_modal.querySelector("input#task_textBody").value = "";
     event_modal.querySelector("input#task_tag").value = "";
@@ -387,6 +389,8 @@ function onNotesModalClose() {
   event_modal.addEventListener("hidden.bs.modal", function () {
     let notesForm = document.getElementById("notes-form");
     notesForm.reset();
+    notesForm.classList.remove("was-validated");
+
     let fieldset = event_modal.querySelector("#notes-form-enabler");
     fieldset.disabled = true;
     // event_modal.querySelector("#modal-notes-label.modal-title").innerText =
