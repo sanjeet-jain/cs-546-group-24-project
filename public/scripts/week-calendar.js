@@ -280,129 +280,144 @@ function enableNotesFormEdit() {
 
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
-  let modalCloseButtons = event_modal.querySelectorAll(
-    '[data-bs-dismiss="modal"]'
-  );
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      let meetingsForm = document.getElementById("meeting-form");
-      let fieldset = event_modal.querySelector("#meeting-form-enabler");
-      fieldset.disabled = true;
-      // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
-      //   "";
-      event_modal.querySelector("input#meeting_title").value = "";
-      event_modal.querySelector("input#meeting_textBody").value = "";
-      event_modal.querySelector("input#meeting_tag").value = "";
-      event_modal.querySelector("select#meeting_priority").value = "";
-      event_modal.querySelector("input#meeting_dateAddedTo").value = "";
-      event_modal.querySelector("input#meeting_dateDueOn").value = "";
-      event_modal.querySelector("input#meeting_repeating").value = "";
-      event_modal.querySelector("input#meeting_repeating").checked = false;
-      event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
-        "";
-      event_modal.querySelector(
-        "input#meeting_repeatingCounterIncrement"
-      ).value = "";
-      let resultDiv = document.getElementById("meeting-update-result");
-      resultDiv.classList = "";
-      resultDiv.innerText = "";
-      meetingsForm.title.setCustomValidity("");
-      meetingsForm.textBody.setCustomValidity("");
-      meetingsForm.tag.setCustomValidity("");
-      meetingsForm.priority.setCustomValidity("");
-      meetingsForm.dateAddedTo.setCustomValidity("");
-      meetingsForm.dateDueOn.setCustomValidity("");
-      meetingsForm.repeatingIncrementBy.setCustomValidity("");
-      meetingsForm.repeatingCounterIncrement.setCustomValidity("");
+  event_modal.addEventListener("hidden.bs.modal", function () {
+    let meetingsForm = document.getElementById("meeting-form");
+    let fieldset = event_modal.querySelector("#meeting-form-enabler");
+    fieldset.disabled = true;
+    meetingsForm.reset();
+    let resultDiv = document.getElementById("meeting-update-result");
+    resultDiv.classList = "";
+    resultDiv.innerText = "";
+    let meeting_title_error = document.getElementById("meeting_title_error");
+    let meeting_textBody_error = document.getElementById(
+      "meeting_textBody_error"
+    );
+    let meeting_tag_error = document.getElementById("meeting_tag_error");
+    let meeting_dateAddedTo_error = document.getElementById(
+      "meeting_dateAddedTo_error"
+    );
+    let meeting_dateDueOn_error = document.getElementById(
+      "meeting_dateDueOn_error"
+    );
+    let meeting_repeatingCounterIncrement_error = document.getElementById(
+      "meeting_repeatingCounterIncrement_error"
+    );
+    let meeting_repeatingIncrementBy_error = document.getElementById(
+      "meeting_repeatingIncrementBy_error"
+    );
+    let meeting_priority_error = document.getElementById(
+      "reminder_priority_error"
+    );
 
-      meetingsForm.classList.remove("was-validated");
-      dataGlobal = undefined;
-    });
+    meeting_title_error.innerText = "";
+    meeting_textBody_error.innerText = "";
+    meeting_tag_error.innerText = "";
+    meeting_dateAddedTo_error.innerText = "";
+    meeting_dateDueOn_error.innerText = "";
+    meeting_repeatingCounterIncrement_error.innerText = "";
+    meeting_repeatingIncrementBy_error.innerText = "";
+    meeting_priority_error.innerText = "";
+    meetingsForm.classList.remove("was-validated");
+    dataGlobal = undefined;
   });
 }
 
 function onReminderModalClose() {
   let event_modal = document.getElementById("modal-reminder-display");
-  let modalCloseButtons = event_modal.querySelectorAll(
-    '[data-bs-dismiss="modal"]'
-  );
-  let reminderForm = document.getElementById("reminder-form");
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      let fieldset = event_modal.querySelector("#reminder-form-enabler");
-      fieldset.disabled = true;
-      event_modal.querySelector("input#reminder_title").value = "";
-      event_modal.querySelector("input#reminder_textBody").value = "";
-      event_modal.querySelector("input#reminder_tag").value = "";
-      event_modal.querySelector("select#reminder_priority").value = "";
-      event_modal.querySelector("input#reminder_dateAddedTo").value = "";
-      event_modal.querySelector("input#reminder_repeating").value = "";
-      event_modal.querySelector("input#reminder_repeating").checked = false;
-      event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
-        "";
-      event_modal.querySelector("input#reminder_endDateTime").value = "";
-      let resultDiv = document.getElementById("reminder-update-result");
-      resultDiv.classList = "";
-      resultDiv.innerText = "";
-      reminderForm.classList.remove("was-validated");
-      reminderForm.title.setCustomValidity("");
-      reminderForm.textBody.setCustomValidity("");
-      reminderForm.tag.setCustomValidity("");
-      reminderForm.priority.setCustomValidity("");
-      reminderForm.dateAddedTo.setCustomValidity("");
-      reminderForm.endDateTime.setCustomValidity("");
-      reminderForm.repeatingIncrementBy.setCustomValidity("");
-      dataGlobal = undefined;
-    });
+
+  event_modal.addEventListener("hidden.bs.modal", function () {
+    let reminderForm = document.getElementById("reminder-form");
+    reminderForm.reset();
+    let fieldset = event_modal.querySelector("#reminder-form-enabler");
+    fieldset.disabled = true;
+
+    let resultDiv = document.getElementById("reminder-update-result");
+    resultDiv.classList = "";
+    resultDiv.innerText = "";
+    reminderForm.classList.remove("was-validated");
+    reminderForm.title.setCustomValidity("");
+    reminderForm.textBody.setCustomValidity("");
+    reminderForm.tag.setCustomValidity("");
+    reminderForm.priority.setCustomValidity("");
+    reminderForm.dateAddedTo.setCustomValidity("");
+    reminderForm.endDateTime.setCustomValidity("");
+    reminderForm.repeatingIncrementBy.setCustomValidity("");
+    dataGlobal = undefined;
   });
 }
 
 function onTaskModalClose() {
   let event_modal = document.getElementById("modal-task-display");
-  let modalCloseButtons = event_modal.querySelectorAll(
-    '[data-bs-dismiss="modal"]'
-  );
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      let fieldset = event_modal.querySelector("#task-form-enabler");
-      fieldset.disabled = true;
-      event_modal.querySelector("input#task_title").value = "";
-      event_modal.querySelector("input#task_textBody").value = "";
-      event_modal.querySelector("input#task_tag").value = "";
-      event_modal.querySelector("select#task_priority").value = "";
-      event_modal.querySelector("input#task_dateAddedTo").value = "";
-      event_modal.querySelector("input#task_checked").value = "";
-      let resultDiv = document.getElementById("task-update-result");
-      resultDiv.classList = "";
-      resultDiv.innerText = "";
-      dataGlobal = undefined;
-    });
+
+  event_modal.addEventListener("hidden.bs.modal", function () {
+    let fieldset = event_modal.querySelector("#task-form-enabler");
+    fieldset.disabled = true;
+    let taskForm = document.getElementById("task-form");
+    taskForm.reset();
+    taskForm.classList.remove("was-validated");
+
+    event_modal.querySelector("input#task_title").value = "";
+    event_modal.querySelector("input#task_textBody").value = "";
+    event_modal.querySelector("input#task_tag").value = "";
+    event_modal.querySelector("select#task_priority").value = "";
+    event_modal.querySelector("input#task_dateAddedTo").value = "";
+    event_modal.querySelector("input#task_checked").value = "";
+    let resultDiv = document.getElementById("task-update-result");
+    resultDiv.classList = "";
+    resultDiv.innerText = "";
+    dataGlobal = undefined;
+    let task_title_error = document.getElementById("task_title_error");
+    let task_priority_error = document.getElementById("task_priority_error");
+    let task_textBody_error = document.getElementById("task_textBody_error");
+    let task_tag_error = document.getElementById("task_tag_error");
+    let task_dateAddedTo_error = document.getElementById(
+      "task_dateAddedTo_error"
+    );
+    let task_checked_error = document.getElementById("task_checked_error");
+    task_title_error.innerText = "";
+    task_textBody_error.innerText = "";
+    task_tag_error.innerText = "";
+    task_dateAddedTo_error.innerText = "";
+    task_checked_error.innerText = "";
+    task_priority_error.innerText = "";
   });
 }
 
 function onNotesModalClose() {
   let event_modal = document.getElementById("modal-notes-display");
-  let modalCloseButtons = event_modal.querySelectorAll(
-    '[data-bs-dismiss="modal"]'
-  );
-  modalCloseButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      let fieldset = event_modal.querySelector("#notes-form-enabler");
-      fieldset.disabled = true;
-      // event_modal.querySelector("#modal-notes-label.modal-title").innerText =
-      //   "";
-      event_modal.querySelector("input#notes_title").value = "";
-      event_modal.querySelector("input#notes_tag").value = "";
-      event_modal.querySelector("input#notes_dateAddedTo").value = "";
-      tinymce.get("notes_editor").resetContent();
-      tinymce.get("notes_editor").setContent("");
-      tinymce.get("notes_editor").mode.set("readonly");
-      let resultDiv = document.getElementById("notes-update-result");
-      resultDiv.classList = "";
-      resultDiv.innerText = "";
-      resultDiv.innerHtml = "";
-      dataGlobal = undefined;
-    });
+
+  event_modal.addEventListener("hidden.bs.modal", function () {
+    let notesForm = document.getElementById("notes-form");
+    notesForm.reset();
+    notesForm.classList.remove("was-validated");
+
+    let fieldset = event_modal.querySelector("#notes-form-enabler");
+    fieldset.disabled = true;
+    // event_modal.querySelector("#modal-notes-label.modal-title").innerText =
+    //   "";
+    event_modal.querySelector("input#notes_title").value = "";
+    event_modal.querySelector("input#notes_tag").value = "";
+    event_modal.querySelector("input#notes_dateAddedTo").value = "";
+    tinymce.get("notes_editor").resetContent();
+    tinymce.get("notes_editor").setContent("");
+    tinymce.get("notes_editor").mode.set("readonly");
+    let resultDiv = document.getElementById("notes-update-result");
+    resultDiv.classList = "";
+    resultDiv.innerText = "";
+    resultDiv.innerHtml = "";
+    dataGlobal = undefined;
+
+    let notes_title_error = document.getElementById("notes_title_error");
+    let notes_editor_error = document.getElementById("notes_editor_error");
+    let notes_tag_error = document.getElementById("notes_tag_error");
+    let notes_dateAddedTo_error = document.getElementById(
+      "notes_dateAddedTo_error"
+    );
+
+    notes_title_error.innerText = "";
+    notes_editor_error.innerText = "";
+    notes_tag_error.innerText = "";
+    notes_dateAddedTo_error.innerText = "";
   });
 }
 
@@ -637,6 +652,10 @@ function submitTaskForm() {
             let task_dateAddedTo_error = document.getElementById(
               "task_dateAddedTo_error"
             );
+            let task_priority_error = document.getElementById(
+              "task_priority_error"
+            );
+
             task_title_error.innerText =
               data.responseJSON?.errorMessages?.title || "";
             task_textBody_error.innerText =
@@ -645,6 +664,8 @@ function submitTaskForm() {
               data.responseJSON?.errorMessages?.tag || "";
             task_dateAddedTo_error.innerText =
               data.responseJSON?.errorMessages?.dateAddedTo || "";
+            task_priority_error.innerText =
+              data.responseJSON?.errorMessages?.priority || "";
           },
         });
       }
@@ -891,7 +912,7 @@ function checkMeetingValidations(form) {
     "meeting_repeatingIncrementBy_error"
   );
   let meeting_priority_error = document.getElementById(
-    "reminder_priority_error"
+    "meeting_priority_error"
   );
 
   meeting_title_error.innerText = "";
@@ -910,6 +931,7 @@ function checkMeetingValidations(form) {
   form.priority.setCustomValidity("");
   form.repeatingIncrementBy.setCustomValidity("");
   form.repeatingCounterIncrement.setCustomValidity("");
+  form.priority.setCustomValidity("");
 
   if (form.tag.value.length > 20) {
     meeting_tag_error.innerText = "tag cant be longer than 20 characters";
@@ -924,7 +946,7 @@ function checkMeetingValidations(form) {
   }
 
   if (form.title.value.length < 1) {
-    reminder_title_error.innerText = "Title cannot be left empty";
+    meeting_title_error.innerText = "Title cannot be left empty";
     form.title.setCustomValidity("error");
   }
 
@@ -1221,6 +1243,8 @@ function checkTaskValidations(form) {
     "task_dateAddedTo_error"
   );
   let task_checked_error = document.getElementById("task_checked_error");
+  let task_priority_error = document.getElementById("task_priority_error");
+  // TODO add priority error check
   if (typeof form.checked.value === "boolean") {
     task_checked_error.innerText = "checked must be a boolean";
   }

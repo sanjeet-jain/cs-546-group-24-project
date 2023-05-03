@@ -7,7 +7,7 @@ const router = Router();
 
 router
   .route("/tasks/:userId")
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     let userId = req.params.userId;
     try {
       utils.checkObjectIdString(userId);
@@ -22,7 +22,7 @@ router
       res.status(404).json({ error: e.message });
     }
   })
-  .post(async (req, res) => {
+  .post(utils.validateUserId, async (req, res) => {
     let userId = req.params.userId;
     try {
       utils.checkObjectIdString(userId);
@@ -71,12 +71,12 @@ router
 
 router
   .route("/:userId/:taskId")
-  .put(async (req, res) => {
+  .put(utils.validateUserId, async (req, res) => {
     try {
-      const taskId = req.params.taskId.trim();
-      utils.checkObjectIdString(taskId);
+      utils.checkObjectIdString(req.params.userId);
       const userId = req.params.userId.trim();
-      utils.checkObjectIdString(userId);
+      utils.checkObjectIdString(req.params.taskId);
+      const taskId = req.params.taskId.trim();
       const taskPutData = req.body;
       let { title, textBody, dateAddedTo, priority, tag, checked } =
         taskPutData;
@@ -109,7 +109,8 @@ router
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
-        taskPutData
+        taskPutData,
+        userId
       );
 
       res.json({ userId: userId, taskId: updatedTask._id });
@@ -118,21 +119,25 @@ router
     }
   })
 
-  .delete(async (req, res) => {
+  .delete(utils.validateUserId, async (req, res) => {
     try {
+      utils.checkObjectIdString(req.params.userId);
+      const userId = req.params.userId.trim();
+      utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
-      utils.checkObjectIdString(taskId);
-      const removedTask = await tasksDataFunctions.removeTask(taskId);
+      const removedTask = await tasksDataFunctions.removeTask(taskId, userId);
       res.json(removedTask);
     } catch (e) {
       res.status(404).json({ error: e.message });
     }
   })
-  .get(async (req, res) => {
+  .get(utils.validateUserId, async (req, res) => {
     try {
+      utils.checkObjectIdString(req.params.userId);
+      const userId = req.params.userId.trim();
+      utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
-      utils.checkObjectIdString(taskId);
-      const task = await tasksDataFunctions.getTaskById(taskId);
+      const task = await tasksDataFunctions.getTaskById(taskId, userId);
       res.json(task);
     } catch (e) {
       res.status(404).json({ error: e.message });

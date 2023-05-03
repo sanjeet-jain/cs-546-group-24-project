@@ -7,6 +7,26 @@ dayjs.extend(customParseFormat);
 
 import { JSDOM } from "jsdom";
 const utils = {
+  validateUserId(req, res, next) {
+    let userId = "";
+    try {
+      utils.checkObjectIdString(req.params.userId);
+      userId = req.params.userId.trim();
+    } catch (e) {
+      return res.status(400).json({
+        error: "There was some issue in getting the data",
+      });
+    }
+    if (req.session.user.user_id !== userId) {
+      return res.status(403).render("errors/error", {
+        title: "Error",
+        error: new Error(
+          "HTTP Error 403 : You are not allowed to access other users data"
+        ),
+      });
+    }
+    next();
+  },
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
     stringObjectId = stringObjectId.trim();
