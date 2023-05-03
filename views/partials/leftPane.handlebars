@@ -9,7 +9,7 @@
 <div class="card display_current_items_card">
     <div class="card-body">
         {{#if displayItems.length includeZero=true}}
-        <h5 class="card-title" id="selected_date">Items for<br> {{selectedDate}}</h5>
+        <span class="card-title" id="selected_date">Items for<br> {{selectedDate}}</span>
         <div class="d-grid gap-1" id="display_current_items">
             {{#if displayItems.length includeZero=false}}
             {{#each displayItems}}
@@ -47,7 +47,7 @@
         </div>
 
         {{else}}
-        <h5 class="card-title" id="selected_date">Select a Date to show events here!</h5>
+        <span class="card-title" id="selected_date">Select a Date to show events here!</span>
         <div class="d-grid gap-1" id="display_current_items">
         </div>
         {{/if}}
