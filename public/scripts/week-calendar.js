@@ -899,6 +899,7 @@ function checkMeetingValidations(form) {
   meeting_dateDueOn_error.innerText = "";
   meeting_repeatingCounterIncrement_error.innerText = "";
   meeting_repeatingIncrementBy_error.innerText = "";
+  meeting_priority_error.innerText = "";
   form.tag.setCustomValidity("");
   form.title.setCustomValidity("");
   form.dateAddedTo.setCustomValidity("");
@@ -906,6 +907,7 @@ function checkMeetingValidations(form) {
   form.repeating.setCustomValidity("");
   form.repeatingIncrementBy.setCustomValidity("");
   form.repeatingCounterIncrement.setCustomValidity("");
+  form.priority.setCustomValidity("");
 
   if (form.tag.value.length > 20) {
     meeting_tag_error.innerText = "tag cant be longer than 20 characters";
