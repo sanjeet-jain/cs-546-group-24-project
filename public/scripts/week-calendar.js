@@ -920,6 +920,7 @@ function populateBasedOnEventType(target) {
       populateNotesModal(userId, eventId);
       break;
     case "add-event":
+      hideShowDeleteButton(true);
       dataGlobal = undefined;
       userIdGlobal = userId;
       break;
@@ -927,7 +928,12 @@ function populateBasedOnEventType(target) {
       break;
   }
 }
-
+function hideShowDeleteButton(hide) {
+  let deleteButtons = document.querySelectorAll(".btn-delete");
+  deleteButtons.forEach((button) => {
+    button.hidden = hide;
+  });
+}
 function checkMeetingValidations(form) {
   //get all error divs
   let meeting_title_error = document.getElementById("meeting_title_error");

@@ -100,7 +100,7 @@ app.use(
     secret: "CS546",
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 1.8e6 },
+    cookie: { maxAge: 1800000 },
   })
 );
 
@@ -108,6 +108,9 @@ app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
     //todo extend cookie
+    var hour = 1800000;
+    req.session.cookie.expires = dayjs().add(30, "minute").toDate();
+    req.session.cookie.maxAge = hour;
   } else {
     res.clearCookie("AuthCookie");
   }
