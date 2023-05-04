@@ -64,10 +64,10 @@
       {{#if this.modalData.tasks.length}}
       {{#each this.modalData.tasks}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <div class="badge border-0 bg-danger text-wrap text-center task-checkbox">
-        <input name="taskCheckBox" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}"
-          type="checkbox" value="true" aria-label="Task Completed">
-        <button class=" event-pill border-0 bg-danger event-button" data-bs-toggle="modal"
+      <div class="badge border-0 bg-danger text-wrap text-center">
+        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+          data-bs-userId="{{../../../session.user_id}}" type="checkbox" value="true" aria-label="Task Completed">
+        <button class="event-pill border-0 bg-danger event-button" data-bs-toggle="modal"
           data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
           data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
           <i class="bi-check2-square"></i>

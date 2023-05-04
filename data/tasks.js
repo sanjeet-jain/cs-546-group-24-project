@@ -140,7 +140,7 @@ const tasksDataFunctions = {
     if (updatedTask.dateAddedTo) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
       updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm:ss"
+        "YYYY-MM-DDTHH:mm"
       );
     } else {
       throw new Error("You must provide a dateAddedTo for the task.");

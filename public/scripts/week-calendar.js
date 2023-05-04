@@ -1532,7 +1532,36 @@ function validateDateTime(date) {
   }
   return true;
 }
+function CheckboxEventListener() {
+  document.querySelectorAll(".task-checkbox").forEach((checkbox) => {
+    checkbox.addEventListener("click", handleCheckboxClick);
+  });
+}
 
+function handleCheckboxClick(event) {
+  let checkbox = event.target;
+  let taskId = checkbox.getAttribute("data-bs-eventId");
+  let userId = checkbox.getAttribute("data-bs-userId");
+  let isChecked = checkbox.checked;
+  $.ajax({
+    method: "PUT",
+    url: `/task/${userId}/${taskId}/${isChecked}`,
+    data: { checked: isChecked },
+    success: function (data) {
+      if (isChecked) {
+        alert("Task is marked Complete");
+      }
+      if (!isChecked) {
+        alert("Task is marked Incomplete");
+      }
+    },
+    error: function (data) {
+      alert("Some error occured while marking task");
+    },
+  });
+}
+
+CheckboxEventListener();
 deleteButton();
 
 filterForm();

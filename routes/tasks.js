@@ -139,4 +139,32 @@ router
     }
   });
 
+router.route("/:userId/:taskId/:isChecked").put(async (req, res) => {
+  try {
+    const taskId = req.params.taskId.trim();
+    utils.checkObjectIdString(taskId);
+    const userId = req.params.userId.trim();
+    utils.checkObjectIdString(userId);
+    const checked = req.params.isChecked.trim();
+    utils.validateBooleanInput(checked, "checked");
+    const task = await tasksDataFunctions.getTaskById(taskId);
+
+    const taskPutData = {
+      title: task.title,
+      checked: checked,
+      textBody: task.textBody,
+      dateAddedTo: task.dateAddedTo,
+      priority: task.priority,
+      tag: task.tag,
+    };
+    const updatedTask = await tasksDataFunctions.updateTask(
+      taskId,
+      taskPutData
+    );
+    res.json({ userId: userId, taskId: updatedTask._id });
+  } catch (e) {
+    res.status(400).json({ error: e.message });
+  }
+});
+
 export default router;
