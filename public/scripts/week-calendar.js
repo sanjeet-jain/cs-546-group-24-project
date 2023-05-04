@@ -1069,9 +1069,19 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
+  if (
+    typeof form.tag.value === "string" &&
+    form.tag.value.trim().length > 0 &&
+    !form.tag.value.match(/^[a-zA-Z0-9_]+$/)
+  ) {
     notes_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
+  }
+
+  if (form.title.value.length < 1) {
+    notes_title_error.innerText =
+      "Title should have atleast 1 character which is not space";
+    form.title.setCustomValidity("error");
   }
 
   if (form.title.value.length > 100) {
@@ -1091,12 +1101,12 @@ function checkNotesValidations(form) {
     "text/html"
   );
 
-  // if (parsedHtml.body.textContent.trim().length === 0) {
-  //   notes_editor_error.classList.add("alert", "alert-danger");
+  if (parsedHtml.body.textContent.trim().length === 0) {
+    notes_editor_error.classList.add("alert", "alert-danger");
 
-  //   notes_editor_error.innerText = "TextBody cant be empty";
-  //   form.textBody.setCustomValidity("underflow");
-  // }
+    notes_editor_error.innerText = "TextBody cant be empty";
+    form.textBody.setCustomValidity("underflow");
+  }
 
   if (parsedHtml.body.textContent.trim() > 200) {
     notes_editor_error.classList.add("alert", "alert-danger");

@@ -71,6 +71,16 @@ router
         notePutData.textBody,
         notePutData.tag
       );
+
+      if (
+        typeof notePutData.tag === "string" &&
+        notePutData.tag.trim().length > 0
+      ) {
+        notePutData.tag = notePutData.tag.trim();
+      } else {
+        notePutData.tag = "notes";
+      }
+
       if (Object.keys(errorMessages).length !== 0) {
         return res.status(400).json({ errorMessages: errorMessages });
       }
@@ -143,6 +153,11 @@ router
       );
     } catch (e) {
       return res.status(400).json({ error: e.message });
+    }
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      notePostData.tag = notePostData.tag.trim();
+    } else {
+      notePostData.tag = "notes";
     }
     try {
       const { title, dateAddedTo, textBody, tag } = notePostData;
