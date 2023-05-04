@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
+import xss from "xss";
 
 router
   .route("/:userId/:meetingId")
@@ -16,11 +17,18 @@ router
     }
     try {
       let meeting = await meetingsDataFunctions.get(userId, meetingId);
+
+      // XSS protection
+      meeting.title = xss(meeting.title);
+      meeting.description = xss(meeting.description);
+      meeting.location = xss(meeting.location);
+
       return res.status(200).json(meeting);
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }
   })
+
   .delete(utils.validateUserId, async (req, res) => {
     let meetingId = "";
     let userId = req.params.userId.trim();
@@ -39,7 +47,6 @@ router
     }
   })
   .put(utils.validateUserId, async (req, res) => {
-    //code here for PUT
     let meetingId = "";
     let userId = "";
     try {
@@ -57,6 +64,10 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+
+    meetingPutData.title = xss(meetingPutData.title);
+    meetingPutData.textBody = xss(meetingPutData.textBody);
+    meetingPutData.tag = xss(meetingPutData.tag);
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
@@ -140,6 +151,12 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+
+    // Apply XSS protection
+    meetingPostData.title = xss(meetingPostData.title);
+    meetingPostData.textBody = xss(meetingPostData.textBody);
+    meetingPostData.tag = xss(meetingPostData.tag);
+
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPostData.title,
@@ -209,13 +226,22 @@ router
         userId,
         repeatingGroup
       );
+
+      meetingsRecurring = meetingsRecurring.map((meeting) => {
+        meeting.title = xss(meeting.title);
+        meeting.textBody = xss(meeting.textBody);
+        meeting.tag = xss(meeting.tag);
+        return meeting;
+      });
+
       return res.status(200).json(meetingsRecurring);
     } catch (e) {
       return res.status(500).json({ error: e.message });
     }
   })
+
   .put(utils.validateUserId, async (req, res) => {
-    //code here for PUT
+    // code here for PUT
     let userId = "";
     let repeatingGroup = "";
     try {
@@ -233,6 +259,11 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+
+    meetingPutData.title = xss(meetingPutData.title);
+    meetingPutData.textBody = xss(meetingPutData.textBody);
+    meetingPutData.tag = xss(meetingPutData.tag);
+
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPutData.title,
       meetingPutData.dateAddedTo,
@@ -262,12 +293,13 @@ router
         .status(200)
         .json({ userId: userId, repeatingGroup: repeatingGroup });
     } catch (e) {
-      if (e === "Meeting Details havent Changed") {
+      if (e === "Meeting Details haven't Changed") {
         return res.status(400).json({ error: e.message });
       }
       return res.status(500).json({ error: e.message });
     }
   })
+
   .delete(utils.validateUserId, async (req, res) => {
     let userId = "";
     let repeatingGroup = "";
