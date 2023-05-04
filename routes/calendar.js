@@ -49,15 +49,7 @@ router.route("/month").get(async (req, res) => {
       todayItems: todayItems,
       today: today,
       // TODO to be removed just there for testing now
-      rightPaneItems: response.meetings
-        .filter((meeting) => {
-          return meeting.dateAddedTo === null;
-        })
-        .concat(
-          response.tasks.filter((tasks) => {
-            return tasks.dateAddedTo === null;
-          })
-        ),
+      rightPaneItems: await getRightPaneItems(userId),
     });
   } catch (error) {
     res.status(404).render("errors/error", {
@@ -455,5 +447,39 @@ async function getSelectedDayItems(userId, selectedDate) {
     }
     return 0;
   });
+}
+
+async function getRightPaneItems(userId) {
+  const response = await eventDataFunctions.getAllEvents(userId, filter);
+  delete response.userId;
+  let rightPaneItems = {};
+  for (let eventType in response) {
+    rightPaneItems[eventType] = response[eventType]
+      .filter((x) => {
+        return x.dateAddedTo === null;
+      })
+      .sort((a, b) => {
+        const dateA = dayjs(a.dateAddedTo);
+        const dateB = dayjs(b.dateAddedTo);
+        const dateDiff = dateA.diff(dateB);
+        if (dateDiff > 0) {
+          return -1;
+        }
+        if (dateDiff < 0) {
+          return 1;
+        }
+        if (a.priority > b.priority) {
+          return -1;
+        }
+        if (a.priority < b.priority) {
+          return 1;
+        }
+        return 0;
+      })
+      .slice(0, 50);
+  }
+  rightPaneItems.length =
+    rightPaneItems.meetings.length + rightPaneItems.tasks.length;
+  return rightPaneItems;
 }
 export default router;

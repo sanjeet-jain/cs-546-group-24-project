@@ -52,12 +52,11 @@
 </div>
 
 <div class="card top50items_card">
+  {{#if rightPaneItems.meetings.length }}
   <div class="card-body">
-    {{#if rightPaneItems.length includeZero=true}}
-    <span class="card-title" id="top50items_title">Items for<br> {{selectedDate}}</span>
+    <span class="card-title" id="top50_meetings_title">Upcoming Meetings</span>
     <div class="d-grid gap-1" id="top50items">
-      {{#if rightPaneItems.length includeZero=false}}
-      {{#each rightPaneItems}}
+      {{#each rightPaneItems.meetings}}
 
       {{#if (eq this.type "meeting")}}
       <div class="d-grid gap-1">
@@ -68,6 +67,24 @@
             class="bi-calendar-event">{{this.title}}</i></button>
       </div>
       {{/if}}
+      {{/each}}
+
+
+    </div>
+  </div>
+  {{else}}
+  <div class="card-body">
+    <span class="card-title" id="top50_meetings_title">There are no Meetings for the next 30 days</span>
+    <div class="d-grid gap-1" id="top50items"></div>
+  </div>
+
+  {{/if}}
+
+  {{#if rightPaneItems.tasks.length }}
+  <div class="card-body">
+    <span class="card-title" id="top50_tasks_title">Upcoming Tasks</span>
+    <div class="d-grid gap-1" id="top50items">
+      {{#each rightPaneItems.tasks}}
       {{#if (eq this.type "task")}}
       <div class="d-grid gap-1">
         <button draggable="true"
@@ -77,19 +94,36 @@
             class="bi-check2-square">{{this.title}}</i></button>
       </div>
       {{/if}}
+      {{/each}}
+    </div>
+  </div>
+  {{else}}
+  <div class="card-body">
+    <span class="card-title" id="top50_tasks_title">There are no tasks for the next 30 days</span>
+    <div class="d-grid gap-1" id="top50items"></div>
+  </div>
+
+  {{/if}}
+
+  {{!-- {{#if rightPaneItems.meetings.length includeZero=true}}
+  <div class="card-body">
+    <span class="card-title" id="top50_meetings_title">Upcoming Meetings</span>
+    <div class="d-grid gap-1" id="top50items">
+      {{#each rightPaneItems.tasks}}
+
+
 
       {{/each}}
-      {{else}}There are no Items for the next 30 days
-      {{/if}}
     </div>
-
     {{else}}
-    <span class="card-title" id="top50items_title">There are no Items for the next 30 days</span>
-    <div class="d-grid gap-1" id="top50items">
+    <div class="card-body">
+      <span class="card-title" id="top50_tasks_title">There are no tasks for the next 30 days</span>
+      <div class="d-grid gap-1" id="top50items"></div>
     </div>
-    {{/if}}
-  </div>
-</div>
 
-{{/if}}
-{{/if}}
+    {{/if}} --}}
+
+  </div>
+
+  {{/if}}
+  {{/if}}
