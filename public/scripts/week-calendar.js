@@ -1080,7 +1080,7 @@ function checkNotesValidations(form) {
   }
 
   if (form.dateAddedTo.value.length > 200) {
-    notes_textBody_error.innerText =
+    notes_editor_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
   }
@@ -1091,12 +1091,12 @@ function checkNotesValidations(form) {
     "text/html"
   );
 
-  if (parsedHtml.body.textContent.trim().length === 0) {
-    notes_editor_error.classList.add("alert", "alert-danger");
+  // if (parsedHtml.body.textContent.trim().length === 0) {
+  //   notes_editor_error.classList.add("alert", "alert-danger");
 
-    notes_editor_error.innerText = "TextBody cant be empty";
-    form.textBody.setCustomValidity("underflow");
-  }
+  //   notes_editor_error.innerText = "TextBody cant be empty";
+  //   form.textBody.setCustomValidity("underflow");
+  // }
 
   if (parsedHtml.body.textContent.trim() > 200) {
     notes_editor_error.classList.add("alert", "alert-danger");
