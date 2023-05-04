@@ -2,7 +2,7 @@ import { Router } from "express";
 import tasksDataFunctions from "../data/tasks.js";
 import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
-
+import dayjs from "dayjs";
 const router = Router();
 
 router
@@ -141,6 +141,60 @@ router
       res.json(task);
     } catch (e) {
       res.status(404).json({ error: e.message });
+    }
+  });
+
+router
+  .route("/:userId/:taskId/dateAddedTo")
+  .put(utils.validateUserId, async (req, res) => {
+    try {
+      utils.checkObjectIdString(req.params.userId);
+      const userId = req.params.userId.trim();
+      utils.checkObjectIdString(req.params.taskId);
+      const taskId = req.params.taskId.trim();
+      const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
+
+      taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
+        "YYYY-MM-DDTHH:mm"
+      );
+      let { title, textBody, dateAddedTo, priority, tag, checked } =
+        taskPutData;
+      if (!taskPutData || Object.keys(taskPutData).length === 0) {
+        return res
+          .status(400)
+          .json({ error: "There are no fields in the request body" });
+      }
+      utils.validateStringInputWithMaxLength(
+        title,
+        "title",
+        constants.stringLimits["title"]
+      );
+      utils.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+      utils.validateDate(dateAddedTo, "dateAddedTo");
+      utils.validatePriority(priority);
+      utils.validateStringInputWithMaxLength(
+        tag,
+        "tag",
+        constants.stringLimits["tag"]
+      );
+      if (typeof checked === "undefined") {
+        checked = false;
+      }
+      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
+
+      const updatedTask = await tasksDataFunctions.updateTask(
+        taskId,
+        taskPutData,
+        userId
+      );
+
+      res.json({ userId: userId, taskId: updatedTask._id });
+    } catch (e) {
+      res.status(400).json({ error: e.message });
     }
   });
 

@@ -32,6 +32,11 @@ main {
   border-style: dashed;
 }
 
+.date-cell-active {
+  border: green !important;
+  border-style: dashed !important;
+}
+
 #left-menu-div {
   /* height: 90vh; */
   width: 15vw;

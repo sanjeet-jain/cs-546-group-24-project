@@ -302,7 +302,7 @@ const utils = {
         errorMessages.repeatingIncrementBy = error.message;
       }
     }
-    if (dateAddedTo.trim().length > 0 && dateDueOn.trim().length > 0) {
+    if (dateAddedTo?.trim().length > 0 && dateDueOn?.trim().length > 0) {
       try {
         this.validateDateRange(dateAddedTo, dateDueOn);
       } catch (error) {

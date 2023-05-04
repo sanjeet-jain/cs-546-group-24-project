@@ -51,5 +51,45 @@
 
 </div>
 
+<div class="card top50items_card">
+  <div class="card-body">
+    {{#if rightPaneItems.length includeZero=true}}
+    <span class="card-title" id="top50items_title">Items for<br> {{selectedDate}}</span>
+    <div class="d-grid gap-1" id="top50items">
+      {{#if rightPaneItems.length includeZero=false}}
+      {{#each rightPaneItems}}
+
+      {{#if (eq this.type "meeting")}}
+      <div class="d-grid gap-1">
+        <button draggable="true"
+          class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+          data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+          data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+            class="bi-calendar-event">{{this.title}}</i></button>
+      </div>
+      {{/if}}
+      {{#if (eq this.type "task")}}
+      <div class="d-grid gap-1">
+        <button draggable="true"
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+          data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+          data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+            class="bi-check2-square">{{this.title}}</i></button>
+      </div>
+      {{/if}}
+
+      {{/each}}
+      {{else}}There are no Items for the next 30 days
+      {{/if}}
+    </div>
+
+    {{else}}
+    <span class="card-title" id="top50items_title">There are no Items for the next 30 days</span>
+    <div class="d-grid gap-1" id="top50items">
+    </div>
+    {{/if}}
+  </div>
+</div>
+
 {{/if}}
 {{/if}}

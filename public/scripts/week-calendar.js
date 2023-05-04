@@ -1274,6 +1274,11 @@ function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
     date.addEventListener("click", (event) => {
+      dateCells.forEach((date) => {
+        date.classList.remove("date-cell-active");
+      });
+      date.classList.add("date-cell-active");
+
       let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
       setDatepickerValue(selectedDate);
@@ -1560,6 +1565,18 @@ function validateDateTime(date) {
   }
   return true;
 }
+
+function draggable_event_cells() {
+  let buttonList = document.querySelectorAll(".draggable-event-button");
+
+  buttonList.forEach((button) => {
+    button.addEventListener("dragstart", function (event) {
+      let dataset = JSON.stringify(event.target.dataset);
+      event.dataTransfer.setData("application/json", dataset);
+    });
+  });
+}
+draggable_event_cells();
 
 deleteButton();
 
