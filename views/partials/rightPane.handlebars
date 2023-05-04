@@ -59,13 +59,12 @@
       {{#each rightPaneItems.meetings}}
 
       {{#if (eq this.type "meeting")}}
-      <div class="d-grid gap-1">
-        <button draggable="true"
-          class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
-          data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
-          data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
-            class="bi-calendar-event">{{this.title}}</i></button>
-      </div>
+
+      <button draggable="true"
+        class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+        data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+        data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+          class="bi-calendar-event">{{this.title}}</i></button>
       {{/if}}
       {{/each}}
 
@@ -86,9 +85,12 @@
     <div class="d-grid gap-1" id="top50items">
       {{#each rightPaneItems.tasks}}
       {{#if (eq this.type "task")}}
-      <div class="d-grid gap-1">
+      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+          data-bs-userId="{{../../../session.user_id}}" type="checkbox" value="true" aria-label="Task Completed" {{#if
+          this.checked}}checked value="true" {{/if}}>
         <button draggable="true"
-          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button draggable-event-button"
           data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
           data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
             class="bi-check2-square">{{this.title}}</i></button>
