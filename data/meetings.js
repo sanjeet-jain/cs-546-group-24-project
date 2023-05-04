@@ -25,11 +25,22 @@ import {
 import constants from "./../constants/constants.js";
 
 const meetingsDataFunctions = {
-  //meetingId only needed
-  async get(meetingId) {
+  async get(userId, meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
     meetingId = meetingId.trim();
+
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      throw new Error("Meeting not found");
+    }
     const meetings = await meetingsCollection();
     const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
@@ -77,7 +88,7 @@ const meetingsDataFunctions = {
     }
 
     const meetings = await meetingsCollection();
-    const oldMeeting = await this.get(meetingId);
+    const oldMeeting = await this.get(userId, meetingId);
     let updatedMeeting = { ...oldMeeting };
     delete updatedMeeting._id;
 
@@ -216,10 +227,21 @@ const meetingsDataFunctions = {
         throw new Error("Meeting update wasnt successfull");
     }
   },
-  async delete(meetingId) {
+  async delete(meetingId, userId) {
     utils.checkObjectIdString(meetingId);
     meetingId = meetingId.trim();
 
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      throw new Error("Meeting not found");
+    }
     const meetings = await meetingsCollection();
     const deletionInfo = await meetings.findOneAndDelete({
       _id: new ObjectId(meetingId),
@@ -227,7 +249,6 @@ const meetingsDataFunctions = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`${meetingId} not found for deletion`);
     }
-    const users = await usersCollection();
 
     //update the userCollection by removing the same id from the meetingIds array in user collection
     await users.updateOne(
@@ -238,8 +259,6 @@ const meetingsDataFunctions = {
     // if the meeting exists in collection then return it else throw an error
     return `${deletionInfo.value._id} has been successfully deleted!`;
   },
-
-  // only userId needed
 
   /**
    * @param {string} userId userId of which the meeting is being created for
@@ -345,7 +364,7 @@ const meetingsDataFunctions = {
         { _id: new ObjectId(userId) },
         { $push: { meetingIds: insertedId } }
       );
-      return this.get(insertedId.toString());
+      return this.get(userId, insertedId.toString());
     } else {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];

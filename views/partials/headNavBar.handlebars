@@ -1,7 +1,7 @@
 <nav class="navbar justify-content-between ">
   <div class="navbar-brand">
-    <i class="bi-calendar-check-fill"></i>
-    <a class="navbar-brand" href="/">TimeWise</a>
+
+    <a class="navbar-brand" href="/calendar/month"><i class="bi-calendar-check-fill">TimeWise</i></a>
   </div>
   {{#if session}}
   {{#if (eq title "Calendar")}}
@@ -15,13 +15,13 @@
             Radio">
             <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio"
               value="month">
-            <label class="btn btn-outline" for="monthViewRadio">Month</label>
+            <label class="btn" for="monthViewRadio">Month</label>
             <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio"
               value="week">
-            <label class="btn btn-outline" for="weekViewRadio">Week</label>
+            <label class="btn " for="weekViewRadio">Week</label>
             <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio"
               value="day">
-            <label class="btn btn-outline" for="dayViewRadio">Day</label>
+            <label class="btn " for="dayViewRadio">Day</label>
           </div>
         </form>
       </li>
@@ -48,8 +48,7 @@
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
-          <button type="submit" id="prevMonth" class="btn btn-outline" style="border:
-            none">
+          <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
@@ -75,8 +74,7 @@
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
-          <button type="submit" id="nextMonth" class="btn btn-outline" style="border:
-            none">
+          <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
           </button>
@@ -88,7 +86,7 @@
         <form id="yearCalendarForm" method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{prevYear}}">
-          <button type="submit" id="prevYear" class="btn btn-outline" style="border: none">
+          <button type="submit" id="prevYear" class="btn border-0" aria-label="prevYearButton">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
@@ -110,7 +108,7 @@
         <form method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{nextYear}}">
-          <button type="submit" id="nextYear" class="btn btn-outline" style="border: none">
+          <button type="submit" id="nextYear" class="btn border-0" aria-label="nextYearButton">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
           </button>
@@ -128,18 +126,18 @@
   {{/if}}
   <div>
     <button class="btn border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-      aria-controls="offcanvasNavbar">
+      aria-controls="offcanvasNavbar" aria-label="User Profile Actions">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
-        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
+        <span class="offcanvas-title" id="offcanvasNavbarLabel">
           {{#if session}}
           Hi {{session.userFirstName}}
           {{else}}
           Hi Guest
           {{/if}}
-        </h5>
+        </span>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">

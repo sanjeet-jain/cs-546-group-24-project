@@ -1,9 +1,9 @@
-<tr class="sticky-calendar-row bg-light">
+<tr class="sticky-calendar-row ">
   <td class="timeslots"></td>
 
   <td class="text-center date-cell" data-bs-day="{{day.dayjsDateId}}">
     <button id="{{day.dayjsDateId}}"
-      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} bg-info {{/if}}">
+      class="date-clickable badge rounded-pill border-0{{#if (checkIfToday day.year day.month day.day)}} swatch-orange{{/if}}">
       {{day.day}}
     </button>
   </td>
@@ -19,7 +19,8 @@
       {{#if ../day.modalData.meetings.length}}
       {{#each ../day.modalData.meetings}}
       {{#if (eq this.timeslotStart ../this)}}
-      <button class="badge event-pill bg-primary{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+      <button
+        class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
         data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-calendar-event"></i>
@@ -31,7 +32,7 @@
       {{#if ../day.modalData.notes.length}}
       {{#each ../day.modalData.notes}}
       {{#if (eq this.timeslotStart ../this)}}
-      <button class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+      <button class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
         data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-file-text"></i>
@@ -43,7 +44,8 @@
       {{#if ../day.modalData.reminders.length}}
       {{#each ../day.modalData.reminders}}
       {{#if (eq this.timeslotStart ../this)}}
-      <button class="badge event-pill bg-warning{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+      <button
+        class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
         data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-alarm"></i>
@@ -55,7 +57,7 @@
       {{#if ../day.modalData.tasks.length}}
       {{#each ../day.modalData.tasks}}
       {{#if (eq this.timeslotStart ../this)}}
-      <button class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center event-button"
+      <button class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
         data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-check2-square"></i>
