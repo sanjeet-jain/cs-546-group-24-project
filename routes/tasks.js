@@ -152,7 +152,7 @@ router.route("/:userId/:taskId/:isChecked").put(async (req, res) => {
     utils.checkObjectIdString(userId);
     const checked = req.params.isChecked.trim();
     utils.validateBooleanInput(checked, "checked");
-    const task = await tasksDataFunctions.getTaskById(taskId);
+    const task = await tasksDataFunctions.getTaskById(taskId, userId);
 
     const taskPutData = {
       title: task.title,
@@ -164,7 +164,8 @@ router.route("/:userId/:taskId/:isChecked").put(async (req, res) => {
     };
     const updatedTask = await tasksDataFunctions.updateTask(
       taskId,
-      taskPutData
+      taskPutData,
+      userId
     );
     res.json({ userId: userId, taskId: updatedTask._id });
   } catch (e) {
