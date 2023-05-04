@@ -479,6 +479,9 @@ async function getRightPaneItems(userId) {
       .slice(0, 50);
   }
 
+  rightPaneItems.backlogtasks = response.tasks.filter((x) => {
+    return !x.checked && x.expired;
+  });
   return rightPaneItems;
 }
 export default router;

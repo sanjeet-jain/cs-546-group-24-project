@@ -112,11 +112,11 @@
 
 <div class="card backlog_items_card">
 
-  {{#if rightPaneItems.tasks.length }}
+  {{#if rightPaneItems.backlogtasks.length }}
   <div class="card-body">
     <span class="card-title" id="backlog_tasks_title">Backlog Tasks</span>
     <div class="d-grid gap-1" id="backlogitems">
-      {{#each rightPaneItems.tasks}}
+      {{#each rightPaneItems.backlogtasks}}
       {{#if (eq this.expired true)}}
       {{#if (eq this.checked false)}}
       <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
