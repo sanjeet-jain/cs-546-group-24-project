@@ -4,6 +4,7 @@ import utils from "../utils/utils.js";
 import * as reminderManager from "../data/reminder.js";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import xss from "xss";
 
 router
   .route("/:userId")
@@ -24,10 +25,10 @@ router
   .post(utils.validateUserId, async (req, res) => {
     const reminder = req.body;
     let userId = req.params.userId;
-    let title = reminder.title;
-    let textBody = reminder.textBody;
+    let title = xss(reminder.title);
+    let textBody = xss(reminder.textBody);
+    let tag = xss(reminder.tag);
     let priority = Number.parseInt(reminder.priority);
-    let tag = reminder.tag;
     let repeating =
       reminder.repeating === "true" ||
       reminder.repeating === true ||
@@ -119,10 +120,10 @@ router
     let reminder_id = req.params.reminder_id;
     let reminder = req.body;
     let userId = req.params.userId;
-    let title = reminder.title;
-    let textBody = reminder.textBody;
+    let title = xss(reminder.title);
+    let textBody = xss(reminder.textBody);
     let priority = Number.parseInt(reminder.priority);
-    let tag = reminder.tag;
+    let tag = xss(reminder.tag);
     let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     let repeating =
       reminder.repeating === "true" ||
