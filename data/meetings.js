@@ -105,13 +105,13 @@ const meetingsDataFunctions = {
       tag = "meetings";
     }
     if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
-      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
     } else {
       dateAddedTo = null;
     }
 
     if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
-      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm");
     } else {
       dateDueOn = null;
     }
@@ -170,12 +170,12 @@ const meetingsDataFunctions = {
         }
         dateDueOnObject = newDateDueOn.clone();
         dateAddedToObject = newDateAddedTo.clone();
-        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
         const meeting = {
           ...updatedMeeting,
           dateCreated: dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
           repeatingGroup: repeatingGroup,
         };
         meetingObjects.push(meeting);
@@ -316,13 +316,13 @@ const meetingsDataFunctions = {
       tag = "meetings";
     }
     if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
-      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
     } else {
       dateAddedTo = null;
     }
 
     if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
-      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm");
     } else {
       dateDueOn = null;
     }
@@ -341,7 +341,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -375,8 +375,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
           priority,
           textBody,
           tag,
