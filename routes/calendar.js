@@ -29,7 +29,7 @@ router.route("/month").get(async (req, res) => {
     utils.checkObjectIdString(userId);
     let today = dayjs().format("YYYY-MM-DD");
     let todayItems = await getSelectedDayItems(userId, today);
-    //only for testing needs to be removed
+    //TODO only for testing needs to be removed
     const response = await eventDataFunctions.getAllEvents(userId, filter);
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
@@ -48,6 +48,7 @@ router.route("/month").get(async (req, res) => {
       filter: filter,
       todayItems: todayItems,
       today: today,
+      // TODO to be removed just there for testing now
       rightPaneItems: response.meetings
         .filter((meeting) => {
           return meeting.dateAddedTo === null;
