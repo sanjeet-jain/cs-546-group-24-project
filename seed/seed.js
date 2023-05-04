@@ -188,7 +188,7 @@ export async function runSetup(datestring, user) {
     title: "sample note",
     dateAddedTo: sampleMeeting.dateAddedTo,
     textBody: "     sample Note body      ",
-    tag: "cs546",
+    tag: "cs",
     documentLinks: [],
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     type: "notes",
