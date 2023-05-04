@@ -30,11 +30,13 @@ main {
 .date-cell:hover {
   border: grey;
   border-style: dashed;
+  z-index: 1;
 }
 
 .date-cell-active {
   border: green !important;
   border-style: dashed !important;
+  z-index: 1;
 }
 
 #left-menu-div {
@@ -67,12 +69,17 @@ main {
   height: 3vh;
   position: sticky;
   top: 0;
+  color: var(--text-color);
+  background-color: var(--bs-body-bg);
 }
 
 .sticky-calendar-row {
   position: sticky;
   top: 4vh;
+  color: var(--text-color);
+  background-color: var(--bs-body-bg);
 }
+
 footer {
   text-align-last: center;
   top: 2px;
