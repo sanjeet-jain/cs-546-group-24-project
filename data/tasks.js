@@ -56,13 +56,28 @@ const tasksDataFunctions = {
       "title",
       constants.stringLimits["title"]
     );
-    utils.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    utils.validateDate(dateAddedTo, "dateAddedTo");
+
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      utils.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      utils.validateDate(dateAddedTo, "dateAddedTo");
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+      dateAddedTo = dateAddedTo.trim();
+    } else {
+      dateAddedTo = null;
+    }
+
     utils.validatePriority(priority);
+
     utils.validateStringInputWithMaxLength(
       tag,
       "tag",
@@ -71,11 +86,10 @@ const tasksDataFunctions = {
 
     userId = userId.trim();
     title = title.trim();
-    dateAddedTo = dateAddedTo.trim();
-    textBody = textBody.trim();
+
     tag = tag.trim().toLowerCase();
 
-    if (typeof checked === "undefined") {
+    if (typeof checked === "undefined" || checked === "false") {
       checked = false;
     }
     let expired = utils.validateBooleanInput(checked, "checked");
@@ -131,7 +145,10 @@ const tasksDataFunctions = {
     const task = await tasks.findOne({ _id: new ObjectId(id) });
     updatedTaskData = { ...task };
 
-    if (typeof updatedTask.checked === "undefined") {
+    if (
+      typeof updatedTask.checked === "undefined" ||
+      updatedTask.checked === false
+    ) {
       updatedTaskData.checked = false;
     }
     updatedTaskData.checked = utils.validateBooleanInput(
@@ -150,7 +167,10 @@ const tasksDataFunctions = {
       throw new Error("You must provide a title for the task.");
     }
 
-    if (updatedTask.textBody) {
+    if (
+      typeof updatedTask.textBody === "string" &&
+      updatedTask.textBody.trim().length > 0
+    ) {
       utils.validateStringInputWithMaxLength(
         updatedTask.textBody,
         "textBody",
@@ -158,15 +178,19 @@ const tasksDataFunctions = {
       );
       updatedTaskData.textBody = updatedTask.textBody.trim();
     } else {
-      throw new Error("You must provide a textBody for the task.");
+      updatedTask.textBody = null;
     }
-    if (updatedTask.dateAddedTo) {
+
+    if (
+      typeof updatedTask.dateAddedTo === "string" &&
+      updatedTask.dateAddedTo.trim().length > 0
+    ) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
       updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format(
         "YYYY-MM-DDTHH:mm"
       );
     } else {
-      throw new Error("You must provide a dateAddedTo for the task.");
+      updatedTask.dateAddedTo = null;
     }
 
     if (updatedTask.priority) {
@@ -175,7 +199,10 @@ const tasksDataFunctions = {
       throw new Error("You must provide a priority for the task.");
     }
 
-    if (updatedTask.tag) {
+    if (
+      typeof updatedTask.tag === "string" &&
+      updatedTask.tag.trim().length > 0
+    ) {
       utils.validateStringInputWithMaxLength(
         updatedTask.tag,
         "tag",
@@ -183,7 +210,7 @@ const tasksDataFunctions = {
       );
       updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
-      throw new Error("You must provide a tag for the task.");
+      updatedTask.tag = "tasks";
     }
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (

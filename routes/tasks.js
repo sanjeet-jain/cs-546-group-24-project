@@ -2,6 +2,7 @@ import { Router } from "express";
 import tasksDataFunctions from "../data/tasks.js";
 import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
+import dayjs from "dayjs";
 
 const router = Router();
 
@@ -38,19 +39,37 @@ router
         "title",
         constants.stringLimits["title"]
       );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
+
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+      } else {
+        textBody = "";
+      }
+
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+        utils.validateDate(dateAddedTo, "dateAddedTo");
+        dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+      } else {
+        dateAddedTo = "";
+      }
       utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      if (typeof checked === "undefined") {
+
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        tag = tag.trim();
+      } else {
+        tag = "tasks";
+      }
+
+      if (typeof checked === "undefined" || checked === "false") {
         checked = false;
       }
       checked = utils.validateBooleanInput(checked, "checked");
@@ -90,20 +109,39 @@ router
         "title",
         constants.stringLimits["title"]
       );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
+
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+        taskPutData.textBody = taskPutData.textBody.trim();
+      } else {
+        taskPutData.textBody = "";
+      }
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+        utils.validateDate(dateAddedTo, "dateAddedTo");
+        taskPutData.dateAddedTo = dayjs(dateAddedTo.trim()).format(
+          "YYYY-MM-DDTHH:mm"
+        );
+      } else {
+        taskPutData.dateAddedTo = "";
+      }
       utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      if (typeof checked === "undefined") {
-        checked = false;
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        taskPutData.tag = tag.trim();
+      } else {
+        taskPutData.tag = "tasks";
+      }
+
+      if (typeof checked === "undefined" || checked === "false") {
+        taskPutData.checked = false;
       }
       taskPutData.checked = utils.validateBooleanInput(checked, "checked");
 

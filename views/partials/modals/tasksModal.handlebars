@@ -42,8 +42,8 @@
             {{! tag }}
             <div class="mb-3">
               <label for="task_tag" class="form-label">Tag</label>
-              <input required type="text" class="form-control" name="tag" id="task_tag" placeholder="Tag" value=""
-                maxlength="20" pattern="(^$)|(^[a-zA-Z0-9_]+$)" />
+              <input type="text" class="form-control" name="tag" id="task_tag" placeholder="Tag" value="" maxlength="20"
+                pattern="(^$)|(^[a-zA-Z0-9_]+$)" />
               <div id="task_tag_error" class="invalid-feedback">
 
               </div>
@@ -74,7 +74,7 @@
             {{! add more fields for other events }}
             <div class="mb-3">
               <label for="task_checked" class="form-label">Completed</label>
-              <input type="checkbox" class="form-check-input" name="checked" id="task_checked" value="true" {{#if
+              <input type="checkbox" class="form-check-input" name="checked" value="true" id="task_checked" {{#if
                 checked}}checked{{/if}} />
               <div id="task_checked_error" class="invalid-feedback">
                 <input type="hidden" id="task_checked_state" value="false">

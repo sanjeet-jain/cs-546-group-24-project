@@ -107,6 +107,7 @@ function populateTasksModal(userId, taskId) {
       event_modal.querySelector("select#task_priority").value = data.priority;
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
+      event_modal.querySelector("input#task_checked").value = data.checked;
       event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
@@ -1141,6 +1142,10 @@ function checkReminderValidations(form) {
     "reminder_endDateTime_error"
   );
 
+  form.dateAddedTo.setCustomValidity("");
+
+  reminder_endDateTime_error.innerText = "";
+  form.endDateTime.setCustomValidity("");
   form.title.setCustomValidity("");
   reminder_title_error.innerText = "";
 
@@ -1157,10 +1162,6 @@ function checkReminderValidations(form) {
   reminder_dateAddedTo_error.innerText = "";
 
   reminder_dateAddedTo_error.innerText = "";
-  form.dateAddedTo.setCustomValidity("");
-
-  reminder_endDateTime_error.innerText = "";
-  form.endDateTime.setCustomValidity("");
 
   reminder_repeatingIncrementBy_error.innerText = "";
   form.repeatingIncrementBy.setCustomValidity("");
@@ -1193,7 +1194,7 @@ function checkReminderValidations(form) {
     form.tag.value.trim().length > 0 &&
     !form.tag.value.match(/^[a-zA-Z]+$/)
   ) {
-    if (form.tag.checkValidity) {
+    if (form.tag.checkValidity()) {
       reminder_tag_error.innerText = "tag has only letters with no spaces";
       form.tag.setCustomValidity("error");
     }
@@ -1254,26 +1255,69 @@ function checkTaskValidations(form) {
   );
   let task_checked_error = document.getElementById("task_checked_error");
   let task_priority_error = document.getElementById("task_priority_error");
+
+  form.dateAddedTo.setCustomValidity("");
+  task_dateAddedTo_error.innerText = "";
+
+  form.title.setCustomValidity("");
+  task_title_error.innerText = "";
+
+  form.textBody.setCustomValidity("");
+  task_textBody_error.innerText = "";
+
+  form.tag.setCustomValidity("");
+  task_tag_error.innerText = "";
+
+  form.priority.setCustomValidity("");
+  task_priority_error.innerText = "";
+
+  form.checked.setCustomValidity("");
+  task_checked_error.innerText = "";
+
   // TODO add priority error check
-  if (typeof form.checked.value === "boolean") {
+  if (
+    !(
+      form.checked.value === "false" ||
+      form.checked.value === "true" ||
+      form.checked.value === true ||
+      form.checked.value === false
+    )
+  ) {
     task_checked_error.innerText = "checked must be a boolean";
+    form.checked.setCustomValidity(
+      "Check box is not a string of true or false"
+    );
   }
-  if (form.title.value.length > 100) {
+
+  if (form.title.value.length < 1) {
+    task_title_error.innerText = "Title can't be empty";
+  }
+
+  if (form.title.value.length > 100 && form.title.checkValidity()) {
     task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
   if (form.textBody.value.length > 200) {
     task_textBody_error.innerText = "Text can't be longer than 100 characters";
   }
+
   if (form.tag.value.length > 20) {
     task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
-  if (!dayjs(form.dateAddedTo.value).isValid()) {
+  if (!/^(1|2|3)$/.test(form.priority.value) && form.tag.checkValidity()) {
+    task_priority_error.innerText =
+      "Priority can only be selected as low medium or high";
+    form.priority.setCustomValidity("error");
+  }
+
+  if (
+    typeof form.dateAddedTo === "string" &&
+    form.dateAddedTo.trim().length > 0 &&
+    !validateDateTime(form.dateAddedTo)
+  ) {
     task_dateAddedTo_error.innerText = "The date added should be valid";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
-  } else {
-    form.dateAddedTo.setCustomValidity("");
   }
 
   if (form.checkValidity()) {
