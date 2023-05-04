@@ -26,7 +26,7 @@
           <div class="form-check  form-switch">
             <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="event-filter-{{this}}"
               name="event-filter-{{this}}" {{#if (includes ../filter.eventTypeSelected this)}} checked {{/if}}>
-            <label class="form-check-label" for="event-filter-{{this}}">
+            <label class="form-label" for="event-filter-{{this}}">
               {{this}}
             </label>
           </div>
@@ -36,7 +36,7 @@
           <div class="form-check form-switch">
             <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="tag-filter-{{this}}"
               name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}} checked {{/if}}>
-            <label class="form-check-label" for="tag-filter-{{this}}">
+            <label class="form-label" for="tag-filter-{{this}}">
               {{this}}
             </label>
           </div>

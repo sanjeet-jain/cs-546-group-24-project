@@ -147,3 +147,13 @@ html[data-bs-theme="light"] {
   color: #000;
   background-color: #fd7e14;
 }
+
+.btn.disabled,
+.btn:disabled,
+fieldset:disabled .btn {
+  color: var(--bs-btn-disabled-color);
+  pointer-events: none;
+  background-color: var(--bs-btn-disabled-bg);
+  border-color: var(--bs-btn-disabled-border-color);
+  opacity: 1;
+}

@@ -426,6 +426,12 @@ function submitMeetingForm() {
   meetingform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById(
+        "meeting-bottom-submit-button"
+      );
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -449,6 +455,8 @@ function submitMeetingForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
               "Meeting updated Successfully! Please refresh the page!";
@@ -459,6 +467,8 @@ function submitMeetingForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
@@ -564,6 +574,12 @@ function submitReminderForm() {
   reminderForm.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById(
+        "reminder-bottom-submit-button"
+      );
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -586,6 +602,8 @@ function submitReminderForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             resultDiv.innerText =
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
@@ -593,6 +611,8 @@ function submitReminderForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             resultDiv.classList = "";
             resultDiv.innerText = data?.responseJSON?.error;
             resultDiv.classList.add("alert", "alert-danger");
@@ -610,6 +630,10 @@ function submitTaskForm() {
   taskform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById("task-bottom-submit-button");
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -629,6 +653,8 @@ function submitTaskForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
               "Task updated Successfully! Please refresh the page!";
@@ -639,6 +665,8 @@ function submitTaskForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
@@ -681,6 +709,10 @@ function submitNotesForm() {
   notesform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById("notes-bottom-submit-button");
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -703,6 +735,8 @@ function submitNotesForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("notes-update-result");
             resultDiv.innerText =
               "notes updated Successfully! Page will refresh automatically";
@@ -714,6 +748,8 @@ function submitNotesForm() {
             setTimeout(location.reload.bind(location), 2000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("notes-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
