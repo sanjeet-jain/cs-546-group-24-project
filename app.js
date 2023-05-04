@@ -31,13 +31,21 @@ cron.schedule("*/10 * * * * *", async () => {
   );
   // console.log(updateResultmeetings);
   const updateResultreminders = await remindersCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResultreminders);
 
   const updateResulttasks = await tasksCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResulttasks);
