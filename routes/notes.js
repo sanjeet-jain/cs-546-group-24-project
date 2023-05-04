@@ -5,51 +5,52 @@ import notesDataFunctions from "../data/notes.js";
 import xss from "xss";
 router
   .route("/:userId/:noteId")
-  .get(utils.validateUserId, async (req, res) => {
+  .get(async (req, res) => {
     let noteId = "";
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
-      noteId = req.params.noteId.trim();
+      noteId = xss(req.params.noteId.trim());
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      let note = await notesDataFunctions.get(noteId, userId);
+      let note = await notesDataFunctions.get(noteId);
       return res.status(200).json(note);
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }
   })
-  .delete(utils.validateUserId, async (req, res) => {
+  .delete(async (req, res) => {
     let noteId = "";
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
-      noteId = req.params.noteId.trim();
+      noteId = xss(req.params.noteId.trim());
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
-      let note = await notesDataFunctions.delete(noteId, userId);
+      let note = await notesDataFunctions.delete(noteId, "");
       return res.status(200).json(note);
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }
   })
-  .put(utils.validateUserId, async (req, res) => {
+
+  .put(async (req, res) => {
     //code here for PUT
     let noteId = "";
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.noteId);
-      noteId = req.params.noteId.trim();
+      noteId = xss(req.params.noteId.trim());
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -80,7 +81,6 @@ router
     try {
       const { title, dateAddedTo, textBody, tag } = notePutData;
       const updatednote = await notesDataFunctions.update(
-        userId,
         noteId,
         title,
         dateAddedTo,
@@ -98,11 +98,11 @@ router
 
 router
   .route("/user/:userId")
-  .get(utils.validateUserId, async (req, res) => {
+  .get(async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -113,12 +113,12 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
-  .post(utils.validateUserId, async (req, res) => {
-    //code here for PUT
+
+  .post(async (req, res) => {
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -133,7 +133,6 @@ router
     notePostData.title = xss(notePostData.title);
     notePostData.tag = xss(notePostData.tag);
     try {
-      //validation
       utils.checkObjectIdString(userId);
       utils.validateNotesInputs(
         notePostData.title,
@@ -161,7 +160,6 @@ router
       return res.status(500).json({ error: e.message });
     }
   });
-
 import multer from "multer";
 import path, { dirname } from "path";
 import fs from "fs";
@@ -177,24 +175,26 @@ if (!fs.existsSync(uploadDirectory)) {
 // configure multer middleware to handle multipart form data
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const userUploadDir = path.join(uploadDirectory, req.params.userId);
+    const userId = xss(req.params.userId);
+    const userUploadDir = path.join(uploadDirectory, userId);
     if (!fs.existsSync(userUploadDir)) {
       fs.mkdirSync(userUploadDir);
     }
     cb(null, userUploadDir);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+    const sanitizedFilename = xss(file.originalname);
+    cb(null, Date.now() + path.extname(sanitizedFilename));
   },
 });
 const upload = multer({ storage: storage });
 
 router
   .route("/api/upload-image/:userId/:filename")
-  .post(utils.validateUserId, upload.single("image"), (req, res) => {
+  .post(upload.single("image"), (req, res) => {
     try {
       utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId;
+      const userId = xss(req.params.userId);
       if (userId !== req.session.user.user_id)
         throw new Error("You dont have permission to access that image");
     } catch (error) {
@@ -205,20 +205,22 @@ router
       return res.status(400).send("No image file");
     }
     return res.status(200).json({
-      location: `/notes/api/upload-image/${req.params.userId}/${file.filename}`,
+      location: `/notes/api/upload-image/${xss(req.params.userId)}/${xss(
+        file.filename
+      )}`,
     });
   })
-  .get(utils.validateUserId, (req, res) => {
+  .get((req, res) => {
     //add error case for file not found
     try {
       utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId;
+      const userId = xss(req.params.userId);
       if (userId !== req.session.user.user_id)
         throw new Error("You dont have permission to access that image");
 
       const file = path.join(
         __dirname,
-        `../uploads/${req.params.userId}/${req.params.filename}`
+        `../uploads/${userId}/${xss(req.params.filename)}`
       );
       return res.sendFile(file);
     } catch (error) {
