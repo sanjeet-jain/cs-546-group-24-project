@@ -16,7 +16,7 @@
   <td class="timeslots">{{this }}</td>
   {{#each ../week}}
 
-  <td>
+  <td class="date-time-cell" data-bs-day="{{this.dayjsDateId}}" data-bs-timeslot="{{../this}}">
     <div class="d-grid gap-1">
       {{#if this.modalData.meetings.length}}
       {{#each this.modalData.meetings}}
