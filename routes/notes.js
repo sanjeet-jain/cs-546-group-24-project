@@ -18,6 +18,10 @@ router
     }
     try {
       let note = await notesDataFunctions.get(noteId, userId);
+
+      note.title = xss(note.title);
+      note.content = xss(note.content);
+
       return res.status(200).json(note);
     } catch (e) {
       return res.status(404).json({ error: e.message });
