@@ -38,7 +38,7 @@ cron.schedule("0 0 * * *", async () => {
   );
   // console.log(updateResulttasks);
 
-  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
+  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm"));
 });
 
 const handlebarsInstance = exphbs.create({
