@@ -29,8 +29,7 @@ router.route("/month").get(async (req, res) => {
     utils.checkObjectIdString(userId);
     let today = dayjs().format("YYYY-MM-DD");
     let todayItems = await getSelectedDayItems(userId, today);
-    //TODO only for testing needs to be removed
-    const response = await eventDataFunctions.getAllEvents(userId, filter);
+
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
       title: "Calendar",
@@ -48,7 +47,6 @@ router.route("/month").get(async (req, res) => {
       filter: filter,
       todayItems: todayItems,
       today: today,
-      // TODO to be removed just there for testing now
       rightPaneItems: await getRightPaneItems(userId),
     });
   } catch (error) {
@@ -94,6 +92,7 @@ router.route("/week").get(async (req, res) => {
     filter: filter,
     todayItems: todayItems,
     today: today,
+    rightPaneItems: await getRightPaneItems(userId),
   });
 });
 
@@ -154,6 +153,7 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     selectedDate: selectedDate,
     todayItems: todayItems,
     today: today,
+    rightPaneItems: await getRightPaneItems(userId),
   });
 });
 
@@ -478,8 +478,7 @@ async function getRightPaneItems(userId) {
       })
       .slice(0, 50);
   }
-  rightPaneItems.length =
-    rightPaneItems.meetings.length + rightPaneItems.tasks.length;
+
   return rightPaneItems;
 }
 export default router;
