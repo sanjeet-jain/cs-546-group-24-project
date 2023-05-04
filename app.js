@@ -22,7 +22,11 @@ cron.schedule("*/10 * * * * *", async () => {
   const remindersCollection = await collections.remindersCollection();
   const tasksCollection = await collections.tasksCollection();
   const updateResultmeetings = await meetingsCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResultmeetings);
@@ -38,7 +42,7 @@ cron.schedule("*/10 * * * * *", async () => {
   );
   // console.log(updateResulttasks);
 
-  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm"));
+  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
 });
 
 const handlebarsInstance = exphbs.create({
