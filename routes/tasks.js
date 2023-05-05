@@ -69,8 +69,15 @@ router
         tag = "tasks";
       }
 
-      if (typeof checked === "undefined" || checked === "false") {
+      if (typeof checked === "undefined") {
         checked = false;
+      } else {
+        if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
+          throw new Error(
+            "Task cannot have completed status when its unassigned to a particular date"
+          );
+        }
+        checked = true;
       }
       checked = utils.validateBooleanInput(checked, "checked");
       const newTask = await tasksDataFunctions.createTask(
@@ -140,10 +147,20 @@ router
         taskPutData.tag = "tasks";
       }
 
-      if (typeof checked === "undefined" || checked === "false") {
+      if (typeof checked === "undefined") {
         taskPutData.checked = false;
+      } else {
+        if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
+          throw new Error(
+            "Task cannot have completed status when its unassigned to a particular date"
+          );
+        }
+        taskPutData.checked = true;
       }
-      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
+      taskPutData.checked = utils.validateBooleanInput(
+        taskPutData.checked,
+        "checked"
+      );
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
@@ -188,8 +205,8 @@ router.route("/:userId/:taskId/:isChecked").put(async (req, res) => {
     utils.checkObjectIdString(taskId);
     const userId = req.params.userId.trim();
     utils.checkObjectIdString(userId);
-    const checked = req.params.isChecked.trim();
-    utils.validateBooleanInput(checked, "checked");
+    let checked = req.params.isChecked.trim();
+    checked = utils.validateBooleanInput(checked, "checked");
     const task = await tasksDataFunctions.getTaskById(taskId, userId);
 
     const taskPutData = {

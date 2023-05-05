@@ -149,23 +149,24 @@ const tasksDataFunctions = {
       typeof updatedTask.checked === "undefined" ||
       updatedTask.checked === false
     ) {
-      updatedTaskData.checked = false;
+      updatedTask.checked = false;
+    } else {
+      updatedTask.checked = true;
     }
+
     updatedTaskData.checked = utils.validateBooleanInput(
       updatedTask.checked,
       "checked"
     );
-    updatedTaskData.expired = updatedTaskData.checked;
-    if (updatedTask.title) {
-      utils.validateStringInputWithMaxLength(
-        updatedTask.title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      updatedTaskData.title = updatedTask.title.trim();
-    } else {
-      throw new Error("You must provide a title for the task.");
-    }
+
+    updatedTaskData.expired = updatedTask.checked;
+
+    utils.validateStringInputWithMaxLength(
+      updatedTask.title,
+      "title",
+      constants.stringLimits["title"]
+    );
+    updatedTaskData.title = updatedTask.title.trim();
 
     if (
       typeof updatedTask.textBody === "string" &&
@@ -178,7 +179,7 @@ const tasksDataFunctions = {
       );
       updatedTaskData.textBody = updatedTask.textBody.trim();
     } else {
-      updatedTask.textBody = null;
+      updatedTaskData.textBody = null;
     }
 
     if (
@@ -190,7 +191,7 @@ const tasksDataFunctions = {
         "YYYY-MM-DDTHH:mm"
       );
     } else {
-      updatedTask.dateAddedTo = null;
+      updatedTaskData.dateAddedTo = null;
     }
 
     if (updatedTask.priority) {
@@ -210,7 +211,7 @@ const tasksDataFunctions = {
       );
       updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
-      updatedTask.tag = "tasks";
+      updatedTaskData.tag = "tasks";
     }
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (

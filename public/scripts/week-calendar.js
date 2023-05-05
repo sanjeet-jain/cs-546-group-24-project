@@ -363,6 +363,7 @@ function onTaskModalClose() {
     event_modal.querySelector("select#task_priority").value = "";
     event_modal.querySelector("input#task_dateAddedTo").value = "";
     event_modal.querySelector("input#task_checked").value = "";
+    event_modal.querySelector("input#task_checked").checked = "";
     let resultDiv = document.getElementById("task-update-result");
     resultDiv.classList = "";
     resultDiv.innerText = "";
@@ -1274,21 +1275,6 @@ function checkTaskValidations(form) {
   form.checked.setCustomValidity("");
   task_checked_error.innerText = "";
 
-  // TODO add priority error check
-  if (
-    !(
-      form.checked.value === "false" ||
-      form.checked.value === "true" ||
-      form.checked.value === true ||
-      form.checked.value === false
-    )
-  ) {
-    task_checked_error.innerText = "checked must be a boolean";
-    form.checked.setCustomValidity(
-      "Check box is not a string of true or false"
-    );
-  }
-
   if (form.title.value.length < 1) {
     task_title_error.innerText = "Title can't be empty";
   }
@@ -1312,11 +1298,20 @@ function checkTaskValidations(form) {
   }
 
   if (
-    typeof form.dateAddedTo === "string" &&
-    form.dateAddedTo.trim().length > 0 &&
-    !validateDateTime(form.dateAddedTo)
+    typeof form.dateAddedTo.value === "string" &&
+    form.dateAddedTo.value.trim().length > 0 &&
+    !validateDateTime(form.dateAddedTo.value)
   ) {
     task_dateAddedTo_error.innerText = "The date added should be valid";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
+  }
+
+  if (
+    typeof form.dateAddedTo.value === "string" &&
+    form.dateAddedTo.value.trim().length === 0 &&
+    form.checked.checked === true
+  ) {
+    task_dateAddedTo_error.innerText = "Add date to mark this task completed";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
   }
 
