@@ -7,22 +7,15 @@ import xss from "xss";
 router
   .route("/:userId/:meetingId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = xss(req.params.userId.trim());
-    let meetingId = "";
+    let userId = xss(req?.params?.userId?.trim());
+    let meetingId = xss(req?.params?.meetingId?.trim());
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      meetingId = xss(req.params.meetingId.trim());
+      utils.checkObjectIdString(meetingId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     try {
       let meeting = await meetingsDataFunctions.get(userId, meetingId);
-
-      // XSS protection
-      meeting.title = xss(meeting.title);
-      meeting.description = xss(meeting.description);
-      meeting.location = xss(meeting.location);
-
       return res.status(200).json(meeting);
     } catch (e) {
       return res.status(404).json({ error: e.message });
@@ -30,12 +23,11 @@ router
   })
 
   .delete(utils.validateUserId, async (req, res) => {
-    let meetingId = "";
-    let userId = xss(req.params.userId.trim());
+    let userId = xss(req?.params?.userId?.trim());
+    let meetingId = xss(req?.params?.meetingId?.trim());
 
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      meetingId = xss(req.params.meetingId.trim());
+      utils.checkObjectIdString(meetingId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -48,13 +40,11 @@ router
   })
 
   .put(utils.validateUserId, async (req, res) => {
-    let meetingId = "";
-    let userId = "";
+    let userId = xss(req?.params?.userId?.trim());
+    let meetingId = xss(req?.params?.meetingId?.trim());
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      utils.checkObjectIdString(req.params.userId);
-      meetingId = xss(req.params.meetingId.trim());
-      userId = xss(req.params.userId.trim());
+      utils.checkObjectIdString(meetingId);
+      utils.checkObjectIdString(userId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -132,10 +122,9 @@ router
 router
   .route("/user/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = "";
+    let userId = xss(req?.params?.userId?.trim());
     try {
-      utils.checkObjectIdString(req.params.userId);
-      userId = xss(req.params.userId.trim());
+      utils.checkObjectIdString(userId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -147,10 +136,9 @@ router
     }
   })
   .post(utils.validateUserId, async (req, res) => {
-    let userId = "";
+    let userId = xss(req?.params?.userId?.trim());
     try {
-      utils.checkObjectIdString(req.params.userId);
-      userId = xss(req.params.userId.trim());
+      utils.checkObjectIdString(userId);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -164,18 +152,28 @@ router
     meetingPostData.title = xss(meetingPostData.title);
     meetingPostData.textBody = xss(meetingPostData.textBody);
     meetingPostData.tag = xss(meetingPostData.tag);
+    meetingPostData.dateAddedTo = xss(meetingPostData.dateAddedTo);
+    meetingPostData.dateDueOn = xss(meetingPostData.dateDueOn);
+    meetingPostData.priority = xss(meetingPostData.priority);
+    meetingPostData.repeating = xss(meetingPostData.repeating);
+    meetingPostData.repeatingCounterIncrement = xss(
+      meetingPostData.repeatingCounterIncrement
+    );
+    meetingPostData.repeatingIncrementBy = xss(
+      meetingPostData.repeatingIncrementBy
+    );
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPostData.title,
-      xss(meetingPostData.dateAddedTo),
-      xss(meetingPostData.dateDueOn),
-      xss(meetingPostData.priority),
+      meetingPostData.dateAddedTo,
+      meetingPostData.dateDueOn,
+      meetingPostData.priority,
       meetingPostData.textBody,
       meetingPostData.tag,
-      xss(meetingPostData.repeating),
-      xss(meetingPostData.repeatingCounterIncrement),
-      xss(meetingPostData.repeatingIncrementBy)
+      meetingPostData.repeating,
+      meetingPostData.repeatingCounterIncrement,
+      meetingPostData.repeatingIncrementBy
     );
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
@@ -219,13 +217,11 @@ router
 router
   .route("/user/:userId/meetings/repeating/:repeatingGroup")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = "";
-    let repeatingGroup = "";
+    let userId = xss(req?.params?.userId?.trim());
+    let repeatingGroup = xss(req?.params?.repeatingGroup?.trim());
     try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = xss(req.params.userId.trim());
-      repeatingGroup = xss(req.params.repeatingGroup.trim());
+      utils.checkObjectIdString(userId);
+      utils.checkObjectIdString(repeatingGroup);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -235,13 +231,6 @@ router
         repeatingGroup
       );
 
-      meetingsRecurring = meetingsRecurring.map((meeting) => {
-        meeting.title = xss(meeting.title);
-        meeting.textBody = xss(meeting.textBody);
-        meeting.tag = xss(meeting.tag);
-        return meeting;
-      });
-
       return res.status(200).json(meetingsRecurring);
     } catch (e) {
       return res.status(500).json({ error: e.message });
@@ -249,14 +238,11 @@ router
   })
 
   .put(utils.validateUserId, async (req, res) => {
-    // code here for PUT
-    let userId = "";
-    let repeatingGroup = "";
+    let userId = xss(req?.params?.userId?.trim());
+    let repeatingGroup = xss(req?.params?.repeatingGroup?.trim());
     try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = xss(req.params.userId.trim());
-      repeatingGroup = xss(req.params.repeatingGroup.trim());
+      utils.checkObjectIdString(userId);
+      utils.checkObjectIdString(repeatingGroup);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -310,13 +296,11 @@ router
   })
 
   .delete(utils.validateUserId, async (req, res) => {
-    let userId = "";
-    let repeatingGroup = "";
+    let userId = xss(req?.params?.userId?.trim());
+    let repeatingGroup = xss(req?.params?.repeatingGroup?.trim());
     try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = xss(req.params.userId.trim());
-      repeatingGroup = xss(req.params.repeatingGroup.trim());
+      utils.checkObjectIdString(userId);
+      utils.checkObjectIdString(repeatingGroup);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
