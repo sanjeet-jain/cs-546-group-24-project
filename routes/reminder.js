@@ -9,10 +9,9 @@ import xss from "xss";
 router
   .route("/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId;
+    let userId = xss(req?.params?.userId?.trim());
     try {
       utils.checkObjectIdString(userId);
-      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -24,19 +23,25 @@ router
   })
   .post(utils.validateUserId, async (req, res) => {
     const reminder = req.body;
-    let userId = req.params.userId;
+    let userId = xss(req?.params?.userId?.trim());
     let title = xss(reminder.title);
     let textBody = xss(reminder.textBody);
     let tag = xss(reminder.tag);
     let priority = xss(Number.parseInt(reminder.priority));
-    let repeating = xss(reminder.repeating);
+    reminder.repeating = xss(reminder.repeating);
+    let repeating =
+      reminder.repeating === "true" ||
+      reminder.repeating === true ||
+      !(reminder.repeating === "false")
+        ? true
+        : false;
+
     let dateAddedTo = xss(reminder.dateAddedTo);
-    let endDateTime;
+    let endDateTime = xss(reminder.endDateTime);
     let repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
     dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
       utils.checkObjectIdString(userId);
-      userId = xss(userId.trim());
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -70,7 +75,6 @@ router
       utils.validateDate(dateAddedTo, "date time value");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
-        endDateTime = xss(reminder.endDateTime);
         endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
         utils.validateDate(endDateTime, "end time value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
@@ -99,13 +103,11 @@ router
 router
   .route("/:userId/reminder/:reminder_id")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId;
-    let reminder_id = req.params.reminder_id;
+    let userId = xss(req?.params?.userId?.trim());
+    let reminder_id = xss(req?.params?.reminder_id?.trim());
     try {
       utils.checkObjectIdString(userId);
-      userId = xss(userId.trim());
       utils.checkObjectIdString(reminder_id);
-      reminder_id = xss(reminder_id.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -116,16 +118,16 @@ router
     }
   })
   .put(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
+    let userId = xss(req?.params?.userId?.trim());
+    let reminder_id = xss(req?.params?.reminder_id?.trim());
     let reminder = req.body;
-    let userId = req.params.userId;
     let title = xss(reminder.title);
     let textBody = xss(reminder.textBody);
     let priority = xss(Number.parseInt(reminder.priority));
     let tag = xss(reminder.tag);
     let dateAddedTo = xss(reminder.dateAddedTo);
     let repeating = xss(reminder.repeating);
-    let endDateTime;
+    let endDateTime = xss(reminder.endDateTime);
     let repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
 
     dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
@@ -135,13 +137,11 @@ router
         : false;
 
     if (repeating) {
-      endDateTime = xss(reminder.endDateTime);
       endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
     }
 
     try {
       utils.checkObjectIdString(reminder_id);
-      reminder_id = xss(reminder_id.trim());
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -200,13 +200,11 @@ router
     }
   })
   .delete(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
-    let userId = req.params.userId;
+    let userId = xss(req?.params?.userId?.trim());
+    let reminder_id = xss(req?.params?.reminder_id?.trim());
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
-      reminder_id = xss(reminder_id.trim());
-      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -221,13 +219,11 @@ router
 router
   .route("/:userId/reminders/:reminder_id")
   .delete(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
-    let userId = req.params.userId;
+    let userId = xss(req?.params?.userId?.trim());
+    let reminder_id = xss(req?.params?.reminder_id?.trim());
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
-      reminder_id = xss(reminder_id.trim());
-      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
