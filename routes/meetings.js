@@ -7,11 +7,11 @@ import xss from "xss";
 router
   .route("/:userId/:meetingId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId.trim();
+    let userId = xss(req.params.userId.trim());
     let meetingId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
-      meetingId = req.params.meetingId.trim();
+      meetingId = xss(req.params.meetingId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -31,11 +31,11 @@ router
 
   .delete(utils.validateUserId, async (req, res) => {
     let meetingId = "";
-    let userId = req.params.userId.trim();
+    let userId = xss(req.params.userId.trim());
 
     try {
       utils.checkObjectIdString(req.params.meetingId);
-      meetingId = req.params.meetingId.trim();
+      meetingId = xss(req.params.meetingId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -46,14 +46,15 @@ router
       return res.status(404).json({ error: e.message });
     }
   })
+
   .put(utils.validateUserId, async (req, res) => {
     let meetingId = "";
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.meetingId);
       utils.checkObjectIdString(req.params.userId);
-      meetingId = req.params.meetingId.trim();
-      userId = req.params.userId.trim();
+      meetingId = xss(req.params.meetingId.trim());
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -68,8 +69,17 @@ router
     meetingPutData.title = xss(meetingPutData.title);
     meetingPutData.textBody = xss(meetingPutData.textBody);
     meetingPutData.tag = xss(meetingPutData.tag);
+    meetingPutData.dateAddedTo = xss(meetingPutData.dateAddedTo);
+    meetingPutData.dateDueOn = xss(meetingPutData.dateDueOn);
+    meetingPutData.priority = xss(meetingPutData.priority);
+    meetingPutData.repeating = xss(meetingPutData.repeating);
+    meetingPutData.repeatingCounterIncrement = xss(
+      meetingPutData.repeatingCounterIncrement
+    );
+    meetingPutData.repeatingIncrementBy = xss(
+      meetingPutData.repeatingIncrementBy
+    );
 
-    //validation
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPutData.title,
       meetingPutData.dateAddedTo,
@@ -97,7 +107,6 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy,
       } = meetingPutData;
-      //TODO add user id to route
       const updatedMeeting = await meetingsDataFunctions.update(
         userId,
         meetingId,
@@ -126,7 +135,7 @@ router
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -141,7 +150,7 @@ router
     let userId = "";
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -152,7 +161,6 @@ router
         .json({ error: "There are no fields in the request body" });
     }
 
-    // Apply XSS protection
     meetingPostData.title = xss(meetingPostData.title);
     meetingPostData.textBody = xss(meetingPostData.textBody);
     meetingPostData.tag = xss(meetingPostData.tag);
@@ -160,14 +168,14 @@ router
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPostData.title,
-      meetingPostData.dateAddedTo,
-      meetingPostData.dateDueOn,
-      meetingPostData.priority,
+      xss(meetingPostData.dateAddedTo),
+      xss(meetingPostData.dateDueOn),
+      xss(meetingPostData.priority),
       meetingPostData.textBody,
       meetingPostData.tag,
-      meetingPostData.repeating,
-      meetingPostData.repeatingCounterIncrement,
-      meetingPostData.repeatingIncrementBy
+      xss(meetingPostData.repeating),
+      xss(meetingPostData.repeatingCounterIncrement),
+      xss(meetingPostData.repeatingIncrementBy)
     );
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
@@ -216,8 +224,8 @@ router
     try {
       utils.checkObjectIdString(req.params.userId);
       utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
+      userId = xss(req.params.userId.trim());
+      repeatingGroup = xss(req.params.repeatingGroup.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -247,12 +255,11 @@ router
     try {
       utils.checkObjectIdString(req.params.userId);
       utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
+      userId = xss(req.params.userId.trim());
+      repeatingGroup = xss(req.params.repeatingGroup.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-
     const meetingPutData = req.body;
     if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
       return res
@@ -263,6 +270,9 @@ router
     meetingPutData.title = xss(meetingPutData.title);
     meetingPutData.textBody = xss(meetingPutData.textBody);
     meetingPutData.tag = xss(meetingPutData.tag);
+    meetingPutData.dateAddedTo = xss(meetingPutData.dateAddedTo);
+    meetingPutData.dateDueOn = xss(meetingPutData.dateDueOn);
+    meetingPutData.priority = xss(meetingPutData.priority);
 
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPutData.title,
@@ -272,7 +282,6 @@ router
       meetingPutData.textBody,
       meetingPutData.tag
     );
-
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
     }
@@ -306,8 +315,8 @@ router
     try {
       utils.checkObjectIdString(req.params.userId);
       utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
+      userId = xss(req.params.userId.trim());
+      repeatingGroup = xss(req.params.repeatingGroup.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
