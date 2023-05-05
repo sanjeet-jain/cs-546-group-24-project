@@ -2,6 +2,7 @@ import { Router } from "express";
 import tasksDataFunctions from "../data/tasks.js";
 import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
+import dayjs from "dayjs";
 
 const router = Router();
 
@@ -38,20 +39,45 @@ router
         "title",
         constants.stringLimits["title"]
       );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
+
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+      } else {
+        textBody = "";
+      }
+
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+        utils.validateDate(dateAddedTo, "dateAddedTo");
+        dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+      } else {
+        dateAddedTo = "";
+      }
       utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
+
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        tag = tag.trim();
+      } else {
+        tag = "tasks";
+      }
+
       if (typeof checked === "undefined") {
         checked = false;
+      } else {
+        if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
+          throw new Error(
+            "Task cannot have completed status when its unassigned to a particular date"
+          );
+        }
+        checked = true;
       }
       checked = utils.validateBooleanInput(checked, "checked");
       const newTask = await tasksDataFunctions.createTask(
@@ -90,22 +116,51 @@ router
         "title",
         constants.stringLimits["title"]
       );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
-      utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      if (typeof checked === "undefined") {
-        checked = false;
+
+      if (typeof textBody === "string" && textBody.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+        taskPutData.textBody = taskPutData.textBody.trim();
+      } else {
+        taskPutData.textBody = "";
       }
-      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+        utils.validateDate(dateAddedTo, "dateAddedTo");
+        taskPutData.dateAddedTo = dayjs(dateAddedTo.trim()).format(
+          "YYYY-MM-DDTHH:mm"
+        );
+      } else {
+        taskPutData.dateAddedTo = "";
+      }
+      utils.validatePriority(priority);
+      if (typeof tag === "string" && tag.trim().length > 0) {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+        taskPutData.tag = tag.trim();
+      } else {
+        taskPutData.tag = "tasks";
+      }
+
+      if (typeof checked === "undefined") {
+        taskPutData.checked = false;
+      } else {
+        if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
+          throw new Error(
+            "Task cannot have completed status when its unassigned to a particular date"
+          );
+        }
+        taskPutData.checked = true;
+      }
+      taskPutData.checked = utils.validateBooleanInput(
+        taskPutData.checked,
+        "checked"
+      );
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
@@ -150,8 +205,8 @@ router.route("/:userId/:taskId/:isChecked").put(async (req, res) => {
     utils.checkObjectIdString(taskId);
     const userId = req.params.userId.trim();
     utils.checkObjectIdString(userId);
-    const checked = req.params.isChecked.trim();
-    utils.validateBooleanInput(checked, "checked");
+    let checked = req.params.isChecked.trim();
+    checked = utils.validateBooleanInput(checked, "checked");
     const task = await tasksDataFunctions.getTaskById(taskId, userId);
 
     const taskPutData = {
