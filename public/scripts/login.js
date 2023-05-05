@@ -32,7 +32,7 @@ function checkValidations(event) {
 
   if (!validatePassword(passwordInput.value)) {
     password_error.innerText =
-      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+      "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
   } else {
     password_error.innerText = "";
     passwordInput.validity.patternMismatch = true;
@@ -50,7 +50,8 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  const passwordRegex =
+    /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
   return passwordRegex.test(password);
 }
 

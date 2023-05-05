@@ -38,15 +38,15 @@ function checkValidations(event) {
 
   if (!validateNewPassword(oldPassInput.value)) {
     oldPassword_error.innerText =
-      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+      "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
   }
   if (!validateNewPassword(newPassInput.value)) {
     newPassword_error.innerText =
-      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+      "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
   }
   if (!validateNewPassword(reEnterInput.value)) {
     reEnterNewPassword_error.innerText =
-      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+      "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
   }
   if (!confirmNewPassword(newPassInput.value, reEnterInput.value)) {
     reEnterNewPassword_error.innerText =
@@ -63,7 +63,8 @@ function checkValidations(event) {
   }
 }
 function validateNewPassword(password) {
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  const passwordRegex =
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+./?<>)])[A-Za-z\d!@#$%^&_=+./?<>)]{8,}$/;
   return passwordRegex.test(password);
 }
 function confirmNewPassword(newPassword, reEnter) {

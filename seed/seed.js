@@ -12,7 +12,7 @@ async function createUser() {
     last_name: "User",
     email: "sampleuser@gmail.com",
     // password will be hashed when being passed from UI to the API and then stored ( done by Jonathan)
-    password: "abcDefgh2i",
+    password: "abcDefgh2i!",
     disability: false,
     // date string passed here is MM/DD/YYYY
     dob: "1996-01-01",

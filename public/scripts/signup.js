@@ -1,20 +1,102 @@
 function validatesignup(event) {
-  let forms = document.querySelectorAll(".needs-validation");
+  let forms = document.getElementById("signup-form");
 
-  Array.prototype.slice.call(forms).forEach(function (form) {
-    form.addEventListener(
-      "submit",
-      function (event) {
-        event.preventDefault();
-        event.stopPropagation();
+  forms.addEventListener(
+    "submit",
+    function (event) {
+      event.preventDefault();
+      event.stopPropagation();
 
-        checkValidations(event);
+      if (checkValidations(event)) {
+        let formData = new FormData(event.target);
+        let jsonData = {};
+        for (let [key, value] of formData.entries()) {
+          jsonData[key] = value.trim();
+        }
+        document.getElementById("submit-btn").disabled = true;
+        $.ajax({
+          type: "POST",
+          url: `/user/signup`,
+          data: jsonData,
+          success: function (data, status, xhr) {
+            window.location.href = "/calendar/month";
+          },
+          error: function (data) {
+            document.getElementById("submit-btn").disabled = false;
+            let emailInput = event.target.email;
+            let passwordInput = event.target.password;
+            let passwordReEnterInput = event.target.reEnterPassword;
+            let firstNameInput = event.target.first_name;
+            let lastNameInput = event.target.last_name;
+            let dob = event.target.dob;
+            let consent = event.target.consent;
+            let passForm = event.target;
 
-        form.classList.add("was-validated");
-      },
-      false
-    );
-  });
+            let email_error = document.getElementById("email_error");
+            let password_error = document.getElementById("password_error");
+            let reEnter_error = document.getElementById("reEnter_error");
+            let firstName_error = document.getElementById("first_name_error");
+            let lastName_error = document.getElementById("last_name_error");
+            let date_error = document.getElementById("date_error");
+            let consent_error = document.getElementById("consent_error");
+
+            email_error.innerText = "";
+            password_error.innerText = "";
+            reEnter_error.innerText = "";
+            firstName_error.innerText = "";
+            lastName_error.innerText = "";
+            date_error.innerText = "";
+            consent_error.innerText = "";
+
+            emailInput.setCustomValidity("");
+            passwordInput.setCustomValidity("");
+            passwordReEnterInput.setCustomValidity("");
+            firstNameInput.setCustomValidity("");
+            lastNameInput.setCustomValidity("");
+            dob.setCustomValidity("");
+            consent.setCustomValidity("");
+
+            email_error.innerText =
+              data?.responseJSON?.errorMessages?.email || "";
+            password_error.innerText =
+              data?.responseJSON?.errorMessages?.password || "";
+            reEnter_error.innerText =
+              data?.responseJSON?.errorMessages?.reEnterPassword || "";
+            first_name.innerText =
+              data?.responseJSON?.errorMessages?.first_name || "";
+            last_name.innerText =
+              data?.responseJSON?.errorMessages?.last_name || "";
+            date_error.innerText = data?.responseJSON?.errorMessages?.dob || "";
+            consent_error.innerText =
+              data?.responseJSON?.errorMessages?.consent || "";
+
+            emailInput.setCustomValidity(
+              data?.responseJSON?.errorMessages?.email || ""
+            );
+            passwordInput.setCustomValidity(
+              data?.responseJSON?.errorMessages?.password || ""
+            );
+            passwordReEnterInput.setCustomValidity(
+              data?.responseJSON?.errorMessages?.reEnterPassword || ""
+            );
+            firstNameInput.setCustomValidity(
+              data?.responseJSON?.errorMessages?.first_name || ""
+            );
+            lastNameInput.setCustomValidity(
+              data?.responseJSON?.errorMessages?.last_name || ""
+            );
+            dob.setCustomValidity(data?.responseJSON?.errorMessages?.dob || "");
+            consent.setCustomValidity(
+              data?.responseJSON?.errorMessages?.consent || ""
+            );
+          },
+        });
+      }
+
+      forms.classList.add("was-validated");
+    },
+    false
+  );
 }
 
 function checkValidations(event) {
@@ -29,65 +111,79 @@ function checkValidations(event) {
 
   let email_error = document.getElementById("email_error");
   let password_error = document.getElementById("password_error");
-  let reEnter_error = document.getElementById("reEnterPassword_error");
+  let reEnter_error = document.getElementById("reEnter_error");
   let firstName_error = document.getElementById("first_name_error");
   let lastName_error = document.getElementById("last_name_error");
   let date_error = document.getElementById("date_error");
   let consent_error = document.getElementById("consent_error");
 
+  email_error.innerText = "";
+  password_error.innerText = "";
+  reEnter_error.innerText = "";
+  firstName_error.innerText = "";
+  lastName_error.innerText = "";
+  date_error.innerText = "";
+  consent_error.innerText = "";
+
+  emailInput.setCustomValidity("");
+  passwordInput.setCustomValidity("");
+  passwordReEnterInput.setCustomValidity("");
+  firstNameInput.setCustomValidity("");
+  lastNameInput.setCustomValidity("");
+  dob.setCustomValidity("");
+  consent.setCustomValidity("");
+
   if (!validateEmail(emailInput.value)) {
     email_error.innerText = "Please enter a valid email.";
-  } else {
-    email_error.innerText = "";
+    emailInput.setCustomValidity("error");
   }
 
   if (!validatePassword(passwordInput.value)) {
     password_error.innerText =
-      "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
-  } else {
-    password_error.innerText = "";
+      "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
+    passwordInput.setCustomValidity("error");
   }
   if (!confirmPassword(passwordInput.value, passwordReEnterInput.value)) {
     reEnter_error = "Passwords do not match.";
+    passwordReEnterInput.setCustomValidity("error");
   }
   if (!validateName(firstNameInput.value)) {
     firstName_error.innerText = "Please enter a valid first name.";
-  } else {
-    firstName_error.innerText = "";
+    firstNameInput.setCustomValidity("error");
   }
 
   if (!validateName(lastNameInput.value)) {
     lastName_error.innerText = "Please enter a valid last name.";
-  } else {
-    lastName_error.innerText = "";
+    lastNameInput.setCustomValidity("error");
   }
-  if (!consent.value !== "true") {
+  if (!consent.check !== true) {
     consent_error.innerText = "Please consent to data collection";
+    consent.setCustomValidity("error");
   }
   if (passwordInput.value !== reEnterPassword.value) {
     reEnter_error = "Passwords do not match.";
-  }
-  if (dob.validity.valueMissing) {
-    date_error.textContent = "Please enter a date of birth.";
-  } else if (dob.validity.rangeUnderflow) {
-    date_error.textContent = "You cannot be more than 150 years old to signup!";
-  } else if (dob.validity.rangeOverflow) {
-    date_error.textContent = "You must be at least 13 years old to signup!";
-  } else {
-    date_error.textContent = "";
+    reEnterPassword.setCustomValidity("error");
   }
   if (
-    emailInput.checkValidity() &&
-    passwordInput.checkValidity() &&
-    firstNameInput.checkValidity() &&
-    lastNameInput.checkValidity() &&
-    dob.checkValidity() &&
-    consent.checkValidity()
+    dob.validity.valueMissing ||
+    dob.value === "" ||
+    dob.value === undefined ||
+    dob.value === null
   ) {
-    passForm.submit();
+    date_error.textContent = "Please enter a date of birth.";
+    dob.setCustomValidity("error");
+  } else if (dob.validity.rangeUnderflow) {
+    date_error.textContent = "You cannot be more than 150 years old to signup!";
+    dob.setCustomValidity("error");
+  } else if (dob.validity.rangeOverflow) {
+    date_error.textContent = "You must be at least 13 years old to signup!";
+    dob.setCustomValidity("error");
+  }
+  if (passForm.checkValidity()) {
+    return true; //passForm.submit();
   }
 
-  return true;
+  return false;
 }
 
 function validateEmail(email) {
@@ -97,7 +193,8 @@ function validateEmail(email) {
 }
 
 function validatePassword(password) {
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+  const passwordRegex =
+    /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
   return passwordRegex.test(password);
 }
 
