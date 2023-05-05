@@ -74,16 +74,22 @@ const exportedMethods = {
     if (!user) {
       throw new Error("User not found.");
     }
+
+    let noteEvents = await this.getAll(userId);
     let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
-    const notes = await notesCollection();
-    const result = await notes.insertOne({
+    let noteObj = {
       title: title,
       dateCreated: dateCreated,
       dateAddedTo: dateAddedTo,
       textBody: textBody,
       tag: tag,
       type: "notes",
-    });
+    };
+    for (let i = 0; i < noteEvents.length; i++) {
+      this.isTwoNoteEventSame(noteEvents[i], noteObj);
+    }
+    const notes = await notesCollection();
+    const result = await notes.insertOne(noteObj);
     const insertedId = result.insertedId;
     await users.updateOne(
       { _id: new ObjectId(userId) },
@@ -91,6 +97,7 @@ const exportedMethods = {
     );
     return { userId: userId, notesId: insertedId.toString() };
   },
+
   async update(userId, noteId, title, dateAddedTo, textBody, tag) {
     utils.checkObjectIdString(noteId);
     noteId = noteId.trim();
@@ -169,6 +176,19 @@ const exportedMethods = {
   async getDistinctTags() {
     const notes = await notesCollection();
     return notes.distinct("tag");
+  },
+
+  isTwoNoteEventSame(note1, note2) {
+    let keys = ["title", "textBody", "priority", "tag", "dateAddedTo"];
+    let flag = true;
+    for (let i = 0; i < keys.length; i++) {
+      if (!(note1[keys[i]] === note2[keys[i]])) {
+        flag = false;
+      }
+    }
+    if (flag) {
+      throw new Error("Trying to update same event value");
+    }
   },
 };
 
