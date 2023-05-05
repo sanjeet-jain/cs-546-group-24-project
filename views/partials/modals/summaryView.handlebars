@@ -4,9 +4,9 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h2 class="modal-title" id="modal-summary-label">
+        <h4 class="modal-title" id="modal-summary-label">
           Summary for Today
-        </h2>
+        </h4>
 
         <button id="summary-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
           aria-label="Close"></button>
@@ -16,7 +16,7 @@
         <div class="card display_current_items_card">
           <div class="card-body">
             {{#if todayItems.length includeZero=true}}
-            <h3 class="card-title" id="summary_selected_date">Items for<br> {{today}}</h3>
+            <h5 class="card-title" id="summary_selected_date">Items for<br> {{today}}</h5>
             <div class="d-grid gap-1" id="summary_display_current_items">
               {{#if todayItems.length includeZero=false}}
               {{#each todayItems}}

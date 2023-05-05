@@ -48,7 +48,7 @@
           {{else}}
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
-          <button type="submit" id="prevMonth" class="btn btn-outline" aria-label="Navigate to previous month" style="border:
+          <button type="submit" id="prevMonth" class="btn btn-outline" style="border:
             none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
@@ -76,7 +76,7 @@
           <input type="hidden" name="year" value="{{currYear}}">
           {{/if}}
 
-          <button type="submit" id="nextMonth" class="btn btn-outline" aria-label="Navigate to next month" style="border:
+          <button type="submit" id="nextMonth" class="btn btn-outline" style="border:
             none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
@@ -89,8 +89,7 @@
         <form id="yearCalendarForm" method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{prevYear}}">
-          <button type="submit" id="prevYear" class="btn btn-outline" aria-label="Navigate to previous year"
-            style="border: none">
+          <button type="submit" id="prevYear" class="btn btn-outline" style="border: none">
             <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
@@ -112,8 +111,7 @@
         <form method="get" action="/calendar/month">
           <input type="hidden" name="month" value="{{currentMonth}}">
           <input type="hidden" name="year" value="{{nextYear}}">
-          <button type="submit" id="nextYear" class="btn btn-outline" aria-label="Navigate to next year"
-            style="border: none">
+          <button type="submit" id="nextYear" class="btn btn-outline" style="border: none">
             <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
           </button>
@@ -131,19 +129,19 @@
   {{/if}}
   <div>
 
-    <button class="btn border-0" type="button" id="user-sidebar" aria-label="Open user sidebar"
-      data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+    <button class="btn border-0" type="button" id="user-sidebar" data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
       <i class="bi-person-fill" style="font-size: 2rem"></i>
     </button>
     <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
       <div class="offcanvas-header">
-        <h1 class="offcanvas-title" id="offcanvasNavbarLabel">
+        <h5 class="offcanvas-title" id="offcanvasNavbarLabel">
           {{#if session}}
           Hi {{session.userFirstName}}
           {{else}}
           Hi Guest
           {{/if}}
-        </h1>
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div class="offcanvas-body">
