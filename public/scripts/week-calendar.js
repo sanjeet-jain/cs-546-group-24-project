@@ -107,6 +107,7 @@ function populateTasksModal(userId, taskId) {
       event_modal.querySelector("select#task_priority").value = data.priority;
       event_modal.querySelector("input#task_dateAddedTo").value =
         data.dateAddedTo;
+      event_modal.querySelector("input#task_checked").value = data.checked;
       event_modal.querySelector("input#task_checked").checked = data.checked;
     },
     error: function (data) {
@@ -362,6 +363,7 @@ function onTaskModalClose() {
     event_modal.querySelector("select#task_priority").value = "";
     event_modal.querySelector("input#task_dateAddedTo").value = "";
     event_modal.querySelector("input#task_checked").value = "";
+    event_modal.querySelector("input#task_checked").checked = "";
     let resultDiv = document.getElementById("task-update-result");
     resultDiv.classList = "";
     resultDiv.innerText = "";
@@ -463,7 +465,7 @@ function submitMeetingForm() {
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
-            populateMeetingsModal(data.userId, data.meetingId);
+            //populateMeetingsModal(data.userId, data.meetingId);
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
@@ -1111,9 +1113,19 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
-  if (!form.tag.value.match(/^[a-zA-Z]+$/)) {
+  if (
+    typeof form.tag.value === "string" &&
+    form.tag.value.trim().length > 0 &&
+    !form.tag.value.match(/^[a-zA-Z0-9_]+$/)
+  ) {
     notes_tag_error.innerText = "tag has only letters with no spaces";
     form.tag.setCustomValidity("error");
+  }
+
+  if (form.title.value.length < 1) {
+    notes_title_error.innerText =
+      "Title should have atleast 1 character which is not space";
+    form.title.setCustomValidity("error");
   }
 
   if (form.title.value.length > 100) {
@@ -1122,7 +1134,7 @@ function checkNotesValidations(form) {
   }
 
   if (form.dateAddedTo.value.length > 200) {
-    notes_textBody_error.innerText =
+    notes_editor_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
   }
@@ -1173,6 +1185,10 @@ function checkReminderValidations(form) {
     "reminder_endDateTime_error"
   );
 
+  form.dateAddedTo.setCustomValidity("");
+
+  reminder_endDateTime_error.innerText = "";
+  form.endDateTime.setCustomValidity("");
   form.title.setCustomValidity("");
   reminder_title_error.innerText = "";
 
@@ -1189,10 +1205,6 @@ function checkReminderValidations(form) {
   reminder_dateAddedTo_error.innerText = "";
 
   reminder_dateAddedTo_error.innerText = "";
-  form.dateAddedTo.setCustomValidity("");
-
-  reminder_endDateTime_error.innerText = "";
-  form.endDateTime.setCustomValidity("");
 
   reminder_repeatingIncrementBy_error.innerText = "";
   form.repeatingIncrementBy.setCustomValidity("");
@@ -1225,7 +1237,7 @@ function checkReminderValidations(form) {
     form.tag.value.trim().length > 0 &&
     !form.tag.value.match(/^[a-zA-Z]+$/)
   ) {
-    if (form.tag.checkValidity) {
+    if (form.tag.checkValidity()) {
       reminder_tag_error.innerText = "tag has only letters with no spaces";
       form.tag.setCustomValidity("error");
     }
@@ -1286,26 +1298,63 @@ function checkTaskValidations(form) {
   );
   let task_checked_error = document.getElementById("task_checked_error");
   let task_priority_error = document.getElementById("task_priority_error");
-  // TODO add priority error check
-  if (typeof form.checked.value === "boolean") {
-    task_checked_error.innerText = "checked must be a boolean";
+
+  form.dateAddedTo.setCustomValidity("");
+  task_dateAddedTo_error.innerText = "";
+
+  form.title.setCustomValidity("");
+  task_title_error.innerText = "";
+
+  form.textBody.setCustomValidity("");
+  task_textBody_error.innerText = "";
+
+  form.tag.setCustomValidity("");
+  task_tag_error.innerText = "";
+
+  form.priority.setCustomValidity("");
+  task_priority_error.innerText = "";
+
+  form.checked.setCustomValidity("");
+  task_checked_error.innerText = "";
+
+  if (form.title.value.length < 1) {
+    task_title_error.innerText = "Title can't be empty";
   }
-  if (form.title.value.length > 100) {
+
+  if (form.title.value.length > 100 && form.title.checkValidity()) {
     task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
   if (form.textBody.value.length > 200) {
     task_textBody_error.innerText = "Text can't be longer than 100 characters";
   }
+
   if (form.tag.value.length > 20) {
     task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
-  if (!dayjs(form.dateAddedTo.value).isValid()) {
+  if (!/^(1|2|3)$/.test(form.priority.value) && form.tag.checkValidity()) {
+    task_priority_error.innerText =
+      "Priority can only be selected as low medium or high";
+    form.priority.setCustomValidity("error");
+  }
+
+  if (
+    typeof form.dateAddedTo.value === "string" &&
+    form.dateAddedTo.value.trim().length > 0 &&
+    !validateDateTime(form.dateAddedTo.value)
+  ) {
     task_dateAddedTo_error.innerText = "The date added should be valid";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
-  } else {
-    form.dateAddedTo.setCustomValidity("");
+  }
+
+  if (
+    typeof form.dateAddedTo.value === "string" &&
+    form.dateAddedTo.value.trim().length === 0 &&
+    form.checked.checked === true
+  ) {
+    task_dateAddedTo_error.innerText = "Add date to mark this task completed";
+    form.dateAddedTo.setCustomValidity("date added to can't be invalid");
   }
 
   if (form.checkValidity()) {

@@ -48,23 +48,23 @@ const utils = {
       !input
         .trim()
         .toLowerCase()
-        .match(/^[a-zA-Z]+$/g)
+        .match(/^[a-zA-Z0-9_]+$/g)
     ) {
       throw new Error(
-        `${inputName} can not have spaces and contains only letters`
+        `${inputName} can not have spaces and contains only letters numbers with underscores`
       );
     }
-    if (
-      inputName === "title" &&
-      !input
-        .trim()
-        .toLowerCase()
-        .match(/^(?![\d])[\w\s]+$/gi)
-    ) {
-      throw new Error(
-        `${inputName} can not have spaces and contains only letters`
-      );
-    }
+    // if (
+    //   inputName === "title" &&
+    //   !input
+    //     .trim()
+    //     .toLowerCase()
+    //     .match(/^(?![\d])[\w\s]+$/gi)
+    // ) {
+    //   throw new Error(
+    //     `${inputName} can not have spaces and contains only letters`
+    //   );
+    // }
 
     if (input.trim().length > maxLength) {
       throw new Error(
@@ -403,14 +403,16 @@ const utils = {
       errorMessages.dateAddedTo = e.message;
     }
 
-    try {
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-    } catch (e) {
-      errorMessages.tag = e.message;
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      try {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+      } catch (e) {
+        errorMessages.tag = e.message;
+      }
     }
 
     try {
