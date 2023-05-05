@@ -22,13 +22,25 @@ import {
   meetingsCollection,
   usersCollection,
 } from "../config/mongoCollections.js";
+import constants from "./../constants/constants.js";
 
 const meetingsDataFunctions = {
-  //meetingId only needed
-  async get(meetingId) {
+  async get(userId, meetingId) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
     utils.checkObjectIdString(meetingId);
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
     meetingId = meetingId.trim();
+
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      throw new Error("Meeting not found");
+    }
     const meetings = await meetingsCollection();
     const meeting = await meetings.findOne({ _id: new ObjectId(meetingId) });
 
@@ -76,17 +88,35 @@ const meetingsDataFunctions = {
     }
 
     const meetings = await meetingsCollection();
-    const oldMeeting = await this.get(meetingId);
+    const oldMeeting = await this.get(userId, meetingId);
     let updatedMeeting = { ...oldMeeting };
     delete updatedMeeting._id;
 
     title = title.trim();
-    textBody = textBody.trim();
-    tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      tag = tag.trim().toLowerCase();
+    } else {
+      tag = "meetings";
+    }
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+    } else {
+      dateAddedTo = null;
+    }
+
+    if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm");
+    } else {
+      dateDueOn = null;
+    }
+
     priority = Number.parseInt(priority);
-    textBody = textBody.trim();
     repeatingCounterIncrement = !repeatingCounterIncrement
       ? repeatingCounterIncrement
       : Number.parseInt(repeatingCounterIncrement);
@@ -105,6 +135,8 @@ const meetingsDataFunctions = {
 
     // wasnt repeating but now is
     if (
+      dateAddedTo !== null &&
+      dateDueOn !== null &&
       repeating === true &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
@@ -138,12 +170,12 @@ const meetingsDataFunctions = {
         }
         dateDueOnObject = newDateDueOn.clone();
         dateAddedToObject = newDateAddedTo.clone();
-        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+        let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
         const meeting = {
           ...updatedMeeting,
           dateCreated: dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
           repeatingGroup: repeatingGroup,
         };
         meetingObjects.push(meeting);
@@ -195,10 +227,21 @@ const meetingsDataFunctions = {
         throw new Error("Meeting update wasnt successfull");
     }
   },
-  async delete(meetingId) {
+  async delete(meetingId, userId) {
     utils.checkObjectIdString(meetingId);
     meetingId = meetingId.trim();
 
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.meetingIds.find((x) => {
+        return x.toString() === meetingId;
+      })
+    ) {
+      throw new Error("Meeting not found");
+    }
     const meetings = await meetingsCollection();
     const deletionInfo = await meetings.findOneAndDelete({
       _id: new ObjectId(meetingId),
@@ -206,7 +249,6 @@ const meetingsDataFunctions = {
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`${meetingId} not found for deletion`);
     }
-    const users = await usersCollection();
 
     //update the userCollection by removing the same id from the meetingIds array in user collection
     await users.updateOne(
@@ -217,8 +259,6 @@ const meetingsDataFunctions = {
     // if the meeting exists in collection then return it else throw an error
     return `${deletionInfo.value._id} has been successfully deleted!`;
   },
-
-  // only userId needed
 
   /**
    * @param {string} userId userId of which the meeting is being created for
@@ -265,12 +305,28 @@ const meetingsDataFunctions = {
     }
 
     title = title.trim();
-    textBody = textBody.trim();
-    tag = tag.trim().toLowerCase();
-    dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm:ss");
-    dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm:ss");
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      tag = tag.trim().toLowerCase();
+    } else {
+      tag = "meetings";
+    }
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+    } else {
+      dateAddedTo = null;
+    }
+
+    if (typeof dateDueOn === "string" && dateDueOn.trim().length > 0) {
+      dateDueOn = dayjs(dateDueOn.trim()).format("YYYY-MM-DDTHH:mm");
+    } else {
+      dateDueOn = null;
+    }
     priority = Number.parseInt(priority);
-    textBody = textBody.trim();
     repeatingCounterIncrement = !repeatingCounterIncrement
       ? repeatingCounterIncrement
       : Number.parseInt(repeatingCounterIncrement);
@@ -285,7 +341,7 @@ const meetingsDataFunctions = {
     if (!user) {
       throw new Error("User not found.");
     }
-    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+    let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
     const meetings = await meetingsCollection();
     if (!repeating) {
       const result = await meetings.insertOne({
@@ -308,7 +364,7 @@ const meetingsDataFunctions = {
         { _id: new ObjectId(userId) },
         { $push: { meetingIds: insertedId } }
       );
-      return this.get(insertedId.toString());
+      return this.get(userId, insertedId.toString());
     } else {
       const repeatingGroup = new ObjectId();
       const meetingObjects = [];
@@ -319,8 +375,8 @@ const meetingsDataFunctions = {
         const meeting = {
           title,
           dateCreated,
-          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm:ss"),
-          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm:ss"),
+          dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
+          dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
           priority,
           textBody,
           tag,

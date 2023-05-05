@@ -8,9 +8,20 @@ import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
 
 const tasksDataFunctions = {
-  async getTaskById(id) {
+  async getTaskById(id, userId) {
     utils.checkObjectIdString(id);
     id = id.trim();
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.taskIds.find((x) => {
+        return x.toString() === id;
+      })
+    ) {
+      throw new Error("Task not found");
+    }
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
 
@@ -98,11 +109,23 @@ const tasksDataFunctions = {
       { _id: new ObjectId(userId) },
       { $push: { taskIds: newId } }
     );
-    return await this.getTaskById(newId.toString());
+    return await this.getTaskById(newId.toString(), userId);
   },
 
-  async updateTask(id, updatedTask) {
+  async updateTask(id, updatedTask, userId) {
     utils.checkObjectIdString(id);
+    id = id.trim();
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.taskIds.find((x) => {
+        return x.toString() === id;
+      })
+    ) {
+      throw new Error("Task not found");
+    }
     let updatedTaskData = {};
     const tasks = await tasksCollection();
     const task = await tasks.findOne({ _id: new ObjectId(id) });
@@ -140,7 +163,7 @@ const tasksDataFunctions = {
     if (updatedTask.dateAddedTo) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
       updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm:ss"
+        "YYYY-MM-DDTHH:mm"
       );
     } else {
       throw new Error("You must provide a dateAddedTo for the task.");
@@ -187,18 +210,29 @@ const tasksDataFunctions = {
       throw new Error("Update wasn't successful.");
     }
 
-    return await this.getTaskById(id);
+    return await this.getTaskById(id, userId);
   },
 
-  async removeTask(id) {
+  async removeTask(id, userId) {
     utils.checkObjectIdString(id);
     id = id.trim();
+    utils.checkObjectIdString(userId);
+    userId = userId.trim();
+    const users = await usersCollection();
+    const user = await users.findOne({ _id: new ObjectId(userId) });
+    if (
+      !user.taskIds.find((x) => {
+        return x.toString() === id;
+      })
+    ) {
+      throw new Error("Task not found");
+    }
     const task = await tasksCollection();
     const deletionInfo = await task.findOneAndDelete({ _id: new ObjectId(id) });
     if (deletionInfo.lastErrorObject.n === 0) {
       throw new Error(`Could not delete task with ID ${id}`);
     }
-    const users = await usersCollection();
+
     //update the userCollection by removing the same id from the taskIds array in user collection
     await users.updateOne(
       { taskIds: new ObjectId(id) },

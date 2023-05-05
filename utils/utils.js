@@ -2,8 +2,31 @@
 import { ObjectId } from "mongodb";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+dayjs.extend(customParseFormat);
+
 import { JSDOM } from "jsdom";
 const utils = {
+  validateUserId(req, res, next) {
+    let userId = "";
+    try {
+      utils.checkObjectIdString(req.params.userId);
+      userId = req.params.userId.trim();
+    } catch (e) {
+      return res.status(400).json({
+        error: "There was some issue in getting the data",
+      });
+    }
+    if (req.session.user.user_id !== userId) {
+      return res.status(403).render("errors/error", {
+        title: "Error",
+        error: new Error(
+          "HTTP Error 403 : You are not allowed to access other users data"
+        ),
+      });
+    }
+    next();
+  },
   checkObjectIdString(stringObjectId) {
     this.validateStringInput(stringObjectId, "objectID");
     stringObjectId = stringObjectId.trim();
@@ -187,16 +210,18 @@ const utils = {
     } catch (e) {
       errorMessages.title = e.message;
     }
-    try {
-      this.validateDate(dateAddedTo, "DateAddedTo");
-    } catch (e) {
-      errorMessages.dateAddedTo = e.message;
-    }
 
-    try {
-      this.validateDate(dateDueOn, "DateDueOn");
-    } catch (e) {
-      errorMessages.dateDueOn = e.message;
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      try {
+        this.validateDate(dateAddedTo, "DateAddedTo");
+      } catch (e) {
+        errorMessages.dateAddedTo = e.message;
+      }
+      try {
+        this.validateDate(dateDueOn, "DateDueOn");
+      } catch (e) {
+        errorMessages.dateDueOn = e.message;
+      }
     }
 
     try {
@@ -205,26 +230,63 @@ const utils = {
       errorMessages.priority = e.message;
     }
 
-    try {
-      this.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-    } catch (e) {
-      errorMessages.textBody = e.message;
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      try {
+        this.validateStringInputWithMaxLength(
+          textBody,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+      } catch (e) {
+        errorMessages.textBody = e.message;
+      }
     }
 
-    try {
-      this.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-    } catch (e) {
-      errorMessages.tag = e.message;
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      try {
+        this.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+      } catch (e) {
+        errorMessages.tag = e.message;
+      }
     }
+
+    if (
+      typeof dateAddedTo === "string" &&
+      typeof dateDueOn === "string" &&
+      dateAddedTo.trim().length === 0 &&
+      dateDueOn.trim().length > 0
+    ) {
+      errorMessages.dateAddedTo =
+        "This field is mandatory if due date is populated";
+    }
+
+    if (
+      typeof dateAddedTo === "string" &&
+      typeof dateDueOn === "string" &&
+      dateAddedTo.trim().length > 0 &&
+      dateDueOn.trim().length === 0
+    ) {
+      errorMessages.dateDueOn =
+        "This field is mandatory if due date is populated";
+    }
+
     if (repeating === "true" || repeating === true) {
+      if (typeof dateAddedTo === "string" && dateAddedTo.trim().length === 0) {
+        if (!"dateAddedTo" in errorMessages) {
+          errorMessages.dateAddedTo =
+            "This field is mandatory in order to access the recurrence feature";
+        }
+      }
+      if (typeof dateDueOn === "string" && dateDueOn.trim().length === 0) {
+        if (!"dateDueOn" in errorMessages) {
+          errorMessages.dateDueOn =
+            "This field is mandatory in order to access the recurrence feature";
+        }
+      }
       try {
         this.validateBooleanInput(repeating, "repeating");
       } catch (error) {
@@ -242,62 +304,36 @@ const utils = {
         errorMessages.repeatingIncrementBy = error.message;
       }
     }
-    try {
-      this.validateDateRange(dateAddedTo, dateDueOn);
-    } catch (error) {
-      errorMessages.dateDueOn = error.message;
+    if (dateAddedTo.trim().length > 0 && dateDueOn.trim().length > 0) {
+      try {
+        this.validateDateRange(dateAddedTo, dateDueOn);
+      } catch (error) {
+        errorMessages.dateDueOn = error.message;
+      }
     }
+
     return errorMessages;
   },
 
-  /**
-   * Created for reminders to find id there are reminders that are overlapping with eachother
-   * @param {*} startDateTime
-   * @param {*} endDateTime
-   * @param {*} dateTime
-   */
-  isDateStrOverllaping(startDateTimeStr, endDateTimeStr, dateTimeStr) {
-    let startDateTime = utils.getNewDateStr(startDateTimeStr);
-    let endDateTime = utils.getNewDateStr(endDateTimeStr);
-    let dateTime = utils.getNewDateStr(dateTimeStr);
-    if (
-      startDateTime.getMinutes() === dateTime.getMinutes() &&
-      startDateTime.getHours() === dateTime.getHours() &&
-      dateTime.getDate() >= startDateTime.getDate() &&
-      dateTime.getDate() <= endDateTime.getDate() &&
-      dateTime.getMonth() >= startDateTime.getMonth() &&
-      dateTime.getMonth() <= endDateTime.getMonth() &&
-      dateTime.getFullYear() >= startDateTime.getFullYear() &&
-      dateTime.getFullYear() <= endDateTime.getFullYear()
-    ) {
-      return true;
-    }
-    return false;
-  },
-
   validateDate(date, paramName) {
-    this.validateStringInput(date, paramName);
-    date = date.trim();
-    date = dayjs(date).toDate();
-    //TODO use datejs for validation
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
+    this.validateStringInput(date);
+    if (
+      !(paramName === "Date of Birth") &&
+      !dayjs(date, "YYYY-MM-DDTHH:mm", true).isValid()
+    ) {
+      throw new Error(`${paramName} must be a valid Date`);
+    }
+
+    if (
+      paramName === "Date of Birth" &&
+      !dayjs(date, "YYYY-MM-DD", true).isValid()
+    ) {
+      throw new Error(`${paramName} must be a valid Date`);
     }
   },
 
-  //Dates are stored as string
-  /**Changes Made to existing code */
-  validateDateObj(date, paramName) {
-    if (!(date instanceof Date) || isNaN(date.getTime())) {
-      throw new Error(
-        `${paramName} must be a valid Date object or a string that can be parsed as a date`
-      );
-    }
-  },
   validateAge(dob, min_age, max_age) {
-    this.validateDate(dob, "dob");
+    this.validateDate(dob, "Date of Birth");
     //TODO use dayjs
     let today = new Date();
     dob = new Date(dob);
@@ -312,35 +348,45 @@ const utils = {
       );
     }
   },
-  // validateDateObj(date, paramName) {
-  //   if (!(date instanceof Date) || isNaN(date.getTime())) {
-  //     throw new Error(
-  //       `${paramName} must be a valid Date object or a string that can be parsed as a date`
-  //     );
+
+  // /**
+  //  * YYYY-MM-DDTHH:mm
+  //  * @param {*} dateTimeString
+  //  */
+  // isValidDateString(dateTimeString) {
+  //   try {
+  //     this.validateStringInput(dateTimeString);
+  //     let strList = dateTimeString.split("T");
+  //     let dateStr = strList[0].split("-");
+  //     let timeStr = strList[1].split(":");
+  //     if (
+  //       !(dateStr.length === 3) ||
+  //       !(timeStr.length === 2) ||
+  //       !(dateStr[0].length === 4) ||
+  //       !(
+  //         dateStr[1].length === 2 &&
+  //         dateStr[1] >= "01" &&
+  //         dateStr[1] <= "12"
+  //       ) ||
+  //       !(
+  //         dateStr[2].length === 2 &&
+  //         dateStr[2] >= "01" &&
+  //         dateStr[2] <= "31"
+  //       ) ||
+  //       !(
+  //         timeStr[0].length === 2 &&
+  //         timeStr[0] >= "00" &&
+  //         timeStr[0] <= "23"
+  //       ) ||
+  //       !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
+  //     ) {
+  //       return false;
+  //     }
+  //   } catch (e) {
+  //     return false;
   //   }
+  //   return true;
   // },
-
-  getNewDateStr(dateObj) {
-    return `${dateObj.getMonth()}/${dateObj.getDate()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
-  },
-
-  /**
-   * MM/DD/YYYY 12:13
-   * @param {*} dateTimeString
-   */
-  getNewDateObjectFromString(dateTimeString) {
-    this.validateStringInput(dateTimeString);
-    let strList = dateTimeString.split(" ");
-    let timeStr = strList[1].split(":");
-    let dateStr = strList[0].split("/");
-    return this.getNewDateObject(
-      Number.parseInt(dateStr[2]),
-      Number.parseInt(dateStr[0]),
-      Number.parseInt(dateStr[1]),
-      Number.parseInt(timeStr[0]),
-      Number.parseInt(timeStr[1])
-    );
-  },
   validateNotesInputs(title, dateAddedTo, textBody, tag) {
     let errorMessages = {};
     try {

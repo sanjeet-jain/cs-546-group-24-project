@@ -17,7 +17,7 @@ import * as collections from "./config/mongoCollections.js";
 
 //can be reduced to an an hour by setting it as "0 * * * * *"
 cron.schedule("*/10 * * * * *", async () => {
-  const currentDate = dayjs().format("YYYY-MM-DDTHH:mm:ss");
+  const currentDate = dayjs().format("YYYY-MM-DDTHH:mm");
   const meetingsCollection = await collections.meetingsCollection();
   const remindersCollection = await collections.remindersCollection();
   const tasksCollection = await collections.tasksCollection();
@@ -27,18 +27,26 @@ cron.schedule("*/10 * * * * *", async () => {
   );
   // console.log(updateResultmeetings);
   const updateResultreminders = await remindersCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResultreminders);
 
   const updateResulttasks = await tasksCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResulttasks);
 
-  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
+  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm"));
 });
 
 const handlebarsInstance = exphbs.create({
