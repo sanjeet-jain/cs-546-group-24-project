@@ -12,7 +12,7 @@ router
     let userId = req.params.userId;
     try {
       utils.checkObjectIdString(userId);
-      userId = userId.trim();
+      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -28,20 +28,15 @@ router
     let title = xss(reminder.title);
     let textBody = xss(reminder.textBody);
     let tag = xss(reminder.tag);
-    let priority = Number.parseInt(reminder.priority);
-    let repeating =
-      reminder.repeating === "true" ||
-      reminder.repeating === true ||
-      !(reminder.repeating === "false")
-        ? true
-        : false;
-    let dateAddedTo = reminder.dateAddedTo;
+    let priority = xss(Number.parseInt(reminder.priority));
+    let repeating = xss(reminder.repeating);
+    let dateAddedTo = xss(reminder.dateAddedTo);
     let endDateTime;
-    let repeatingIncrementBy = reminder.repeatingIncrementBy;
-    dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    let repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
+    dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
       utils.checkObjectIdString(userId);
-      userId = userId.trim();
+      userId = xss(userId.trim());
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -75,7 +70,8 @@ router
       utils.validateDate(dateAddedTo, "date time value");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
-        endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
+        endDateTime = xss(reminder.endDateTime);
+        endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
         utils.validateDate(endDateTime, "end time value");
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
@@ -103,10 +99,13 @@ router
 router
   .route("/:userId/reminder/:reminder_id")
   .get(utils.validateUserId, async (req, res) => {
+    let userId = req.params.userId;
     let reminder_id = req.params.reminder_id;
     try {
+      utils.checkObjectIdString(userId);
+      userId = xss(userId.trim());
       utils.checkObjectIdString(reminder_id);
-      reminder_id = reminder_id.trim();
+      reminder_id = xss(reminder_id.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -122,23 +121,27 @@ router
     let userId = req.params.userId;
     let title = xss(reminder.title);
     let textBody = xss(reminder.textBody);
-    let priority = Number.parseInt(reminder.priority);
+    let priority = xss(Number.parseInt(reminder.priority));
     let tag = xss(reminder.tag);
-    let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    let repeating =
-      reminder.repeating === "true" ||
-      reminder.repeating === true ||
-      !(reminder.repeating === "false")
+    let dateAddedTo = xss(reminder.dateAddedTo);
+    let repeating = xss(reminder.repeating);
+    let endDateTime;
+    let repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
+
+    dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    repeating =
+      repeating === "true" || repeating === true || !(repeating === "false")
         ? true
         : false;
-    let endDateTime;
+
     if (repeating) {
-      endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
+      endDateTime = xss(reminder.endDateTime);
+      endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
     }
-    let repeatingIncrementBy = reminder.repeatingIncrementBy;
+
     try {
       utils.checkObjectIdString(reminder_id);
-      reminder_id = reminder_id.trim();
+      reminder_id = xss(reminder_id.trim());
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -156,9 +159,6 @@ router
         textBody = null;
       }
       utils.validatePriority(priority, "priority");
-      /**
-       * Tags should be case insensitive and all tags should be converted to lowercase
-       */
       if (typeof tag === "string" && tag.trim().length > 0) {
         utils.validateStringInputWithMaxLength(
           tag,
@@ -169,7 +169,6 @@ router
       } else {
         tag = "reminders";
       }
-
       utils.validateDate(dateAddedTo, "date time added to value");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
@@ -195,7 +194,7 @@ router
         endDateTime,
         repeatingIncrementBy
       );
-      res.status(200).json("The update of reminder event is sucessful");
+      res.status(200).json("The update of reminder event is successful");
     } catch (e) {
       return res.status(404).json({ error: e.message });
     }
@@ -206,8 +205,8 @@ router
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
-      reminder_id = reminder_id.trim();
-      userId = userId.trim();
+      reminder_id = xss(reminder_id.trim());
+      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -227,8 +226,8 @@ router
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
-      reminder_id = reminder_id.trim();
-      userId = userId.trim();
+      reminder_id = xss(reminder_id.trim());
+      userId = xss(userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
