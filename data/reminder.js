@@ -233,11 +233,8 @@ export const updateReminder = async (
       remDate = dayjs(remDate).add(1, repeatingIncrementBy)
     ) {
       if (
-        ((currReminder.groupId !== null &&
-          reminderEvents[i].groupId !== null &&
-          currReminder.groupId !== reminderEvents[i].groupId) ||
-          currReminder.groupId === null ||
-          reminderEvents[i].groupId === null) &&
+        currReminder.groupId !== reminderEvents[i].groupId &&
+        currReminder._id !== reminderEvents[i]._id &&
         remDate.diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
         title.toLowerCase() === reminderEvents[i].title.toLowerCase()
       ) {
