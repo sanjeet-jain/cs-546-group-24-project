@@ -89,8 +89,10 @@ const tasksDataFunctions = {
 
     tag = tag.trim().toLowerCase();
 
-    if (typeof checked === "undefined" || checked === "false") {
+    if (typeof checked === "undefined" || checked === false) {
       checked = false;
+    } else {
+      checked = true;
     }
     let expired = utils.validateBooleanInput(checked, "checked");
 
@@ -110,6 +112,11 @@ const tasksDataFunctions = {
       type: "task",
       expired: expired,
     };
+
+    let taskEvents = await this.getAllTasks(userId);
+    for (let i = 0; i < taskEvents.length; i++) {
+      this.isTwoTaskEventsSame(taskEvents[i], newTask);
+    }
 
     const tasks = await tasksCollection();
     const insertInfo = await tasks.insertOne(newTask);
@@ -289,6 +296,26 @@ const tasksDataFunctions = {
   async getDistinctTags() {
     const tasks = await tasksCollection();
     return tasks.distinct("tag");
+  },
+
+  isTwoTaskEventsSame(task1, task2) {
+    let keys = [
+      "title",
+      "textBody",
+      "priority",
+      "tag",
+      "dateAddedTo",
+      "checked",
+    ];
+    let flag = true;
+    for (let i = 0; i < keys.length; i++) {
+      if (!(task1[keys[i]] === task2[keys[i]])) {
+        flag = false;
+      }
+    }
+    if (flag) {
+      throw new Error("Trying to update same event value");
+    }
   },
 };
 
