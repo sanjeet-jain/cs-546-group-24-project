@@ -56,13 +56,28 @@ const tasksDataFunctions = {
       "title",
       constants.stringLimits["title"]
     );
-    utils.validateStringInputWithMaxLength(
-      textBody,
-      "textBody",
-      constants.stringLimits["textBody"]
-    );
-    utils.validateDate(dateAddedTo, "dateAddedTo");
+
+    if (typeof textBody === "string" && textBody.trim().length > 0) {
+      utils.validateStringInputWithMaxLength(
+        textBody,
+        "textBody",
+        constants.stringLimits["textBody"]
+      );
+      textBody = textBody.trim();
+    } else {
+      textBody = null;
+    }
+
+    if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
+      utils.validateDate(dateAddedTo, "dateAddedTo");
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+      dateAddedTo = dateAddedTo.trim();
+    } else {
+      dateAddedTo = null;
+    }
+
     utils.validatePriority(priority);
+
     utils.validateStringInputWithMaxLength(
       tag,
       "tag",
@@ -71,12 +86,13 @@ const tasksDataFunctions = {
 
     userId = userId.trim();
     title = title.trim();
-    dateAddedTo = dateAddedTo.trim();
-    textBody = textBody.trim();
+
     tag = tag.trim().toLowerCase();
 
-    if (typeof checked === "undefined") {
+    if (typeof checked === "undefined" || checked === false) {
       checked = false;
+    } else {
+      checked = true;
     }
     let expired = utils.validateBooleanInput(checked, "checked");
 
@@ -96,6 +112,11 @@ const tasksDataFunctions = {
       type: "task",
       expired: expired,
     };
+
+    let taskEvents = await this.getAllTasks(userId);
+    for (let i = 0; i < taskEvents.length; i++) {
+      this.isTwoTaskEventsSame(taskEvents[i], newTask);
+    }
 
     const tasks = await tasksCollection();
     const insertInfo = await tasks.insertOne(newTask);
@@ -131,26 +152,33 @@ const tasksDataFunctions = {
     const task = await tasks.findOne({ _id: new ObjectId(id) });
     updatedTaskData = { ...task };
 
-    if (typeof updatedTask.checked === "undefined") {
-      updatedTaskData.checked = false;
+    if (
+      typeof updatedTask.checked === "undefined" ||
+      updatedTask.checked === false
+    ) {
+      updatedTask.checked = false;
+    } else {
+      updatedTask.checked = true;
     }
+
     updatedTaskData.checked = utils.validateBooleanInput(
       updatedTask.checked,
       "checked"
     );
-    updatedTaskData.expired = updatedTaskData.checked;
-    if (updatedTask.title) {
-      utils.validateStringInputWithMaxLength(
-        updatedTask.title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      updatedTaskData.title = updatedTask.title.trim();
-    } else {
-      throw new Error("You must provide a title for the task.");
-    }
 
-    if (updatedTask.textBody) {
+    updatedTaskData.expired = updatedTask.checked;
+
+    utils.validateStringInputWithMaxLength(
+      updatedTask.title,
+      "title",
+      constants.stringLimits["title"]
+    );
+    updatedTaskData.title = updatedTask.title.trim();
+
+    if (
+      typeof updatedTask.textBody === "string" &&
+      updatedTask.textBody.trim().length > 0
+    ) {
       utils.validateStringInputWithMaxLength(
         updatedTask.textBody,
         "textBody",
@@ -158,15 +186,19 @@ const tasksDataFunctions = {
       );
       updatedTaskData.textBody = updatedTask.textBody.trim();
     } else {
-      throw new Error("You must provide a textBody for the task.");
+      updatedTaskData.textBody = null;
     }
-    if (updatedTask.dateAddedTo) {
+
+    if (
+      typeof updatedTask.dateAddedTo === "string" &&
+      updatedTask.dateAddedTo.trim().length > 0
+    ) {
       utils.validateDate(updatedTask.dateAddedTo, "dateAddedTo");
       updatedTaskData.dateAddedTo = dayjs(updatedTask.dateAddedTo).format(
         "YYYY-MM-DDTHH:mm"
       );
     } else {
-      throw new Error("You must provide a dateAddedTo for the task.");
+      updatedTaskData.dateAddedTo = null;
     }
 
     if (updatedTask.priority) {
@@ -175,7 +207,10 @@ const tasksDataFunctions = {
       throw new Error("You must provide a priority for the task.");
     }
 
-    if (updatedTask.tag) {
+    if (
+      typeof updatedTask.tag === "string" &&
+      updatedTask.tag.trim().length > 0
+    ) {
       utils.validateStringInputWithMaxLength(
         updatedTask.tag,
         "tag",
@@ -183,7 +218,7 @@ const tasksDataFunctions = {
       );
       updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
-      throw new Error("You must provide a tag for the task.");
+      updatedTaskData.tag = "tasks";
     }
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (
@@ -261,6 +296,26 @@ const tasksDataFunctions = {
   async getDistinctTags() {
     const tasks = await tasksCollection();
     return tasks.distinct("tag");
+  },
+
+  isTwoTaskEventsSame(task1, task2) {
+    let keys = [
+      "title",
+      "textBody",
+      "priority",
+      "tag",
+      "dateAddedTo",
+      "checked",
+    ];
+    let flag = true;
+    for (let i = 0; i < keys.length; i++) {
+      if (!(task1[keys[i]] === task2[keys[i]])) {
+        flag = false;
+      }
+    }
+    if (flag) {
+      throw new Error("Trying to update same event value");
+    }
   },
 };
 

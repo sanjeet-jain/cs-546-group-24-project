@@ -102,10 +102,7 @@ router
       );
       return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {
-      if (e === "Meeting Details havent Changed") {
-        return res.status(400).json({ error: e.message });
-      }
-      return res.status(500).json({ error: e.message });
+      return res.status(400).json({ error: e.message });
     }
   });
 
@@ -180,9 +177,7 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy
       );
-      return res
-        .status(200)
-        .json({ userId: userId, meetingId: newMeeting._id });
+      return res.status(200).json({ userId: userId });
     } catch (e) {
       if (e === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });
