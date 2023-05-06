@@ -282,6 +282,9 @@ function enableNotesFormEdit() {
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("meeting-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let meetingsForm = document.getElementById("meeting-form");
     let fieldset = event_modal.querySelector("#meeting-form-enabler");
     fieldset.disabled = true;
@@ -327,6 +330,9 @@ function onReminderModalClose() {
   let event_modal = document.getElementById("modal-reminder-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("reminder-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let reminderForm = document.getElementById("reminder-form");
     reminderForm.reset();
     let fieldset = event_modal.querySelector("#reminder-form-enabler");
@@ -351,6 +357,9 @@ function onTaskModalClose() {
   let event_modal = document.getElementById("modal-task-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("task-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let fieldset = event_modal.querySelector("#task-form-enabler");
     fieldset.disabled = true;
     let taskForm = document.getElementById("task-form");
@@ -389,6 +398,9 @@ function onNotesModalClose() {
   let event_modal = document.getElementById("modal-notes-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("notes-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let notesForm = document.getElementById("notes-form");
     notesForm.reset();
     notesForm.classList.remove("was-validated");
@@ -563,7 +575,8 @@ function submitMeetingForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -621,6 +634,8 @@ function submitReminderForm() {
           },
         });
       }
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -699,7 +714,8 @@ function submitTaskForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -777,7 +793,8 @@ function submitNotesForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
