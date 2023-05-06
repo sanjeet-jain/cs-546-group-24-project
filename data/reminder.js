@@ -246,9 +246,8 @@ export const updateReminder = async (
           currRemGrpId === reminderEventGrpId &&
           currRemGrpId != null
         ) ||
-          (!repeating &&
-            currReminder._id.toString() !==
-              reminderEvents[i]._id.toString())) &&
+          !repeating) &&
+        currReminder._id.toString() !== reminderEvents[i]._id.toString() &&
         remDate.diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
         title.toLowerCase() === reminderEvents[i].title.toLowerCase()
       ) {
