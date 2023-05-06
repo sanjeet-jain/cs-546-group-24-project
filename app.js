@@ -22,7 +22,11 @@ cron.schedule("*/10 * * * * *", async () => {
   const remindersCollection = await collections.remindersCollection();
   const tasksCollection = await collections.tasksCollection();
   const updateResultmeetings = await meetingsCollection.updateMany(
-    { dateAddedTo: { $lte: currentDate }, expired: { $ne: true } },
+    {
+      dateAddedTo: { $ne: null, $ne: undefined },
+      dateAddedTo: { $lte: currentDate },
+      expired: { $ne: true },
+    },
     { $set: { expired: true } }
   );
   // console.log(updateResultmeetings);
@@ -46,7 +50,7 @@ cron.schedule("*/10 * * * * *", async () => {
   );
   // console.log(updateResulttasks);
 
-  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm"));
+  console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
 });
 
 const handlebarsInstance = exphbs.create({
@@ -108,7 +112,7 @@ app.use(
     secret: "CS546",
     saveUninitialized: false,
     resave: false,
-    cookie: { maxAge: 1.8e6 },
+    cookie: { maxAge: 1800000 },
   })
 );
 
@@ -116,6 +120,9 @@ app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
     //todo extend cookie
+    var hour = 1800000;
+    req.session.cookie.expires = dayjs().add(30, "minute").toDate();
+    req.session.cookie.maxAge = hour;
   } else {
     res.clearCookie("AuthCookie");
   }

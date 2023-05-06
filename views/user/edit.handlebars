@@ -9,7 +9,7 @@
       </div>
       <div class="col-auto ">
         <input required type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name"
-          pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
+          minlength="1" maxlength="20" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{else}}{{currUser.first_name}}{{/if}}" />
       </div>
       <div class="col-auto ">
@@ -25,8 +25,8 @@
         <label for="first_name" class="col-form-label">Last Name: </label>
       </div>
       <div class="col-auto ">
-        <input required type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name"
-          pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
+        <input required type="text" class="form-control" name="last_name" id="last_name" aria-label="Last Name"
+          placeholder="Last Name" minlength="0" maxlength="20" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{else}}{{currUser.last_name}}{{/if}}" />
       </div>
       <div class="col-auto ">
@@ -57,7 +57,7 @@
         aria-describedby="disability_help_id" value="true" {{#if errorContent.disability}} checked {{else}} {{!-- this
         should come from the back as boolean but it goes into the API as a string --}} {{#if currUser.disability}}
         checked {{/if}} {{/if}} />
-      <label class="form-check-label" for="disability">
+      <label class="form-label" for="disability">
         Disability CheckBox
       </label>
       <small id="disability_help_id" class="form-text text-muted">
