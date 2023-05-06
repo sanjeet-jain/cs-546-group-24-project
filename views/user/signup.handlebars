@@ -1,6 +1,5 @@
 <div id="signup-form-div" class="container w-100">
-  <form action="/user/signup" id="signup-form" method="POST"
-    class="needs-validation {{#if is_invalid}}was-validated{{/if}}" novalidate>
+  <form action="/user/signup" id="signup-form" method="POST" class="needs-validation" novalidate>
     <h1 class="h3 mb-3 fw-normal">
       <i class="bi-calendar-check-fill"></i>
       Create an Account
@@ -9,24 +8,23 @@
     <br />
     <div class=" mb-3">
       <input required type="text" class="form-control" name="first_name" id="first_name"
-        aria-describedby="first_name_help_id" placeholder="First Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
-        value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{/if}}" />
+        aria-describedby="first_name_help_id" placeholder="First Name" maxlength="20"
+        pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$" value="" />
       <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
       <div id="first_name_error" class="invalid-feedback">
-        {{errorMessages.first_name}}
+
       </div>
     </div>
     <div class=" mb-3">
       <input required type="text" class="form-control" name="last_name" id="last_name"
-        aria-describedby="last_name_help_id" placeholder="Last Name" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
-        value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{/if}}" />
+        aria-describedby="last_name_help_id" placeholder="Last Name" maxlength="20"
+        pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$" value="" />
       <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
       <div id="last_name_error" class="invalid-feedback">
-        {{errorMessages.last_name}}
 
       </div>
     </div>
@@ -34,13 +32,13 @@
     <div class=" mb-3">
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
         aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
-        value="{{#if errorContent.email}}{{errorContent.email}}{{/if}}" />
+        value="" />
       <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter Email Here. This will also be used as your login id
       </small>
       <div id="email_error" class="invalid-feedback">
-        {{errorMessages.email}}
+
 
       </div>
     </div>
@@ -48,32 +46,46 @@
     <div>
       <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
-        minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" aria-describedby="password_help_id"
-        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
+        minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$" aria-describedby="password_help_id"
+        value="" />
+      <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
-        {{errorMessages.password}}
+
+      </div>
+    </div>
+
+    <div class="form-floating">
+      <input required type="password" class="form-control" name="reEnterPassword" id="reEnterPassword"
+        placeholder="Password" minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$"
+        aria-describedby="reEnterPassword_help_id" />
+      <label for="reEnterPassword">Re-Enter Password</label>
+      <small id="reEnterPassword_help_id" class="form-text text-muted">
+        Please Re-Enter Password Here</small>
+      <div id="reEnter_error" class="invalid-feedback">
+
       </div>
     </div>
     <br />
 
-    <div class="mb-3">
-      <label for="dob" class="form-label">Date Of Birth</label>
+
+    <div class="form-floating mb-3">
       <input required type="date" class="form-control" name="dob" id="dob" aria-describedby="dob_help_id"
-        max="{{minDobDate}}" min="{{maxDobDate}}" value="{{#if errorContent.dob}}{{errorContent.dob}}{{/if}}" />
+        max="{{minDobDate}}" min="{{maxDobDate}}" value="" />
+      <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">
-        {{errorMessages.dob}}
+
 
       </div>
     </div>
 
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="disability" id="disability"
-        aria-describedby="disability_help_id" value="true" {{#if errorContent.disability}}checked{{/if}} />
-      <label class="form-label" for="disability">
+        aria-describedby="disability_help_id" value="true" />
+      <label class="form-check-label" for="disability">
         Disability CheckBox
       </label>
       <small id="disability_help_id" class="form-text text-muted">
@@ -82,18 +94,18 @@
     <br />
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="consent" id="consent" aria-describedby="consent_help_id"
-        value="true" required {{#if errorContent.consent}}checked{{/if}} />
-      <label class="form-label" for="consent">
+        value="true" required />
+      <label class="form-check-label" for="consent">
         Consent CheckBox
       </label>
       <small id="consent_help_id" class="form-text text-muted">
         Consent for data being collected on this application</small>
       <div id="consent_error" class="invalid-feedback">
-        {{errorMessages.consent}}
+
       </div>
     </div>
 
-    <button class="w-100 btn btn-lg btn-primary" type="submit">
+    <button id="submit-btn" class="w-100 btn btn-lg btn-primary" type="submit">
       Signup
     </button>
 

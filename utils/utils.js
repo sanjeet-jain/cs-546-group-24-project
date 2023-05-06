@@ -141,9 +141,11 @@ const utils = {
     if (password.length < constants.stringLimits.password) {
       throw new Error(`${inputName} must be at least 8 characters long`);
     }
-    if (!/^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+    const passwordRegex =
+      /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
+    if (!passwordRegex.test(password)) {
       throw new Error(
-        "Password must contain at least one uppercase letter and one number"
+        "Password must contain at least one uppercase letter, one number and one special character."
       );
     }
     // if (!/[A-Z]/.test(password)) {
