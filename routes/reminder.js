@@ -4,6 +4,7 @@ import utils from "../utils/utils.js";
 import * as reminderManager from "../data/reminder.js";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import xss from "xss";
 
 router
   .route("/:userId")
@@ -28,10 +29,8 @@ router
     let textBody = xss(reminder.textBody);
     let priority = Number.parseInt(xss(reminder.priority));
     let tag = xss(reminder.tag);
-    let repeating =
-      reminder.repeating === "true" || !(reminder.repeating === "false")
-        ? true
-        : false;
+    let repeating = xss(reminder.repeating);
+    repeating = repeating === "false" || !(repeating === "true") ? false : true;
     let dateAddedTo = xss(reminder.dateAddedTo);
     let endDateTime;
     let repeatingIncrementBy;
@@ -128,11 +127,7 @@ router
     let tag = xss(reminder.tag);
     let dateAddedTo = xss(reminder.dateAddedTo);
     let repeating = xss(reminder.repeating);
-    repeating =
-      repeating === "true" || repeating === true || !(repeating === "false")
-        ? true
-        : false;
-
+    repeating = repeating === "false" || !(repeating === "true") ? false : true;
     let endDateTime;
     if (repeating) {
       endDateTime = xss(reminder.endDateTime);
