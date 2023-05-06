@@ -75,8 +75,8 @@ export async function runSetup(datestring, user) {
   const sampleMeeting2 = {
     title: "Weekly Team Meeting non repeating",
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
-    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
-    dateDueOn: dayjs(dt).add(2, "hour").format("YYYY-MM-DDTHH:mm"),
+    dateAddedTo: null,
+    dateDueOn: null,
     priority: 2,
     textBody: "Agenda items: 1. Project updates, 2. Client feedback",
     tag: "team",

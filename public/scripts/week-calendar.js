@@ -428,6 +428,12 @@ function submitMeetingForm() {
   meetingform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById(
+        "meeting-bottom-submit-button"
+      );
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -451,6 +457,8 @@ function submitMeetingForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
               "Meeting updated Successfully! Please refresh the page!";
@@ -461,6 +469,8 @@ function submitMeetingForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
@@ -566,6 +576,12 @@ function submitReminderForm() {
   reminderForm.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById(
+        "reminder-bottom-submit-button"
+      );
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -588,6 +604,8 @@ function submitReminderForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             resultDiv.innerText =
               "Reminder Updated Successfully! Please refresh the page!";
             resultDiv.classList.add("alert", "alert-success");
@@ -595,6 +613,8 @@ function submitReminderForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             resultDiv.classList = "";
             resultDiv.innerText = data?.responseJSON?.error;
             resultDiv.classList.add("alert", "alert-danger");
@@ -612,6 +632,10 @@ function submitTaskForm() {
   taskform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById("task-bottom-submit-button");
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -631,6 +655,8 @@ function submitTaskForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
               "Task updated Successfully! Please refresh the page!";
@@ -641,6 +667,8 @@ function submitTaskForm() {
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
@@ -683,6 +711,10 @@ function submitNotesForm() {
   notesform.addEventListener(
     "submit",
     (event) => {
+      let submitbutton = document.getElementById("notes-bottom-submit-button");
+      submitbutton.disabled = true;
+      const oldHtml = submitbutton.innerHTML;
+      submitbutton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`;
       event.preventDefault();
       event.stopPropagation();
       let formData = new FormData(event.target);
@@ -705,6 +737,8 @@ function submitNotesForm() {
           url: ajaxURL,
           data: jsonData,
           success: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("notes-update-result");
             resultDiv.innerText =
               "notes updated Successfully! Page will refresh automatically";
@@ -716,6 +750,8 @@ function submitNotesForm() {
             setTimeout(location.reload.bind(location), 2000);
           },
           error: function (data) {
+            submitbutton.disabled = false;
+            submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("notes-update-result");
             resultDiv.classList = "";
             resultDiv.innerText =
@@ -886,6 +922,7 @@ function populateBasedOnEventType(target) {
       populateNotesModal(userId, eventId);
       break;
     case "add-event":
+      hideShowDeleteButton(true);
       dataGlobal = undefined;
       userIdGlobal = userId;
       break;
@@ -893,7 +930,12 @@ function populateBasedOnEventType(target) {
       break;
   }
 }
-
+function hideShowDeleteButton(hide) {
+  let deleteButtons = document.querySelectorAll(".btn-delete");
+  deleteButtons.forEach((button) => {
+    button.hidden = hide;
+  });
+}
 function checkMeetingValidations(form) {
   //get all error divs
   let meeting_title_error = document.getElementById("meeting_title_error");
@@ -1323,6 +1365,11 @@ function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
     date.addEventListener("click", (event) => {
+      dateCells.forEach((date) => {
+        date.classList.remove("date-cell-active");
+      });
+      date.classList.add("date-cell-active");
+
       let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
       setDatepickerValue(selectedDate);
@@ -1615,6 +1662,17 @@ function CheckboxEventListener() {
   });
 }
 
+function draggable_event_cells() {
+  let buttonList = document.querySelectorAll(".draggable-event-button");
+
+  buttonList.forEach((button) => {
+    button.addEventListener("dragstart", function (event) {
+      let dataset = JSON.stringify(event.target.dataset);
+      event.dataTransfer.setData("application/json", dataset);
+    });
+  });
+}
+
 function handleCheckboxClick(event) {
   let checkbox = event.target;
   let taskId = checkbox.getAttribute("data-bs-eventId");
@@ -1638,6 +1696,7 @@ function handleCheckboxClick(event) {
   });
 }
 
+draggable_event_cells();
 CheckboxEventListener();
 deleteButton();
 

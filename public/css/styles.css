@@ -30,6 +30,13 @@ main {
 .date-cell:hover {
   border: grey;
   border-style: dashed;
+  z-index: 1;
+}
+
+.date-cell-active {
+  border: green !important;
+  border-style: dashed !important;
+  z-index: 1;
 }
 
 #left-menu-div {
@@ -62,12 +69,17 @@ main {
   height: 3vh;
   position: sticky;
   top: 0;
+  color: var(--text-color);
+  background-color: var(--bs-body-bg);
 }
 
 .sticky-calendar-row {
   position: sticky;
   top: 4vh;
+  color: var(--text-color);
+  background-color: var(--bs-body-bg);
 }
+
 footer {
   text-align-last: center;
   top: 2px;
@@ -141,4 +153,14 @@ html[data-bs-theme="light"] {
 .swatch-orange {
   color: #000;
   background-color: #fd7e14;
+}
+
+.btn.disabled,
+.btn:disabled,
+fieldset:disabled .btn {
+  color: var(--bs-btn-disabled-color);
+  pointer-events: none;
+  background-color: var(--bs-btn-disabled-bg);
+  border-color: var(--bs-btn-disabled-border-color);
+  opacity: 1;
 }
