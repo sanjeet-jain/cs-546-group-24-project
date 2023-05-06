@@ -232,12 +232,23 @@ export const updateReminder = async (
       remDate.diff(dayjs(finalDateToTerminate)) <= 0;
       remDate = dayjs(remDate).add(1, repeatingIncrementBy)
     ) {
+      let currRemGrpId = null;
+      let reminderEventGrpId = null;
+      if (currReminder.groupId !== null) {
+        currRemGrpId = currReminder.groupId.toString();
+      }
+      if (reminderEvents[i].groupId !== null) {
+        reminderEventGrpId = reminderEvents[i].groupId.toString();
+      }
       if (
-        ((repeating &&
-          currReminder.groupId.toString() !==
-            reminderEvents[i].groupId.toString()) ||
-          !repeating) &&
-        currReminder._id.toString() !== reminderEvents[i]._id.toString() &&
+        (!(
+          repeating &&
+          currRemGrpId === reminderEventGrpId &&
+          currRemGrpId != null
+        ) ||
+          (!repeating &&
+            currReminder._id.toString() !==
+              reminderEvents[i]._id.toString())) &&
         remDate.diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
         title.toLowerCase() === reminderEvents[i].title.toLowerCase()
       ) {
