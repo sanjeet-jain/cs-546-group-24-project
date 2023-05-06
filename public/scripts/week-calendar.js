@@ -1378,6 +1378,7 @@ function checkTaskValidations(form) {
     return true;
   } else return false;
 }
+let selectedDateCell = "";
 function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
@@ -1389,6 +1390,7 @@ function clickableDateCells() {
 
       let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
+      selectedDateCell = selectedDate;
       setDatepickerValue(selectedDate);
     });
   });
@@ -1441,6 +1443,7 @@ function loadLeftPaneCells(data) {
     eventButton.classList.add(
       "badge",
       "event-pill",
+      "border-0",
       buttonClass,
       "text-wrap",
       "text-center",
@@ -1451,12 +1454,15 @@ function loadLeftPaneCells(data) {
     eventButton.setAttribute("data-bs-eventId", `${event._id}`);
     eventButton.setAttribute("data-bs-userId", `${data.userId}`);
     eventButton.setAttribute("data-bs-event-type", `${event.type}`);
-    let logo = document.createElement("i");
+    // logic for adding checkbox to task
 
+    let logo = document.createElement("i");
     // add for other events
     logo.classList.add(logoClass);
-    logo.innerText = `${event.title}`;
+    let textNode = document.createTextNode(`${event.title}`);
+
     eventButton.appendChild(logo);
+    eventButton.appendChild(textNode);
     // add an eventlistener
     eventButton.addEventListener(
       "click",
@@ -1465,9 +1471,36 @@ function loadLeftPaneCells(data) {
       },
       false
     );
-    eventDiv.appendChild(eventButton);
+    if (event.type === "task") {
+      let taskDiv = document.createElement("div");
+      taskDiv.classList.add(
+        "badge",
+        "border-0",
+        buttonClass,
+        "text-wrap",
+        "text-center"
+      );
+      let checkbox = document.createElement("input");
+      checkbox.setAttribute("type", "checkbox");
+      checkbox.classList.add("task-checkbox");
+      checkbox.setAttribute("name", "taskCheckBox");
+      checkbox.setAttribute("input", "checkbox");
+      checkbox.setAttribute("data-bs-eventId", `${event._id}`);
+      checkbox.setAttribute("data-bs-userId", `${data.userId}`);
+      checkbox.setAttribute("value", "true");
+      checkbox.setAttribute("aria-label", "Task Checkbox");
+      if (event.checked === true) {
+        checkbox.checked = true;
+      }
+      taskDiv.appendChild(checkbox);
+      taskDiv.appendChild(eventButton);
+      eventDiv.appendChild(taskDiv);
+    } else {
+      eventDiv.appendChild(eventButton);
+    }
     display_current_items_div.appendChild(eventDiv);
   });
+  CheckboxEventListener();
 }
 
 function miniCalendarLoader() {
@@ -1675,6 +1708,7 @@ function validateDateTime(date) {
 }
 function CheckboxEventListener() {
   document.querySelectorAll(".task-checkbox").forEach((checkbox) => {
+    checkbox.removeEventListener("click", () => {});
     checkbox.addEventListener("click", handleCheckboxClick);
   });
 }
@@ -1706,6 +1740,23 @@ function handleCheckboxClick(event) {
       if (!isChecked) {
         alert("Task is marked Incomplete");
       }
+      const urlParams = new URLSearchParams(window.location.search);
+
+      if (urlParams.has("selectedDateCell")) {
+        urlParams.set("selectedDateCell", selectedDateCell);
+      } else {
+        urlParams.append("selectedDateCell", selectedDateCell);
+      }
+
+      // Append the new query parameter to the existing URL
+      const newUrl =
+        window.location.origin +
+        window.location.pathname +
+        "?" +
+        urlParams.toString();
+
+      // Navigate to the new URL
+      window.location.href = newUrl;
     },
     error: function (data) {
       alert("Some error occured while marking task");
@@ -1713,11 +1764,18 @@ function handleCheckboxClick(event) {
   });
 }
 
-draggable_event_cells();
-CheckboxEventListener();
-deleteButton();
+function simulateTdCellClick() {
+  const params = new URLSearchParams(window.location.search);
+  const tdClass = params.get("selectedDateCell");
 
-filterForm();
+  // Get the td element by its ID
+  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
+  console.log(td);
+  // Simulate a click event on the td element
+  if (td) {
+    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
+}
 
 submitMeetingForm();
 submitReminderForm();
@@ -1742,3 +1800,10 @@ clickableDateCells();
 
 repeatingCheckBoxTogglerReminder();
 repeatingCheckBoxTogglerMeeting();
+
+draggable_event_cells();
+CheckboxEventListener();
+deleteButton();
+
+filterForm();
+simulateTdCellClick();
