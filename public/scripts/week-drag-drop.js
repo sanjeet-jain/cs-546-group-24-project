@@ -27,7 +27,7 @@ function drag_end_date_time_cell() {
         "Button " + buttonData.bsEventid + " dropped into cell " + dateTime
       );
       let button = document.querySelector(
-        `[data-bs-eventid='${buttonData.bsEventid}']`
+        `button[data-bs-eventid='${buttonData.bsEventid}']`
       );
       $.ajax({
         method: "PUT",

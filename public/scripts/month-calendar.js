@@ -63,7 +63,7 @@ function drag_end_date_cell() {
         "Button " + buttonData.bsEventid + " dropped into cell " + cellId
       );
       let button = document.querySelector(
-        `[data-bs-eventid='${buttonData.bsEventid}']`
+        `button[data-bs-eventid='${buttonData.bsEventid}']`
       );
       $.ajax({
         method: "PUT",
@@ -71,8 +71,15 @@ function drag_end_date_cell() {
         data: { dateAddedTo: cellId },
         success: function (data) {
           button.click();
-
+          const previousDate = data.previousDate;
           button.parentNode.removeChild(button);
+          let parentTd = document.querySelector(
+            `td[data-bs-day="${previousDate}"]`
+          );
+          let oldEventCounter = parentTd.querySelector(
+            `span.${buttonData.bsEventType}-counter`
+          );
+
           //update month view counters
           let event_counter = td.querySelector("div.event-counters");
           let eventTypeCounter = event_counter.querySelector(
@@ -102,7 +109,7 @@ function drag_end_date_cell() {
             logo.classList.add(logoClass);
             logo.innerText = " ";
             let eventType = document.createTextNode(
-              ` ${buttonData.bsEventType}`
+              `${buttonData.bsEventType}`
             );
 
             span.appendChild(logo);
@@ -111,6 +118,18 @@ function drag_end_date_cell() {
             span.appendChild(eventTypeCounter);
             span.appendChild(eventType);
             event_counter.appendChild(span);
+          }
+          if (oldEventCounter) {
+            let oldCounter = Number.parseInt(
+              oldEventCounter.innerText.trim() || 0
+            );
+            if (oldCounter - 1 === 0) {
+              oldEventCounter.parentNode.parentNode.removeChild(
+                oldEventCounter.parentNode
+              );
+            } else {
+              oldEventCounter.innerText = oldCounter - 1;
+            }
           }
           eventTypeCounter.innerText =
             Number.parseInt(eventTypeCounter.innerText.trim() || 0) + 1;

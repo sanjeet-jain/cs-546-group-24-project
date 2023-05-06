@@ -207,38 +207,16 @@ router
       utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-
+      const previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
       taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
         "YYYY-MM-DDTHH:mm"
       );
-      let { title, textBody, dateAddedTo, priority, tag, checked } =
-        taskPutData;
+
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)
           .json({ error: "There are no fields in the request body" });
       }
-      utils.validateStringInputWithMaxLength(
-        title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
-      utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      if (typeof checked === "undefined") {
-        checked = false;
-      }
-      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
@@ -246,7 +224,11 @@ router
         userId
       );
 
-      res.json({ userId: userId, taskId: updatedTask._id });
+      res.json({
+        userId: userId,
+        taskId: updatedTask._id,
+        previousDate,
+      });
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
