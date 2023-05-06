@@ -164,3 +164,8 @@ fieldset:disabled .btn {
   border-color: var(--bs-btn-disabled-border-color);
   opacity: 1;
 }
+
+button[data-bs-event-type="task"] {
+  width: 80%;
+  font-size: inherit;
+}

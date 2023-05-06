@@ -1736,32 +1736,35 @@ function handleCheckboxClick(event) {
     success: function (data) {
       if (isChecked) {
         alert("Task is marked Complete");
+        setPageUrlForSelectedDateCell();
       }
       if (!isChecked) {
         alert("Task is marked Incomplete");
       }
-      const urlParams = new URLSearchParams(window.location.search);
-
-      if (urlParams.has("selectedDateCell")) {
-        urlParams.set("selectedDateCell", selectedDateCell);
-      } else {
-        urlParams.append("selectedDateCell", selectedDateCell);
-      }
-
-      // Append the new query parameter to the existing URL
-      const newUrl =
-        window.location.origin +
-        window.location.pathname +
-        "?" +
-        urlParams.toString();
-
-      // Navigate to the new URL
-      window.location.href = newUrl;
     },
     error: function (data) {
       alert("Some error occured while marking task");
     },
   });
+}
+function setPageUrlForSelectedDateCell() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (urlParams.has("selectedDateCell")) {
+    urlParams.set("selectedDateCell", selectedDateCell);
+  } else {
+    urlParams.append("selectedDateCell", selectedDateCell);
+  }
+
+  // Append the new query parameter to the existing URL
+  const newUrl =
+    window.location.origin +
+    window.location.pathname +
+    "?" +
+    urlParams.toString();
+
+  // Navigate to the new URL
+  window.location.href = newUrl;
 }
 
 function simulateTdCellClick() {
