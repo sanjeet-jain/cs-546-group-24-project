@@ -27,11 +27,12 @@
       <script src="/public/scripts/month-calendar.js" type="text/javascript"></script>
       {{/if}}
       {{#if week.length}}
-
       {{>week-view week=week timeslots=timeslots}}
+      <script src="/public/scripts/week-drag-drop.js"></script>
       {{/if}}
       {{#if day}}
       {{>day-view day=day timeslots=timeslots}}
+      <script src="/public/scripts/week-drag-drop.js"></script>
       {{/if}}
     </tbody>
   </table>

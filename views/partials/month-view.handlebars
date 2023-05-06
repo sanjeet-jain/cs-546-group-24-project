@@ -10,30 +10,26 @@
     </button>
     <div class="day-events">
 
-      <div class="d-grid gap-1">
+      <div class="d-grid gap-1 event-counters">
         {{#if this.modalData.meetings.length}}
         <span class="badge  swatch-cyan  text-wrap  text-start">
-          <i class="bi-calendar-event"></i>
-          {{this.modalData.meetings.length}}
-          meetings</span>
+          <i class="bi-calendar-event"> </i><span class="meeting-counter">{{{this.modalData.meetings.length}}}</span>
+          meeting</span>
         {{/if}}
         {{#if this.modalData.notes.length}}
         <span class="badge  bg-success   text-wrap  text-start">
-          <i class="bi-file-text"></i>
-          {{this.modalData.notes.length}}
-          notes</span>
+          <i class="bi-file-text"></i><span class="notes-counter">{{this.modalData.notes.length}}</span>
+          note</span>
         {{/if}}
         {{#if this.modalData.reminders.length}}
         <span class="badge  swatch-indigo   text-wrap  text-start">
-          <i class="bi-alarm"></i>
-          {{this.modalData.reminders.length}}
-          reminders</span>
+          <i class="bi-alarm"></i><span class="reminder-counter">{{this.modalData.reminders.length}}</span>
+          reminder</span>
         {{/if}}
         {{#if this.modalData.tasks.length}}
         <span class="badge  bg-danger   text-wrap  text-start">
-          <i class="bi-check2-square"></i>
-          {{this.modalData.tasks.length}}
-          tasks</span>
+          <i class="bi-check2-square"></i><span class="task-counter">{{this.modalData.tasks.length}}</span>
+          task</span>
         {{/if}}
       </div>
 
