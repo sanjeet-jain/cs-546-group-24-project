@@ -72,21 +72,6 @@ export async function runSetup(datestring, user) {
     expired: false,
     type: "meeting",
   };
-  const sampleMeeting2 = {
-    title: "Weekly Team Meeting non repeating",
-    dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
-    dateAddedTo: null,
-    dateDueOn: null,
-    priority: 2,
-    textBody: "Agenda items: 1. Project updates, 2. Client feedback",
-    tag: "team",
-    repeating: false,
-    repeatingCounterIncrement: 0,
-    repeatingIncrementBy: "",
-    repeatingGroup: null,
-    expired: false,
-    type: "meeting",
-  };
 
   await meetingsDataFunctions.create(
     user._id.toString(),
@@ -101,19 +86,35 @@ export async function runSetup(datestring, user) {
     sampleMeeting.repeatingIncrementBy
   );
 
-  await meetingsDataFunctions.create(
-    user._id.toString(),
-    sampleMeeting2.title,
-    sampleMeeting2.dateAddedTo,
-    sampleMeeting2.dateDueOn,
-    sampleMeeting2.priority,
-    sampleMeeting2.textBody,
-    sampleMeeting2.tag,
-    sampleMeeting2.repeating,
-    sampleMeeting2.repeatingCounterIncrement,
-    sampleMeeting2.repeatingIncrementBy
-  );
-
+  if (datestring) {
+    const sampleMeeting2 = {
+      title: "Weekly Team Meeting non repeating",
+      dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+      dateAddedTo: null,
+      dateDueOn: null,
+      priority: 2,
+      textBody: "Agenda items: 1. Project updates, 2. Client feedback",
+      tag: "team",
+      repeating: false,
+      repeatingCounterIncrement: 0,
+      repeatingIncrementBy: "",
+      repeatingGroup: null,
+      expired: false,
+      type: "meeting",
+    };
+    await meetingsDataFunctions.create(
+      user._id.toString(),
+      sampleMeeting2.title,
+      sampleMeeting2.dateAddedTo,
+      sampleMeeting2.dateDueOn,
+      sampleMeeting2.priority,
+      sampleMeeting2.textBody,
+      sampleMeeting2.tag,
+      sampleMeeting2.repeating,
+      sampleMeeting2.repeatingCounterIncrement,
+      sampleMeeting2.repeatingIncrementBy
+    );
+  }
   // Seed tasks
 
   const sampleTask = {

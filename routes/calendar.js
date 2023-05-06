@@ -450,13 +450,15 @@ async function getSelectedDayItems(userId, selectedDate) {
 }
 
 async function getRightPaneItems(userId) {
-  const response = await eventDataFunctions.getAllEvents(userId, filter);
+  const response = await eventDataFunctions.getAllEvents(userId);
   delete response.userId;
   let rightPaneItems = {};
   for (let eventType in response) {
     rightPaneItems[eventType] = response[eventType]
       .filter((x) => {
         return x.dateAddedTo === null;
+        // TODO separate this into a differnt function and a new card
+        //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
       })
       .sort((a, b) => {
         const dateA = dayjs(a.dateAddedTo);
@@ -479,9 +481,10 @@ async function getRightPaneItems(userId) {
       .slice(0, 50);
   }
 
-  rightPaneItems.backlogtasks = response.tasks.filter((x) => {
-    return !x.checked && x.expired;
-  });
+  rightPaneItems.backlogtasks =
+    response?.tasks?.filter((x) => {
+      return !x.checked && x.expired;
+    }) || [];
   return rightPaneItems;
 }
 export default router;
