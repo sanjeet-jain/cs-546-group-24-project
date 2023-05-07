@@ -8,7 +8,7 @@
   <div class="d-flex col-lg-8 col-md-6 col-sm-4 col-12 justify-content-around">
 
     <div>
-      <ul class="nav justify-content-center">
+      <ul class="nav justify-content-center flex-lg-nowrap">
         <li class="nav-item">
           <form id="viewRadioForm">
 
@@ -28,12 +28,10 @@
         </li>
         <li class="nav-item">
 
-          <div>
-            <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{else}} {{#if week}}
-              action="/calendar/week" {{else}} {{#if day}} action="/calendar/day" {{/if}} {{/if}} {{/if}}>
-              <button id="today" class="btn btn-primary" type="submit">Today</button>
-            </form>
-          </div>
+          <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{else}} {{#if week}}
+            action="/calendar/week" {{else}} {{#if day}} action="/calendar/day" {{/if}} {{/if}} {{/if}}>
+            <button id="today" class="btn btn-primary" type="submit">Today</button>
+          </form>
 
         </li>
       </ul>
@@ -43,78 +41,86 @@
       <ul class="nav justify-content-center">
 
         <li class="nav-item">
-          <form id="monthCalendarForm" method="get" action="/calendar/month">
-            <input type="hidden" name="month" value="{{prevMonth}}">
-            {{#if (eq currentMonth 0 )}}
-            <input type="hidden" name="year" value="{{prevYear}}">
-            {{else}}
-            <input type="hidden" name="year" value="{{currYear}}">
-            {{/if}}
-            <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
-              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+          <ul class="nav justify-content-center">
+
+            <li class="nav-item">
+              <form id="monthCalendarForm" method="get" action="/calendar/month">
+                <input type="hidden" name="month" value="{{prevMonth}}">
+                {{#if (eq currentMonth 0 )}}
+                <input type="hidden" name="year" value="{{prevYear}}">
+                {{else}}
+                <input type="hidden" name="year" value="{{currYear}}">
+                {{/if}}
+                <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
+                  <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
-            </button>
-          </form>
+                </button>
+              </form>
 
-        </li>
+            </li>
 
-        <li class="nav-item">
-          <select id="monthDropDown" class="form-select h-100" aria-label="Month
+            <li class="nav-item">
+              <select id="monthDropDown" class="form-select h-100" aria-label="Month
           Select">
-            {{#each months}}
-            <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
-            {{/each}}
-          </select>
-        </li>
+                {{#each months}}
+                <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+              </select>
+            </li>
 
-        <li class="nav-item">
-          <form method="get" action="/calendar/month">
-            <input type="hidden" name="month" value="{{nextMonth}}">
-            {{#if (eq currentMonth 11)}}
-            <input type="hidden" name="year" value="{{nextYear}}">
-            {{else}}
-            <input type="hidden" name="year" value="{{currYear}}">
-            {{/if}}
-            <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
-              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+            <li class="nav-item">
+              <form method="get" action="/calendar/month">
+                <input type="hidden" name="month" value="{{nextMonth}}">
+                {{#if (eq currentMonth 11)}}
+                <input type="hidden" name="year" value="{{nextYear}}">
+                {{else}}
+                <input type="hidden" name="year" value="{{currYear}}">
+                {{/if}}
+                <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
+                  <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
-            </button>
-          </form>
+                </button>
+              </form>
 
+            </li>
+          </ul>
         </li>
-
         <li class="nav-item">
-          <form id="yearCalendarForm" method="get" action="/calendar/month">
-            <input type="hidden" name="month" value="{{currentMonth}}">
-            <input type="hidden" name="year" value="{{prevYear}}">
-            <button type="submit" id="prevYear" class="btn border-0" aria-label="prevYearButton">
-              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+          <ul class="nav justify-content-center">
+            <li class="nav-item">
+              <form id="yearCalendarForm" method="get" action="/calendar/month">
+                <input type="hidden" name="month" value="{{currentMonth}}">
+                <input type="hidden" name="year" value="{{prevYear}}">
+                <button type="submit" id="prevYear" class="btn border-0" aria-label="prevYearButton">
+                  <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
               border:
               none"></i>
-            </button>
-          </form>
+                </button>
+              </form>
 
-        </li>
+            </li>
 
-        <li class="nav-item">
-          <select id="yearDropDown" class="form-select h-100" aria-label="Year
+            <li class="nav-item">
+              <select id="yearDropDown" class="form-select h-100" aria-label="Year
           Select">
-            {{#each yearRange}}
-            <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
-            {{/each}}
-          </select>
-        </li>
+                {{#each yearRange}}
+                <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+              </select>
+            </li>
 
-        <li class="nav-item">
-          <form method="get" action="/calendar/month">
-            <input type="hidden" name="month" value="{{currentMonth}}">
-            <input type="hidden" name="year" value="{{nextYear}}">
-            <button type="submit" id="nextYear" class="btn border-0" aria-label="nextYearButton">
-              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+            <li class="nav-item">
+              <form method="get" action="/calendar/month">
+                <input type="hidden" name="month" value="{{currentMonth}}">
+                <input type="hidden" name="year" value="{{nextYear}}">
+                <button type="submit" id="nextYear" class="btn border-0" aria-label="nextYearButton">
+                  <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
               none"></i>
-            </button>
-          </form>
+                </button>
+              </form>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
@@ -138,7 +144,7 @@
         </li>
 
         <li class="nav-item">
-          <div class="display-6">{{{displayString}}}</div>
+          <div>{{{displayString}}}</div>
         </li>
 
         <li class="nav-item">
@@ -175,7 +181,7 @@
         </li>
 
         <li class="nav-item">
-          <div class="display-6">{{{selectedDate}}}</div>
+          <div>{{{selectedDate}}}</div>
         </li>
 
         <li class="nav-item">
