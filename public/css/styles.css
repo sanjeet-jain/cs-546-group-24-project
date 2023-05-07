@@ -167,3 +167,10 @@ div.top50items_card div.card-body div.overflow-scroll-y {
 #calendar-div {
   height: 85vh;
 }
+
+#modal-meeting-display .modal-body,
+#modal-task-display .modal-body,
+#modal-reminder-display .modal-body,
+#modal-notes-display .modal-body {
+  max-height: 75vh;
+}

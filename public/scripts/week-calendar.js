@@ -430,6 +430,7 @@ function onNotesModalClose() {
 
     notes_title_error.innerText = "";
     notes_editor_error.innerText = "";
+    notes_editor_error.classList = "";
     notes_tag_error.innerText = "";
     notes_dateAddedTo_error.innerText = "";
   });
@@ -1102,6 +1103,13 @@ function checkMeetingValidations(form) {
       form.repeatingIncrementBy.setCustomValidity("error");
     }
   }
+  let resultDiv = document.getElementById(`meeting-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;
@@ -1176,7 +1184,13 @@ function checkNotesValidations(form) {
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("overflow");
   }
-
+  let resultDiv = document.getElementById(`notes-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;
@@ -1302,6 +1316,13 @@ function checkReminderValidations(form) {
       form.repeatingIncrementBy.setCustomValidity("error");
     }
   }
+  let resultDiv = document.getElementById(`reminder-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   return form.checkValidity();
 }
 
@@ -1373,7 +1394,13 @@ function checkTaskValidations(form) {
     task_dateAddedTo_error.innerText = "Add date to mark this task completed";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
   }
-
+  let resultDiv = document.getElementById(`task-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;

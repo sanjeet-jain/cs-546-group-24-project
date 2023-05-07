@@ -214,11 +214,13 @@ const utils = {
     if (typeof dateAddedTo === "string" && dateAddedTo.trim().length > 0) {
       try {
         this.validateDate(dateAddedTo, "DateAddedTo");
+        this.checkIfDateIsBeyondRange(dateAddedTo);
       } catch (e) {
         errorMessages.dateAddedTo = e.message;
       }
       try {
         this.validateDate(dateDueOn, "DateDueOn");
+        this.checkIfDateIsBeyondRange(dateDueOn);
       } catch (e) {
         errorMessages.dateDueOn = e.message;
       }
@@ -401,6 +403,7 @@ const utils = {
 
     try {
       utils.validateDate(dateAddedTo, "DateAddedTo");
+      this.checkIfDateIsBeyondRange(dateAddedTo);
     } catch (e) {
       errorMessages.dateAddedTo = e.message;
     }
