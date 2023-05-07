@@ -274,6 +274,30 @@ const utils = {
         "This field is mandatory if due date is populated";
     }
 
+    if (
+      typeof dateAddedTo === "string" &&
+      typeof dateDueOn === "string" &&
+      dateAddedTo.trim().length > 0 &&
+      dateDueOn.trim().length > 0
+    ) {
+      if (dayjs(dateDueOn).diff(dayjs(dateAddedTo)) < 0) {
+        errorMessages.dateDueOn = "Date Due to must be after date Due On";
+        errorMessages.dateAddedTo = "Date Added to must be before date Due On";
+      }
+      if (
+        !(
+          dayjs(dateAddedTo).year() === dayjs(dateDueOn).year() &&
+          dayjs(dateAddedTo).month() === dayjs(dateDueOn).month() &&
+          dayjs(dateAddedTo).date() === dayjs(dateDueOn).date()
+        )
+      ) {
+        if (!"dateDueOn" in errorMessages) {
+          errorMessages.dateDueOn =
+            "Date Due on must be of same day as the date added to";
+        }
+      }
+    }
+
     if (repeating === "true" || repeating === true) {
       if (typeof dateAddedTo === "string" && dateAddedTo.trim().length === 0) {
         if (!"dateAddedTo" in errorMessages) {

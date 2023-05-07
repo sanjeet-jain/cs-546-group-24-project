@@ -1046,7 +1046,7 @@ function checkMeetingValidations(form) {
     form.dateAddedTo.value !== "" &&
     form.dateDueOn.value !== "" &&
     form.dateAddedTo.checkValidity() &&
-    form.dateAddedTo.checkValidity()
+    form.dateDueOn.checkValidity()
   ) {
     if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
       form.dateAddedTo.setCustomValidity("invalid_range");
@@ -1055,6 +1055,20 @@ function checkMeetingValidations(form) {
         "Date Due to must be after date Due On";
       meeting_dateAddedTo_error.innerText =
         "Date Added to must be before date Due On";
+    }
+    if (
+      !(
+        dayjs(form.dateAddedTo.value).year() ===
+          dayjs(form.dateDueOn.value).year() &&
+        dayjs(form.dateAddedTo.value).month() ===
+          dayjs(form.dateDueOn.value).month() &&
+        dayjs(form.dateAddedTo.value).date() ===
+          dayjs(form.dateDueOn.value).date()
+      )
+    ) {
+      form.dateDueOn.setCustomValidity("invalid_range");
+      meeting_dateDueOn_error.innerText =
+        "Date Due on must be of same day as the date added to";
     }
   }
   if (form.repeating.checked) {

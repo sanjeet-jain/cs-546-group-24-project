@@ -383,6 +383,14 @@ const meetingsDataFunctions = {
       for (let i = 0; i < allMeetingEvents.length; i++) {
         this.isTwoEventSame(allMeetingEvents[i], meetingObj);
       }
+      if (
+        (meetingObj.dateAddedTo === null && meetingObj.dateDueOn === null) ||
+        dayjs(meetingObj.dateDueOn).diff(dayjs()) > 0
+      ) {
+        meetingObj.expired = false;
+      } else {
+        meetingObj.expired = true;
+      }
       const result = await meetings.insertOne(meetingObj);
       const insertedId = result.insertedId;
       await users.updateOne(
@@ -412,6 +420,11 @@ const meetingsDataFunctions = {
           expired: false,
           type: "meeting",
         };
+        if (dayjs(meeting.dateDueOn).diff(dayjs()) > 0) {
+          meeting.expired = false;
+        } else {
+          meeting.expired = true;
+        }
         meetingObjects.push(meeting);
         switch (repeatingIncrementBy) {
           //TODO use dayjs
@@ -633,7 +646,6 @@ const meetingsDataFunctions = {
       event1["repeatingGroup"].toString() !==
         event2["repeatingGroup"].toString()
     ) {
-      console.log("Title are Same");
       if (
         event1["dateAddedTo"] !== null &&
         event2["dateAddedTo"] !== null &&
@@ -646,12 +658,6 @@ const meetingsDataFunctions = {
         dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
         dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"] > 0)
       ) {
-        console.log(
-          "repeating groupp " +
-            event2["repeatingGroup"] +
-            "  " +
-            event1["repeatingGroup"]
-        );
         throw new Error(
           "Two Meetings have the same title and a date time clash"
         );
