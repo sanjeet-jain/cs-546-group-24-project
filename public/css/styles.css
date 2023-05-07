@@ -26,10 +26,6 @@
   width: 15vw;
 }
 
-#calendar-div {
-  height: 85vh;
-}
-
 .greyed-out {
   width: 8vw;
   height: 13vh;
@@ -159,4 +155,11 @@ button[data-bs-event-type="task"] {
 div.backlog_items_card div.card-body div.overflow-scroll-y,
 div.top50items_card div.card-body div.overflow-scroll-y {
   max-height: 20vh;
+}
+
+#calendar-div table {
+  height: 82vh;
+}
+#calendar-div {
+  height: 85vh;
 }
