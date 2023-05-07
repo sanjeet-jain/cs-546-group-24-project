@@ -39,22 +39,85 @@
         referrerpolicy="origin"></script>
 </head>
 
-<body class="mx-auto d-grid">
-    <div class="headBarNav">
+<body class="mx-lg-4 mx-md-4 mx-sm-4">
+    <header>
         {{>headNavBar months=months currentMonth=currentMonth
         yearRange=yearRange currYear=currYear prevYear=prevYear prevMonth=prevMonth nextMonth=nextMonth
         nextYear=nextYear week=week}}
-    </div>
-    <main class="row">
-        <div id="left-menu-div" class="col container">{{>leftPane}}</div>
-        <div class="col-md-auto center-div container">
-            {{{body}}}
+    </header>
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-12">
+                <div id="left-menu-div">{{>leftPane}}</div>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-4 col-12">
+                <div class="center-div ">
+                    {{{body}}}
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-12">
+                <div id="right-menu-div">{{>rightPane }}</div>
+            </div>
         </div>
-        <div id="right-menu-div" class="col container">{{>rightPane }}</div>
+
     </main>
 
     <footer class="position-bottom ">
+        {{#if session}}
+        {{#if (eq title "Calendar")}}
+        <div class="btn-toolbar justify-content-center" role="toolbar" aria-label="Toolbar with button groups">
+            <div class="btn-group me-2" role="group" aria-label="Add Event Button">
+                <button id="add-event-trigger" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#add-event-modal">Add Event</button>
+            </div>
 
+            <div class="btn-group me-2" role="group" aria-label="Filter Button">
+                <div class="dropend">
+                    <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                        data-bs-auto-close="false" aria-expanded="false">
+                        Select Filter Options
+                    </button>
+
+                    <!-- Create a dropdown menu -->
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <form id="filterForm" action="/calendar/filter" method="POST">
+                                <div class="form-group d-grid gap-1 p-2">
+                                    {{#each filter.eventTypes}}
+                                    <div class="form-check  form-switch">
+                                        <input class="form-check-input" role="switch" type="checkbox" value="{{this}}"
+                                            id="event-filter-{{this}}" name="event-filter-{{this}}" {{#if (includes
+                                            ../filter.eventTypeSelected this)}} checked {{/if}}>
+                                        <label class="form-label" for="event-filter-{{this}}">
+                                            {{this}}
+                                        </label>
+                                    </div>
+                                    {{/each}}
+
+                                    {{#each filter.tags}}
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" role="switch" type="checkbox" value="{{this}}"
+                                            id="tag-filter-{{this}}" name="tag-filter-{{this}}" {{#if (includes
+                                            ../filter.tagsSelected this)}} checked {{/if}}>
+                                        <label class="form-label" for="tag-filter-{{this}}">
+                                            {{this}}
+                                        </label>
+                                    </div>
+                                    {{/each}}
+                                    <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                                </div>
+
+                            </form>
+
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+        {{/if}}
+        {{/if}}
 
     </footer>
     {{#if session.user_id}}
