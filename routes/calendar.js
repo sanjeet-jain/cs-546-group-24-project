@@ -509,7 +509,35 @@ async function getRightPaneItems(userId) {
         return !x.checked && x.expired && x.dateAddedTo !== null;
       })
       .slice(0, 50) || [];
-
+  rightPaneItems.upcoming =
+    response?.tasks?.filter((x) => {
+      return !x.checked && !x.expired && x.dateAddedTo !== null;
+    }) || [];
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.meetings?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming
+    .sort((a, b) => {
+      const dateA = dayjs(a.dateAddedTo);
+      const dateB = dayjs(b.dateAddedTo);
+      const dateDiff = dateA.diff(dateB);
+      if (dateDiff > 0) {
+        return -1;
+      }
+      if (dateDiff < 0) {
+        return 1;
+      }
+      if (a.priority > b.priority) {
+        return -1;
+      }
+      if (a.priority < b.priority) {
+        return 1;
+      }
+      return 0;
+    })
+    .slice(0, 50);
   return rightPaneItems;
 }
 export default router;

@@ -144,5 +144,65 @@
 </div>
 
 
+
+<div class="accordion" id="rightPaneUpcomingItemsAccordion">
+  <div class="accordion-item">
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseUpcomingItemsAccordion" aria-expanded="false"
+        aria-controls="collapseUpcomingItemsAccordion">
+        Upcoming Items
+        <span
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger upcoming-items-counter">
+          {{{rightPaneItems.upcoming.length}}}
+          <span class="visually-hidden">Upcoming Items</span>
+        </span>
+      </button>
+    </span>
+    <div id="collapseUpcomingItemsAccordion" class="accordion-collapse collapse "
+      data-bs-parent="#rightPaneUpcomingItemsAccordion">
+      <div class="accordion-body">
+        <div class="card">
+          {{#if rightPaneItems.upcoming.length }}
+          <div class="card-body">
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_upcoming_items">
+              {{#each rightPaneItems.upcoming}}
+              {{#if (eq this.type "meeting") }}
+              <button draggable="true"
+                class="badge event-pill swatch-cyan text-wrap  text-center event-button draggable-event-button"
+                data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+                data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+                  class="bi-calendar-event">{{this.title}}</i></button>
+              {{/if}}
+              {{#if (eq this.type "task")}}
+              <div draggable="true" class="badge border-0 bg-danger text-wrap text-center  draggable-event-button"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
+                <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+                  data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
+                  this.checked}}checked {{/if}}>
+                <button class="badge event-pill bg-danger border-0  text-wrap  text-center event-button"
+                  data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+                    class="bi-check2-square">{{this.title}}</i></button>
+              </div>
+              {{/if}}
+              {{/each}}
+            </div>
+          </div>
+          {{else}}
+          <div class="card-body">
+            <span class="card-title" id="top50_upcoming_items_title">There are no Upcoming Items </span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_upcoming_items"></div>
+          </div>
+
+          {{/if}}
+
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 {{/if}}
 {{/if}}

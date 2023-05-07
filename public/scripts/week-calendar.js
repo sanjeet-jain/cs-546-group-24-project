@@ -1765,13 +1765,13 @@ function simulateTdCellClick() {
     td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   }
 }
-function setPageUrlForSelectedDateCell() {
+function setPageUrlForSelectedDateCell(selectedDate = selectedDateCell) {
   const urlParams = new URLSearchParams(window.location.search);
 
   if (urlParams.has("selectedDateCell")) {
-    urlParams.set("selectedDateCell", selectedDateCell);
+    urlParams.set("selectedDateCell", selectedDate);
   } else {
-    urlParams.append("selectedDateCell", selectedDateCell);
+    urlParams.append("selectedDateCell", selectedDate);
   }
 
   // Append the new query parameter to the existing URL
