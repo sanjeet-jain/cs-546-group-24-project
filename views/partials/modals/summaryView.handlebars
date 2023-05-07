@@ -17,7 +17,7 @@
           <div class="card-body ">
             {{#if todayItems.length includeZero=true}}
             <span class="card-title" id="summary_selected_date">Items for<br> {{today}}</span>
-            <div class="d-grid gap-1 overflow-scroll-y" id="summary_display_current_items ">
+            <div class="d-grid gap-1 overflow-scroll-y" id="summary_display_current_items">
               {{#if todayItems.length includeZero=false}}
               {{#each todayItems}}
               {{#if (eq this.type "reminder")}}
