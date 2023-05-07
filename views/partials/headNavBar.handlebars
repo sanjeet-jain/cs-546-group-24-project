@@ -28,7 +28,8 @@
       <li class="nav-item">
 
         <div>
-          <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{/if}}>
+          <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{else}} {{#if week}}
+            action="/calendar/week" {{else}} {{#if day}} action="/calendar/day" {{/if}} {{/if}} {{/if}}>
             <button id="today" class="btn btn-primary" type="submit">Today</button>
           </form>
         </div>
