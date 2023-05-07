@@ -1,142 +1,140 @@
 {{#if session}}
 {{#if (eq title "Calendar")}}
-{{!-- <div>
-  <div class="container mt-3">
-    <button id="add-event-trigger" type="button" class="btn btn-primary" data-bs-toggle="modal"
-      data-bs-target="#add-event-modal">Add Event</button>
-  </div>
-  {{>addEventModal}}
-</div> --}}
 
-
-
-{{!--
-<div class="dropdown">
-  <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
-    data-bs-auto-close="false" aria-expanded="false">
-    Select Filter Options
-  </button>
-
-  <!-- Create a dropdown menu -->
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <li>
-      <form id="filterForm" action="/calendar/filter" method="POST">
-        <div class="form-group d-grid gap-1">
-          {{#each filter.eventTypes}}
-          <div class="form-check  form-switch">
-            <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="event-filter-{{this}}"
-              name="event-filter-{{this}}" {{#if (includes ../filter.eventTypeSelected this)}} checked {{/if}}>
-            <label class="form-label" for="event-filter-{{this}}">
-              {{this}}
-            </label>
+<div class="accordion" id="rightPaneAccordion">
+  <div class="accordion-item">
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseUnassignedMeetings" aria-expanded="false" aria-controls="collapseUnassignedMeetings">
+        Unassigned Meetings
+        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+          {{{rightPaneItems.meetings.length}}}
+          <span class="visually-hidden">unread messages</span>
+        </span>
+      </button>
+    </span>
+    <div id="collapseUnassignedMeetings" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+      <div class="accordion-body">
+        <div class="card top50items_card">
+          {{#if rightPaneItems.meetings.length }}
+          <div class="card-body">
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings">
+              {{#each rightPaneItems.meetings}}
+              <button draggable="true"
+                class="badge event-pill swatch-cyan text-wrap  text-center event-button draggable-event-button"
+                data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+                data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+                  class="bi-calendar-event">{{this.title}}</i></button>
+              {{/each}}
+            </div>
           </div>
-          {{/each}}
-
-          {{#each filter.tags}}
-          <div class="form-check form-switch">
-            <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="tag-filter-{{this}}"
-              name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}} checked {{/if}}>
-            <label class="form-label" for="tag-filter-{{this}}">
-              {{this}}
-            </label>
+          {{else}}
+          <div class="card-body">
+            <span class="card-title" id="top50_meetings_title">There are no Unassigned Meetings </span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings"></div>
           </div>
-          {{/each}}
-          <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+
+          {{/if}}
+
+
         </div>
 
-      </form>
-
-    </li>
-  </ul>
-
-</div> --}}
-
-<div class="card top50items_card">
-  {{#if rightPaneItems.meetings.length }}
-  <div class="card-body">
-    <span class="card-title" id="top50_meetings_title">Unassigned Meetings</span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings">
-      {{#each rightPaneItems.meetings}}
-
-
-      <button draggable="true"
-        class="badge event-pill swatch-cyan text-wrap  text-center event-button draggable-event-button"
-        data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
-        data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
-          class="bi-calendar-event">{{this.title}}</i></button>
-      {{/each}}
-
-
-    </div>
-  </div>
-  {{else}}
-  <div class="card-body">
-    <span class="card-title" id="top50_meetings_title">There are no Unassigned Meetings </span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings"></div>
-  </div>
-
-  {{/if}}
-
-  {{#if rightPaneItems.tasks.length }}
-  <div class="card-body">
-    <span class="card-title" id="top50_tasks_title">Unassigned Tasks</span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks">
-      {{#each rightPaneItems.tasks}}
-
-      <div draggable="true" class="badge border-0 bg-danger text-wrap text-center  draggable-event-button"
-        data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
-        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
-          data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
-          this.checked}}checked {{/if}}>
-        <button class="badge event-pill bg-danger border-0  text-wrap  text-center event-button" data-bs-toggle="modal"
-          data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}"
-          data-bs-event-type="task"><i class="bi-check2-square">{{this.title}}</i></button>
       </div>
-
-      {{/each}}
     </div>
   </div>
-  {{else}}
-  <div class="card-body">
-    <span class="card-title" id="top50_tasks_title">There are no Unassigned tasks </span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks"></div>
-  </div>
 
-  {{/if}}
+  <div class="accordion-item">
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseUnassignedTasks" aria-expanded="false" aria-controls="collapseUnassignedTasks">
+        Unassigned Tasks
+        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+          {{{rightPaneItems.tasks.length}}}
+          <span class="visually-hidden">Unassigned Tasks</span>
+      </button>
+    </span>
+    <div id="collapseUnassignedTasks" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+      <div class="accordion-body">
+        <div class="card top50items_card">
 
-</div>
+          {{#if rightPaneItems.tasks.length }}
+          <div class="card-body">
+            <span class="card-title" id="top50_tasks_title">Unassigned Tasks</span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks">
+              {{#each rightPaneItems.tasks}}
 
+              <div draggable="true" class="badge border-0 bg-danger text-wrap text-center  draggable-event-button"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
+                <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+                  data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
+                  this.checked}}checked {{/if}}>
+                <button class="badge event-pill bg-danger border-0  text-wrap  text-center event-button"
+                  data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+                    class="bi-check2-square">{{this.title}}</i></button>
+              </div>
 
-<div class="card backlog_items_card">
+              {{/each}}
+            </div>
+          </div>
+          {{else}}
+          <div class="card-body">
+            <span class="card-title" id="top50_tasks_title">There are no Unassigned tasks </span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks"></div>
+          </div>
 
-  {{#if rightPaneItems.backlogtasks.length }}
-  <div class="card-body">
-    <span class="card-title" id="backlog_tasks_title">Backlog Tasks</span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems">
-      {{#each rightPaneItems.backlogtasks}}
-      <div draggable="true"
-        class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center draggable-event-button"
-        data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
-        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
-          data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
-          this.checked}}checked {{/if}}>
-        <button
-          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button "
-          data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
-          data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
-            class="bi-check2-square">{{this.title}}</i></button>
+          {{/if}}
+        </div>
+
       </div>
-      {{/each}}
     </div>
   </div>
-  {{else}}
-  <div class="card-body">
-    <span class="card-title" id="backlog_tasks_title">There are no Backlog Tasks</span>
-    <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems"></div>
+  <div class="accordion-item">
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseBacklogTasks" aria-expanded="false" aria-controls="collapseBacklogTasks">
+        Backlog Tasks
+        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+          {{{rightPaneItems.backlogtasks.length}}}
+          <span class="visually-hidden">Backlog Tasks</span>
+      </button>
+    </span>
+    <div id="collapseBacklogTasks" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+      <div class="accordion-body">
+        <div class="card backlog_items_card">
+
+          {{#if rightPaneItems.backlogtasks.length }}
+          <div class="card-body">
+            <span class="card-title" id="backlog_tasks_title">Backlog Tasks</span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems">
+              {{#each rightPaneItems.backlogtasks}}
+              <div draggable="true"
+                class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center draggable-event-button"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
+                <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+                  data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
+                  this.checked}}checked {{/if}}>
+                <button
+                  class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button "
+                  data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+                    class="bi-check2-square">{{this.title}}</i></button>
+              </div>
+              {{/each}}
+            </div>
+          </div>
+          {{else}}
+          <div class="card-body">
+            <span class="card-title" id="backlog_tasks_title">There are no Backlog Tasks</span>
+            <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems"></div>
+          </div>
+
+          {{/if}}
+
+        </div>
+      </div>
+    </div>
   </div>
-
-  {{/if}}
-
 </div>
 
 {{/if}}
