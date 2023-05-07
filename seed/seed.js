@@ -173,18 +173,18 @@ export async function runSetup(datestring, user) {
     sampleTask2.checked
   );
 
-  for (let i = 0; i < 10; i++) {
-    await tasksDataFunctions.createTask(
-      user._id.toString(),
-      sampleTask2.title + " " + j.toString(),
-      sampleTask2.textBody,
-      sampleTask2.dateAddedTo,
-      sampleTask2.priority,
-      sampleTask2.tag,
-      sampleTask2.checked
-    );
-    j += 1;
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   await tasksDataFunctions.createTask(
+  //     user._id.toString(),
+  //     sampleTask2.title + " " + j.toString(),
+  //     sampleTask2.textBody,
+  //     sampleTask2.dateAddedTo,
+  //     sampleTask2.priority,
+  //     sampleTask2.tag,
+  //     sampleTask2.checked
+  //   );
+  //   j += 1;
+  // }
 
   // Seed reminders
   const sampleReminder = {
@@ -278,7 +278,7 @@ export async function runSetup(datestring, user) {
     const sampleTask2 = {
       title: "Buy groceries",
       textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
-      dateCreated: null,
+      dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
       dateAddedTo: null,
       priority: 3,
       tag: "personal",
@@ -295,19 +295,19 @@ export async function runSetup(datestring, user) {
       sampleTask2.tag,
       sampleTask2.checked
     );
-    // TODO use when you want to check right pane scrollability
-    for (let i = 0; i < 10; i++) {
-      await tasksDataFunctions.createTask(
-        user._id.toString(),
-        sampleTask2.title + " " + j.toString(),
-        sampleTask2.textBody,
-        sampleTask2.dateAddedTo,
-        sampleTask2.priority,
-        sampleTask2.tag,
-        sampleTask2.checked
-      );
-      j += 1;
-    }
+    // // // TODO use when you want to check right pane scrollability
+    // for (let i = 0; i < 10; i++) {
+    //   await tasksDataFunctions.createTask(
+    //     user._id.toString(),
+    //     sampleTask2.title + " " + j.toString(),
+    //     sampleTask2.textBody,
+    //     sampleTask2.dateAddedTo,
+    //     sampleTask2.priority,
+    //     sampleTask2.tag,
+    //     sampleTask2.checked
+    //   );
+    //   j += 1;
+    // }
   }
 
   const updatedUser = await usersDataFunctions.getUser(user._id.toString());

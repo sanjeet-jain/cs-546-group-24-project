@@ -55,7 +55,7 @@
   {{#if rightPaneItems.meetings.length }}
   <div class="card-body">
     <span class="card-title" id="top50_meetings_title">Unassigned Meetings</span>
-    <div class="d-grid gap-1" id="top50items">
+    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings">
       {{#each rightPaneItems.meetings}}
 
 
@@ -72,7 +72,7 @@
   {{else}}
   <div class="card-body">
     <span class="card-title" id="top50_meetings_title">There are no Unassigned Meetings </span>
-    <div class="d-grid gap-1" id="top50items"></div>
+    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings"></div>
   </div>
 
   {{/if}}
@@ -80,7 +80,7 @@
   {{#if rightPaneItems.tasks.length }}
   <div class="card-body">
     <span class="card-title" id="top50_tasks_title">Unassigned Tasks</span>
-    <div class="d-grid gap-1" id="top50items">
+    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks">
       {{#each rightPaneItems.tasks}}
 
       <div draggable="true" class="badge border-0 bg-danger text-wrap text-center  draggable-event-button"
@@ -99,7 +99,7 @@
   {{else}}
   <div class="card-body">
     <span class="card-title" id="top50_tasks_title">There are no Unassigned tasks </span>
-    <div class="d-grid gap-1" id="top50items"></div>
+    <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_tasks"></div>
   </div>
 
   {{/if}}
@@ -112,7 +112,7 @@
   {{#if rightPaneItems.backlogtasks.length }}
   <div class="card-body">
     <span class="card-title" id="backlog_tasks_title">Backlog Tasks</span>
-    <div class="d-grid gap-1" id="backlogitems">
+    <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems">
       {{#each rightPaneItems.backlogtasks}}
       <div draggable="true"
         class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center draggable-event-button"
@@ -132,7 +132,7 @@
   {{else}}
   <div class="card-body">
     <span class="card-title" id="backlog_tasks_title">There are no Backlog Tasks</span>
-    <div class="d-grid gap-1" id="backlogitems"></div>
+    <div class="d-grid gap-1 overflow-scroll-y" id="backlogitems"></div>
   </div>
 
   {{/if}}

@@ -1417,9 +1417,9 @@ function loadLeftPaneCells(data) {
     display_current_items_div.innerText = "There are no events for the day";
     return;
   }
+  let eventDiv = document.createElement("div");
+  eventDiv.classList.add("d-grid", "gap-1");
   events.forEach((event) => {
-    let eventDiv = document.createElement("div");
-    eventDiv.classList.add("d-grid", "gap-1");
     let eventButton = document.createElement("button");
     let logoClass = "";
     let buttonClass = "";

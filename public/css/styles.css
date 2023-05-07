@@ -173,3 +173,13 @@ button[data-bs-event-type="task"] {
   width: 80%;
   font-size: inherit;
 }
+div.card-body div.overflow-scroll-y {
+  max-height: 50vh;
+}
+
+div.backlog_items_card div.card-body div.overflow-scroll-y {
+  max-height: 25vh;
+}
+div.top50items_card div.card-body div.overflow-scroll-y {
+  max-height: 25vh;
+}

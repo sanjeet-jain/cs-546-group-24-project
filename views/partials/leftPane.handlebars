@@ -10,7 +10,7 @@
     <div class="card-body">
         {{#if displayItems.length includeZero=true}}
         <span class="card-title" id="selected_date">Items for<br> {{selectedDate}}</span>
-        <div class="d-grid gap-1" id="display_current_items">
+        <div class="d-grid gap-1 overflow-scroll-y" id="display_current_items">
             {{#if displayItems.length includeZero=false}}
             {{#each displayItems}}
             {{#if (eq this.type "reminder")}}
@@ -57,7 +57,7 @@
 
         {{else}}
         <span class="card-title" id="selected_date">Select a Date to show events here!</span>
-        <div class="d-grid gap-1" id="display_current_items">
+        <div class="d-grid gap-1 overflow-scroll-y" id="display_current_items">
         </div>
         {{/if}}
     </div>
