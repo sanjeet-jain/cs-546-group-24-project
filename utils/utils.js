@@ -451,6 +451,28 @@ const utils = {
       throw new Error(`Error during applying filter condition`);
     }
   },
+  checkIfDateIsBeyondRange(date) {
+    let dayjsDate = dayjs(
+      date,
+      ["YYYY-MM-DDTHH:mm", "YYYY-MM-DDTHH", "YYYY-MM-DD", "YYYY-M-D"],
+      true
+    );
+    if (
+      !dayjsDate.isValid() ||
+      dayjsDate.year() < constants.yearRange[0] ||
+      dayjsDate.year() > constants.yearRange[constants.yearRange.length - 1]
+    ) {
+      throw new Error(
+        `Please give a validate Date between  ${dayjs()
+          .year(constants.yearRange[0])
+          .startOf("year")
+          .format("YYYY-MMMM-DD")} - ${dayjs()
+          .year(constants.yearRange[constants.yearRange.length - 1])
+          .endOf("year")
+          .format("YYYY-MMMM-DD")}`
+      );
+    }
+  },
 };
 
 export default utils;

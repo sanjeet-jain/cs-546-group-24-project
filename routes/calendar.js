@@ -5,10 +5,6 @@ import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 import dayjs from "dayjs";
 
-/**
- *
- */
-
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -59,6 +55,7 @@ router.route("/week").get(async (req, res) => {
   if (requestedWeek === "Invalid Date") {
     requestedWeek = undefined;
   }
+
   const {
     now,
     month,
@@ -242,6 +239,7 @@ router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
   } catch (e) {
     selectedDate = dayjs().toDate();
   }
+  utils.checkIfDateIsBeyondRange(dayjs(selectedDate).format("YYYY-MM-DD"));
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
   const selectedDayItems = await getSelectedDayItems(
@@ -263,7 +261,7 @@ async function getWeeksData(req, currentDate = undefined) {
   }
   const month = now.getMonth();
   const year = now.getFullYear();
-
+  utils.checkIfDateIsBeyondRange(dayjs(now).format("YYYY-MM-DD"));
   // calculate the previous and next month and year
   let prevMonth = month === 0 ? 11 : month - 1;
   let prevYear = year - 1;
