@@ -1,22 +1,9 @@
-body {
-  width: 95vw;
-}
-main {
-  padding-top: 1vh;
-}
-.headBarNav {
-  width: 100%;
-}
-.navbar {
-  right: 1vw;
-  left: 1vw !important;
-}
 .userRightMenu {
   text-align-last: end;
 }
 .center-div {
   height: 85vh;
-  max-width: 60vw;
+  /* max-width: 60vw; */
   min-width: 50vw;
 }
 
@@ -41,7 +28,7 @@ main {
 
 #left-menu-div {
   /* height: 90vh; */
-  width: 15vw;
+  /* width: 15vw; */
 }
 
 #right-menu-div {
@@ -99,10 +86,6 @@ i {
   overflow: hidden;
 }
 
-.display_current_items_card {
-  height: 50%;
-}
-
 html[data-bs-theme="dark"] {
   --text-color: white;
 }
@@ -111,6 +94,7 @@ html[data-bs-theme="light"] {
 }
 .date-clickable {
   color: var(--text-color);
+  z-index: 1;
 }
 
 /* taken from bootstap 5 docs */
@@ -173,13 +157,16 @@ button[data-bs-event-type="task"] {
   width: 80%;
   font-size: inherit;
 }
-div.card-body div.overflow-scroll-y {
+
+#modal-summary-display div.card-body div.overflow-scroll-y {
   max-height: 50vh;
 }
 
-div.backlog_items_card div.card-body div.overflow-scroll-y {
-  max-height: 25vh;
+.display_current_items_card div.card-body div.overflow-scroll-y {
+  max-height: 37vh;
 }
+
+div.backlog_items_card div.card-body div.overflow-scroll-y,
 div.top50items_card div.card-body div.overflow-scroll-y {
-  max-height: 25vh;
+  max-height: 20vh;
 }
