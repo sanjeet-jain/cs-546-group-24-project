@@ -1,11 +1,6 @@
 .userRightMenu {
   text-align-last: end;
 }
-.center-div {
-  height: 85vh;
-  /* max-width: 60vw; */
-  min-width: 50vw;
-}
 
 .active-month {
   text-align: center;
@@ -24,11 +19,6 @@
   border: green !important;
   border-style: dashed !important;
   z-index: 1;
-}
-
-#left-menu-div {
-  /* height: 90vh; */
-  /* width: 15vw; */
 }
 
 #right-menu-div {
