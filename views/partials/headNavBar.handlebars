@@ -117,11 +117,49 @@
     </ul>
   </div>
 
+  {{/if}}
+
+  {{#if week}}
+  <div>
+    <ul class="nav justify-content-center">
+
+      <li class="nav-item">
+        <form method="get" action="/calendar/week">
+          <input type="hidden" name="week" value="{{prevWeekStart}}">
+          <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
+            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+              border:
+              none"></i>
+          </button>
+        </form>
+
+      </li>
+
+      <li class="nav-item">
+        <div class="display-6">{{{displayString}}}</div>
+      </li>
+
+      <li class="nav-item">
+        <form method="get" action="/calendar/week">
+          <input type="hidden" name="week" value="{{nextWeekStart}}">
+          <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
+            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+              none"></i>
+          </button>
+        </form>
+
+      </li>
+
+
+    </ul>
+  </div>
+
+  {{/if}}
+
   <div>
     <button id="show-summary-view" type="button" class="btn btn-primary" data-bs-toggle="modal"
       data-bs-target="#modal-summary-display"><i class="bi-bell"></i></button>
   </div>
-  {{/if}}
   {{/if}}
   {{/if}}
   <div>

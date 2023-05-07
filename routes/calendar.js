@@ -58,6 +58,10 @@ router.route("/month").get(async (req, res) => {
 });
 
 router.route("/week").get(async (req, res) => {
+  let requestedWeek = dayjs(req?.query?.week).toDate();
+  if (requestedWeek === "Invalid Date") {
+    requestedWeek = undefined;
+  }
   const {
     now,
     month,
@@ -67,7 +71,7 @@ router.route("/week").get(async (req, res) => {
     // prevYear,
     // nextMonth,
     // nextYear,
-  } = await getWeeksData(req);
+  } = await getWeeksData(req, requestedWeek);
 
   let week = modalsData.weeks.find((week) => {
     return week.find((day) => {
@@ -78,6 +82,14 @@ router.route("/week").get(async (req, res) => {
       );
     });
   });
+  let prevWeekStart = dayjs(now).subtract(1, "week").format("YYYY-MM-DD");
+  let nextWeekStart = dayjs(now).add(1, "week").format("YYYY-MM-DD");
+
+  let displayString =
+    dayjs(prevWeekStart).format("MMMM DD") +
+    " - " +
+    dayjs(nextWeekStart).format("MMMM DD");
+
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
@@ -93,6 +105,9 @@ router.route("/week").get(async (req, res) => {
     todayItems: todayItems,
     today: today,
     rightPaneItems: await getRightPaneItems(userId),
+    prevWeekStart,
+    nextWeekStart,
+    displayString,
   });
 });
 
