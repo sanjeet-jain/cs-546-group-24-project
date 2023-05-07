@@ -89,6 +89,13 @@ function drag_end_date_cell() {
             `span.${buttonData.bsEventType}-counter`
           );
 
+          let badgeCounter = "";
+          if (!previousDate) {
+            badgeCounter = `.unassigned-${buttonData.bsEventType}s-counter`;
+          } else {
+            badgeCounter = `.backlog-${buttonData.bsEventType}s-counter`;
+          }
+          badgeCounter = document.querySelector(badgeCounter);
           //update month view counters
           let event_counter = td.querySelector("div.event-counters");
           let eventTypeCounter = event_counter.querySelector(
@@ -142,6 +149,7 @@ function drag_end_date_cell() {
           }
           eventTypeCounter.innerText =
             Number.parseInt(eventTypeCounter.innerText.trim() || 0) + 1;
+          badgeCounter.innerText = Number.parseInt(badgeCounter.innerText) - 1;
         },
         error: function (data) {
           alert(

@@ -7,7 +7,8 @@
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#collapseUnassignedMeetings" aria-expanded="false" aria-controls="collapseUnassignedMeetings">
         Unassigned Meetings
-        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+        <span
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger unassigned-meetings-counter">
           {{{rightPaneItems.meetings.length}}}
           <span class="visually-hidden">unread messages</span>
         </span>
@@ -48,7 +49,8 @@
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#collapseUnassignedTasks" aria-expanded="false" aria-controls="collapseUnassignedTasks">
         Unassigned Tasks
-        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+        <span
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger unassigned-tasks-counter">
           {{{rightPaneItems.tasks.length}}}
           <span class="visually-hidden">Unassigned Tasks</span>
       </button>
@@ -94,7 +96,8 @@
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
         data-bs-target="#collapseBacklogTasks" aria-expanded="false" aria-controls="collapseBacklogTasks">
         Backlog Tasks
-        <span class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger">
+        <span
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger backlog-tasks-counter">
           {{{rightPaneItems.backlogtasks.length}}}
           <span class="visually-hidden">Backlog Tasks</span>
       </button>
