@@ -105,7 +105,7 @@ const tasksDataFunctions = {
       title: title,
       textBody: textBody,
       dateCreated: dayjs().format("YYYY-MM-DDTHH:mm"),
-      dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
+      dateAddedTo: dateAddedTo,
       priority: priority,
       tag: tag,
       checked: checked,
