@@ -154,8 +154,8 @@ const meetingsDataFunctions = {
             newDateAddedTo = dateAddedToObject.add(1, "day");
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = dateDueOnObject.add(1, "week");
+            newDateAddedTo = dateAddedToObject.add(1, "week");
             break;
           case "month":
             newDateDueOn = dateDueOnObject.add(1, "month");
@@ -171,12 +171,14 @@ const meetingsDataFunctions = {
         dateDueOnObject = newDateDueOn.clone();
         dateAddedToObject = newDateAddedTo.clone();
         let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
+        let expired = newDateDueOn.diff(dayjs()) > 0 ? false : true;
         const meeting = {
           ...updatedMeeting,
           dateCreated: dateCreated,
           dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
           dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
           repeatingGroup: repeatingGroup,
+          expired: expired,
         };
         meetingObjects.push(meeting);
       }
@@ -213,7 +215,15 @@ const meetingsDataFunctions = {
       updatedMeeting.repeatingGroup = null;
     }
     // if theres no change in repeating status means normal update
-
+    if (
+      (updatedMeeting.dateAddedTo === null &&
+        updatedMeeting.dateDueOn === null) ||
+      dayjs(updatedMeeting.dateDueOn).diff(dayjs()) > 0
+    ) {
+      updatedMeeting.expired = false;
+    } else {
+      updatedMeeting.expired = true;
+    }
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
       { $set: updatedMeeting }
@@ -410,8 +420,8 @@ const meetingsDataFunctions = {
             newDateAddedTo = dateAddedToObject.add(1, "day");
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = dateDueOnObject.add(1, "week");
+            newDateAddedTo = dateAddedToObject.add(1, "week");
             break;
           case "month":
             newDateDueOn = dateDueOnObject.add(1, "month");

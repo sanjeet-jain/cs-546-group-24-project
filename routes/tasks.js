@@ -4,11 +4,12 @@ import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
 import dayjs from "dayjs";
 const router = Router();
+import xss from "xss";
 
 router
   .route("/tasks/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId;
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(userId);
       userId = userId.trim();
@@ -23,7 +24,7 @@ router
     }
   })
   .post(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId;
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(userId);
       userId = userId.trim();
@@ -32,6 +33,14 @@ router
     }
     try {
       let { title, textBody, dateAddedTo, priority, tag, checked } = req.body;
+
+      title = xss(title);
+      textBody = xss(textBody);
+      dateAddedTo = xss(dateAddedTo);
+      priority = xss(priority);
+      tag = xss(tag);
+      checked = xss(checked);
+
       utils.checkObjectIdString(userId);
       utils.validateStringInputWithMaxLength(
         title,
@@ -68,7 +77,11 @@ router
         tag = "tasks";
       }
 
-      if (typeof checked === "undefined") {
+      if (
+        typeof checked === "undefined" ||
+        checked.trim().length === 0 ||
+        checked === "false"
+      ) {
         checked = false;
       } else {
         if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
@@ -110,6 +123,12 @@ router
           .status(400)
           .json({ error: "There are no fields in the request body" });
       }
+      title = xss(title);
+      textBody = xss(textBody);
+      dateAddedTo = xss(dateAddedTo);
+      priority = xss(priority);
+      tag = xss(tag);
+      checked = xss(checked);
       utils.validateStringInputWithMaxLength(
         title,
         "title",
@@ -146,7 +165,11 @@ router
         taskPutData.tag = "tasks";
       }
 
-      if (typeof checked === "undefined") {
+      if (
+        typeof checked === "undefined" ||
+        checked.trim().length === 0 ||
+        checked === "false"
+      ) {
         taskPutData.checked = false;
       } else {
         if (typeof dateAddedTo === "string" && dateAddedTo.length === 0) {
@@ -174,11 +197,13 @@ router
   })
 
   .delete(utils.validateUserId, async (req, res) => {
+    let userId = xss(req.params.userId);
+    let taskId = xss(req.params.taskId);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId.trim();
-      utils.checkObjectIdString(req.params.taskId);
-      const taskId = req.params.taskId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(taskId);
+      taskId = taskId.trim();
       const removedTask = await tasksDataFunctions.removeTask(taskId, userId);
       res.json(removedTask);
     } catch (e) {
@@ -186,11 +211,13 @@ router
     }
   })
   .get(utils.validateUserId, async (req, res) => {
+    let userId = xss(req.params.userId);
+    let taskId = xss(req.params.taskId);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId.trim();
-      utils.checkObjectIdString(req.params.taskId);
-      const taskId = req.params.taskId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(taskId);
+      taskId = taskId.trim();
       const task = await tasksDataFunctions.getTaskById(taskId, userId);
       res.json(task);
     } catch (e) {
@@ -201,18 +228,26 @@ router
 router
   .route("/:userId/:taskId/dateAddedTo")
   .put(utils.validateUserId, async (req, res) => {
+    let userId = xss(req.params.userId);
+    let taskId = xss(req.params.taskId);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
       utils.checkObjectIdString(req.params.taskId);
-      const taskId = req.params.taskId.trim();
+      taskId = taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-
+      //TODO Validate Date Added To before using this
       taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
         "YYYY-MM-DDTHH:mm"
       );
       let { title, textBody, dateAddedTo, priority, tag, checked } =
         taskPutData;
+      title = xss(title);
+      textBody = xss(textBody);
+      dateAddedTo = xss(dateAddedTo);
+      priority = xss(priority);
+      tag = xss(tag);
+      checked = xss(checked);
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)
@@ -235,8 +270,14 @@ router
         "tag",
         constants.stringLimits["tag"]
       );
-      if (typeof checked === "undefined") {
+      if (
+        typeof checked === "undefined" ||
+        checked.trim().length === 0 ||
+        checked === "false"
+      ) {
         checked = false;
+      } else {
+        checked = true;
       }
       taskPutData.checked = utils.validateBooleanInput(checked, "checked");
 
@@ -255,11 +296,20 @@ router
   .route("/:userId/:taskId/:isChecked")
   .put(utils.validateUserId, async (req, res) => {
     try {
-      const taskId = req.params.taskId.trim();
+      const taskId = xss(req.params.taskId);
       utils.checkObjectIdString(taskId);
-      const userId = req.params.userId.trim();
+      const userId = xss(req.params.userId);
       utils.checkObjectIdString(userId);
-      let checked = req.params.isChecked.trim();
+      let checked = xss(req.params.isChecked);
+      if (
+        typeof checked === "undefined" ||
+        checked.trim().length === 0 ||
+        checked === "false"
+      ) {
+        checked = false;
+      } else {
+        checked = true;
+      }
       checked = utils.validateBooleanInput(checked, "checked");
       const task = await tasksDataFunctions.getTaskById(taskId, userId);
 
