@@ -1378,7 +1378,9 @@ function checkTaskValidations(form) {
     return true;
   } else return false;
 }
-let selectedDateCell = "";
+let selectedDateCell = new URLSearchParams(window.location.search).get(
+  "selectedDateCell"
+);
 function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
@@ -1391,6 +1393,7 @@ function clickableDateCells() {
       let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
       selectedDateCell = selectedDate;
+      setPageUrlForSelectedDateCell(selectedDate, false);
       setDatepickerValue(selectedDate);
     });
   });
@@ -1511,10 +1514,22 @@ function miniCalendarLoader() {
   $("#datepickerContainer")
     .datepicker({
       format: "yyyy-mm-dd",
-      autoclose: true,
+      autoclose: false,
       todayHighlight: true,
+      startDate: dayjs()
+        .subtract(2, "year")
+        .startOf("year")
+        .format("YYYY-MM-DD"),
+      endDate: dayjs().add(2, "year").endOf("year").format("YYYY-MM-DD"),
     })
+    .datepicker("setDate", selectedDateCell)
     .on("changeDate", function (e) {
+      if (dayjs(selectedDateCell).month() !== dayjs(e.date).month()) {
+        selectedDateCell = dayjs(e.date).format("YYYY-M-D");
+        setPageUrlForSelectedDateCell(selectedDateCell);
+      }
+      selectedDateCell = dayjs(e.date).format("YYYY-M-D");
+      setPageUrlForSelectedDateCell(selectedDateCell, false);
       let selected_date_div = document.getElementById("selected_date");
       selected_date_div.innerText = `Items for
       ${dayjs(e.date).format("MMMM DD YYYY")}`;
@@ -1765,7 +1780,10 @@ function simulateTdCellClick() {
     td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
   }
 }
-function setPageUrlForSelectedDateCell(selectedDate = selectedDateCell) {
+function setPageUrlForSelectedDateCell(
+  selectedDate = selectedDateCell,
+  redirect = true
+) {
   const urlParams = new URLSearchParams(window.location.search);
 
   if (urlParams.has("selectedDateCell")) {
@@ -1782,7 +1800,11 @@ function setPageUrlForSelectedDateCell(selectedDate = selectedDateCell) {
     urlParams.toString();
 
   // Navigate to the new URL
-  window.location.href = newUrl;
+  if (redirect) {
+    window.location.href = newUrl;
+  } else {
+    history.pushState(null, "", newUrl);
+  }
 }
 
 submitMeetingForm();

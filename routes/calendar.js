@@ -19,7 +19,7 @@ router.route("/month").get(async (req, res) => {
       prevYear,
       nextMonth,
       nextYear,
-    } = await getWeeksData(req);
+    } = await getWeeksData(req, req?.query?.selectedDateCell);
     const userId = req?.session?.user?.user_id.trim();
     utils.checkObjectIdString(userId);
     let today = dayjs().format("MMMM DD YYYY");
@@ -53,7 +53,9 @@ router.route("/month").get(async (req, res) => {
 });
 
 router.route("/week").get(async (req, res) => {
-  let requestedWeek = dayjs(req?.query?.week).toDate();
+  let requestedWeek = dayjs(
+    req?.query?.week || req?.query?.selectedDateCell
+  ).toDate();
   if (requestedWeek === "Invalid Date") {
     requestedWeek = undefined;
   }
@@ -113,7 +115,9 @@ router.route("/week").get(async (req, res) => {
 router.route("/day/:selectedDate?").get(async (req, res) => {
   let currentDate;
   let selectedDate =
-    req.params?.selectedDate?.trim() || req?.query?.date?.trim();
+    req.params?.selectedDate?.trim() ||
+    req?.query?.date?.trim() ||
+    req?.query?.selectedDateCell?.trim();
   try {
     selectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
     utils.validateDate(selectedDate, "Date of Birth");
@@ -249,9 +253,16 @@ router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
 });
 async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
-  const now = currentDate || dayjs().toDate();
-  const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
-  const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
+  let now;
+  if (currentDate) {
+    now = dayjs(currentDate).toDate();
+  } else {
+    now = dayjs();
+    const { month = now.month(), year = now.year() } = req.query;
+    now = now.set("month", month).set("year", year).toDate();
+  }
+  const month = now.getMonth();
+  const year = now.getFullYear();
 
   // calculate the previous and next month and year
   let prevMonth = month === 0 ? 11 : month - 1;
