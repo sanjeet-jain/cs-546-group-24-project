@@ -1,7 +1,40 @@
 {{#if session}}
 {{#if (eq title "Calendar")}}
 
+
+
+
+
 <div class="accordion" id="rightPaneUnassignedAndBacklogAccordion">
+  <div class="accordion-item">
+    <span class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapseHelpAccordion" aria-expanded="true" aria-controls="collapseHelpAccordion">
+        Calendar Helper
+      </button>
+    </span>
+    <div id="collapseHelpAccordion" class="accordion-collapse collapse show "
+      data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
+      <div class="accordion-body">
+        <ul>
+          {{#if weeks}}
+          <li>the month view shows the count of events each day</li>
+          <li>any washed out items means its in the past</li>
+          <li>any striked out item means its completed</li>
+          {{else}}
+          <li>any solid colored item means its active</li>
+          <li>any washed out items means its in the past</li>
+          <li>any striked out item means its completed</li>
+          {{/if}}
+          <li>you can create a new event by clicking the Add Event Button</li>
+          <li>you can also filter the entire page based on the filter button</li>
+          <li>you can drag drop items from the lists below to any date you want</li>
+          <li>you can edit/delete the events by clicking on them</li>
+          <li>you can see a summary of todays items by clicking the bell icon</li>
+        </ul>
+      </div>
+    </div>
+  </div>
   <div class="accordion-item">
     <span class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -17,7 +50,7 @@
     <div id="collapseUnassignedMeetings" class="accordion-collapse collapse "
       data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
-        <div class="card top50items_card">
+        <div class="card unassigned_items_card">
           {{#if rightPaneItems.meetings.length }}
           <div class="card-body">
             <div class="d-grid gap-1 overflow-scroll-y" id="top50_unassigned_meetings">
@@ -61,7 +94,7 @@
     <div id="collapseUnassignedTasks" class="accordion-collapse collapse "
       data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
-        <div class="card top50items_card">
+        <div class="card unassigned_items_card">
 
           {{#if rightPaneItems.tasks.length }}
           <div class="card-body">
@@ -143,11 +176,7 @@
       </div>
     </div>
   </div>
-</div>
 
-
-
-<div class="accordion" id="rightPaneUpcomingItemsAccordion">
   <div class="accordion-item">
     <span class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -163,9 +192,9 @@
       </button>
     </span>
     <div id="collapseUpcomingItemsAccordion" class="accordion-collapse collapse "
-      data-bs-parent="#rightPaneUpcomingItemsAccordion">
+      data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
-        <div class="card">
+        <div class="card top50items_card">
           {{#if rightPaneItems.upcoming.length }}
           <div class="card-body">
             <div class="d-grid gap-1 overflow-scroll-y" id="top50_upcoming_items">
@@ -207,5 +236,7 @@
     </div>
   </div>
 </div>
+
+
 {{/if}}
 {{/if}}

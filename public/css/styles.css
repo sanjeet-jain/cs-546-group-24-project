@@ -153,8 +153,12 @@ button[data-bs-event-type="task"] {
 }
 
 div.backlog_items_card div.card-body div.overflow-scroll-y,
-div.top50items_card div.card-body div.overflow-scroll-y {
+div.unassigned_items_card div.card-body div.overflow-scroll-y {
   max-height: 20vh;
+}
+
+div.top50items_card div.card-body div.overflow-scroll-y {
+  max-height: 50vh;
 }
 
 #calendar-div table {

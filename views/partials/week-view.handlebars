@@ -22,8 +22,9 @@
       {{#each this.modalData.meetings}}
       {{#if (eq this.timeslotStart ../../this)}}
 
-      <button class="badge  border-0 event-pill swatch-cyan text-wrap  text-center event-button" data-bs-toggle="modal"
-        data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
+      <button
+        class="badge  border-0 event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}} text-wrap  text-center event-button"
+        data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-calendar-event"></i>
         {{{this.title}}}</button>
@@ -52,7 +53,8 @@
       {{#if this.modalData.reminders.length}}
       {{#each this.modalData.reminders}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <button class="badge  border-0 event-pill swatch-indigo  text-wrap  text-center event-button"
+      <button
+        class="badge  border-0 event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
         data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-alarm"></i>
