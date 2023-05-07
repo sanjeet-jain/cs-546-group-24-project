@@ -473,12 +473,12 @@ function submitMeetingForm() {
             submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
-              "Meeting updated Successfully! Please refresh the page!";
+              "Meeting updated Successfully! Page will refresh automatically";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateMeetingsModal(data.userId, data.meetingId);
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -620,10 +620,10 @@ function submitReminderForm() {
             submitbutton.disabled = false;
             submitbutton.innerHTML = oldHtml;
             resultDiv.innerText =
-              "Reminder Updated Successfully! Please refresh the page!";
+              "Reminder Updated Successfully! Page will refresh automatically";
             resultDiv.classList.add("alert", "alert-success");
 
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -674,12 +674,12 @@ function submitTaskForm() {
             submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
-              "Task updated Successfully! Please refresh the page!";
+              "Task updated  Successfully! Page will refresh automatically";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateTasksModal(data.userId, data.taskId);
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -763,7 +763,7 @@ function submitNotesForm() {
             // if status code 200 update modal
             // populateNotesModal(data.userId, data.notesId);
 
-            setTimeout(location.reload.bind(location), 2000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -1491,6 +1491,10 @@ function loadLeftPaneCells(data) {
       checkbox.setAttribute("aria-label", "Task Checkbox");
       if (event.checked === true) {
         checkbox.checked = true;
+        eventButton.classList.add("task-completed");
+      } else {
+        checkbox.checked = false;
+        eventButton.classList.remove("task-completed");
       }
       taskDiv.appendChild(checkbox);
       taskDiv.appendChild(eventButton);
@@ -1613,7 +1617,7 @@ function deleteButton() {
               resultDiv.classList.add("alert", "alert-success");
               event.target.disabled = false;
               event.target.innerHTML = oldHtml;
-              setTimeout(location.reload.bind(location), 2000);
+              setTimeout(location.reload.bind(location), 1500);
             },
             error: function (data) {
               let resultDiv = document.getElementById(
@@ -1666,7 +1670,7 @@ function deleteButton() {
             resultDiv.classList.add("alert", "alert-success");
             event.target.disabled = false;
             event.target.innerHTML = oldHtml;
-            setTimeout(location.reload.bind(location), 2000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             let resultDiv = document.getElementById(
@@ -1735,11 +1739,11 @@ function handleCheckboxClick(event) {
     success: function (data) {
       if (isChecked) {
         alert("Task is marked Complete");
-        setPageUrlForSelectedDateCell();
       }
       if (!isChecked) {
         alert("Task is marked Incomplete");
       }
+      setPageUrlForSelectedDateCell();
     },
     error: function (data) {
       checkbox.checked = false;
@@ -1748,6 +1752,18 @@ function handleCheckboxClick(event) {
       );
     },
   });
+}
+function simulateTdCellClick() {
+  const params = new URLSearchParams(window.location.search);
+  const tdClass = params.get("selectedDateCell");
+
+  // Get the td element by its ID
+  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
+  console.log(td);
+  // Simulate a click event on the td element
+  if (td) {
+    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
 }
 function setPageUrlForSelectedDateCell() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -1798,3 +1814,4 @@ CheckboxEventListener();
 deleteButton();
 
 filterForm();
+simulateTdCellClick();

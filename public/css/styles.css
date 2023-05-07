@@ -142,6 +142,10 @@ html[data-bs-theme="light"] {
 
 .bg-danger-subtle {
   color: var(--text-color);
+  /* text-decoration: line-through; */
+}
+.task-completed {
+  color: var(--text-color);
   text-decoration: line-through;
 }
 

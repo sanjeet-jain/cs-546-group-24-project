@@ -165,20 +165,7 @@ function drag_end_date_cell() {
     });
   });
 }
-function simulateTdCellClick() {
-  const params = new URLSearchParams(window.location.search);
-  const tdClass = params.get("selectedDateCell");
-
-  // Get the td element by its ID
-  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
-  console.log(td);
-  // Simulate a click event on the td element
-  if (td) {
-    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-  }
-}
 
 drag_end_date_cell();
 dropDownYear();
 dropDownMonth();
-simulateTdCellClick();

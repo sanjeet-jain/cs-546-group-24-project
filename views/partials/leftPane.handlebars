@@ -22,7 +22,8 @@
             {{/if}}
             {{#if (eq this.type "task")}}
             <div class="d-grid gap-1">
-                <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+                <div
+                    class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} text-wrap text-center">
                     <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
                         data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox"
                         {{#if this.checked}}checked {{/if}}>
