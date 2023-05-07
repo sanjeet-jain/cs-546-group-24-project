@@ -2,11 +2,11 @@
 {{#if (eq title "Calendar")}}
 <div id="calendar-container">
 
-    <div id="datepickerContainer"></div>
+    <div id="datepickerContainer" class="d-flex justify-content-center border border-1"></div>
 
 
 </div>
-<div class="card display_current_items_card">
+<div class="card display_current_items_card text-center">
     <div class="card-body">
         {{#if displayItems.length includeZero=true}}
         <span class="card-title" id="selected_date">Items for<br> {{selectedDate}}</span>
@@ -14,41 +14,39 @@
             {{#if displayItems.length includeZero=false}}
             {{#each displayItems}}
             {{#if (eq this.type "reminder")}}
-            <div class="d-grid gap-1"><button
-                    class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                    data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
-                    data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
-                        class="bi-alarm">{{this.title}}</i></button></div>
+            <button
+                class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
+                data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
+                data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
+                    class="bi-alarm">{{this.title}}</i></button>
             {{/if}}
             {{#if (eq this.type "task")}}
-            <div class="d-grid gap-1">
-                <div
-                    class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} text-wrap text-center">
-                    <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
-                        data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox"
-                        {{#if this.checked}}checked {{/if}}>
-                    <button
-                        class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button"
-                        data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
-                        data-bs-userId="{{../session.user_id}}" data-bs-event-type="{{this.type}}">
-                        <i class="bi-check2-square"></i>
-                        {{{this.title}}}</button>
-                </div>
+            <div
+                class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} text-wrap text-center">
+                <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+                    data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox"
+                    {{#if this.checked}}checked {{/if}}>
+                <button
+                    class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button"
+                    data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
+                    data-bs-userId="{{../session.user_id}}" data-bs-event-type="{{this.type}}">
+                    <i class="bi-check2-square"></i>
+                    {{{this.title}}}</button>
             </div>
             {{/if}}
             {{#if (eq this.type "meeting")}}
-            <div class="d-grid gap-1"><button
-                    class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                    data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
-                    data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
-                        class="bi-calendar-event">{{this.title}}</i></button></div>
+            <button
+                class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
+                data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+                data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+                    class="bi-calendar-event">{{this.title}}</i></button>
             {{/if}}
             {{#if (eq this.type "notes")}}
-            <div class="d-grid gap-1"><button
-                    class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                    data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
-                    data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
-                        class="bi-file-text">{{this.title}}</i></button></div>
+            <button
+                class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
+                data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
+                data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
+                    class="bi-file-text">{{this.title}}</i></button>
             {{/if}}
             {{/each}}
             {{else}}There are no events for the day
