@@ -8,12 +8,7 @@ import dayjs from "dayjs";
 /**
  *
  */
-const filter = {
-  eventTypes: constants.eventTypes,
-  tags: [],
-  eventTypeSelected: [],
-  tagsSelected: [],
-};
+
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -44,7 +39,7 @@ router.route("/month").get(async (req, res) => {
       prevYear: prevYear,
       nextMonth: nextMonth,
       nextYear: nextYear,
-      filter: filter,
+      filter: req.session.user.filter,
       todayItems: todayItems,
       today: today,
       rightPaneItems: await getRightPaneItems(userId),
@@ -93,7 +88,11 @@ router.route("/week").get(async (req, res) => {
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
-  let todayItems = await getSelectedDayItems(userId, today);
+  let todayItems = await getSelectedDayItems(
+    userId,
+    today,
+    req.session.user.filter
+  );
   res.render("calendar/calendarv2", {
     title: "Calendar",
     weekdays: constants.weekdays,
@@ -101,7 +100,7 @@ router.route("/week").get(async (req, res) => {
     currentMonth: month,
     currYear: year,
     timeslots: constants.timeslots,
-    filter: filter,
+    filter: req.session.user.filter,
     todayItems: todayItems,
     today: today,
     rightPaneItems: await getRightPaneItems(userId),
@@ -153,12 +152,20 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
   });
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
-  let displayItems = await getSelectedDayItems(userId, selectedDate);
+  let displayItems = await getSelectedDayItems(
+    userId,
+    selectedDate,
+    req.session.user.filter
+  );
   selectedDate = dayjs(selectedDate).format("MMMM DD YYYY");
 
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
-  let todayItems = await getSelectedDayItems(userId, today);
+  let todayItems = await getSelectedDayItems(
+    userId,
+    today,
+    req.session.user.filter
+  );
 
   let prevDate = dayjs(now).subtract(1, "day").format("YYYY-MM-DD");
   let nextDate = dayjs(now).add(1, "day").format("YYYY-MM-DD");
@@ -168,7 +175,7 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
-    filter: filter,
+    filter: req.session.user.filter,
     displayItems: displayItems,
     selectedDate: selectedDate,
     todayItems: todayItems,
@@ -199,11 +206,11 @@ router.route("/filter").post((req, res) => {
   try {
     utils.isStrArrValid(eventTypeSelected);
     eventTypeSelected.forEach((selected) => {
-      if (!filter.eventTypes.includes(selected.trim())) {
+      if (!req.session.user.filter.eventTypes.includes(selected.trim())) {
         throw new Error();
       }
     });
-    filter.eventTypeSelected = eventTypeSelected;
+    req.session.user.filter.eventTypeSelected = eventTypeSelected;
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
@@ -211,11 +218,11 @@ router.route("/filter").post((req, res) => {
   try {
     utils.isStrArrValid(tagsSelected);
     tagsSelected.forEach((selected) => {
-      if (!filter.tags.includes(selected.trim())) {
+      if (!req.session.user.filter.tags.includes(selected.trim())) {
         throw new Error();
       }
     });
-    filter.tagsSelected = tagsSelected;
+    req.session.user.filter.tagsSelected = tagsSelected;
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
@@ -233,7 +240,11 @@ router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
   }
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
-  const selectedDayItems = await getSelectedDayItems(userId, selectedDate);
+  const selectedDayItems = await getSelectedDayItems(
+    userId,
+    selectedDate,
+    req.session.user.filter
+  );
   res.status(200).json({ selectedDayItems, userId });
 });
 async function getWeeksData(req, currentDate = undefined) {
@@ -267,7 +278,12 @@ async function getWeeksData(req, currentDate = undefined) {
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
 
-  const modalsData = await getModalData(weeks, userId, now);
+  const modalsData = await getModalData(
+    weeks,
+    userId,
+    now,
+    req.session.user.filter
+  );
   // set global weeks data
 
   return {
@@ -361,7 +377,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   return weeks;
 }
 
-async function getModalData(weeks, userId, now) {
+async function getModalData(weeks, userId, now, filter) {
   try {
     const response = await eventDataFunctions.getAllEvents(userId, filter);
     weeks.forEach((week) => {
@@ -440,7 +456,7 @@ function getTimeSlot(dateString) {
   return time;
 }
 
-async function getSelectedDayItems(userId, selectedDate) {
+async function getSelectedDayItems(userId, selectedDate, filter) {
   const now = dayjs(selectedDate).toDate();
   const response = await eventDataFunctions.getAllEvents(userId, filter);
 
