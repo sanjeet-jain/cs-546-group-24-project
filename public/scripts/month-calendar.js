@@ -62,9 +62,12 @@ function drag_end_date_cell() {
       console.log(
         "Button " + buttonData.bsEventid + " dropped into cell " + cellId
       );
-      let button = document.querySelector(
+      let buttonList = document.querySelectorAll(
         `button[data-bs-eventid='${buttonData.bsEventid}']`
       );
+      let button = document
+        .getElementById("right-menu-div")
+        .querySelector(`button[data-bs-eventid='${buttonData.bsEventid}']`);
       $.ajax({
         method: "PUT",
         url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedto`,
@@ -72,11 +75,17 @@ function drag_end_date_cell() {
         success: function (data) {
           button.click();
           const previousDate = data.previousDate;
-          button.parentNode.removeChild(button);
+          buttonList.forEach((button) => {
+            if (buttonData.bsEventType === "task") {
+              button.parentNode.parentNode.removeChild(button.parentNode);
+            } else {
+              button.parentNode.removeChild(button);
+            }
+          });
           let parentTd = document.querySelector(
             `td[data-bs-day="${previousDate}"]`
           );
-          let oldEventCounter = parentTd.querySelector(
+          let oldEventCounter = parentTd?.querySelector(
             `span.${buttonData.bsEventType}-counter`
           );
 
@@ -156,6 +165,20 @@ function drag_end_date_cell() {
     });
   });
 }
+function simulateTdCellClick() {
+  const params = new URLSearchParams(window.location.search);
+  const tdClass = params.get("selectedDateCell");
+
+  // Get the td element by its ID
+  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
+  console.log(td);
+  // Simulate a click event on the td element
+  if (td) {
+    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
+}
+
 drag_end_date_cell();
 dropDownYear();
 dropDownMonth();
+simulateTdCellClick();

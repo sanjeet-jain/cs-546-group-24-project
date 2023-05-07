@@ -678,7 +678,7 @@ function submitTaskForm() {
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
-            populateTasksModal(data.userId, data.taskId);
+            //populateTasksModal(data.userId, data.taskId);
             setTimeout(location.reload.bind(location), 3000);
           },
           error: function (data) {
@@ -1732,7 +1732,6 @@ function handleCheckboxClick(event) {
   $.ajax({
     method: "PUT",
     url: `/task/${userId}/${taskId}/${isChecked}`,
-    data: { checked: isChecked },
     success: function (data) {
       if (isChecked) {
         alert("Task is marked Complete");
@@ -1743,7 +1742,10 @@ function handleCheckboxClick(event) {
       }
     },
     error: function (data) {
-      alert("Some error occured while marking task");
+      checkbox.checked = false;
+      alert(
+        data?.responseJSON?.error || "Some error occured while marking task"
+      );
     },
   });
 }
@@ -1765,19 +1767,6 @@ function setPageUrlForSelectedDateCell() {
 
   // Navigate to the new URL
   window.location.href = newUrl;
-}
-
-function simulateTdCellClick() {
-  const params = new URLSearchParams(window.location.search);
-  const tdClass = params.get("selectedDateCell");
-
-  // Get the td element by its ID
-  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
-  console.log(td);
-  // Simulate a click event on the td element
-  if (td) {
-    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-  }
 }
 
 submitMeetingForm();
@@ -1809,4 +1798,3 @@ CheckboxEventListener();
 deleteButton();
 
 filterForm();
-simulateTdCellClick();

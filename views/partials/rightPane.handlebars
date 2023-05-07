@@ -54,7 +54,7 @@
 <div class="card top50items_card">
   {{#if rightPaneItems.meetings.length }}
   <div class="card-body">
-    <span class="card-title" id="top50_meetings_title">Upcoming Meetings</span>
+    <span class="card-title" id="top50_meetings_title">Unassigned Meetings</span>
     <div class="d-grid gap-1" id="top50items">
       {{#each rightPaneItems.meetings}}
 
@@ -71,7 +71,7 @@
   </div>
   {{else}}
   <div class="card-body">
-    <span class="card-title" id="top50_meetings_title">There are no Meetings for the next 30 days</span>
+    <span class="card-title" id="top50_meetings_title">There are no Unassigned Meetings </span>
     <div class="d-grid gap-1" id="top50items"></div>
   </div>
 
@@ -79,29 +79,29 @@
 
   {{#if rightPaneItems.tasks.length }}
   <div class="card-body">
-    <span class="card-title" id="top50_tasks_title">Upcoming Tasks</span>
+    <span class="card-title" id="top50_tasks_title">Unassigned Tasks</span>
     <div class="d-grid gap-1" id="top50items">
       {{#each rightPaneItems.tasks}}
-      {{#if (eq this.expired false)}}
-      {{#if (eq this.checked false)}}
-      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+
+      <div draggable="true"
+        class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center  draggable-event-button"
+        data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
         <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
           data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
           this.checked}}checked {{/if}}>
-        <button draggable="true"
-          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button draggable-event-button"
+        <button
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button"
           data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
           data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
             class="bi-check2-square">{{this.title}}</i></button>
       </div>
-      {{/if}}
-      {{/if}}
+
       {{/each}}
     </div>
   </div>
   {{else}}
   <div class="card-body">
-    <span class="card-title" id="top50_tasks_title">There are no tasks for the next 30 days</span>
+    <span class="card-title" id="top50_tasks_title">There are no Unassigned tasks </span>
     <div class="d-grid gap-1" id="top50items"></div>
   </div>
 
@@ -119,12 +119,14 @@
       {{#each rightPaneItems.backlogtasks}}
       {{#if (eq this.expired true)}}
       {{#if (eq this.checked false)}}
-      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+      <div draggable="true"
+        class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center draggable-event-button"
+        data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="task">
         <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
           data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
           this.checked}}checked {{/if}}>
-        <button draggable="true"
-          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button draggable-event-button"
+        <button
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button "
           data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
           data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
             class="bi-check2-square">{{this.title}}</i></button>

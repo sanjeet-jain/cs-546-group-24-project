@@ -244,7 +244,11 @@ router
       let checked = req.params.isChecked.trim();
       checked = utils.validateBooleanInput(checked, "checked");
       const task = await tasksDataFunctions.getTaskById(taskId, userId);
+      //dont allow task to be checked if no date assigned
 
+      if (checked && task.dateAddedTo == null) {
+        throw new Error("Add a date to mark this task completed");
+      }
       const taskPutData = {
         title: task.title,
         checked: checked,
