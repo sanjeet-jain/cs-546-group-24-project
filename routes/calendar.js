@@ -86,9 +86,9 @@ router.route("/week").get(async (req, res) => {
   let nextWeekStart = dayjs(now).add(1, "week").format("YYYY-MM-DD");
 
   let displayString =
-    dayjs(prevWeekStart).format("MMMM DD") +
+    dayjs(requestedWeek).startOf("week").format("MMMM DD") +
     " - " +
-    dayjs(nextWeekStart).format("MMMM DD");
+    dayjs(requestedWeek).endOf("week").format("MMMM DD");
 
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);

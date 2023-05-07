@@ -1,304 +1,363 @@
-<nav class="navbar justify-content-between ">
-  <div class="navbar-brand">
+<nav class="navbar container-fluid row">
+  <div class="col-lg-2 col-md-3 col-sm-4 col-12">
 
     <a class="navbar-brand" href="/calendar/month"><i class="bi-calendar-check-fill">TimeWise</i></a>
   </div>
   {{#if session}}
   {{#if (eq title "Calendar")}}
+  <div class="d-flex col-lg-8 col-md-6 col-sm-4 col-12 justify-content-around">
 
-  <div>
-    <ul class="nav justify-content-center">
-      <li class="nav-item">
-        <form id="viewRadioForm">
+    <div>
+      <ul class="nav justify-content-center">
+        <li class="nav-item">
+          <form id="viewRadioForm">
 
-          <div class="btn-group" role="group" aria-label="Calendar View Options
+            <div class="btn-group" role="group" aria-label="Calendar View Options
             Radio">
-            <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio"
-              value="month">
-            <label class="btn" for="monthViewRadio">Month</label>
-            <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio"
-              value="week">
-            <label class="btn " for="weekViewRadio">Week</label>
-            <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio"
-              value="day">
-            <label class="btn " for="dayViewRadio">Day</label>
-          </div>
-        </form>
-      </li>
-      <li class="nav-item">
-
-        <div>
-          <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{else}} {{#if week}}
-            action="/calendar/week" {{else}} {{#if day}} action="/calendar/day" {{/if}} {{/if}} {{/if}}>
-            <button id="today" class="btn btn-primary" type="submit">Today</button>
-          </form>
-        </div>
-
-      </li>
-    </ul>
-  </div>
-  {{#if months}}
-  <div>
-    <ul class="nav justify-content-center">
-
-      <li class="nav-item">
-        <form id="monthCalendarForm" method="get" action="/calendar/month">
-          <input type="hidden" name="month" value="{{prevMonth}}">
-          {{#if (eq currentMonth 0 )}}
-          <input type="hidden" name="year" value="{{prevYear}}">
-          {{else}}
-          <input type="hidden" name="year" value="{{currYear}}">
-          {{/if}}
-          <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
-            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-              border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-      <li class="nav-item">
-        <select id="monthDropDown" class="form-select h-100" aria-label="Month
-          Select">
-          {{#each months}}
-          <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
-          {{/each}}
-        </select>
-      </li>
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/month">
-          <input type="hidden" name="month" value="{{nextMonth}}">
-          {{#if (eq currentMonth 11)}}
-          <input type="hidden" name="year" value="{{nextYear}}">
-          {{else}}
-          <input type="hidden" name="year" value="{{currYear}}">
-          {{/if}}
-          <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
-            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-      <li class="nav-item">
-        <form id="yearCalendarForm" method="get" action="/calendar/month">
-          <input type="hidden" name="month" value="{{currentMonth}}">
-          <input type="hidden" name="year" value="{{prevYear}}">
-          <button type="submit" id="prevYear" class="btn border-0" aria-label="prevYearButton">
-            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-              border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-      <li class="nav-item">
-        <select id="yearDropDown" class="form-select h-100" aria-label="Year
-          Select">
-          {{#each yearRange}}
-          <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
-          {{/each}}
-        </select>
-      </li>
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/month">
-          <input type="hidden" name="month" value="{{currentMonth}}">
-          <input type="hidden" name="year" value="{{nextYear}}">
-          <button type="submit" id="nextYear" class="btn border-0" aria-label="nextYearButton">
-            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-              none"></i>
-          </button>
-        </form>
-      </li>
-    </ul>
-  </div>
-
-  {{/if}}
-
-  {{#if week}}
-  <div>
-    <ul class="nav justify-content-center">
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/week">
-          <input type="hidden" name="week" value="{{prevWeekStart}}">
-          <button type="submit" class="btn border-0" aria-label="prevWeekButton">
-            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-              border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-      <li class="nav-item">
-        <div class="display-6">{{{displayString}}}</div>
-      </li>
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/week">
-          <input type="hidden" name="week" value="{{nextWeekStart}}">
-          <button type="submit" class="btn border-0" aria-label="nextWeekButton">
-            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-
-    </ul>
-  </div>
-
-  {{/if}}
-
-  {{#if day}}
-  <div>
-    <ul class="nav justify-content-center">
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/day">
-          <input type="hidden" name="date" value="{{prevDate}}">
-          <button type="submit" class="btn border-0" aria-label="prevDayButton">
-            <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
-              border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-      <li class="nav-item">
-        <div class="display-6">{{{selectedDate}}}</div>
-      </li>
-
-      <li class="nav-item">
-        <form method="get" action="/calendar/day">
-          <input type="hidden" name="date" value="{{nextDate}}">
-          <button type="submit" class="btn border-0" aria-label="nextDayButton">
-            <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
-              none"></i>
-          </button>
-        </form>
-
-      </li>
-
-
-    </ul>
-  </div>
-
-  {{/if}}
-
-  <div>
-    <button id="show-summary-view" type="button" class="btn btn-primary" data-bs-toggle="modal"
-      data-bs-target="#modal-summary-display"><i class="bi-bell"></i></button>
-  </div>
-  {{/if}}
-  {{/if}}
-  <div>
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-      <div class="offcanvas-header">
-        <span class="offcanvas-title" id="offcanvasNavbarLabel">
-          {{#if session}}
-          Hi {{session.userFirstName}}
-          {{else}}
-          Hi Guest
-          {{/if}}
-        </span>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-          {{#if session.userFirstName}}
-          <li class="nav-item">
-            <a class="nav-link" href="/user/profile">View Profile</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/logout">Logout</a>
-          </li>
-          {{else}}
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/user/login">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/user/signup">Signup</a>
-          </li>
-          {{/if}}
-          <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
-
-          <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
-
-          <li class="nav-item">
-            Theme
-            <div class="btn-group dropend">
-              <button id="themeDropDownButton" type="button" class="btn btn-secondary dropdown-toggle"
-                data-bs-toggle="dropdown" aria-expanded="false">
-
-              </button>
-              <ul class="dropdown-menu">
-                <li><button class="dropdown-item btn " data-bs-theme-value="light" aria-pressed="true"><i
-                      class="bi-sun-fill">Light</i></button>
-                </li>
-
-                <li><button class="dropdown-item btn" data-bs-theme-value="dark" aria-pressed="true"><i
-                      class="bi-moon-stars">Dark</i></button>
-                </li>
-              </ul>
-              <script>
-                // referenced from official documentation https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
-                // Get the <html> element
-                const html = document.querySelector('html');
-
-                // Get the <button> elements inside the dropdown menu
-                const themeButtons = document.querySelectorAll('.dropdown-item[data-bs-theme-value]');
-
-                // Function to set the Bootstrap theme
-                function setTheme(theme) {
-                  html.dataset.bsTheme = theme;
-                  localStorage.setItem('theme', theme);
-                }
-                const themeDropDownButton = document.getElementById("themeDropDownButton")
-                // Function to handle clicks on the theme buttons
-                function handleThemeClick(event) {
-                  // Get the value of the clicked button
-                  const theme = event.currentTarget.dataset.bsThemeValue;
-                  themeDropDownButton.innerHTML = event.currentTarget.innerHTML
-                  // Set the Bootstrap theme
-                  setTheme(theme);
-
-                  // Mark the clicked button as active and the others as inactive
-                  themeButtons.forEach(button => {
-                    button.classList.toggle('active', button === event.currentTarget);
-                    button.setAttribute('aria-pressed', button === event.currentTarget);
-                  });
-                }
-
-                // Add event listeners to the theme buttons
-                themeButtons.forEach(button => {
-                  button.addEventListener('click', handleThemeClick);
-                });
-
-                // Check if the theme is saved in localStorage and set it if it is
-                const savedTheme = localStorage.getItem('theme');
-                if (savedTheme) {
-                  setTheme(savedTheme);
-                  themeButtons.forEach(button => {
-                    button.classList.toggle('active', button.dataset.bsThemeValue === savedTheme);
-                    button.setAttribute('aria-pressed', button.dataset.bsThemeValue === savedTheme);
-                  });
-                }
-                themeDropDownButton.innerHTML = Array.from(themeButtons).filter(x => x.getAttribute('aria-pressed') === "true")[0].innerHTML;
-
-              </script>
+              <input {{#if months}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="monthViewRadio"
+                value="month">
+              <label class="btn" for="monthViewRadio">Month</label>
+              <input {{#if week}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="weekViewRadio"
+                value="week">
+              <label class="btn " for="weekViewRadio">Week</label>
+              <input {{#if day}}checked{{/if}} type="radio" class="btn-check" name="viewBtnRadio" id="dayViewRadio"
+                value="day">
+              <label class="btn " for="dayViewRadio">Day</label>
             </div>
-          </li>
-        </ul>
-        <!-- <form class="d-flex mt-3" role="search">
+          </form>
+        </li>
+        <li class="nav-item">
+
+          <div>
+            <form id="todayForm" method="get" {{#if months}} action="/calendar/month" {{else}} {{#if week}}
+              action="/calendar/week" {{else}} {{#if day}} action="/calendar/day" {{/if}} {{/if}} {{/if}}>
+              <button id="today" class="btn btn-primary" type="submit">Today</button>
+            </form>
+          </div>
+
+        </li>
+      </ul>
+    </div>
+    {{#if months}}
+    <div>
+      <ul class="nav justify-content-center">
+
+        <li class="nav-item">
+          <form id="monthCalendarForm" method="get" action="/calendar/month">
+            <input type="hidden" name="month" value="{{prevMonth}}">
+            {{#if (eq currentMonth 0 )}}
+            <input type="hidden" name="year" value="{{prevYear}}">
+            {{else}}
+            <input type="hidden" name="year" value="{{currYear}}">
+            {{/if}}
+            <button type="submit" id="prevMonth" class="btn border-0" aria-label="prevMonthButton">
+              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+              border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+        <li class="nav-item">
+          <select id="monthDropDown" class="form-select h-100" aria-label="Month
+          Select">
+            {{#each months}}
+            <option value="{{@index}}" {{#if (eq @index ../currentMonth)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+        </li>
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/month">
+            <input type="hidden" name="month" value="{{nextMonth}}">
+            {{#if (eq currentMonth 11)}}
+            <input type="hidden" name="year" value="{{nextYear}}">
+            {{else}}
+            <input type="hidden" name="year" value="{{currYear}}">
+            {{/if}}
+            <button type="submit" id="nextMonth" class="btn border-0" aria-label="nextMonthButton">
+              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+        <li class="nav-item">
+          <form id="yearCalendarForm" method="get" action="/calendar/month">
+            <input type="hidden" name="month" value="{{currentMonth}}">
+            <input type="hidden" name="year" value="{{prevYear}}">
+            <button type="submit" id="prevYear" class="btn border-0" aria-label="prevYearButton">
+              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+              border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+        <li class="nav-item">
+          <select id="yearDropDown" class="form-select h-100" aria-label="Year
+          Select">
+            {{#each yearRange}}
+            <option value="{{this}}" {{#if (eq ../currYear this)}}selected{{/if}}>{{this}}</option>
+            {{/each}}
+          </select>
+        </li>
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/month">
+            <input type="hidden" name="month" value="{{currentMonth}}">
+            <input type="hidden" name="year" value="{{nextYear}}">
+            <button type="submit" id="nextYear" class="btn border-0" aria-label="nextYearButton">
+              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+              none"></i>
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+
+    {{/if}}
+
+    {{#if week}}
+    <div>
+      <ul class="nav justify-content-center">
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/week">
+            <input type="hidden" name="week" value="{{prevWeekStart}}">
+            <button type="submit" class="btn border-0" aria-label="prevWeekButton">
+              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+              border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+        <li class="nav-item">
+          <div class="display-6">{{{displayString}}}</div>
+        </li>
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/week">
+            <input type="hidden" name="week" value="{{nextWeekStart}}">
+            <button type="submit" class="btn border-0" aria-label="nextWeekButton">
+              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+
+      </ul>
+    </div>
+
+    {{/if}}
+
+    {{#if day}}
+    <div>
+      <ul class="nav justify-content-center">
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/day">
+            <input type="hidden" name="date" value="{{prevDate}}">
+            <button type="submit" class="btn border-0" aria-label="prevDayButton">
+              <i class="bi bi-arrow-left-circle" style="font-size: 1.5rem;
+              border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+        <li class="nav-item">
+          <div class="display-6">{{{selectedDate}}}</div>
+        </li>
+
+        <li class="nav-item">
+          <form method="get" action="/calendar/day">
+            <input type="hidden" name="date" value="{{nextDate}}">
+            <button type="submit" class="btn border-0" aria-label="nextDayButton">
+              <i class="bi-arrow-right-circle" style="font-size: 1.5rem; border:
+              none"></i>
+            </button>
+          </form>
+
+        </li>
+
+
+      </ul>
+    </div>
+
+    {{/if}}
+    <div role="toolbar" aria-label="Toolbar with button groups">
+      <div class="btn-group me-2" role="group" aria-label="Add Event Button">
+        <button id="add-event-trigger" type="button" class="btn btn-primary" data-bs-toggle="modal"
+          data-bs-target="#add-event-modal">Add Event</button>
+      </div>
+
+      <div class="btn-group me-2" role="group" aria-label="Filter Button">
+        <div class="dropend">
+          <button class="btn btn-secondary " type="button" id="dropdownMenuButton" data-bs-toggle="dropdown"
+            data-bs-auto-close="false" aria-expanded="false">
+            Select Filter Options
+          </button>
+
+          <!-- Create a dropdown menu -->
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li>
+              <form id="filterForm" action="/calendar/filter" method="POST">
+                <div class="form-group d-grid gap-1 p-2">
+                  {{#each filter.eventTypes}}
+                  <div class="form-check  form-switch">
+                    <input class="form-check-input" role="switch" type="checkbox" value="{{this}}"
+                      id="event-filter-{{this}}" name="event-filter-{{this}}" {{#if (includes
+                      ../filter.eventTypeSelected this)}} checked {{/if}}>
+                    <label class="form-label" for="event-filter-{{this}}">
+                      {{this}}
+                    </label>
+                  </div>
+                  {{/each}}
+
+                  {{#each filter.tags}}
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" role="switch" type="checkbox" value="{{this}}"
+                      id="tag-filter-{{this}}" name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}}
+                      checked {{/if}}>
+                    <label class="form-label" for="tag-filter-{{this}}">
+                      {{this}}
+                    </label>
+                  </div>
+                  {{/each}}
+                  <button type="submit" class="btn btn-primary" id="submit">Submit</button>
+                </div>
+
+              </form>
+
+            </li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  {{/if}}
+  {{/if}}
+  <div class="d-flex align-items-center col-lg-2 col-md-3 col-sm-4 col-12 justify-content-between">
+    {{#if session}}
+    {{#if (eq title "Calendar")}}
+    <div>
+      <button id="show-summary-view" type="button" class="btn btn-primary" data-bs-toggle="modal"
+        aria-label="Show Summary" data-bs-target="#modal-summary-display"><i class="bi-bell"></i></button>
+    </div>
+
+    {{/if}}
+    {{/if}}
+    <div>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <span class="offcanvas-title" id="offcanvasNavbarLabel">
+            {{#if session}}
+            Hi {{session.userFirstName}}
+            {{else}}
+            Hi Guest
+            {{/if}}
+          </span>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            {{#if session.userFirstName}}
+            <li class="nav-item">
+              <a class="nav-link" href="/user/profile">View Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/logout">Logout</a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+              <a class="nav-link" aria-current="page" href="/user/login">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/user/signup">Signup</a>
+            </li>
+            {{/if}}
+            <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+
+            <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+
+            <li class="nav-item">
+              Theme
+              <div class="btn-group dropend">
+                <button id="themeDropDownButton" type="button" class="btn btn-secondary dropdown-toggle"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+
+                </button>
+                <ul class="dropdown-menu">
+                  <li><button class="dropdown-item btn " data-bs-theme-value="light" aria-pressed="true"><i
+                        class="bi-sun-fill">Light</i></button>
+                  </li>
+
+                  <li><button class="dropdown-item btn" data-bs-theme-value="dark" aria-pressed="true"><i
+                        class="bi-moon-stars">Dark</i></button>
+                  </li>
+                </ul>
+                <script>
+                  // referenced from official documentation https://getbootstrap.com/docs/5.3/customize/color-modes/#javascript
+                  // Get the <html> element
+                  const html = document.querySelector('html');
+
+                  // Get the <button> elements inside the dropdown menu
+                  const themeButtons = document.querySelectorAll('.dropdown-item[data-bs-theme-value]');
+
+                  // Function to set the Bootstrap theme
+                  function setTheme(theme) {
+                    html.dataset.bsTheme = theme;
+                    localStorage.setItem('theme', theme);
+                  }
+                  const themeDropDownButton = document.getElementById("themeDropDownButton")
+                  // Function to handle clicks on the theme buttons
+                  function handleThemeClick(event) {
+                    // Get the value of the clicked button
+                    const theme = event.currentTarget.dataset.bsThemeValue;
+                    themeDropDownButton.innerHTML = event.currentTarget.innerHTML
+                    // Set the Bootstrap theme
+                    setTheme(theme);
+
+                    // Mark the clicked button as active and the others as inactive
+                    themeButtons.forEach(button => {
+                      button.classList.toggle('active', button === event.currentTarget);
+                      button.setAttribute('aria-pressed', button === event.currentTarget);
+                    });
+                  }
+
+                  // Add event listeners to the theme buttons
+                  themeButtons.forEach(button => {
+                    button.addEventListener('click', handleThemeClick);
+                  });
+
+                  // Check if the theme is saved in localStorage and set it if it is
+                  const savedTheme = localStorage.getItem('theme');
+                  if (savedTheme) {
+                    setTheme(savedTheme);
+                    themeButtons.forEach(button => {
+                      button.classList.toggle('active', button.dataset.bsThemeValue === savedTheme);
+                      button.setAttribute('aria-pressed', button.dataset.bsThemeValue === savedTheme);
+                    });
+                  }
+                  themeDropDownButton.innerHTML = Array.from(themeButtons).filter(x => x.getAttribute('aria-pressed') === "true")[0].innerHTML;
+
+                </script>
+              </div>
+            </li>
+          </ul>
+          <!-- <form class="d-flex mt-3" role="search">
               <input
                 class="form-control me-2"
                 type="search"
@@ -309,12 +368,13 @@
                 Search
               </button>
             </form> -->
+        </div>
       </div>
-    </div>
-    <button class="btn border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-      aria-controls="offcanvasNavbar" aria-label="User Profile Actions">
-      <i class="bi-person-fill" style="font-size: 2rem"></i>
-    </button>
+      <button class="btn border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+        aria-controls="offcanvasNavbar" aria-label="User Profile Actions">
+        <i class="bi-person-fill" style="font-size: 2rem"></i>
+      </button>
 
+    </div>
   </div>
 </nav>
