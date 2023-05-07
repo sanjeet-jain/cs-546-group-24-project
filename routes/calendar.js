@@ -27,7 +27,7 @@ router.route("/month").get(async (req, res) => {
     } = await getWeeksData(req);
     const userId = req?.session?.user?.user_id.trim();
     utils.checkObjectIdString(userId);
-    let today = dayjs().format("YYYY-MM-DD");
+    let today = dayjs().format("MMMM DD YYYY");
     let todayItems = await getSelectedDayItems(userId, today);
 
     // render the calendarv2 template with the calendar data and navigation links
@@ -454,30 +454,31 @@ async function getRightPaneItems(userId) {
   delete response.userId;
   let rightPaneItems = {};
   for (let eventType in response) {
-    rightPaneItems[eventType] = response[eventType].filter((x) => {
-      return x.dateAddedTo === null;
-      // TODO separate this into a differnt function and a new card
-      //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
-    });
-    // .sort((a, b) => {
-    //   const dateA = dayjs(a.dateAddedTo);
-    //   const dateB = dayjs(b.dateAddedTo);
-    //   const dateDiff = dateA.diff(dateB);
-    //   if (dateDiff > 0) {
-    //     return -1;
-    //   }
-    //   if (dateDiff < 0) {
-    //     return 1;
-    //   }
-    //   if (a.priority > b.priority) {
-    //     return -1;
-    //   }
-    //   if (a.priority < b.priority) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // })
-    // .slice(0, 50);
+    rightPaneItems[eventType] = response[eventType]
+      .filter((x) => {
+        return x.dateAddedTo === null;
+        // TODO separate this into a differnt function and a new card
+        //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
+      })
+      .sort((a, b) => {
+        // const dateA = dayjs(a.dateAddedTo);
+        // const dateB = dayjs(b.dateAddedTo);
+        // const dateDiff = dateA.diff(dateB);
+        // if (dateDiff > 0) {
+        //   return -1;
+        // }
+        // if (dateDiff < 0) {
+        //   return 1;
+        // }
+        if (a.priority > b.priority) {
+          return -1;
+        }
+        if (a.priority < b.priority) {
+          return 1;
+        }
+        return 0;
+      })
+      .slice(0, 50);
   }
 
   rightPaneItems.backlogtasks =
