@@ -1,7 +1,7 @@
 {{#if session}}
 {{#if (eq title "Calendar")}}
 
-<div class="accordion" id="rightPaneAccordion">
+<div class="accordion" id="rightPaneUnassignedAndBacklogAccordion">
   <div class="accordion-item">
     <span class="accordion-header">
       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -10,11 +10,12 @@
         <span
           class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger unassigned-meetings-counter">
           {{{rightPaneItems.meetings.length}}}
-          <span class="visually-hidden">unread messages</span>
+          <span class="visually-hidden">Unassigned Meetings</span>
         </span>
       </button>
     </span>
-    <div id="collapseUnassignedMeetings" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+    <div id="collapseUnassignedMeetings" class="accordion-collapse collapse "
+      data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
         <div class="card top50items_card">
           {{#if rightPaneItems.meetings.length }}
@@ -55,7 +56,8 @@
           <span class="visually-hidden">Unassigned Tasks</span>
       </button>
     </span>
-    <div id="collapseUnassignedTasks" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+    <div id="collapseUnassignedTasks" class="accordion-collapse collapse "
+      data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
         <div class="card top50items_card">
 
@@ -102,7 +104,8 @@
           <span class="visually-hidden">Backlog Tasks</span>
       </button>
     </span>
-    <div id="collapseBacklogTasks" class="accordion-collapse collapse " data-bs-parent="#rightPaneAccordion">
+    <div id="collapseBacklogTasks" class="accordion-collapse collapse "
+      data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
         <div class="card backlog_items_card">
 
@@ -139,6 +142,7 @@
     </div>
   </div>
 </div>
+
 
 {{/if}}
 {{/if}}
