@@ -113,7 +113,8 @@ router.route("/week").get(async (req, res) => {
 
 router.route("/day/:selectedDate?").get(async (req, res) => {
   let currentDate;
-  let selectedDate = req.params?.selectedDate?.trim();
+  let selectedDate =
+    req.params?.selectedDate?.trim() || req?.query?.date?.trim();
   try {
     selectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
     utils.validateDate(selectedDate, "Date of Birth");
@@ -158,6 +159,13 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
   let todayItems = await getSelectedDayItems(userId, today);
+
+  let prevDate = dayjs(now).subtract(1, "day").format("YYYY-MM-DD");
+  let nextDate = dayjs(now).add(1, "day").format("YYYY-MM-DD");
+  let displayString =
+    dayjs(prevDate).format("MMMM DD") +
+    " - " +
+    dayjs(nextDate).format("MMMM DD");
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
@@ -169,6 +177,8 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     todayItems: todayItems,
     today: today,
     rightPaneItems: await getRightPaneItems(userId),
+    prevDate,
+    nextDate,
   });
 });
 
