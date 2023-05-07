@@ -9,7 +9,6 @@ function drag_end_date_time_cell() {
   // });
 
   let cells = document.querySelectorAll(".date-time-cell");
-  console.log(cells.length);
   cells.forEach((cell) => {
     cell.addEventListener("dragover", function (event) {
       event.preventDefault();
@@ -26,18 +25,38 @@ function drag_end_date_time_cell() {
       console.log(
         "Button " + buttonData.bsEventid + " dropped into cell " + dateTime
       );
-      let button = document.querySelector(
+      let buttonList = document.querySelectorAll(
         `button[data-bs-eventid='${buttonData.bsEventid}']`
       );
+      let button = document
+        .getElementById("right-menu-div")
+        .querySelector(`[data-bs-eventid='${buttonData.bsEventid}']`);
       $.ajax({
         method: "PUT",
         url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedto`,
         data: { dateAddedTo: dateTime },
         success: function (data) {
-          button.click();
-
-          button.parentNode.removeChild(button);
-          //update month view counters
+          if (buttonData.bsEventType === "task") {
+            button.querySelector("button").click();
+          } else {
+            button.click();
+          }
+          const previousDate = data.previousDate;
+          buttonList.forEach((button) => {
+            if (buttonData.bsEventType === "task") {
+              button.parentNode.parentNode.removeChild(button.parentNode);
+            } else {
+              button.parentNode.removeChild(button);
+            }
+          });
+          let badgeCounter = "";
+          if (!previousDate) {
+            badgeCounter = `.unassigned-${buttonData.bsEventType}s-counter`;
+          } else {
+            badgeCounter = `.backlog-${buttonData.bsEventType}s-counter`;
+          }
+          badgeCounter = document.querySelector(badgeCounter);
+          badgeCounter.innerText = Number.parseInt(badgeCounter.innerText) - 1;
           let event_display = td.querySelector("div.d-grid.gap-1");
           event_display.appendChild(button);
         },
