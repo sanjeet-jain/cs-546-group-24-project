@@ -162,10 +162,7 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
 
   let prevDate = dayjs(now).subtract(1, "day").format("YYYY-MM-DD");
   let nextDate = dayjs(now).add(1, "day").format("YYYY-MM-DD");
-  let displayString =
-    dayjs(prevDate).format("MMMM DD") +
-    " - " +
-    dayjs(nextDate).format("MMMM DD");
+
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
