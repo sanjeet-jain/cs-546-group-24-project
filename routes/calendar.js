@@ -29,6 +29,7 @@ router.route("/month").get(async (req, res) => {
     utils.checkObjectIdString(userId);
     let today = dayjs().format("YYYY-MM-DD");
     let todayItems = await getSelectedDayItems(userId, today);
+
     // render the calendarv2 template with the calendar data and navigation links
     res.render("calendar/calendarv2", {
       title: "Calendar",
@@ -46,6 +47,7 @@ router.route("/month").get(async (req, res) => {
       filter: filter,
       todayItems: todayItems,
       today: today,
+      rightPaneItems: await getRightPaneItems(userId),
     });
   } catch (error) {
     res.status(404).render("errors/error", {
@@ -90,6 +92,7 @@ router.route("/week").get(async (req, res) => {
     filter: filter,
     todayItems: todayItems,
     today: today,
+    rightPaneItems: await getRightPaneItems(userId),
   });
 });
 
@@ -150,6 +153,7 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
     selectedDate: selectedDate,
     todayItems: todayItems,
     today: today,
+    rightPaneItems: await getRightPaneItems(userId),
   });
 });
 
@@ -443,5 +447,44 @@ async function getSelectedDayItems(userId, selectedDate) {
     }
     return 0;
   });
+}
+
+async function getRightPaneItems(userId) {
+  const response = await eventDataFunctions.getAllEvents(userId);
+  delete response.userId;
+  let rightPaneItems = {};
+  for (let eventType in response) {
+    rightPaneItems[eventType] = response[eventType]
+      .filter((x) => {
+        return x.dateAddedTo === null;
+        // TODO separate this into a differnt function and a new card
+        //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
+      })
+      .sort((a, b) => {
+        const dateA = dayjs(a.dateAddedTo);
+        const dateB = dayjs(b.dateAddedTo);
+        const dateDiff = dateA.diff(dateB);
+        if (dateDiff > 0) {
+          return -1;
+        }
+        if (dateDiff < 0) {
+          return 1;
+        }
+        if (a.priority > b.priority) {
+          return -1;
+        }
+        if (a.priority < b.priority) {
+          return 1;
+        }
+        return 0;
+      })
+      .slice(0, 50);
+  }
+
+  rightPaneItems.backlogtasks =
+    response?.tasks?.filter((x) => {
+      return !x.checked && x.expired;
+    }) || [];
+  return rightPaneItems;
 }
 export default router;

@@ -24,7 +24,7 @@
             <div class="mb-3">
               <label for="reminder_title" class="form-label">Title</label>
               <input required type="text" class="form-control" name="title" id="reminder_title" placeholder="Title"
-                value="" maxlength="100" pattern="^(?=.{1,100}$)(?![\d])[\w\s]+$" />
+                value="" minlength="1" maxlength="100" />
               <div id="reminder_title_error" class="invalid-feedback">
               </div>
             </div>
@@ -40,7 +40,7 @@
             <div class="mb-3">
               <label for="reminder_tag" class="form-label">Tag</label>
               <input type="text" class="form-control" name="tag" id="reminder_tag" placeholder="Tag" value=""
-                maxlength="20" pattern="^[a-zA-Z]+$" />
+                maxlength="20" pattern="(^$)|(^[a-zA-Z0-9_]+$)" />
               <div id="reminder_tag_error" class="invalid-feedback">
 
               </div>
@@ -73,7 +73,7 @@
             <div class="form-check">
               <input class="form-check-input" type="checkbox" name="repeating" id="reminder_repeating"
                 aria-describedby="repeating_help_id" value="false" />
-              <label class="form-check-label" for="reminder_repeating">
+              <label class="form-label" for="reminder_repeating">
                 Is the event repeating?
               </label>
               <small id="repeating_help_id" class="form-text text-muted">
@@ -110,8 +110,8 @@
         <div class="modal-footer">
           <div id="reminder-update-result">
           </div>
-          <input id="reminder-bottom-submit-button" type="submit" form="reminder-form" value="Save Changes"
-            class="btn btn-primary" />
+          <button id="reminder-bottom-submit-button" type="submit" form="reminder-form" value="Save Changes"
+            class="btn btn-primary">Save Changes</button>
         </div>
       </fieldset>
     </div>

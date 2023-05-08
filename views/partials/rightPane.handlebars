@@ -26,7 +26,7 @@
           <div class="form-check  form-switch">
             <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="event-filter-{{this}}"
               name="event-filter-{{this}}" {{#if (includes ../filter.eventTypeSelected this)}} checked {{/if}}>
-            <label class="form-check-label" for="event-filter-{{this}}">
+            <label class="form-label" for="event-filter-{{this}}">
               {{this}}
             </label>
           </div>
@@ -36,7 +36,7 @@
           <div class="form-check form-switch">
             <input class="form-check-input" role="switch" type="checkbox" value="{{this}}" id="tag-filter-{{this}}"
               name="tag-filter-{{this}}" {{#if (includes ../filter.tagsSelected this)}} checked {{/if}}>
-            <label class="form-check-label" for="tag-filter-{{this}}">
+            <label class="form-label" for="tag-filter-{{this}}">
               {{this}}
             </label>
           </div>
@@ -48,6 +48,99 @@
 
     </li>
   </ul>
+
+</div>
+
+<div class="card top50items_card">
+  {{#if rightPaneItems.meetings.length }}
+  <div class="card-body">
+    <span class="card-title" id="top50_meetings_title">Upcoming Meetings</span>
+    <div class="d-grid gap-1" id="top50items">
+      {{#each rightPaneItems.meetings}}
+
+
+      <button draggable="true"
+        class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+        data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
+        data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+          class="bi-calendar-event">{{this.title}}</i></button>
+      {{/each}}
+
+
+    </div>
+  </div>
+  {{else}}
+  <div class="card-body">
+    <span class="card-title" id="top50_meetings_title">There are no Meetings for the next 30 days</span>
+    <div class="d-grid gap-1" id="top50items"></div>
+  </div>
+
+  {{/if}}
+
+  {{#if rightPaneItems.tasks.length }}
+  <div class="card-body">
+    <span class="card-title" id="top50_tasks_title">Upcoming Tasks</span>
+    <div class="d-grid gap-1" id="top50items">
+      {{#each rightPaneItems.tasks}}
+      {{#if (eq this.expired false)}}
+      {{#if (eq this.checked false)}}
+      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+          data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Completed" {{#if
+          this.checked}}checked value="true" {{/if}}>
+        <button draggable="true"
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button draggable-event-button"
+          data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+          data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+            class="bi-check2-square">{{this.title}}</i></button>
+      </div>
+      {{/if}}
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+  {{else}}
+  <div class="card-body">
+    <span class="card-title" id="top50_tasks_title">There are no tasks for the next 30 days</span>
+    <div class="d-grid gap-1" id="top50items"></div>
+  </div>
+
+  {{/if}}
+
+</div>
+
+
+<div class="card backlog_items_card">
+
+  {{#if rightPaneItems.backlogtasks.length }}
+  <div class="card-body">
+    <span class="card-title" id="backlog_tasks_title">Backlog Tasks</span>
+    <div class="d-grid gap-1" id="backlogitems">
+      {{#each rightPaneItems.backlogtasks}}
+      {{#if (eq this.expired true)}}
+      {{#if (eq this.checked false)}}
+      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+        <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+          data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Completed" {{#if
+          this.checked}}checked value="true" {{/if}}>
+        <button draggable="true"
+          class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button draggable-event-button"
+          data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
+          data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
+            class="bi-check2-square">{{this.title}}</i></button>
+      </div>
+      {{/if}}
+      {{/if}}
+      {{/each}}
+    </div>
+  </div>
+  {{else}}
+  <div class="card-body">
+    <span class="card-title" id="backlog_tasks_title">There are no Backlog Tasks</span>
+    <div class="d-grid gap-1" id="backlogitems"></div>
+  </div>
+
+  {{/if}}
 
 </div>
 

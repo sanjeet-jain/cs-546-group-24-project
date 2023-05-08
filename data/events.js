@@ -18,28 +18,29 @@ const exportedMethods = {
       tasks: tasks,
       notes: notes,
     };
-
-    let tagsToRender = [];
-    for (let i = 0; i < constants.eventTypes.length; i++) {
-      if (
-        !(filter.eventTypeSelected.length === 0) &&
-        !filter.eventTypeSelected.includes(constants.eventTypes[i])
-      ) {
-        delete data[constants.eventTypes[i]];
-      } else {
-        tagsToRender = tagsToRender.concat(
-          await this.getUniqueTagsForEvents(constants.eventTypes[i])
-        );
-        if (filter.tagsSelected.length > 0) {
-          data[constants.eventTypes[i]] = data[constants.eventTypes[i]].filter(
-            (record) => {
-              return filter.tagsSelected.includes(record.tag);
-            }
+    if (filter !== undefined) {
+      let tagsToRender = [];
+      for (let i = 0; i < constants.eventTypes.length; i++) {
+        if (
+          !(filter.eventTypeSelected.length === 0) &&
+          !filter.eventTypeSelected.includes(constants.eventTypes[i])
+        ) {
+          delete data[constants.eventTypes[i]];
+        } else {
+          tagsToRender = tagsToRender.concat(
+            await this.getUniqueTagsForEvents(constants.eventTypes[i])
           );
+          if (filter.tagsSelected.length > 0) {
+            data[constants.eventTypes[i]] = data[
+              constants.eventTypes[i]
+            ].filter((record) => {
+              return filter.tagsSelected.includes(record.tag);
+            });
+          }
         }
       }
+      filter.tags = [...new Set(tagsToRender)];
     }
-    filter.tags = [...new Set(tagsToRender)];
     return data;
   },
 

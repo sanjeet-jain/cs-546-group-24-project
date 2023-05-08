@@ -23,6 +23,7 @@ export const createReminder = async (
 ) => {
   utils.checkObjectIdString(user_id);
   user_id = user_id.trim();
+  await getUserDAO(user_id);
   utils.validateStringInputWithMaxLength(
     title,
     "title",
@@ -73,17 +74,7 @@ export const createReminder = async (
    * Check if two reminder titles be same or not meaning user passes same title tag and due date it ideally is a duplicate date
    */
   let reminderEvents = await getAllReminderEventsDAO(user_id);
-  for (let i = 0; i < reminderEvents.length; i++) {
-    if (
-      dayjs(dateAddedTo).diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
-      title.toLowerCase() === reminderEvents[i].title.toLowerCase() &&
-      tag === reminderEvents[i].tag
-    ) {
-      throw new Error(
-        "Error : No Two reminders can have same title tag and time"
-      );
-    }
-  }
+
   const reminder = {
     title: title,
     textBody: textBody,
@@ -97,6 +88,29 @@ export const createReminder = async (
     dateCreated: dateCreated,
     type: "reminder",
   };
+
+  let finalDateToTerminate = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+  if (repeating) {
+    finalDateToTerminate = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+  }
+
+  for (let i = 0; i < reminderEvents.length; i++) {
+    for (
+      let remDate = dayjs(dateAddedTo);
+      remDate.diff(dayjs(finalDateToTerminate)) <= 0;
+      remDate = dayjs(remDate).add(1, repeatingIncrementBy)
+    ) {
+      if (
+        remDate.diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
+        title.toLowerCase() === reminderEvents[i].title.toLowerCase()
+      ) {
+        throw new Error(
+          "Reminder event scheduled with very same title and date"
+        );
+      }
+    }
+  }
+
   if (!repeating) {
     reminder.groupId = null;
     let reminder_id = await insertReminderEventDAO(reminder);
@@ -139,6 +153,9 @@ export const updateReminder = async (
   endDateTime,
   repeatingIncrementBy
 ) => {
+  utils.checkObjectIdString(user_id);
+  user_id = user_id.trim();
+  await getUserDAO(user_id);
   utils.checkObjectIdString(reminder_id);
   reminder_id = reminder_id.trim();
   utils.validateStringInputWithMaxLength(
@@ -180,7 +197,6 @@ export const updateReminder = async (
   let dateCreated = dayjs(new Date()).format("YYYY-MM-DDTHH:mm");
   utils.validateDate(dateAddedTo, "date time value");
   utils.validateBooleanInput(repeating);
-
   if (repeating) {
     utils.validateDate(endDateTime, "end time value");
     utils.validateRepeatingIncrementBy(repeatingIncrementBy);
@@ -203,6 +219,45 @@ export const updateReminder = async (
     type: "reminder",
     expired: false,
   };
+
+  let reminderEvents = await getAllReminderEventsDAO(user_id);
+  let finalDateToTerminate = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+  if (repeating) {
+    finalDateToTerminate = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+  }
+
+  for (let i = 0; i < reminderEvents.length; i++) {
+    for (
+      let remDate = dayjs(dateAddedTo);
+      remDate.diff(dayjs(finalDateToTerminate)) <= 0;
+      remDate = dayjs(remDate).add(1, repeatingIncrementBy)
+    ) {
+      let currRemGrpId = null;
+      let reminderEventGrpId = null;
+      if (currReminder.groupId !== null) {
+        currRemGrpId = currReminder.groupId.toString();
+      }
+      if (reminderEvents[i].groupId !== null) {
+        reminderEventGrpId = reminderEvents[i].groupId.toString();
+      }
+      if (
+        (!(
+          repeating &&
+          currRemGrpId === reminderEventGrpId &&
+          currRemGrpId != null
+        ) ||
+          !repeating) &&
+        currReminder._id.toString() !== reminderEvents[i]._id.toString() &&
+        remDate.diff(dayjs(reminderEvents[i].dateAddedTo)) === 0 &&
+        title.toLowerCase() === reminderEvents[i].title.toLowerCase()
+      ) {
+        throw new Error(
+          "Reminder event scheduled with very same title and date"
+        );
+      }
+    }
+  }
+
   /**
    * This code causes update for single recurrence and normal update
    */
@@ -211,7 +266,6 @@ export const updateReminder = async (
     reminderObj.endDateTime = null;
     reminderObj.repeatingIncrementBy = null;
     reminderObj.groupId = null;
-    isTwoEventSame(reminderObj, currReminder);
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else if (repeating && !currReminder.repeating) {
     //delete the reminder event and add new recurrence
@@ -250,8 +304,9 @@ export const updateReminder = async (
       );
     }
   } else if (!repeating && currReminder.repeating) {
-    await deleteReminderEventDAO(reminder_id);
-    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+    // await deleteReminderEventDAO(reminder_id);
+    // await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+    await deleteAllRecurrences(user_id, reminder_id);
     await createReminder(
       user_id,
       title,
@@ -389,24 +444,14 @@ function constructNewReminderObj(reminderEvent) {
 }
 
 function isTwoEventSame(event1, event2) {
-  let keys = [
-    "title",
-    "textBody",
-    "priority",
-    "tag",
-    "dateAddedTo",
-    "endDateTime",
-    "repeatingIncrementBy",
-    "repeating",
-  ];
-  let flag = true;
-  for (let i = 0; i < keys.length; i++) {
-    if (!(event1[keys[i]] === event2[keys[i]])) {
-      flag = false;
-    }
-  }
-  if (flag) {
-    throw new Error("Trying to update same event value");
+  if (
+    event1["title"] === event2["title"] &&
+    event1["dateAddedTo"] === event2["dateAddedTo"] &&
+    event1["groupId"] !== event2["groupId"]
+  ) {
+    throw new Error(
+      "Reminder being created alread is existing as the title and date to remind is matching"
+    );
   }
 }
 /** Supporting Functions End */
@@ -556,7 +601,7 @@ const getUserDAO = async (user_id) => {
   const usersInstance = await usersCollection();
   let user = await usersInstance.findOne({ _id: new ObjectId(user_id) });
   if (user === null) {
-    throw new Error("User look up error");
+    throw new Error("User does not exist in db");
   }
   return user;
 };

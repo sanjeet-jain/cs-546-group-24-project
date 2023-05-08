@@ -48,23 +48,23 @@ const utils = {
       !input
         .trim()
         .toLowerCase()
-        .match(/^[a-zA-Z]+$/g)
+        .match(/^[a-zA-Z0-9_]+$/g)
     ) {
       throw new Error(
-        `${inputName} can not have spaces and contains only letters`
+        `${inputName} can not have spaces and contains only letters numbers with underscores`
       );
     }
-    if (
-      inputName === "title" &&
-      !input
-        .trim()
-        .toLowerCase()
-        .match(/^(?![\d])[\w\s]+$/gi)
-    ) {
-      throw new Error(
-        `${inputName} can not have spaces and contains only letters`
-      );
-    }
+    // if (
+    //   inputName === "title" &&
+    //   !input
+    //     .trim()
+    //     .toLowerCase()
+    //     .match(/^(?![\d])[\w\s]+$/gi)
+    // ) {
+    //   throw new Error(
+    //     `${inputName} can not have spaces and contains only letters`
+    //   );
+    // }
 
     if (input.trim().length > maxLength) {
       throw new Error(
@@ -141,9 +141,11 @@ const utils = {
     if (password.length < constants.stringLimits.password) {
       throw new Error(`${inputName} must be at least 8 characters long`);
     }
-    if (!/^(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/.test(password)) {
+    const passwordRegex =
+      /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
+    if (!passwordRegex.test(password)) {
       throw new Error(
-        "Password must contain at least one uppercase letter and one number"
+        "Password must contain at least one uppercase letter, one number and one special character."
       );
     }
     // if (!/[A-Z]/.test(password)) {
@@ -302,7 +304,7 @@ const utils = {
         errorMessages.repeatingIncrementBy = error.message;
       }
     }
-    if (dateAddedTo.trim().length > 0 && dateDueOn.trim().length > 0) {
+    if (dateAddedTo?.trim().length > 0 && dateDueOn?.trim().length > 0) {
       try {
         this.validateDateRange(dateAddedTo, dateDueOn);
       } catch (error) {
@@ -403,14 +405,16 @@ const utils = {
       errorMessages.dateAddedTo = e.message;
     }
 
-    try {
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-    } catch (e) {
-      errorMessages.tag = e.message;
+    if (typeof tag === "string" && tag.trim().length > 0) {
+      try {
+        utils.validateStringInputWithMaxLength(
+          tag,
+          "tag",
+          constants.stringLimits["tag"]
+        );
+      } catch (e) {
+        errorMessages.tag = e.message;
+      }
     }
 
     try {

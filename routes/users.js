@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs";
 import { usersCollection } from "../config/mongoCollections.js";
 
 import constants from "../constants/constants.js";
+import xss from "xss";
 function createSessionObject(user) {
   return {
     user_id: user._id.toString(),
@@ -22,14 +23,20 @@ router
     if (req.session.user) {
       return res.redirect("/calendar/month");
     }
-    const first_name = req.body.first_name;
-    const last_name = req.body.last_name;
-    const email = req.body.email;
-    const password = req.body.password;
-    const disability = req.body.disability;
-    const dob = req.body.dob;
-    const consent = req.body.consent;
 
+    let first_name = xss(req?.body?.first_name);
+    let last_name = xss(req?.body?.last_name);
+    let email = xss(req?.body?.email);
+    let password = xss(req?.body?.password);
+    const reEnterPassword = xss(req?.body?.reEnterPassword);
+    const disability = xss(req?.body?.disability);
+    const dob = xss(req?.body?.dob);
+    const consent = xss(req?.body?.consent);
+
+    first_name = first_name.trim();
+    last_name = last_name.trim();
+    email = email.toLowerCase().trim();
+    password = password.trim();
     let errorMessages = {};
     try {
       utils.validateName(first_name, "First name");
@@ -42,20 +49,31 @@ router
     } catch (e) {
       errorMessages.last_name = "Please enter a valid last name.";
     }
-
+    let emailCheck;
     try {
-      utils.validateEmail(email, "Email");
+      emailCheck = await usersFunctions.getUserByEmail(email);
     } catch (e) {
-      errorMessages.email = "Please enter a valid email.";
+      errorMessages.email = e.message;
+    }
+    if (!emailCheck) {
+      try {
+        utils.validateEmail(email, "Email");
+      } catch (e) {
+        errorMessages.email = "Please enter a valid email.";
+      }
+    } else {
+      errorMessages.email = "Email already in use.";
     }
 
     try {
       utils.validatePassword(password, "Password");
     } catch (e) {
       errorMessages.password =
-        "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+        "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
     }
-
+    if (password !== reEnterPassword) {
+      errorMessages.reEnterPassword = "Passwords do not match.";
+    }
     if (disability) {
       try {
         utils.validateBooleanInput(disability, "Disability");
@@ -83,7 +101,7 @@ router
     }
 
     if (Object.keys(errorMessages).length !== 0) {
-      return res.status(400).render("user/signup", {
+      return res.status(400).json({
         title: "Sign Up",
         errorMessages: errorMessages,
         is_invalid: true,
@@ -107,7 +125,7 @@ router
       }
       return res.redirect("/calendar/month");
     } catch (e) {
-      return res.status(404).render("user/signup", {
+      return res.status(404).json({
         title: "Sign Up",
         error: "Something went wrong, please try again later",
         errorContent: req.body,
@@ -129,9 +147,11 @@ router
     if (req?.session?.user) {
       return res.redirect("/calendar/month");
     }
-    let email = req.body.email;
-    let password = req.body.password;
 
+    let email = xss(req?.body?.email);
+    let password = xss(req?.body?.password);
+    email = email.toLowerCase().trim();
+    password = password.trim();
     let errorMessages = {};
     try {
       utils.validateEmail(email);
@@ -143,7 +163,7 @@ router
       utils.validatePassword(password);
     } catch (e) {
       errorMessages.password =
-        "Password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+        "Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
     }
 
     if (Object.keys(errorMessages).length !== 0) {
@@ -237,10 +257,13 @@ router
       res.render("user/login", { title: "Login" });
     } else {
       const id = req.session.user.user_id;
-      const first_name = req.body.first_name;
-      const last_name = req.body.last_name;
-      const disability = req.body.disability;
-      const dob = req.body.dob;
+      let first_name = xss(req?.body?.first_name);
+      let last_name = xss(req?.body?.last_name);
+      const disability = xss(req?.body?.disability);
+      const dob = xss(req?.body?.dob);
+
+      first_name = first_name.trim();
+      last_name = last_name.trim();
       let errorMessages = {};
       try {
         utils.validateName(first_name, "First name");
@@ -305,27 +328,28 @@ router
       return res.render("user/login", { title: "Login" });
     }
     let id = req.session.user.user_id;
-    let oldPassword = req?.body?.oldPassword;
-    let newPassword = req?.body?.newPassword;
-    let reEnterNewPassword = req?.body?.reEnterNewPassword;
+
+    let oldPassword = xss(req?.body?.oldPassword);
+    let newPassword = xss(req?.body?.newPassword);
+    let reEnterNewPassword = xss(req?.body?.reEnterNewPassword);
 
     try {
       utils.validatePassword(oldPassword);
     } catch (e) {
       errorMessages.oldPassword =
-        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+        "New Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
     }
     try {
       utils.validatePassword(newPassword);
     } catch (e) {
       errorMessages.newPassword =
-        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+        "New Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
     }
     try {
       utils.validatePassword(reEnterNewPassword);
     } catch (e) {
       errorMessages.reEnterNewPassword =
-        "New password must be at least 8 characters, contain at least one uppercase letter, and one digit.";
+        "New Password must be at least 8 characters, contain at least one uppercase letter, digit and one special character (!@#$%^&_=+.).";
     }
 
     //trim the validated passwords
@@ -376,9 +400,7 @@ router
         req.body.newPassword,
         req.body.reEnterNewPassword
       );
-      return res.redirect("user/password", {
-        success: "password successfully changed",
-      });
+      return res.redirect("password");
     } catch (e) {
       return res.status(500).render("user/password", {
         title: "Password",

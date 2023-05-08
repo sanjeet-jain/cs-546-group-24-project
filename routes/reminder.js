@@ -4,11 +4,12 @@ import utils from "../utils/utils.js";
 import * as reminderManager from "../data/reminder.js";
 import constants from "./../constants/constants.js";
 import dayjs from "dayjs";
+import xss from "xss";
 
 router
   .route("/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId;
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(userId);
       userId = userId.trim();
@@ -23,21 +24,17 @@ router
   })
   .post(utils.validateUserId, async (req, res) => {
     const reminder = req.body;
-    let userId = req.params.userId;
-    let title = reminder.title;
-    let textBody = reminder.textBody;
-    let priority = Number.parseInt(reminder.priority);
-    let tag = reminder.tag;
-    let repeating =
-      reminder.repeating === "true" ||
-      reminder.repeating === true ||
-      !(reminder.repeating === "false")
-        ? true
-        : false;
-    let dateAddedTo = reminder.dateAddedTo;
+    let userId = xss(req.params.userId);
+    let title = xss(reminder.title);
+    let textBody = xss(reminder.textBody);
+    let priority = Number.parseInt(xss(reminder.priority));
+    let tag = xss(reminder.tag);
+    let repeating = xss(reminder.repeating);
+    repeating = repeating === "false" || !(repeating === "true") ? false : true;
+    let dateAddedTo = xss(reminder.dateAddedTo);
     let endDateTime;
-    let repeatingIncrementBy = reminder.repeatingIncrementBy;
-    dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    let repeatingIncrementBy;
+
     try {
       utils.checkObjectIdString(userId);
       userId = userId.trim();
@@ -72,10 +69,15 @@ router
         tag = "reminders";
       }
       utils.validateDate(dateAddedTo, "date time value");
+      dateAddedTo = dayjs(reminder.dateAddedTo.trim()).format(
+        "YYYY-MM-DDTHH:mm"
+      );
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
-        endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
+        endDateTime = xss(reminder.endDateTime);
         utils.validateDate(endDateTime, "end time value");
+        endDateTime = dayjs(endDateTime.trim()).format("YYYY-MM-DDTHH:mm");
+        repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
     } catch (e) {
@@ -102,7 +104,7 @@ router
 router
   .route("/:userId/reminder/:reminder_id")
   .get(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
+    let reminder_id = xss(req.params.reminder_id);
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
@@ -116,25 +118,23 @@ router
     }
   })
   .put(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
+    let reminder_id = xss(req.params.reminder_id);
     let reminder = req.body;
-    let userId = req.params.userId;
-    let title = reminder.title;
-    let textBody = reminder.textBody;
-    let priority = Number.parseInt(reminder.priority);
-    let tag = reminder.tag;
-    let dateAddedTo = dayjs(reminder.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    let repeating =
-      reminder.repeating === "true" ||
-      reminder.repeating === true ||
-      !(reminder.repeating === "false")
-        ? true
-        : false;
+    let userId = xss(req.params.userId);
+    let title = xss(reminder.title);
+    let textBody = xss(reminder.textBody);
+    let priority = Number.parseInt(xss(reminder.priority));
+    let tag = xss(reminder.tag);
+    let dateAddedTo = xss(reminder.dateAddedTo);
+    let repeating = xss(reminder.repeating);
+    repeating = repeating === "false" || !(repeating === "true") ? false : true;
     let endDateTime;
     if (repeating) {
-      endDateTime = dayjs(reminder.endDateTime).format("YYYY-MM-DDTHH:mm");
+      endDateTime = xss(reminder.endDateTime);
+      utils.validateDate(endDateTime, "end time value");
+      endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
     }
-    let repeatingIncrementBy = reminder.repeatingIncrementBy;
+    let repeatingIncrementBy;
     try {
       utils.checkObjectIdString(reminder_id);
       reminder_id = reminder_id.trim();
@@ -170,9 +170,13 @@ router
       }
 
       utils.validateDate(dateAddedTo, "date time added to value");
+      dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
+        endDateTime = xss(reminder.endDateTime);
         utils.validateDate(endDateTime, "end date value");
+        endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+        repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {
         repeatingIncrementBy = null;
@@ -200,8 +204,8 @@ router
     }
   })
   .delete(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
-    let userId = req.params.userId;
+    let reminder_id = xss(req.params.reminder_id);
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
@@ -221,8 +225,8 @@ router
 router
   .route("/:userId/reminders/:reminder_id")
   .delete(utils.validateUserId, async (req, res) => {
-    let reminder_id = req.params.reminder_id;
-    let userId = req.params.userId;
+    let reminder_id = xss(req.params.reminder_id);
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(reminder_id);
       utils.checkObjectIdString(userId);
