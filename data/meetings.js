@@ -181,12 +181,12 @@ const meetingsDataFunctions = {
         };
         meetingObjects.push(meeting);
       }
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        for (let j = 0; j < meetingObjects.length; j++) {
-          this.isTwoEventSameUpdate(allMeetingEvents[i], meetingObjects[j]);
-        }
-      }
+      // let allMeetingEvents = await this.getAll(userId);
+      // for (let i = 0; i < allMeetingEvents.length; i++) {
+      //   for (let j = 0; j < meetingObjects.length; j++) {
+      //     this.isTwoEventSameUpdate(allMeetingEvents[i], meetingObjects[j]);
+      //   }
+      // }
       const result = await meetings.insertMany(meetingObjects);
       const insertedIds = Object.values(result.insertedIds);
       const users = await usersCollection();
@@ -202,10 +202,10 @@ const meetingsDataFunctions = {
       updatedMeeting.repeatingGroup?.toString()?.trim() &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        this.isTwoEventSameUpdate(allMeetingEvents[i], updatedMeeting);
-      }
+      // let allMeetingEvents = await this.getAll(userId);
+      // for (let i = 0; i < allMeetingEvents.length; i++) {
+      //   this.isTwoEventSameUpdate(allMeetingEvents[i], updatedMeeting);
+      // }
       await this.deleteAllRecurrences(
         userId,
         updatedMeeting.repeatingGroup.toString().trim(),
@@ -648,8 +648,8 @@ const meetingsDataFunctions = {
   isTwoEventSameUpdate(event1, event2) {
     if (
       event1["title"] === event2["title"] &&
-      event1["repeatingGroup"].toString() !==
-        event2["repeatingGroup"].toString()
+      event1["repeatingGroup"]?.toString() !==
+        event2["repeatingGroup"]?.toString()
     ) {
       console.log("Title are Same");
       if (
