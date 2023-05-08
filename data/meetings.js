@@ -614,7 +614,7 @@ const meetingsDataFunctions = {
   },
 
   isTwoEventSame(event1, event2) {
-    if (event1["title"] === event2["title"]) {
+    if (event1["title"].toLowerCase() === event2["title"].toLowerCase()) {
       if (
         event1["dateAddedTo"] !== null &&
         event2["dateAddedTo"] !== null &&
@@ -625,7 +625,7 @@ const meetingsDataFunctions = {
         dayjs(event1["dateAddedTo"]).date() ===
           dayjs(event2["dateAddedTo"]).date() &&
         dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
-        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"] > 0)
+        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"]) > 0
       ) {
         throw new Error(
           "Two Meetings have the same title and a date time clash"
@@ -650,7 +650,7 @@ const meetingsDataFunctions = {
       event2RepeatGrpId = event2["repeatingGroup"].toString();
     }
     if (
-      event1["title"] === event2["title"] &&
+      event1["title"].toLowerCase() === event2["title"].toLowerCase() &&
       !(
         event1RepeatGrpId != null &&
         event2RepeatGrpId != null &&
@@ -667,7 +667,7 @@ const meetingsDataFunctions = {
         dayjs(event1["dateAddedTo"]).date() ===
           dayjs(event2["dateAddedTo"]).date() &&
         dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
-        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"] > 0)
+        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"]) > 0
       ) {
         throw new Error(
           "Two Meetings have the same title and a date time clash"
