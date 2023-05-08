@@ -474,7 +474,7 @@ function submitMeetingForm() {
       }
 
       jsonData["repeating"] = event.target.repeating.checked;
-      jsonData["updateAll"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.updateAll.checked;
 
       let reqType = "PUT";
       let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
@@ -623,7 +623,7 @@ function submitReminderForm() {
         jsonData[key] = value.trim();
       }
       jsonData["repeating"] = event.target.repeating.checked;
-      jsonData["updateAll"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.updateAll.checked;
       let reqType = "PUT";
       let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
