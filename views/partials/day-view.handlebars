@@ -60,15 +60,15 @@
       {{#if (eq this.timeslotStart ../this)}}
       <div
         class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap text-center draggable-event-button"
-        draggable="true" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}"
+        draggable="true" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../session.user_id}}"
         data-bs-event-type="{{this.type}}">
         <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
-          data-bs-userId="{{../../../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
+          data-bs-userId="{{../../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
           this.checked}}checked {{/if}}>
         <button
           class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} border-0  text-wrap  text-center event-button"
           data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
-          data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
+          data-bs-userId="{{../../session.user_id}}" data-bs-event-type="{{this.type}}">
           <i class="bi-check2-square"></i>
           {{{this.title}}}</button>
       </div>
