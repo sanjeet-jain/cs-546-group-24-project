@@ -199,6 +199,19 @@
           <div class="card-body">
             <div class="d-grid gap-1 overflow-scroll-y" id="top50_upcoming_items">
               {{#each rightPaneItems.upcoming}}
+              {{#if (eq this.type "notes")}}
+              <button
+                class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-notes-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
+                  class="bi-file-text">{{this.title}}</i></button>
+              {{/if}}
+              {{#if (eq this.type "reminder")}}
+              <button class="badge event-pill swatch-indigo  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-reminder-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
+                  class="bi-alarm">{{this.title}}</i></button>
+              {{/if}}
               {{#if (eq this.type "meeting") }}
               <button draggable="true"
                 class="badge event-pill swatch-cyan text-wrap  text-center event-button draggable-event-button"

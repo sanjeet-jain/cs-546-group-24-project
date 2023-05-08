@@ -546,6 +546,16 @@ async function getRightPaneItems(userId) {
       return !x.expired && x.dateAddedTo !== null;
     }) || []
   );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.reminders?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.notes?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
   rightPaneItems.upcoming
     .sort((a, b) => {
       const dateA = dayjs(a.dateAddedTo);
