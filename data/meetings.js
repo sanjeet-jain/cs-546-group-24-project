@@ -198,15 +198,15 @@ const meetingsDataFunctions = {
       );
     }
     // was repeating before and isnt now
+    let allMeetingEvents = await this.getAll(userId);
+    for (let i = 0; i < allMeetingEvents.length; i++) {
+      this.isTwoEventSameUpdate(allMeetingEvents[i], updatedMeeting);
+    }
     if (
       !repeating &&
       updatedMeeting.repeatingGroup?.toString()?.trim() &&
       oldMeeting.repeating !== updatedMeeting.repeating
     ) {
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        this.isTwoEventSameUpdate(allMeetingEvents[i], updatedMeeting);
-      }
       await this.deleteAllRecurrences(
         userId,
         updatedMeeting.repeatingGroup.toString().trim(),
