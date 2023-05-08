@@ -3,6 +3,7 @@ const router = Router();
 import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
 import dayjs from "dayjs";
+import xss from "xss";
 router
   .route("/:userId/:meetingId")
   .get(utils.validateUserId, async (req, res) => {
@@ -70,6 +71,14 @@ router
       meetingPutData.repeatingCounterIncrement,
       meetingPutData.repeatingIncrementBy
     );
+    let updateAll = false;
+    try {
+      updateAll = utils.validateBooleanInput(
+        xss(meetingPutData.updateAll?.trim())
+      );
+    } catch (e) {
+      errorMessages.updateAll = e.message;
+    }
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
@@ -98,7 +107,8 @@ router
         tag,
         repeating,
         repeatingCounterIncrement,
-        repeatingIncrementBy
+        repeatingIncrementBy,
+        updateAll
       );
       return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {

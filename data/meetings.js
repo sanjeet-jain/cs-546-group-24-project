@@ -62,7 +62,8 @@ const meetingsDataFunctions = {
     tag,
     repeating,
     repeatingCounterIncrement,
-    repeatingIncrementBy
+    repeatingIncrementBy,
+    updateAll = false
   ) {
     // check if meetingId is a string and then check if its a valid Object Id with a new function called checkObjectIdString(stringObjectId)
 
@@ -211,6 +212,27 @@ const meetingsDataFunctions = {
         meetingId // which meeting to skip
       );
       updatedMeeting.repeatingGroup = null;
+    }
+
+    //updateAllRecurrences
+    if (
+      updateAll &&
+      repeating &&
+      updatedMeeting.repeatingGroup?.toString()?.trim() &&
+      oldMeeting.repeating == updatedMeeting.repeating &&
+      dateAddedTo !== null &&
+      dateDueOn !== null
+    ) {
+      await this.updateAllRecurrences(
+        userId,
+        updatedMeeting.title,
+        updatedMeeting.dateAddedTo,
+        updatedMeeting.dateDueOn,
+        updatedMeeting.priority,
+        updatedMeeting.textBody,
+        updatedMeeting.tag,
+        updatedMeeting.repeatingGroup
+      );
     }
     // if theres no change in repeating status means normal update
 
