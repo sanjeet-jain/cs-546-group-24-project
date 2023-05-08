@@ -24,12 +24,10 @@ function checkValidations(event) {
   let dob = event.target.dob;
 
   let passForm = event.target;
-  let disabilityInput = event.target.disability;
 
   let first_name_error = document.getElementById("first_name_error");
   let last_name_error = document.getElementById("last_name_error");
   let date_error = document.getElementById("date_error");
-  let disability_error = document.getElementById("disability_error");
 
   let profileForm = document.getElementById("edit-form");
   let deleteButton = document.getElementById("delete-profile-button");
