@@ -202,7 +202,13 @@ function repeatingCheckBoxTogglerReminder() {
       repeatingIncrementBy.value = "day";
       endDateTime.setAttribute("required", "");
       endDateTime.value = "";
+      if (dataGlobal) {
+        hideShowUpdateAllCheckBox(false);
+      }
     } else {
+      if (dataGlobal) {
+        hideShowUpdateAllCheckBox(true);
+      }
       repeatingIncrementBy.disabled = true;
       endDateTime.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
@@ -612,6 +618,7 @@ function submitReminderForm() {
         jsonData[key] = value.trim();
       }
       jsonData["repeating"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.repeating.checked;
       let reqType = "PUT";
       let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
