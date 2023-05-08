@@ -7,7 +7,8 @@ function populateMeetingsModal(userId, meetingId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
-
+      hideShowDeleteButton(false);
+      toggleUpdateAllCheckbox(!dataGlobal.repeating);
       let event_modal = document.getElementById("modal-meeting-display");
 
       // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
@@ -62,6 +63,8 @@ function populateRemindersModal(userId, reminderId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
+      toggleUpdateAllCheckbox(!dataGlobal.repeating);
       let event_modal = document.getElementById("modal-reminder-display");
 
       // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
@@ -98,6 +101,7 @@ function populateTasksModal(userId, taskId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
 
       let event_modal = document.getElementById("modal-task-display");
 
@@ -127,6 +131,7 @@ function populateNotesModal(userId, notesId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
 
       let event_modal = document.getElementById("modal-notes-display");
 
@@ -166,11 +171,11 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingCounterIncrement.value =
         dataGlobal?.repeatingCounterIncrement || 1;
       if (dataGlobal.repeating) {
-        hideShowUpdateAllCheckBox(false);
+        toggleUpdateAllCheckbox(false, dataGlobal.type);
       }
     } else {
       if (dataGlobal.repeating) {
-        hideShowUpdateAllCheckBox(true);
+        toggleUpdateAllCheckbox(true, dataGlobal.type);
       }
       repeatingIncrementBy.disabled = true;
       repeatingCounterIncrement.disabled = true;
@@ -203,11 +208,11 @@ function repeatingCheckBoxTogglerReminder() {
       endDateTime.setAttribute("required", "");
       endDateTime.value = "";
       if (dataGlobal.repeating) {
-        hideShowUpdateAllCheckBox(false);
+        toggleUpdateAllCheckbox(false);
       }
     } else {
       if (dataGlobal.repeating) {
-        hideShowUpdateAllCheckBox(true);
+        toggleUpdateAllCheckbox(true);
       }
       repeatingIncrementBy.disabled = true;
       endDateTime.disabled = true;
@@ -943,25 +948,21 @@ function populateBasedOnEventType(target) {
   switch (typeOfEventPill) {
     case "meeting":
       populateMeetingsModal(userId, eventId);
-      hideShowDeleteButton(false);
-      hideShowUpdateAllCheckBox(!dataGlobal.repeating);
+
       break;
     case "reminder":
       populateRemindersModal(userId, eventId);
-      hideShowDeleteButton(false);
-      hideShowUpdateAllCheckBox(!dataGlobal.repeating);
+
       break;
     case "task":
       populateTasksModal(userId, eventId);
-      hideShowDeleteButton(false);
       break;
     case "notes":
       populateNotesModal(userId, eventId);
-      hideShowDeleteButton(false);
       break;
     case "add-event":
       hideShowDeleteButton(true);
-      hideShowUpdateAllCheckBox(true, true);
+      toggleUpdateAllCheckbox(true);
       dataGlobal = undefined;
       userIdGlobal = userId;
       break;
@@ -969,15 +970,26 @@ function populateBasedOnEventType(target) {
       break;
   }
 }
-function hideShowUpdateAllCheckBox(hide) {
-  let updateCheckBoxDivs = document.querySelectorAll(".updateAll");
-  updateCheckBoxDivs.forEach((div) => {
+function toggleUpdateAllCheckbox(hide, eventType = dataGlobal?.type) {
+  let updateAllDivs;
+  if (eventType !== undefined) {
+    updateAllDivs = document.querySelectorAll(
+      `#${eventType}-form div.updateAll`
+    );
+  }
+  if (eventType === undefined) {
+    updateAllDivs = document.querySelectorAll(`div.updateAll`);
+  }
+  updateAllDivs.forEach((div) => {
     div.hidden = hide;
     let checkbox = div.querySelector("input");
     checkbox.checked = false;
+    checkbox.hidden = hide;
+    div.hidden = hide;
     checkbox.disabled = hide;
   });
 }
+
 function hideShowDeleteButton(hide) {
   let deleteButtons = document.querySelectorAll(".btn-delete");
   deleteButtons.forEach((button) => {
