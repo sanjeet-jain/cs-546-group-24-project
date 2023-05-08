@@ -105,7 +105,7 @@ const tasksDataFunctions = {
       title: title,
       textBody: textBody,
       dateCreated: dayjs().format("YYYY-MM-DDTHH:mm"),
-      dateAddedTo: dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm"),
+      dateAddedTo: dateAddedTo,
       priority: priority,
       tag: tag,
       checked: checked,
@@ -219,6 +219,10 @@ const tasksDataFunctions = {
       updatedTaskData.tag = updatedTask.tag.trim().toLowerCase();
     } else {
       updatedTaskData.tag = "tasks";
+    }
+    //dont allow task to be checked if no date assigned
+    if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {
+      throw new Error("Add a date to mark this task completed");
     }
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (
