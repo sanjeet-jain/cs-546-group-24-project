@@ -3,15 +3,16 @@ const router = Router();
 import utils from "../utils/utils.js";
 import notesDataFunctions from "../data/notes.js";
 import xss from "xss";
+import dayjs from "dayjs";
 router
   .route("/:userId/:noteId")
   .get(utils.validateUserId, async (req, res) => {
     let noteId = "";
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.noteId);
-      noteId = req.params.noteId.trim();
-      utils.checkObjectIdString(req.params.userId);
+      utils.checkObjectIdString(xss(req.params.noteId));
+      noteId = xss(req.params.noteId.trim());
+      utils.checkObjectIdString(xss(req.params.userId));
       userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -27,9 +28,9 @@ router
     let noteId = "";
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.noteId);
+      utils.checkObjectIdString(xss(req.params.noteId));
       noteId = req.params.noteId.trim();
-      utils.checkObjectIdString(req.params.userId);
+      utils.checkObjectIdString(xss(req.params.userId));
       userId = req.params.userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
@@ -46,10 +47,10 @@ router
     let noteId = "";
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.noteId);
-      noteId = req.params.noteId.trim();
-      utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(xss(req.params.noteId));
+      noteId = xss(req.params.noteId.trim());
+      utils.checkObjectIdString(xss(req.params.userId));
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -63,6 +64,9 @@ router
     notePutData.textBody = xss(notePutData.textBody);
     notePutData.title = xss(notePutData.title);
     notePutData.tag = xss(notePutData.tag);
+    notePutData.dateAddedTo = dayjs(xss(notePutData.dateAddedTo)).format(
+      "YYYY-MM-DDTHH:MM"
+    );
     try {
       utils.checkObjectIdString(noteId);
       let errorMessages = utils.validateNotesInputs(
@@ -111,8 +115,8 @@ router
   .get(utils.validateUserId, async (req, res) => {
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(xss(req.params.userId));
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -127,8 +131,8 @@ router
     //code here for PUT
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(xss(req.params.userId));
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -142,6 +146,9 @@ router
     notePostData.textBody = xss(notePostData.textBody);
     notePostData.title = xss(notePostData.title);
     notePostData.tag = xss(notePostData.tag);
+    notePostData.dateAddedTo = dayjs(xss(notePostData.dateAddedTo)).format(
+      "YYYY-MM-DDTHH:MM"
+    );
     try {
       //validation
       utils.checkObjectIdString(userId);
@@ -208,8 +215,8 @@ router
   .route("/api/upload-image/:userId/:filename")
   .post(utils.validateUserId, upload.single("image"), (req, res) => {
     try {
-      utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId;
+      utils.checkObjectIdString(xss(req.params.userId));
+      const userId = xss(req.params.userId.trim());
       if (userId !== req.session.user.user_id)
         throw new Error("You dont have permission to access that image");
     } catch (error) {
@@ -226,8 +233,8 @@ router
   .get(utils.validateUserId, (req, res) => {
     //add error case for file not found
     try {
-      utils.checkObjectIdString(req.params.userId);
-      const userId = req.params.userId;
+      utils.checkObjectIdString(xss(req.params.userId));
+      const userId = xss(req.params.userId.trim());
       if (userId !== req.session.user.user_id)
         throw new Error("You dont have permission to access that image");
 
