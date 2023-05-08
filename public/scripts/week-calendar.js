@@ -163,8 +163,15 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingIncrementBy.setAttribute("required", "");
       repeatingIncrementBy.value = "day";
       repeatingCounterIncrement.setAttribute("required", "");
-      repeatingCounterIncrement.value = 0;
+      repeatingCounterIncrement.value =
+        dataGlobal?.repeatingCounterIncrement || 1;
+      if (dataGlobal) {
+        hideShowUpdateAllCheckBox(false);
+      }
     } else {
+      if (dataGlobal) {
+        hideShowUpdateAllCheckBox(true);
+      }
       repeatingIncrementBy.disabled = true;
       repeatingCounterIncrement.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
@@ -929,24 +936,40 @@ function populateBasedOnEventType(target) {
   switch (typeOfEventPill) {
     case "meeting":
       populateMeetingsModal(userId, eventId);
+      hideShowDeleteButton(false);
+      hideShowUpdateAllCheckBox(false);
       break;
     case "reminder":
       populateRemindersModal(userId, eventId);
+      hideShowDeleteButton(false);
+      hideShowUpdateAllCheckBox(false);
       break;
     case "task":
       populateTasksModal(userId, eventId);
+      hideShowDeleteButton(false);
       break;
     case "notes":
       populateNotesModal(userId, eventId);
+      hideShowDeleteButton(false);
       break;
     case "add-event":
       hideShowDeleteButton(true);
+      hideShowUpdateAllCheckBox(true, true);
       dataGlobal = undefined;
       userIdGlobal = userId;
       break;
     default:
       break;
   }
+}
+function hideShowUpdateAllCheckBox(hide) {
+  let updateCheckBoxDivs = document.querySelectorAll(".updateAll");
+  updateCheckBoxDivs.forEach((div) => {
+    div.hidden = hide;
+    let checkbox = div.querySelector("input");
+    checkbox.checked = false;
+    checkbox.disabled = hide;
+  });
 }
 function hideShowDeleteButton(hide) {
   let deleteButtons = document.querySelectorAll(".btn-delete");
