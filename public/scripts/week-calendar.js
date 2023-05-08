@@ -165,11 +165,11 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingCounterIncrement.setAttribute("required", "");
       repeatingCounterIncrement.value =
         dataGlobal?.repeatingCounterIncrement || 1;
-      if (dataGlobal) {
+      if (dataGlobal.repeating) {
         hideShowUpdateAllCheckBox(false);
       }
     } else {
-      if (dataGlobal) {
+      if (dataGlobal.repeating) {
         hideShowUpdateAllCheckBox(true);
       }
       repeatingIncrementBy.disabled = true;
@@ -202,11 +202,11 @@ function repeatingCheckBoxTogglerReminder() {
       repeatingIncrementBy.value = "day";
       endDateTime.setAttribute("required", "");
       endDateTime.value = "";
-      if (dataGlobal) {
+      if (dataGlobal.repeating) {
         hideShowUpdateAllCheckBox(false);
       }
     } else {
-      if (dataGlobal) {
+      if (dataGlobal.repeating) {
         hideShowUpdateAllCheckBox(true);
       }
       repeatingIncrementBy.disabled = true;
@@ -944,12 +944,12 @@ function populateBasedOnEventType(target) {
     case "meeting":
       populateMeetingsModal(userId, eventId);
       hideShowDeleteButton(false);
-      hideShowUpdateAllCheckBox(false);
+      hideShowUpdateAllCheckBox(!dataGlobal.repeating);
       break;
     case "reminder":
       populateRemindersModal(userId, eventId);
       hideShowDeleteButton(false);
-      hideShowUpdateAllCheckBox(false);
+      hideShowUpdateAllCheckBox(!dataGlobal.repeating);
       break;
     case "task":
       populateTasksModal(userId, eventId);
