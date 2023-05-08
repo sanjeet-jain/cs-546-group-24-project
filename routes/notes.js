@@ -248,7 +248,7 @@ router
     }
   });
 router
-  .route("/:userId/:noteId/dateAddedto")
+  .route("/:userId/:noteId/dateAddedTo")
   .put(utils.validateUserId, async (req, res) => {
     //code here for PUT
     let noteId = "";

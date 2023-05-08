@@ -293,7 +293,7 @@ router
   });
 
 router
-  .route("/:userId/:meetingId/dateAddedto")
+  .route("/:userId/:meetingId/dateAddedTo")
   .put(utils.validateUserId, async (req, res) => {
     let meetingId = "";
     let userId = "";

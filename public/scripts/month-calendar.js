@@ -70,7 +70,7 @@ function drag_end_date_cell() {
       //   .querySelector(`button[data-bs-eventid='${buttonData.bsEventid}']`);
       $.ajax({
         method: "PUT",
-        url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedto`,
+        url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedTo`,
         data: { dateAddedTo: cellId },
         success: function (data) {
           // button.click();
