@@ -14,6 +14,12 @@ function createSessionObject(user) {
     userFirstName: user.first_name,
     email: user.email,
     firstTimeLogin: true,
+    filter: {
+      eventTypes: constants.eventTypes,
+      tags: [],
+      eventTypeSelected: [],
+      tagsSelected: [],
+    },
   };
 }
 
