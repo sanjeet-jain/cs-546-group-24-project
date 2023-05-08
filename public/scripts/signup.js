@@ -161,8 +161,8 @@ function checkValidations(event) {
     consent.setCustomValidity("error");
   }
   if (passwordInput.value !== reEnterPassword.value) {
-    reEnter_error = "Passwords do not match.";
-    reEnterPassword.setCustomValidity("error");
+    reEnter_error.innerText = "Passwords do not match.";
+    passwordReEnterInput.setCustomValidity("error");
   }
   if (
     dob.validity.valueMissing ||
@@ -194,7 +194,7 @@ function validateEmail(email) {
 
 function validatePassword(password) {
   const passwordRegex =
-    /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$/;
   return passwordRegex.test(password);
 }
 

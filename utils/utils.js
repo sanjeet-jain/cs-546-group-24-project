@@ -142,7 +142,7 @@ const utils = {
       throw new Error(`${inputName} must be at least 8 characters long`);
     }
     const passwordRegex =
-      /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$/;
     if (!passwordRegex.test(password)) {
       throw new Error(
         "Password must contain at least one uppercase letter, one number and one special character."

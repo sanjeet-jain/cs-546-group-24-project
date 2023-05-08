@@ -46,8 +46,8 @@
     <div>
       <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
-        minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$" aria-describedby="password_help_id"
-        value="" />
+        minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
+        aria-describedby="password_help_id" value="" />
       <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
@@ -58,7 +58,7 @@
 
     <div class="form-floating">
       <input required type="password" class="form-control" name="reEnterPassword" id="reEnterPassword"
-        placeholder="Password" minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$"
+        placeholder="Password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
         aria-describedby="reEnterPassword_help_id" />
       <label for="reEnterPassword">Re-Enter Password</label>
       <small id="reEnterPassword_help_id" class="form-text text-muted">
