@@ -113,6 +113,11 @@ export const createReminder = async (
 
   if (!repeating) {
     reminder.groupId = null;
+    if (dayjs(reminder.dateAddedTo).diff(dayjs()) > 0) {
+      reminder.expired = false;
+    } else {
+      reminder.expired = true;
+    }
     let reminder_id = await insertReminderEventDAO(reminder);
     await insertReminderIdToUserCollectionDAO(user_id, reminder_id);
   } else {
@@ -407,6 +412,11 @@ function duplicateReminderEvents(reminder) {
   reminder.groupId = new ObjectId();
   while (dayjs(endDateTime).diff(dayjs(currentDate)) >= 0) {
     reminder.dateAddedTo = currentDate;
+    if (dayjs(reminder.dateAddedTo).diff(dayjs()) > 0) {
+      reminder.expired = false;
+    } else {
+      reminder.expired = true;
+    }
     listOfEvents.push(constructNewReminderObj(reminder));
     if (reminder.repeatingIncrementBy === "day") {
       currentDate = dayjs(currentDate).add(1, "day").format("YYYY-MM-DDTHH:mm");
