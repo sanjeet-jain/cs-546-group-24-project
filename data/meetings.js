@@ -392,10 +392,6 @@ const meetingsDataFunctions = {
       type: "meeting",
     };
     if (!repeating) {
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        this.isTwoEventSame(allMeetingEvents[i], meetingObj);
-      }
       const result = await meetings.insertOne(meetingObj);
       const insertedId = result.insertedId;
       await users.updateOne(
@@ -450,12 +446,7 @@ const meetingsDataFunctions = {
         dateDueOnObject = newDateDueOn.clone();
         dateAddedToObject = newDateAddedTo.clone();
       }
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        for (let j = 0; j < meetingObjects.length; j++) {
-          this.isTwoEventSame(allMeetingEvents[i], meetingObjects[j]);
-        }
-      }
+
       const result = await meetings.insertMany(meetingObjects);
       const insertedIds = Object.values(result.insertedIds);
       await users.updateOne(
@@ -607,34 +598,6 @@ const meetingsDataFunctions = {
   async getDistinctTags() {
     const meetings = await meetingsCollection();
     return meetings.distinct("tag");
-  },
-
-  isTwoEventSame(event1, event2) {
-    if (event1["title"] === event2["title"]) {
-      if (
-        event1["dateAddedTo"] !== null &&
-        event2["dateAddedTo"] !== null &&
-        dayjs(event1["dateAddedTo"]).year() ===
-          dayjs(event2["dateAddedTo"]).year() &&
-        dayjs(event1["dateAddedTo"]).month() ===
-          dayjs(event2["dateAddedTo"]).month() &&
-        dayjs(event1["dateAddedTo"]).date() ===
-          dayjs(event2["dateAddedTo"]).date() &&
-        dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
-        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"] > 0)
-      ) {
-        throw new Error(
-          "Two Meetings have the same title and a date time clash"
-        );
-      } else if (
-        event1["dateAddedTo"] === null &&
-        event2["dateAddedTo"] === null
-      ) {
-        throw new Error(
-          "There cannot be two meetings of same title that is waiting to be scheduled"
-        );
-      }
-    }
   },
 };
 export default meetingsDataFunctions;
