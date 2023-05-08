@@ -134,7 +134,7 @@ const meetingsDataFunctions = {
     updatedMeeting.repeatingCounterIncrement = repeatingCounterIncrement;
     updatedMeeting.repeatingIncrementBy = repeatingIncrementBy;
 
-    // wasnt repeating but now is
+    // wasnt repeating but now is creating of series
     if (
       dateAddedTo !== null &&
       dateDueOn !== null &&
@@ -196,7 +196,7 @@ const meetingsDataFunctions = {
         { $push: { meetingIds: { $each: insertedIds } } }
       );
     }
-    // was repeating before and isnt now
+    // was repeating before and isnt now  removal of series
     if (
       !repeating &&
       updatedMeeting.repeatingGroup?.toString()?.trim() &&
@@ -214,7 +214,7 @@ const meetingsDataFunctions = {
       updatedMeeting.repeatingGroup = null;
     }
 
-    //updateAllRecurrences
+    //updateAllRecurrences update entire series
     if (
       updateAll &&
       repeating &&
@@ -231,31 +231,41 @@ const meetingsDataFunctions = {
         updatedMeeting.priority,
         updatedMeeting.textBody,
         updatedMeeting.tag,
-        updatedMeeting.repeatingGroup
+        updatedMeeting.repeatingGroup.toString()
       );
-    }
-    // if theres no change in repeating status means normal update
-
-    const result = await meetings.updateOne(
-      { _id: new ObjectId(meetingId) },
-      { $set: updatedMeeting }
-    );
-    // if the meeting was successfully updated, return the updated meeting
-    if (
-      result.modifiedCount === 1 &&
-      result.matchedCount == 1 &&
-      result.acknowledged === true
-    ) {
-      const updatedMeeting = await meetings.findOne({
+      await meetings.updateOne(
+        { _id: new ObjectId(meetingId) },
+        { $set: updatedMeeting }
+      );
+      let result = await meetings.findOne({
         _id: new ObjectId(meetingId),
       });
-      return updatedMeeting;
-    } else {
-      if (result.matchedCount !== 1) throw new Error("Meeting not found");
-      if (result.modifiedCount !== 1)
-        throw new Error("Meeting Details havent Changed");
-      if (result.acknowledged !== true)
-        throw new Error("Meeting update wasnt successfull");
+      return result;
+    }
+    // if theres no change in repeating status means normal update
+    else {
+      const result = await meetings.updateOne(
+        { _id: new ObjectId(meetingId) },
+        { $set: updatedMeeting }
+      );
+
+      // if the meeting was successfully updated, return the updated meeting
+      if (
+        result.modifiedCount === 1 &&
+        result.matchedCount == 1 &&
+        result.acknowledged === true
+      ) {
+        const updatedMeeting = await meetings.findOne({
+          _id: new ObjectId(meetingId),
+        });
+        return updatedMeeting;
+      } else {
+        if (result.matchedCount !== 1) throw new Error("Meeting not found");
+        if (result.modifiedCount !== 1)
+          throw new Error("Meeting Details havent Changed");
+        if (result.acknowledged !== true)
+          throw new Error("Meeting update wasnt successfull");
+      }
     }
   },
   async delete(meetingId, userId) {
@@ -516,7 +526,7 @@ const meetingsDataFunctions = {
     repeatingGroup
   ) {
     utils.checkObjectIdString(userId.trim());
-    utils.checkObjectIdString(repeatingGroup.trim());
+    utils.checkObjectIdString(repeatingGroup.toString().trim());
 
     let errorMessages = utils.validateMeetingCreateInputs(
       title,
@@ -534,7 +544,6 @@ const meetingsDataFunctions = {
     title = title.trim();
     dateAddedTo = dateAddedTo.trim();
     dateDueOn = dateDueOn.trim();
-    textBody = textBody.trim();
     tag = tag.trim().toLowerCase();
     repeatingGroup = repeatingGroup.trim();
 
@@ -550,19 +559,16 @@ const meetingsDataFunctions = {
       {
         $set: {
           title: title,
-          dateAddedTo: dateAddedTo,
-          dateDueOn: dateDueOn,
+          // dateAddedTo: dateAddedTo,
+          // dateDueOn: dateDueOn,
           priority: priority,
           textBody: textBody,
           tag: tag,
         },
       }
     );
-    if (
-      result.modifiedCount > 0 &&
-      result.matchedCount > 0 &&
-      result.acknowledged === true
-    ) {
+
+    if (result.acknowledged === true) {
       const updatedMeetings = await this.getAllRecurrences(
         userId,
         repeatingGroup

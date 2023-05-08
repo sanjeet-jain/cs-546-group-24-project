@@ -71,11 +71,12 @@ router
       meetingPutData.repeatingCounterIncrement,
       meetingPutData.repeatingIncrementBy
     );
-    let updateAll = false;
+    let updateAll =
+      xss(meetingPutData.updateAll).trim() === ""
+        ? false
+        : xss(meetingPutData.updateAll).trim();
     try {
-      updateAll = utils.validateBooleanInput(
-        xss(meetingPutData.updateAll?.trim())
-      );
+      updateAll = utils.validateBooleanInput(updateAll);
     } catch (e) {
       errorMessages.updateAll = e.message;
     }
