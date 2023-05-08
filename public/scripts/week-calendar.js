@@ -461,16 +461,10 @@ function submitMeetingForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
-      if (jsonData["repeating"] === undefined) {
-        jsonData["repeating"] = false;
-      } else {
-        jsonData["repeating"] = event.target.repeating.checked;
-      }
-      if (jsonData["updateAll"] === undefined) {
-        jsonData["updateAll"] = false;
-      } else {
-        jsonData["updateAll"] = event.target.repeating.checked;
-      }
+
+      jsonData["repeating"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.repeating.checked;
+
       let reqType = "PUT";
       let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -617,9 +611,7 @@ function submitReminderForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
-      if (jsonData["repeating"] === undefined) {
-        jsonData["repeating"] = false;
-      }
+      jsonData["repeating"] = event.target.repeating.checked;
       let reqType = "PUT";
       let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -673,6 +665,7 @@ function submitTaskForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
+      jsonData["checked"] = event.target.checked.checked;
       let reqType = "PUT";
       let ajaxURL = `/task/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
