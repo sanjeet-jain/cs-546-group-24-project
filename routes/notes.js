@@ -247,5 +247,79 @@ router
       return res.status(403).json({ error: error.message });
     }
   });
+router
+  .route("/:userId/:noteId/dateAddedto")
+  .put(utils.validateUserId, async (req, res) => {
+    //code here for PUT
+    let noteId = "";
+    let userId = "";
+    try {
+      utils.checkObjectIdString(xss(req.params.noteId));
+      noteId = xss(req.params.noteId.trim());
+      utils.checkObjectIdString(xss(req.params.userId));
+      userId = xss(req.params.userId.trim());
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+
+    const notePutData = await notesDataFunctions.get(noteId, userId);
+    if (!notePutData || Object.keys(notePutData).length === 0) {
+      return res
+        .status(400)
+        .json({ error: "There are no fields in the request body" });
+    }
+
+    const previousDate = dayjs(notePutData.dateAddedTo).format("YYYY-M-D");
+    try {
+      notePutData.textBody = xss(notePutData.textBody);
+      notePutData.title = xss(notePutData.title);
+      notePutData.tag = xss(notePutData.tag);
+      notePutData.dateAddedTo = dayjs(
+        xss(req?.body?.dateAddedTo?.trim())
+      ).format("YYYY-MM-DDTHH:mm");
+      let errorMessages = utils.validateNotesInputs(
+        notePutData.title,
+        notePutData.dateAddedTo,
+        notePutData.textBody,
+        notePutData.tag
+      );
+
+      if (
+        typeof notePutData.tag === "string" &&
+        notePutData.tag.trim().length > 0
+      ) {
+        notePutData.tag = notePutData.tag.trim();
+      } else {
+        notePutData.tag = "notes";
+      }
+
+      if (Object.keys(errorMessages).length !== 0) {
+        return res.status(400).json({ errorMessages: errorMessages });
+      }
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    try {
+      const { title, dateAddedTo, textBody, tag } = notePutData;
+      const updatednote = await notesDataFunctions.update(
+        userId,
+        noteId,
+        title,
+        dateAddedTo,
+        textBody,
+        tag
+      );
+      return res.status(200).json({
+        userId: userId,
+        taskId: updatednote._id,
+        previousDate,
+      });
+    } catch (e) {
+      if (e.message === "note Details havent Changed") {
+        return res.status(400).json({ error: e.message });
+      }
+      return res.status(500).json({ error: e.message });
+    }
+  });
 
 export default router;
