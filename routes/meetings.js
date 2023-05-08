@@ -298,14 +298,16 @@ router
     let meetingId = "";
     let userId = "";
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      utils.checkObjectIdString(req.params.userId);
-      meetingId = req.params.meetingId.trim();
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(xss(req.params.meetingId));
+      utils.checkObjectIdString(xss(req.params.userId));
+      meetingId = xss(req.params.meetingId.trim());
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-    let dateAddedTo = dayjs(req?.body?.dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    let dateAddedTo = dayjs(xss(req?.body?.dateAddedTo?.trim())).format(
+      "YYYY-MM-DDTHH:mm"
+    );
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
     const previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
     meetingPutData.dateAddedTo = dateAddedTo;
