@@ -209,11 +209,26 @@ router
       utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-      const previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
-      taskPutData.dateAddedTo = dayjs(
-        xss(req?.body?.dateAddedTo?.trim())
-      ).format("YYYY-MM-DDTHH:mm");
-
+      let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+      if (dateAddedTo === "") {
+        return res.status(400).json({ error: e.message });
+      }
+      dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
+      let previousDate = taskPutData.dateAddedTo;
+      taskPutData.dateAddedTo = dateAddedTo;
+      if (!previousDate) {
+        taskPutData.dateDueOn = dayjs(dateAddedTo)
+          .add(1, "hour")
+          .format("YYYY-MM-DDTHH:mm");
+      } else {
+        previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
+        taskPutData.dateDueOn = dayjs(taskPutData.dateDueOn)
+          .date(dayjs(dateAddedTo).date())
+          .month(dayjs(dateAddedTo).month())
+          .year(dayjs(dateAddedTo).year())
+          .format("YYYY-MM-DDTHH:mm");
+      }
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)

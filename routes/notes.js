@@ -263,42 +263,31 @@ router
     }
 
     const notePutData = await notesDataFunctions.get(noteId, userId);
-    if (!notePutData || Object.keys(notePutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
+    let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+    if (dateAddedTo === "") {
+      return res.status(400).json({ error: e.message });
     }
-
-    const previousDate = dayjs(notePutData.dateAddedTo).format("YYYY-M-D");
+    dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
-      notePutData.textBody = xss(notePutData.textBody);
-      notePutData.title = xss(notePutData.title);
-      notePutData.tag = xss(notePutData.tag);
-      notePutData.dateAddedTo = dayjs(
-        xss(req?.body?.dateAddedTo?.trim())
-      ).format("YYYY-MM-DDTHH:mm");
-      let errorMessages = utils.validateNotesInputs(
-        notePutData.title,
-        notePutData.dateAddedTo,
-        notePutData.textBody,
-        notePutData.tag
-      );
-
-      if (
-        typeof notePutData.tag === "string" &&
-        notePutData.tag.trim().length > 0
-      ) {
-        notePutData.tag = notePutData.tag.trim();
-      } else {
-        notePutData.tag = "notes";
-      }
-
-      if (Object.keys(errorMessages).length !== 0) {
-        return res.status(400).json({ errorMessages: errorMessages });
-      }
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
+    let previousDate = notePutData.dateAddedTo;
+    notePutData.dateAddedTo = dateAddedTo;
+    if (!previousDate) {
+      notePutData.dateDueOn = dayjs(dateAddedTo)
+        .add(1, "hour")
+        .format("YYYY-MM-DDTHH:mm");
+    } else {
+      previousDate = dayjs(notePutData.dateAddedTo).format("YYYY-M-D");
+      notePutData.dateDueOn = dayjs(notePutData.dateDueOn)
+        .date(dayjs(dateAddedTo).date())
+        .month(dayjs(dateAddedTo).month())
+        .year(dayjs(dateAddedTo).year())
+        .format("YYYY-MM-DDTHH:mm");
+    }
+
     try {
       const { title, dateAddedTo, textBody, tag } = notePutData;
       const updatednote = await notesDataFunctions.update(
