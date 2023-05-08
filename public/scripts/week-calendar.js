@@ -463,6 +463,13 @@ function submitMeetingForm() {
       }
       if (jsonData["repeating"] === undefined) {
         jsonData["repeating"] = false;
+      } else {
+        jsonData["repeating"] = event.target.repeating.checked;
+      }
+      if (jsonData["updateAll"] === undefined) {
+        jsonData["updateAll"] = false;
+      } else {
+        jsonData["updateAll"] = event.target.repeating.checked;
       }
       let reqType = "PUT";
       let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
@@ -1115,7 +1122,7 @@ function checkMeetingValidations(form) {
       meeting_dateAddedTo_error.innerText =
         "This field is mandatory in order to access the recurrence feature";
     }
-    if (form.repeatingCounterIncrement.value < 0) {
+    if (form.repeatingCounterIncrement.value <= 0) {
       meeting_repeatingCounterIncrement_error.innerText =
         "the counter needs to be greater than 0";
       form.repeatingCounterIncrement.setCustomValidity("error");
