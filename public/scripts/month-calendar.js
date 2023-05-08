@@ -158,7 +158,8 @@ function drag_end_date_cell() {
         },
         error: function (data) {
           alert(
-            "Some Error Occured when adding the event, please try in some time"
+            data?.responseJSON?.error ||
+              "Some Error Occured when adding the event, please try in some time"
           );
         },
       });

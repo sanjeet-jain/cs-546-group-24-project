@@ -104,6 +104,9 @@ deleteEvents.addEventListener("click", function (event) {
       },
       error: function (data) {
         console.log(data);
+        alert(
+          data?.responseJSON?.error || "Some Error Occured try again later"
+        );
       },
     });
   }
