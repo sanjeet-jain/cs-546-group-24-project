@@ -1478,12 +1478,14 @@ function loadLeftPaneCells(data) {
       "text-wrap",
       "text-center",
       "event-button"
+      // "draggable-event-button"
     );
     eventButton.setAttribute("data-bs-toggle", "modal");
     eventButton.setAttribute("data-bs-target", `#modal-${event.type}-display`);
     eventButton.setAttribute("data-bs-eventId", `${event._id}`);
     eventButton.setAttribute("data-bs-userId", `${data.userId}`);
     eventButton.setAttribute("data-bs-event-type", `${event.type}`);
+    // eventButton.setAttribute("draggable", "true");
     // logic for adding checkbox to task
 
     let logo = document.createElement("i");
@@ -1508,8 +1510,12 @@ function loadLeftPaneCells(data) {
         "border-0",
         buttonClass,
         "text-wrap",
-        "text-center"
+        "text-center",
+        "draggable-event-button"
       );
+      taskDiv.setAttribute("data-bs-eventId", `${event._id}`);
+      taskDiv.setAttribute("data-bs-userId", `${data.userId}`);
+      taskDiv.setAttribute("data-bs-event-type", `${event.type}`);
       let checkbox = document.createElement("input");
       checkbox.setAttribute("type", "checkbox");
       checkbox.classList.add("task-checkbox");
@@ -1519,6 +1525,7 @@ function loadLeftPaneCells(data) {
       checkbox.setAttribute("data-bs-userId", `${data.userId}`);
       checkbox.setAttribute("value", "true");
       checkbox.setAttribute("aria-label", "Task Checkbox");
+
       if (event.checked === true) {
         checkbox.checked = true;
         eventButton.classList.add("task-completed");
@@ -1528,13 +1535,18 @@ function loadLeftPaneCells(data) {
       }
       taskDiv.appendChild(checkbox);
       taskDiv.appendChild(eventButton);
+      taskDiv.setAttribute("draggable", "true");
+
       eventDiv.appendChild(taskDiv);
     } else {
+      eventButton.setAttribute("draggable", "true");
+      eventButton.classList.add("draggable-event-button");
       eventDiv.appendChild(eventButton);
     }
     display_current_items_div.appendChild(eventDiv);
   });
   CheckboxEventListener();
+  draggable_event_cells();
 }
 
 function miniCalendarLoader() {
@@ -1763,6 +1775,7 @@ function draggable_event_cells() {
   let buttonList = document.querySelectorAll(".draggable-event-button");
 
   buttonList.forEach((button) => {
+    button.removeEventListener("dragstart", () => {});
     button.addEventListener("dragstart", function (event) {
       let dataset = JSON.stringify(event.target.dataset);
       event.dataTransfer.setData("application/json", dataset);
