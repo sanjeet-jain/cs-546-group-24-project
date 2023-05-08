@@ -1,11 +1,11 @@
 <div class="modal fade" id="modal-summary-display" tabindex="-1" aria-labelledby="modal-summary-label"
   aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-content ">
 
       <div class="modal-header">
         <span class="modal-title" id="modal-summary-label">
-          Summary for Today
+          Summary for Today: {{today}}
         </span>
 
         <button id="summary-top-close-button" type="button" class="btn-close" data-bs-dismiss="modal"
@@ -14,10 +14,10 @@
 
       <div class="modal-body">
         <div class="card display_current_items_card">
-          <div class="card-body">
+          <div class="card-body ">
             {{#if todayItems.length includeZero=true}}
             <span class="card-title" id="summary_selected_date">Items for<br> {{today}}</span>
-            <div class="d-grid gap-1" id="summary_display_current_items">
+            <div class="d-grid gap-1 overflow-scroll-y" id="summary_display_current_items">
               {{#if todayItems.length includeZero=false}}
               {{#each todayItems}}
               {{#if (eq this.type "reminder")}}
@@ -28,10 +28,18 @@
                     class="bi-alarm">{{this.title}}</i></button></div>
               {{/if}}
               {{#if (eq this.type "task")}}
-              <div class="d-grid gap-1"><button class="badge event-pill bg-danger  text-wrap  text-center event-button"
-                  data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventid="{{this._id}}"
-                  data-bs-userid="{{../session.user_id}}" data-bs-event-type="task"><i
-                    class="bi-check2-square">{{this.title}}</i></button></div>
+              <div class="d-grid gap-1">
+                <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} text-wrap text-center">
+                  <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
+                    data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox"
+                    {{#if this.checked}}checked {{/if}}>
+                  <button
+                    class="badge event-pill bg-danger{{#if this.expired}}-subtle{{/if}} border-0  text-wrap  text-center event-button"
+                    data-bs-toggle="modal" data-bs-target="#modal-task-display" data-bs-eventId="{{this._id}}"
+                    data-bs-userId="{{../session.user_id}}" data-bs-event-type="{{this.type}}">
+                    <i class="bi-check2-square"></i>{{{this.title}}}</button>
+                </div>
+              </div>
               {{/if}}
               {{#if (eq this.type "meeting")}}
               <div class="d-grid gap-1"><button
@@ -74,11 +82,8 @@
     method: "GET",
     url: "/firstLogin",
     success: function (data) {
-      console.log("no more summary")
     },
     error: function (data) {
-      console.log(" idk why more summary")
-
     },
   });
 </script>

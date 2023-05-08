@@ -282,6 +282,9 @@ function enableNotesFormEdit() {
 function onMeetingModalClose() {
   let event_modal = document.getElementById("modal-meeting-display");
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("meeting-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let meetingsForm = document.getElementById("meeting-form");
     let fieldset = event_modal.querySelector("#meeting-form-enabler");
     fieldset.disabled = true;
@@ -327,6 +330,9 @@ function onReminderModalClose() {
   let event_modal = document.getElementById("modal-reminder-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("reminder-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let reminderForm = document.getElementById("reminder-form");
     reminderForm.reset();
     let fieldset = event_modal.querySelector("#reminder-form-enabler");
@@ -351,6 +357,9 @@ function onTaskModalClose() {
   let event_modal = document.getElementById("modal-task-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("task-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let fieldset = event_modal.querySelector("#task-form-enabler");
     fieldset.disabled = true;
     let taskForm = document.getElementById("task-form");
@@ -389,6 +398,9 @@ function onNotesModalClose() {
   let event_modal = document.getElementById("modal-notes-display");
 
   event_modal.addEventListener("hidden.bs.modal", function () {
+    let submitbutton = document.getElementById("notes-bottom-submit-button");
+    submitbutton.disabled = false;
+    submitbutton.innerText = "Submit";
     let notesForm = document.getElementById("notes-form");
     notesForm.reset();
     notesForm.classList.remove("was-validated");
@@ -418,6 +430,7 @@ function onNotesModalClose() {
 
     notes_title_error.innerText = "";
     notes_editor_error.innerText = "";
+    notes_editor_error.classList = "";
     notes_tag_error.innerText = "";
     notes_dateAddedTo_error.innerText = "";
   });
@@ -461,12 +474,12 @@ function submitMeetingForm() {
             submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("meeting-update-result");
             resultDiv.innerText =
-              "Meeting updated Successfully! Please refresh the page!";
+              "Meeting updated Successfully! Page will refresh automatically";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateMeetingsModal(data.userId, data.meetingId);
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -563,7 +576,8 @@ function submitMeetingForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -607,10 +621,10 @@ function submitReminderForm() {
             submitbutton.disabled = false;
             submitbutton.innerHTML = oldHtml;
             resultDiv.innerText =
-              "Reminder Updated Successfully! Please refresh the page!";
+              "Reminder Updated Successfully! Page will refresh automatically";
             resultDiv.classList.add("alert", "alert-success");
 
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -621,6 +635,8 @@ function submitReminderForm() {
           },
         });
       }
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -659,12 +675,12 @@ function submitTaskForm() {
             submitbutton.innerHTML = oldHtml;
             let resultDiv = document.getElementById("task-update-result");
             resultDiv.innerText =
-              "Task updated Successfully! Please refresh the page!";
+              "Task updated  Successfully! Page will refresh automatically";
             resultDiv.classList = "";
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateTasksModal(data.userId, data.taskId);
-            setTimeout(location.reload.bind(location), 3000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -699,7 +715,8 @@ function submitTaskForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -747,7 +764,7 @@ function submitNotesForm() {
             // if status code 200 update modal
             // populateNotesModal(data.userId, data.notesId);
 
-            setTimeout(location.reload.bind(location), 2000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -777,7 +794,8 @@ function submitNotesForm() {
           },
         });
       }
-
+      submitbutton.disabled = false;
+      submitbutton.innerHTML = oldHtml;
       event.target.classList.add("was-validated");
     },
     false
@@ -1099,6 +1117,13 @@ function checkMeetingValidations(form) {
       form.repeatingIncrementBy.setCustomValidity("error");
     }
   }
+  let resultDiv = document.getElementById(`meeting-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;
@@ -1173,7 +1198,13 @@ function checkNotesValidations(form) {
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("overflow");
   }
-
+  let resultDiv = document.getElementById(`notes-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;
@@ -1299,6 +1330,13 @@ function checkReminderValidations(form) {
       form.repeatingIncrementBy.setCustomValidity("error");
     }
   }
+  let resultDiv = document.getElementById(`reminder-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   return form.checkValidity();
 }
 
@@ -1370,11 +1408,20 @@ function checkTaskValidations(form) {
     task_dateAddedTo_error.innerText = "Add date to mark this task completed";
     form.dateAddedTo.setCustomValidity("date added to can't be invalid");
   }
-
+  let resultDiv = document.getElementById(`task-update-result`);
+  resultDiv.classList = "";
+  resultDiv.innerText = "";
+  if (!form.checkValidity()) {
+    resultDiv.innerText = "There Are Some Errors on the form";
+    resultDiv.classList.add("alert", "alert-danger");
+  }
   if (form.checkValidity()) {
     return true;
   } else return false;
 }
+let selectedDateCell = new URLSearchParams(window.location.search).get(
+  "selectedDateCell"
+);
 function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
@@ -1386,6 +1433,8 @@ function clickableDateCells() {
 
       let eventTarget = event.target.closest("td");
       let selectedDate = eventTarget.attributes["data-bs-day"]?.value;
+      selectedDateCell = selectedDate;
+      setPageUrlForSelectedDateCell(selectedDate, false);
       setDatepickerValue(selectedDate);
     });
   });
@@ -1412,9 +1461,9 @@ function loadLeftPaneCells(data) {
     display_current_items_div.innerText = "There are no events for the day";
     return;
   }
+  let eventDiv = document.createElement("div");
+  eventDiv.classList.add("d-grid", "gap-1");
   events.forEach((event) => {
-    let eventDiv = document.createElement("div");
-    eventDiv.classList.add("d-grid", "gap-1");
     let eventButton = document.createElement("button");
     let logoClass = "";
     let buttonClass = "";
@@ -1438,6 +1487,7 @@ function loadLeftPaneCells(data) {
     eventButton.classList.add(
       "badge",
       "event-pill",
+      "border-0",
       buttonClass,
       "text-wrap",
       "text-center",
@@ -1448,12 +1498,15 @@ function loadLeftPaneCells(data) {
     eventButton.setAttribute("data-bs-eventId", `${event._id}`);
     eventButton.setAttribute("data-bs-userId", `${data.userId}`);
     eventButton.setAttribute("data-bs-event-type", `${event.type}`);
-    let logo = document.createElement("i");
+    // logic for adding checkbox to task
 
+    let logo = document.createElement("i");
     // add for other events
     logo.classList.add(logoClass);
-    logo.innerText = `${event.title}`;
+    let textNode = document.createTextNode(`${event.title}`);
+
     eventButton.appendChild(logo);
+    eventButton.appendChild(textNode);
     // add an eventlistener
     eventButton.addEventListener(
       "click",
@@ -1462,19 +1515,62 @@ function loadLeftPaneCells(data) {
       },
       false
     );
-    eventDiv.appendChild(eventButton);
+    if (event.type === "task") {
+      let taskDiv = document.createElement("div");
+      taskDiv.classList.add(
+        "badge",
+        "border-0",
+        buttonClass,
+        "text-wrap",
+        "text-center"
+      );
+      let checkbox = document.createElement("input");
+      checkbox.setAttribute("type", "checkbox");
+      checkbox.classList.add("task-checkbox");
+      checkbox.setAttribute("name", "taskCheckBox");
+      checkbox.setAttribute("input", "checkbox");
+      checkbox.setAttribute("data-bs-eventId", `${event._id}`);
+      checkbox.setAttribute("data-bs-userId", `${data.userId}`);
+      checkbox.setAttribute("value", "true");
+      checkbox.setAttribute("aria-label", "Task Checkbox");
+      if (event.checked === true) {
+        checkbox.checked = true;
+        eventButton.classList.add("task-completed");
+      } else {
+        checkbox.checked = false;
+        eventButton.classList.remove("task-completed");
+      }
+      taskDiv.appendChild(checkbox);
+      taskDiv.appendChild(eventButton);
+      eventDiv.appendChild(taskDiv);
+    } else {
+      eventDiv.appendChild(eventButton);
+    }
     display_current_items_div.appendChild(eventDiv);
   });
+  CheckboxEventListener();
 }
 
 function miniCalendarLoader() {
   $("#datepickerContainer")
     .datepicker({
       format: "yyyy-mm-dd",
-      autoclose: true,
+      autoclose: false,
       todayHighlight: true,
+      startDate: dayjs()
+        .subtract(2, "year")
+        .startOf("year")
+        .format("YYYY-MM-DD"),
+      endDate: dayjs().add(2, "year").endOf("year").format("YYYY-MM-DD"),
     })
+    .datepicker("setDate", selectedDateCell)
     .on("changeDate", function (e) {
+      if (dayjs(selectedDateCell).month() !== dayjs(e.date).month()) {
+        selectedDateCell = dayjs(e.date).format("YYYY-M-D");
+        setPageUrlForSelectedDateCell(selectedDateCell);
+      }
+      selectedDateCell = dayjs(e.date).format("YYYY-M-D");
+      setPageUrlForSelectedDateCell(selectedDateCell, false);
       let selected_date_div = document.getElementById("selected_date");
       selected_date_div.innerText = `Items for
       ${dayjs(e.date).format("MMMM DD YYYY")}`;
@@ -1577,7 +1673,7 @@ function deleteButton() {
               resultDiv.classList.add("alert", "alert-success");
               event.target.disabled = false;
               event.target.innerHTML = oldHtml;
-              setTimeout(location.reload.bind(location), 2000);
+              setTimeout(location.reload.bind(location), 1500);
             },
             error: function (data) {
               let resultDiv = document.getElementById(
@@ -1630,7 +1726,7 @@ function deleteButton() {
             resultDiv.classList.add("alert", "alert-success");
             event.target.disabled = false;
             event.target.innerHTML = oldHtml;
-            setTimeout(location.reload.bind(location), 2000);
+            setTimeout(location.reload.bind(location), 1500);
           },
           error: function (data) {
             let resultDiv = document.getElementById(
@@ -1672,6 +1768,7 @@ function validateDateTime(date) {
 }
 function CheckboxEventListener() {
   document.querySelectorAll(".task-checkbox").forEach((checkbox) => {
+    checkbox.removeEventListener("click", () => {});
     checkbox.addEventListener("click", handleCheckboxClick);
   });
 }
@@ -1695,7 +1792,6 @@ function handleCheckboxClick(event) {
   $.ajax({
     method: "PUT",
     url: `/task/${userId}/${taskId}/${isChecked}`,
-    data: { checked: isChecked },
     success: function (data) {
       if (isChecked) {
         alert("Task is marked Complete");
@@ -1703,18 +1799,54 @@ function handleCheckboxClick(event) {
       if (!isChecked) {
         alert("Task is marked Incomplete");
       }
+      setPageUrlForSelectedDateCell();
     },
     error: function (data) {
-      alert("Some error occured while marking task");
+      checkbox.checked = false;
+      alert(
+        data?.responseJSON?.error || "Some error occured while marking task"
+      );
     },
   });
 }
+function simulateTdCellClick() {
+  const params = new URLSearchParams(window.location.search);
+  const tdClass = params.get("selectedDateCell");
 
-draggable_event_cells();
-CheckboxEventListener();
-deleteButton();
+  // Get the td element by its ID
+  const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
+  console.log(td);
+  // Simulate a click event on the td element
+  if (td) {
+    td.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  }
+}
+function setPageUrlForSelectedDateCell(
+  selectedDate = selectedDateCell,
+  redirect = true
+) {
+  const urlParams = new URLSearchParams(window.location.search);
 
-filterForm();
+  if (urlParams.has("selectedDateCell")) {
+    urlParams.set("selectedDateCell", selectedDate);
+  } else {
+    urlParams.append("selectedDateCell", selectedDate);
+  }
+
+  // Append the new query parameter to the existing URL
+  const newUrl =
+    window.location.origin +
+    window.location.pathname +
+    "?" +
+    urlParams.toString();
+
+  // Navigate to the new URL
+  if (redirect) {
+    window.location.href = newUrl;
+  } else {
+    history.pushState(null, "", newUrl);
+  }
+}
 
 submitMeetingForm();
 submitReminderForm();
@@ -1739,3 +1871,10 @@ clickableDateCells();
 
 repeatingCheckBoxTogglerReminder();
 repeatingCheckBoxTogglerMeeting();
+
+draggable_event_cells();
+CheckboxEventListener();
+deleteButton();
+
+filterForm();
+simulateTdCellClick();
