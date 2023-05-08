@@ -641,10 +641,21 @@ const meetingsDataFunctions = {
     }
   },
   isTwoEventSameUpdate(event1, event2) {
+    let event1RepeatGrpId = event1["repeatingGroup"];
+    let event2RepeatGrpId = event2["repeatingGroup"];
+    if (event1RepeatGrpId !== null) {
+      event1RepeatGrpId = event1["repeatingGroup"].toString();
+    }
+    if (event2RepeatGrpId !== null) {
+      event2RepeatGrpId = event2["repeatingGroup"].toString();
+    }
     if (
       event1["title"] === event2["title"] &&
-      event1["repeatingGroup"].toString() !==
-        event2["repeatingGroup"].toString()
+      !(
+        event1RepeatGrpId != null &&
+        event2RepeatGrpId != null &&
+        event1RepeatGrpId === event2RepeatGrpId
+      )
     ) {
       if (
         event1["dateAddedTo"] !== null &&

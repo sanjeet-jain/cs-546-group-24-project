@@ -1,6 +1,7 @@
 let dataGlobal;
 let userIdGlobal;
 function populateMeetingsModal(userId, meetingId) {
+  onMeetingModalClose();
   $.ajax({
     method: "GET",
     url: `/meeting/${userId}/${meetingId}`,
@@ -56,6 +57,7 @@ function populateMeetingsModal(userId, meetingId) {
 }
 
 function populateRemindersModal(userId, reminderId) {
+  onReminderModalClose();
   $.ajax({
     method: "GET",
     url: `/reminder/${userId}/reminder/${reminderId}`,
@@ -92,6 +94,7 @@ function populateRemindersModal(userId, reminderId) {
 }
 
 function populateTasksModal(userId, taskId) {
+  onTaskModalClose();
   $.ajax({
     method: "GET",
     url: `/task/${userId}/${taskId}`,
@@ -121,6 +124,7 @@ function populateTasksModal(userId, taskId) {
 }
 
 function populateNotesModal(userId, notesId) {
+  onNotesModalClose();
   $.ajax({
     method: "GET",
     url: `/notes/${userId}/${notesId}`,
