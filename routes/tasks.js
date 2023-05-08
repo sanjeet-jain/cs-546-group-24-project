@@ -207,12 +207,10 @@ router
       utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-      const previousDate = dayjs(taskPutData.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm"
-      );
-      taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm"
-      );
+      const previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
+      taskPutData.dateAddedTo = dayjs(
+        xss(req?.body?.dateAddedTo?.trim())
+      ).format("YYYY-MM-DDTHH:mm");
 
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
