@@ -307,6 +307,7 @@ router
     }
     let dateAddedTo = dayjs(req?.body?.dateAddedTo).format("YYYY-MM-DDTHH:mm");
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
+    const previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
     meetingPutData.dateAddedTo = dateAddedTo;
     meetingPutData.dateDueOn = dayjs(dateAddedTo)
       .add(1, "hour")
@@ -359,7 +360,9 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy
       );
-      return res.status(200).json({ userId: userId, meetingId: meetingId });
+      return res
+        .status(200)
+        .json({ userId: userId, meetingId: meetingId, previousDate });
     } catch (e) {
       if (e === "Meeting Details havent Changed") {
         return res.status(400).json({ error: e.message });

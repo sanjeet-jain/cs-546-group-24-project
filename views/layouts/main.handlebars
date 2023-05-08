@@ -39,22 +39,28 @@
         referrerpolicy="origin"></script>
 </head>
 
-<body class="mx-auto d-grid">
-    <div class="headBarNav">
+<body class="mx-lg-4 mx-md-4 mx-sm-4">
+    <header>
         {{>headNavBar months=months currentMonth=currentMonth
         yearRange=yearRange currYear=currYear prevYear=prevYear prevMonth=prevMonth nextMonth=nextMonth
         nextYear=nextYear week=week}}
-    </div>
-    <main class="row">
-        <div id="left-menu-div" class="col container">{{>leftPane}}</div>
-        <div class="col-md-auto center-div container">
-            {{{body}}}
+    </header>
+    <main class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-12">
+                <div id="left-menu-div">{{>leftPane}}</div>
+            </div>
+            <div class="col-lg-8 col-md-6 col-sm-4 col-12">
+                {{{body}}}
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-12">
+                <div id="right-menu-div">{{>rightPane }}</div>
+            </div>
         </div>
-        <div id="right-menu-div" class="col container">{{>rightPane }}</div>
+
     </main>
 
     <footer class="position-bottom ">
-
 
     </footer>
     {{#if session.user_id}}
