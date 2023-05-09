@@ -151,16 +151,16 @@ function populateNotesModal(userId, notesId) {
   });
 }
 
-function repeatingCheckBoxTogglerMeeting() {
+function updateAllCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
-  let repeating = event_modal.querySelector("input#meeting_repeating");
+  let updateAll = event_modal.querySelector("input#meeting_updateAll");
   let repeatingIncrementBy = event_modal.querySelector(
     "select#meeting_repeatingIncrementBy"
   );
   let repeatingCounterIncrement = event_modal.querySelector(
     "input#meeting_repeatingCounterIncrement"
   );
-  repeating.addEventListener("change", (event) => {
+  updateAll.addEventListener("change", (event) => {
     if (event.target.checked) {
       event.target.value = true;
       repeatingIncrementBy.disabled = false;
@@ -170,13 +170,7 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingCounterIncrement.setAttribute("required", "");
       repeatingCounterIncrement.value =
         dataGlobal?.repeatingCounterIncrement || 1;
-      if (dataGlobal.repeating) {
-        toggleUpdateAllCheckbox(false, dataGlobal.type);
-      }
     } else {
-      if (dataGlobal.repeating) {
-        toggleUpdateAllCheckbox(true, dataGlobal.type);
-      }
       repeatingIncrementBy.disabled = true;
       repeatingCounterIncrement.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
@@ -189,7 +183,83 @@ function repeatingCheckBoxTogglerMeeting() {
     }
   });
 }
+function repeatingCheckBoxTogglerMeeting() {
+  let event_modal = document.getElementById("modal-meeting-display");
+  let repeating = event_modal.querySelector("input#meeting_repeating");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#meeting_repeatingIncrementBy"
+  );
+  let repeatingCounterIncrement = event_modal.querySelector(
+    "input#meeting_repeatingCounterIncrement"
+  );
+  repeating.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      if (dataGlobal.repeating) {
+        toggleUpdateAllCheckbox(false, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = false;
+        repeatingCounterIncrement.parentNode.hidden = false;
+      } else {
+        event.target.value = true;
+        repeatingIncrementBy.disabled = false;
+        repeatingCounterIncrement.disabled = false;
+        repeatingIncrementBy.setAttribute("required", "");
+        repeatingIncrementBy.value = "day";
+        repeatingCounterIncrement.setAttribute("required", "");
+        repeatingCounterIncrement.value =
+          dataGlobal?.repeatingCounterIncrement || 1;
+      }
+    } else {
+      if (dataGlobal.repeating) {
+        toggleUpdateAllCheckbox(true, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = true;
+        repeatingCounterIncrement.parentNode.hidden = true;
+      } else {
+        repeatingIncrementBy.disabled = true;
+        repeatingCounterIncrement.disabled = true;
+        repeatingIncrementBy.removeAttribute("required");
+        repeatingCounterIncrement.removeAttribute("required");
+        event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
+          "";
+        event_modal.querySelector(
+          "input#meeting_repeatingCounterIncrement"
+        ).value = "";
+      }
+    }
+  });
+}
 
+function updateAllCheckBoxTogglerReminder() {
+  let event_modal = document.getElementById("modal-reminder-display");
+  let updateAll = event_modal.querySelector("input#reminder_updateAll");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#reminder_repeatingIncrementBy"
+  );
+  let repeatingCounterIncrement = event_modal.querySelector(
+    "input#reminder_repeatingCounterIncrement"
+  );
+  updateAll.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      event.target.value = true;
+      repeatingIncrementBy.disabled = false;
+      repeatingCounterIncrement.disabled = false;
+      repeatingIncrementBy.setAttribute("required", "");
+      repeatingIncrementBy.value = "day";
+      repeatingCounterIncrement.setAttribute("required", "");
+      repeatingCounterIncrement.value =
+        dataGlobal?.repeatingCounterIncrement || 1;
+    } else {
+      repeatingIncrementBy.disabled = true;
+      repeatingCounterIncrement.disabled = true;
+      repeatingIncrementBy.removeAttribute("required");
+      repeatingCounterIncrement.removeAttribute("required");
+      event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
+        "";
+      event_modal.querySelector(
+        "input#reminder_repeatingCounterIncrement"
+      ).value = "";
+    }
+  });
+}
 function repeatingCheckBoxTogglerReminder() {
   let event_modal = document.getElementById("modal-reminder-display");
   let repeating = event_modal.querySelector("input#reminder_repeating");
@@ -239,6 +309,10 @@ function enableMeetingFormEdit() {
       let repeatingCounterIncrement = event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       );
+      if (dataGlobal.repeating) {
+        repeatingIncrementBy.disabled = true;
+        repeatingCounterIncrement.disabled = true;
+      }
       if (!repeating.checked) {
         repeating.value = false;
         repeatingIncrementBy.disabled = true;
@@ -1910,6 +1984,7 @@ miniCalendarLoader();
 
 clickableDateCells();
 
+updateAllCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
 repeatingCheckBoxTogglerMeeting();
 
