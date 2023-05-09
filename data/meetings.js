@@ -134,6 +134,7 @@ const meetingsDataFunctions = {
     updatedMeeting.repeatingCounterIncrement = repeatingCounterIncrement;
     updatedMeeting.repeatingIncrementBy = repeatingIncrementBy;
 
+    let ifUpdateAllRecurrenceHappens = false;
     // wasnt repeating but now is creating of series
     if (
       dateAddedTo !== null &&
@@ -307,6 +308,7 @@ const meetingsDataFunctions = {
             },
           }
         );
+        ifUpdateAllRecurrenceHappens = true;
       }
     }
     // if theres no change in repeating status means normal update
@@ -319,6 +321,7 @@ const meetingsDataFunctions = {
     } else {
       updatedMeeting.expired = true;
     }
+
     const result = await meetings.updateOne(
       { _id: new ObjectId(meetingId) },
       { $set: updatedMeeting }
@@ -328,9 +331,10 @@ const meetingsDataFunctions = {
 
     // if the meeting was successfully updated, return the updated meeting
     if (
-      result.modifiedCount === 1 &&
-      result.matchedCount == 1 &&
-      result.acknowledged === true
+      ifUpdateAllRecurrenceHappens ||
+      (result.modifiedCount === 1 &&
+        result.matchedCount == 1 &&
+        result.acknowledged === true)
     ) {
       const updatedMeeting = await meetings.findOne({
         _id: new ObjectId(meetingId),
