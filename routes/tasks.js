@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import xss from "xss";
 
 const router = Router();
-import xss from "xss";
 
 router
   .route("/tasks/:userId")
