@@ -1176,6 +1176,22 @@ function checkMeetingValidations(form) {
     meeting_dateDueOn_error.innerText = "The date time value passed is invalid";
     form.dateDueOn.setCustomValidity("invalid date");
   }
+  if (form.dateAddedTo.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+    } catch (error) {
+      meeting_dateAddedTo_error.innerText = error.message;
+      form.dateAddedTo.setCustomValidity("invalid date");
+    }
+  }
+  if (form.dateDueOn.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateDueOn.value.trim());
+    } catch (error) {
+      meeting_dateDueOn_error.innerText = error.message;
+      form.dateDueOn.setCustomValidity("invalid date");
+    }
+  }
 
   //dateAdded to passed dateDue on not passed
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value === "") {
@@ -1256,7 +1272,7 @@ function checkMeetingValidations(form) {
     ) {
       try {
         // check if the counter is exceeding the max allowed dates of the application
-        let temp = dayjs(form.dateAddedTo.value)
+        let temp = dayjs(form.dateAddedTo.value.trim())
           .add(
             Number.parseInt(form.repeatingCounterIncrement.value),
             form.repeatingIncrementBy.value
@@ -1333,10 +1349,17 @@ function checkNotesValidations(form) {
     form.title.setCustomValidity("error");
   }
 
-  if (form.dateAddedTo.value.length > 200) {
-    notes_editor_error.innerText =
-      "TextBody cant be longer than 200 characters";
-    form.textBody.setCustomValidity("error");
+  if (!validateDateTime(form.dateAddedTo.value)) {
+    notes_dateAddedTo_error.innerText = "The date time value passed is invalid";
+    form.dateAddedTo.setCustomValidity("error");
+  }
+  if (form.dateAddedTo.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+    } catch (error) {
+      notes_dateAddedTo_error.innerText = error.message;
+      form.dateAddedTo.setCustomValidity("invalid date");
+    }
   }
 
   const parser = new DOMParser();
@@ -1346,10 +1369,12 @@ function checkNotesValidations(form) {
   );
 
   if (parsedHtml.body.textContent.trim().length === 0) {
-    notes_editor_error.classList.add("alert", "alert-danger");
-
-    notes_editor_error.innerText = "TextBody cant be empty";
-    form.textBody.setCustomValidity("underflow");
+    if (parsedHtml.querySelectorAll("img").length === 0) {
+      // The editor does not contain any images
+      notes_editor_error.classList.add("alert", "alert-danger");
+      notes_editor_error.innerText = "TextBody cant be empty";
+      form.textBody.setCustomValidity("underflow");
+    }
   }
 
   if (parsedHtml.body.textContent.trim() > 200) {
@@ -1461,11 +1486,26 @@ function checkReminderValidations(form) {
     form.dateAddedTo.setCustomValidity("invalid date");
   }
 
+  try {
+    checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+  } catch (error) {
+    reminder_dateAddedTo_error.innerText = error.message;
+    form.dateAddedTo.setCustomValidity("invalid date");
+  }
+
   if (form.repeating.value === "true") {
     if (!validateDateTime(form.endDateTime.value)) {
       reminder_endDateTime_error.innerText =
         "The end recurrence date should be valid";
       form.endDateTime.setCustomValidity("Error");
+    }
+    if (form.endDateTime.checkValidity()) {
+      try {
+        checkIfDateIsBeyondRange(form.endDateTime.value.trim());
+      } catch (error) {
+        reminder_endDateTime_error.innerText = error.message;
+        form.endDateTime.setCustomValidity("invalid date");
+      }
     }
     if (
       validateDateTime(form.dateAddedTo.value) &&

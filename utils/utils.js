@@ -423,12 +423,17 @@ const utils = {
       const parser = new dom.window.DOMParser();
 
       const doc = parser.parseFromString(textBody, "text/html");
-      const text = doc.documentElement.textContent;
-      utils.validateStringInputWithMaxLength(
-        text,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
+      const text = doc.documentElement.textContent.trim();
+      if (doc.querySelectorAll("img").length === 0 && text.length === 0) {
+        throw Error("Text Body cant be empty");
+      }
+      if (doc.querySelectorAll("img").length === 0 && text.length > 0) {
+        utils.validateStringInputWithMaxLength(
+          text,
+          "textBody",
+          constants.stringLimits["textBody"]
+        );
+      }
     } catch (e) {
       errorMessages.textBody = e.message;
     }
