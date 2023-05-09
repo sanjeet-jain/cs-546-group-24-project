@@ -327,8 +327,6 @@ const meetingsDataFunctions = {
       { $set: updatedMeeting }
     );
 
-    //TODO Remove result modified count
-
     // if the meeting was successfully updated, return the updated meeting
     if (
       ifUpdateAllRecurrenceHappens ||

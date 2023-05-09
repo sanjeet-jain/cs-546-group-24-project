@@ -29,7 +29,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResultmeetings);
   const updateResultreminders = await remindersCollection.updateMany(
     {
       dateAddedTo: { $ne: null, $ne: undefined },
@@ -38,7 +37,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResultreminders);
 
   const updateResulttasks = await tasksCollection.updateMany(
     {
@@ -48,7 +46,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResulttasks);
 
   console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
 });
@@ -119,7 +116,6 @@ app.use(
 app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
-    //todo extend cookie
     var hour = 1800000;
     req.session.cookie.expires = dayjs().add(30, "minute").toDate();
     req.session.cookie.maxAge = hour;
