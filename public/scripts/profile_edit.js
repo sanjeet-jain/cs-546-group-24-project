@@ -127,9 +127,7 @@ deleteButton.addEventListener("click", function (event) {
         alert("You will now be logged out");
         window.location.href = "/user/logout";
       },
-      error: function (data) {
-        console.log(data);
-      },
+      error: function (data) {},
     });
   }
 });
@@ -147,7 +145,6 @@ deleteEvents.addEventListener("click", function (event) {
         alert(data.message);
       },
       error: function (data) {
-        console.log(data);
         alert(
           data?.responseJSON?.error || "Some Error Occured try again later"
         );

@@ -1785,7 +1785,6 @@ function filterForm() {
         filter.tagsSelected.push(value);
       }
     }
-    console.log(filter);
     $.ajax({
       method: "POST",
       url: `${event.target.action}`,
@@ -1992,7 +1991,6 @@ function simulateTdCellClick() {
 
   // Get the td element by its ID
   const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
-  console.log(td);
   // Simulate a click event on the td element
   if (td) {
     td.dispatchEvent(new MouseEvent("click", { bubbles: true }));

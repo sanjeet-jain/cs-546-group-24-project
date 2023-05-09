@@ -141,7 +141,7 @@ export async function runSetup(datestring, user) {
     type: "task",
   };
 
-  await tasksDataFunctions.createTask(
+  tasksDataFunctions.createTask(
     user._id.toString(),
     sampleTask.title,
     sampleTask.textBody,
@@ -161,7 +161,7 @@ export async function runSetup(datestring, user) {
     type: "task",
   };
 
-  await tasksDataFunctions.createTask(
+  tasksDataFunctions.createTask(
     user._id.toString(),
     sampleTask2.title,
     sampleTask2.textBody,
@@ -172,7 +172,7 @@ export async function runSetup(datestring, user) {
   );
 
   for (let i = 0; i < 10; i++) {
-    await tasksDataFunctions.createTask(
+    tasksDataFunctions.createTask(
       user._id.toString(),
       sampleTask2.title + " " + j.toString(),
       sampleTask2.textBody,
@@ -256,7 +256,7 @@ export async function runSetup(datestring, user) {
       sampleMeeting2.repeatingCounterIncrement,
       sampleMeeting2.repeatingIncrementBy
     );
-    // TODO use when you want to check right pane scrollability
+    // use when you want to check right pane scrollability
     for (let i = 0; i < 10; i++) {
       await meetingsDataFunctions.create(
         user._id.toString(),
