@@ -1283,6 +1283,7 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
+
   if (
     typeof form.tag.value === "string" &&
     form.tag.value.trim().length > 0 &&
@@ -1292,18 +1293,27 @@ function checkNotesValidations(form) {
     form.tag.setCustomValidity("error");
   }
 
-  if (form.title.value.length < 1) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length < 1
+  ) {
     notes_title_error.innerText =
       "Title should have atleast 1 character which is not space";
     form.title.setCustomValidity("error");
   }
 
-  if (form.title.value.length > 100) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length > 100
+  ) {
     notes_title_error.innerText = "Title cant be longer than 100 characters";
     form.title.setCustomValidity("error");
   }
 
-  if (form.dateAddedTo.value.length > 200) {
+  if (
+    typeof form.textBody.value === "string" &&
+    form.textBody.value.trim().length > 200
+  ) {
     notes_editor_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
