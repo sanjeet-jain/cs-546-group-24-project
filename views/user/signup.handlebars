@@ -1,5 +1,5 @@
 <div id="signup-form-div" class="container w-50">
-  <form action="/user/signup" id="signup-form" method="POST" class="needs-validation" novalidate>
+  <form action="/user/signup" id="signup-form" method="POST" class="needs-validation was-validated" novalidate>
     <h1 class="h3  fw-normal">
       <i class="bi-calendar-check-fill"></i>
       Create an Account
@@ -75,8 +75,11 @@
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">
-
-
+        <p>
+          Please enter a date Range between
+          <br>
+          {{minDobDate}} to {{maxDobDate}}
+        </p>
       </div>
     </div>
 

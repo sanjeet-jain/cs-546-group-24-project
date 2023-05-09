@@ -13,6 +13,7 @@ const __dirname = dirname(__filename);
 
 import cron from "node-cron";
 
+import constants from "./constants/constants.js";
 import * as collections from "./config/mongoCollections.js";
 
 //can be reduced to an an hour by setting it as "0 * * * * *"
@@ -84,6 +85,18 @@ const handlebarsInstance = exphbs.create({
     },
     includes: function (array, itemToCheck) {
       return array.includes(itemToCheck);
+    },
+    minAllowedDate: function () {
+      return dayjs()
+        .year(constants.yearRange[0])
+        .startOf("year")
+        .format("YYYY-MM-DDTHH:mm");
+    },
+    maxAllowedDate: function () {
+      return dayjs()
+        .year(constants.yearRange[constants.yearRange.length - 1])
+        .endOf("year")
+        .format("YYYY-MM-DDTHH:mm");
     },
   },
 });

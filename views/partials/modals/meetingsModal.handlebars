@@ -19,7 +19,7 @@
 
       <fieldset id="meeting-form-enabler" disabled>
         <div class="modal-body overflow-scroll-y">
-          <form id="meeting-form" class="needs-validation" novalidate>
+          <form id="meeting-form" class="needs-validation was-validated" novalidate>
 
             {{! title }}
             <div class="mb-3">
@@ -65,20 +65,30 @@
             <div class=" mb-3">
               <label for="meeting_dateAddedTo" class="form-label">Date to Add event to
               </label>
-              <input type="datetime-local" class="form-control" name="dateAddedTo" id="meeting_dateAddedTo" value="" />
+              <input type="datetime-local" max="{{maxAllowedDate}}" min="{{minAllowedDate}}" class="form-control"
+                name="dateAddedTo" id="meeting_dateAddedTo" value="" />
 
               <div id="meeting_dateAddedTo_error" class="invalid-feedback">
-
+                <p>
+                  Please enter a date Range between
+                  <br>
+                  {{minAllowedDate}} to {{maxAllowedDate}}
+                </p>
               </div>
             </div>
             {{! dateDueOn }}
             <div class=" mb-3">
               <label for="meeting_dateDueOn" class="form-label">Date event is due on
               </label>
-              <input type="datetime-local" class="form-control" name="dateDueOn" id="meeting_dateDueOn" value="" />
+              <input type="datetime-local" max="{{maxAllowedDate}}" min="{{minAllowedDate}}" class="form-control"
+                name="dateDueOn" id="meeting_dateDueOn" value="" />
 
               <div id="meeting_dateDueOn_error" class="invalid-feedback">
-
+                <p>
+                  Please enter a date Range between
+                  <br>
+                  {{minAllowedDate}} to {{maxAllowedDate}}
+                </p>
               </div>
             </div>
             {{! repeating }}
