@@ -1197,7 +1197,7 @@ function checkMeetingValidations(form) {
     form.dateAddedTo.checkValidity() &&
     form.dateDueOn.checkValidity()
   ) {
-    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
+    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) <= 0) {
       form.dateAddedTo.setCustomValidity("invalid_range");
       form.dateDueOn.setCustomValidity("invalid_range");
       meeting_dateDueOn_error.innerText =
@@ -1246,6 +1246,36 @@ function checkMeetingValidations(form) {
       meeting_repeatingIncrementBy_error.innerText =
         "the counter needs to be greater a value from the drop down!";
       form.repeatingIncrementBy.setCustomValidity("error");
+    }
+
+    if (
+      form.dateAddedTo.value &&
+      form.dateAddedTo.checkValidity() &&
+      form.dateDueOn.value &&
+      form.dateDueOn.checkValidity()
+    ) {
+      try {
+        // check if the counter is exceeding the max allowed dates of the application
+        let temp = dayjs(form.dateAddedTo.value)
+          .add(
+            Number.parseInt(form.repeatingCounterIncrement.value),
+            form.repeatingIncrementBy.value
+          )
+          .format("YYYY-MM-DDTHH:mm");
+        checkIfDateIsBeyondRange(temp);
+      } catch (error) {
+        meeting_repeatingCounterIncrement_error.innerText =
+          error.message +
+          " Please adjust the repeating counter to be within this date ";
+        form.repeatingCounterIncrement.setCustomValidity("invalid");
+      }
+    } else {
+      meeting_repeatingIncrementBy_error.innerText =
+        "Date Added to and Date Due on must be given to use this";
+      form.repeatingIncrementBy.setCustomValidity("error");
+      meeting_repeatingCounterIncrement_error.innerText =
+        "Date Added to and Date Due on must be given to use this";
+      form.repeatingCounterIncrement.setCustomValidity("invalid");
     }
   }
   let resultDiv = document.getElementById(`meeting-update-result`);
@@ -1989,6 +2019,44 @@ function setPageUrlForSelectedDateCell(
     window.location.href = newUrl;
   } else {
     history.pushState(null, "", newUrl);
+  }
+}
+
+function checkIfDateIsBeyondRange(date) {
+  // same array in public/scripts/scripts.js
+  let yeaRangeRef = new Date().getFullYear();
+
+  const constants = {
+    yearRange: [
+      yeaRangeRef - 2,
+      yeaRangeRef - 1,
+      yeaRangeRef,
+      yeaRangeRef + 1,
+      yeaRangeRef + 2,
+    ],
+  };
+
+  if (date !== "" && date !== null && date !== undefined) {
+    let dayjsDate = dayjs(
+      date,
+      ["YYYY-MM-DDTHH:mm", "YYYY-MM-DDTHH", "YYYY-MM-DD", "YYYY-M-D"],
+      true
+    );
+    if (
+      !dayjsDate.isValid() ||
+      dayjsDate.year() < constants.yearRange[0] ||
+      dayjsDate.year() > constants.yearRange[constants.yearRange.length - 1]
+    ) {
+      throw new Error(
+        `Please give a validate Date between  ${dayjs()
+          .year(constants.yearRange[0])
+          .startOf("year")
+          .format("YYYY-MMMM-DD")} to ${dayjs()
+          .year(constants.yearRange[constants.yearRange.length - 1])
+          .endOf("year")
+          .format("YYYY-MMMM-DD")}`
+      );
+    }
   }
 }
 
