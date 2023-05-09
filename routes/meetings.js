@@ -281,7 +281,7 @@ router
       previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
     }
     meetingPutData.dateDueOn = dayjs(dateAddedTo)
-      .add(30, "minutes")
+      .add(30, "minute")
       .format("YYYY-MM-DDTHH:mm");
 
     //validation
