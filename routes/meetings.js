@@ -279,7 +279,7 @@ router
     meetingPutData.dateAddedTo = dateAddedTo;
     if (!previousDate) {
       meetingPutData.dateDueOn = dayjs(dateAddedTo)
-        .add(1, "hour")
+        .add(30, "minutes")
         .format("YYYY-MM-DDTHH:mm");
     } else {
       previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
