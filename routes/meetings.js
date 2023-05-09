@@ -312,11 +312,8 @@ router
         .add(30, "minute")
         .format("YYYY-MM-DDTHH:mm");
     } else {
-      previousDate = dayjs(previousDate).format("YYYY-M-D");
-      meetingPutData.dateDueOn = dayjs(meetingPutData.dateDueOn)
-        .date(dayjs(dateAddedTo).date())
-        .month(dayjs(dateAddedTo).month())
-        .year(dayjs(dateAddedTo).year())
+      previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateAddedTo)
         .add(
           dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
           "millisecond"

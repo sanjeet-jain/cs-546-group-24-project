@@ -203,7 +203,8 @@ router
         dateAddedTo,
         repeating,
         endDateTime,
-        repeatingIncrementBy
+        repeatingIncrementBy,
+        isUpdateAll
       );
       res.status(200).json("The update of reminder event is sucessful");
     } catch (e) {
@@ -246,37 +247,51 @@ router
     res.json("All reminder events have been successfully deleted");
   });
 
-// router
-//   .route("/:userId/:reminder_id/dateAddedTo")
-//   .put(utils.validateUserId, async (req, res) => {
-//     try {
-//       let reminder_id = xss(req?.params?.reminder_id).trim();
-//       utils.checkObjectIdString(reminder_id);
-//       let userId = xss(req?.params?.userId).trim();
-//       utils.checkObjectIdString(userId);
-//       let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
-//       utils.checkIfDateIsBeyondRange(dateAddedTo);
-//       let reminder = await reminderManager.getReminder(reminder_id);
-//       let previousDate = xss(reminder.dateAddedTo);
-//       reminder.dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
-//       await reminderManager.updateReminder(
-//         userId,
-//         reminder_id,
-//         reminder.title,
-//         reminder.textBody,
-//         reminder.priority,
-//         reminder.tag,
-//         reminder.dateAddedTo,
-//         reminder.repeating,
-//         reminder.endDateTime,
-//         reminder.repeatingIncrementBy
-//       );
-//       res
-//         .status(200)
-//         .json({ userId: userId, reminder_id: reminder_id, previousDate });
-//     } catch (e) {
-//       return res.status(404).json({ error: e.message });
-//     }
-//   });
+router
+  .route("/:userId/:reminder_id/dateAddedTo")
+  .put(utils.validateUserId, async (req, res) => {
+    try {
+      let reminder_id = xss(req?.params?.reminder_id).trim();
+      utils.checkObjectIdString(reminder_id);
+      let userId = xss(req?.params?.userId).trim();
+      utils.checkObjectIdString(userId);
+      let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+      if (dateAddedTo === "") {
+        return res.status(400).json({ error: e.message });
+      }
+      dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+      try {
+        utils.checkIfDateIsBeyondRange(dateAddedTo);
+      } catch (e) {
+        return res.status(400).json({ error: e.message });
+      }
+
+      let reminder = await reminderManager.getReminder(reminder_id);
+      let previousDate = reminder.dateAddedTo;
+      reminder.dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+      previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
+      reminder.dateAddedTo = dayjs(dateAddedTo)
+        .hour(dayjs(previousDate).hour())
+        .minute(dayjs(previousDate).minute());
+      await reminderManager.updateReminder(
+        userId,
+        reminder_id,
+        reminder.title,
+        reminder.textBody,
+        reminder.priority,
+        reminder.tag,
+        reminder.dateAddedTo,
+        reminder.repeating,
+        reminder.endDateTime,
+        reminder.repeatingIncrementBy,
+        reminder.repeating === true ? false : null
+      );
+      res
+        .status(200)
+        .json({ userId: userId, reminder_id: reminder_id, previousDate });
+    } catch (e) {
+      return res.status(404).json({ error: e.message });
+    }
+  });
 
 export default router;

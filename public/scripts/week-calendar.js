@@ -166,20 +166,19 @@ function updateAllCheckBoxTogglerMeeting() {
       repeatingIncrementBy.disabled = false;
       repeatingCounterIncrement.disabled = false;
       repeatingIncrementBy.setAttribute("required", "");
-      repeatingIncrementBy.value = "day";
+      repeatingIncrementBy.value = dataGlobal.repeatingIncrementBy;
       repeatingCounterIncrement.setAttribute("required", "");
-      repeatingCounterIncrement.value =
-        dataGlobal?.repeatingCounterIncrement || 1;
+      repeatingCounterIncrement.value = dataGlobal.repeatingCounterIncrement;
     } else {
       repeatingIncrementBy.disabled = true;
       repeatingCounterIncrement.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
       repeatingCounterIncrement.removeAttribute("required");
       event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
-        "";
+        dataGlobal.repeatingIncrementBy;
       event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
-      ).value = "";
+      ).value = dataGlobal.repeatingCounterIncrement;
     }
   });
 }
@@ -234,29 +233,25 @@ function updateAllCheckBoxTogglerReminder() {
   let repeatingIncrementBy = event_modal.querySelector(
     "select#reminder_repeatingIncrementBy"
   );
-  let repeatingCounterIncrement = event_modal.querySelector(
-    "input#reminder_repeatingCounterIncrement"
-  );
+  let endDateTime = event_modal.querySelector("input#reminder_endDateTime");
   updateAll.addEventListener("change", (event) => {
     if (event.target.checked) {
       event.target.value = true;
       repeatingIncrementBy.disabled = false;
-      repeatingCounterIncrement.disabled = false;
+      endDateTime.disabled = false;
       repeatingIncrementBy.setAttribute("required", "");
-      repeatingIncrementBy.value = "day";
-      repeatingCounterIncrement.setAttribute("required", "");
-      repeatingCounterIncrement.value =
-        dataGlobal?.repeatingCounterIncrement || 1;
+      repeatingIncrementBy.value = dataGlobal.repeatingIncrementBy;
+      endDateTime.setAttribute("required", "");
+      endDateTime.value = dataGlobal.endDateTime;
     } else {
       repeatingIncrementBy.disabled = true;
-      repeatingCounterIncrement.disabled = true;
+      endDateTime.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
-      repeatingCounterIncrement.removeAttribute("required");
+      endDateTime.removeAttribute("required");
       event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
-        "";
-      event_modal.querySelector(
-        "input#reminder_repeatingCounterIncrement"
-      ).value = "";
+        dataGlobal.repeatingIncrementBy;
+      event_modal.querySelector("input#reminder_endDateTime").value =
+        dataGlobal.endDateTime;
     }
   });
 }
@@ -270,26 +265,32 @@ function repeatingCheckBoxTogglerReminder() {
 
   repeating.addEventListener("change", (event) => {
     if (event.target.checked) {
-      event.target.value = true;
-      repeatingIncrementBy.disabled = false;
-      endDateTime.disabled = false;
-      repeatingIncrementBy.setAttribute("required", "");
-      repeatingIncrementBy.value = "day";
-      endDateTime.setAttribute("required", "");
-      endDateTime.value = "";
-      if (dataGlobal.repeating) {
-        toggleUpdateAllCheckbox(false);
+      if (dataGlobal?.repeating) {
+        toggleUpdateAllCheckbox(false, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = false;
+        endDateTime.parentNode.hidden = false;
+      } else {
+        event.target.value = true;
+        repeatingIncrementBy.disabled = false;
+        endDateTime.disabled = false;
+        repeatingIncrementBy.setAttribute("required", "");
+        repeatingIncrementBy.value = "day";
+        endDateTime.setAttribute("required", "");
+        endDateTime.value = "";
       }
     } else {
-      if (dataGlobal.repeating) {
-        toggleUpdateAllCheckbox(true);
+      if (dataGlobal?.repeating) {
+        toggleUpdateAllCheckbox(true, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = true;
+        endDateTime.parentNode.hidden = true;
+      } else {
+        repeatingIncrementBy.disabled = true;
+        endDateTime.disabled = true;
+        repeatingIncrementBy.removeAttribute("required");
+        endDateTime.removeAttribute("required");
+        repeatingIncrementBy.value = "";
+        endDateTime.value = "";
       }
-      repeatingIncrementBy.disabled = true;
-      endDateTime.disabled = true;
-      repeatingIncrementBy.removeAttribute("required");
-      endDateTime.removeAttribute("required");
-      repeatingIncrementBy.value = "";
-      endDateTime.value = "";
     }
   });
 }
@@ -549,6 +550,13 @@ function submitMeetingForm() {
 
       jsonData["repeating"] = event.target.repeating.checked;
       jsonData["updateAll"] = event.target.updateAll.checked;
+      //repeating is checked and update all is not checked it means that the two variable needs to be set
+      if (jsonData["repeating"] === true && jsonData["updateAll"] === false) {
+        jsonData["repeatingIncrementBy"] =
+          event.target.repeatingIncrementBy.value;
+        jsonData["repeatingCounterIncrement"] =
+          event.target.repeatingCounterIncrement.value;
+      }
 
       let reqType = "PUT";
       let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
@@ -698,6 +706,13 @@ function submitReminderForm() {
       }
       jsonData["repeating"] = event.target.repeating.checked;
       jsonData["updateAll"] = event.target.updateAll.checked;
+
+      if (jsonData["repeating"] === true && jsonData["updateAll"] === false) {
+        jsonData["repeatingIncrementBy"] =
+          event.target.repeatingIncrementBy.value;
+        jsonData["endDateTime"] = event.target.endDateTime.value;
+      }
+
       let reqType = "PUT";
       let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -1998,6 +2013,7 @@ miniCalendarLoader();
 
 clickableDateCells();
 
+updateAllCheckBoxTogglerReminder();
 updateAllCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
 repeatingCheckBoxTogglerMeeting();

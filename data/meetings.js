@@ -148,7 +148,7 @@ const meetingsDataFunctions = {
       const meetingObjects = [];
       let newDateDueOn;
       let newDateAddedTo;
-      for (let i = 0; i < repeatingCounterIncrement; i++) {
+      for (let i = 0; i < repeatingCounterIncrement - 1; i++) {
         switch (repeatingIncrementBy) {
           case "day":
             newDateDueOn = dateDueOnObject.add(1, "day");
@@ -234,7 +234,7 @@ const meetingsDataFunctions = {
         const meetingObjects = [];
         let newDateDueOn;
         let newDateAddedTo;
-        for (let i = 0; i < repeatingCounterIncrement; i++) {
+        for (let i = 0; i < repeatingCounterIncrement - 1; i++) {
           switch (repeatingIncrementBy) {
             case "day":
               newDateDueOn = dateDueOnObject.add(1, "day");
@@ -323,6 +323,8 @@ const meetingsDataFunctions = {
       { _id: new ObjectId(meetingId) },
       { $set: updatedMeeting }
     );
+
+    //TODO Remove result modified count
 
     // if the meeting was successfully updated, return the updated meeting
     if (

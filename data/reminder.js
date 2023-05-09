@@ -211,8 +211,7 @@ export const updateReminder = async (
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else if (repeating && !currReminder.repeating) {
     //delete the reminder event and add new recurrence
-    await deleteReminderEventDAO(reminder_id);
-    await deleteReminderFromUserCollectionDAO(user_id, reminder_id);
+    await deleteReminderSingle(user_id, reminder_id);
     await createReminder(
       user_id,
       title,
@@ -246,6 +245,7 @@ export const updateReminder = async (
       );
     }
   } else if (repeating && currReminder.repeating && isUpdateAll === false) {
+    reminderObj.groupId = currReminder.groupId;
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else if (!repeating && currReminder.repeating && isUpdateAll === null) {
     await deleteAllRecurrences(user_id, reminder_id);

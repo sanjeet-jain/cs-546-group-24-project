@@ -276,7 +276,7 @@ router
     let previousDate = notePutData.dateAddedTo;
     notePutData.dateAddedTo = dateAddedTo;
     if (previousDate) {
-      previousDate = dayjs(previousDate).format("YYYY-M-D");
+      previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
     }
 
     try {

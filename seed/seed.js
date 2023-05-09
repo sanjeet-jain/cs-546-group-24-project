@@ -320,10 +320,10 @@ export async function seed() {
   const db = await dbConnection();
   await db.dropDatabase();
   const user = await createUser("sampleuser@gmail.com");
-  await runSetup("2023-04-22", user);
-  await runSetup(undefined, user);
+  // await runSetup("2023-04-22", user);
+  // await runSetup(undefined, user);
   const user2 = await createUser("sampleuser2@gmail.com");
-  await runSetup("2023-04-22", user2);
-  await runSetup(undefined, user2);
+  // await runSetup("2023-04-22", user2);
+  // await runSetup(undefined, user2);
   await closeConnection();
 }
