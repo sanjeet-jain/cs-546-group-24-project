@@ -274,10 +274,16 @@ router
       return res.status(400).json({ error: e.message });
     }
     let previousDate = notePutData.dateAddedTo;
-    notePutData.dateAddedTo = dateAddedTo;
     if (previousDate) {
-      previousDate = dayjs(previousDate).format("YYYY-M-D");
+      previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
     }
+    if (dayjs(dateAddedTo).hour() === 0 && dayjs(dateAddedTo).minute() === 0) {
+      dateAddedTo = dayjs(dateAddedTo)
+        .hour(dayjs(previousDate).hour())
+        .minute(dayjs(previousDate).minute())
+        .format("YYYY-MM-DDTHH:mm");
+    }
+    notePutData.dateAddedTo = dateAddedTo;
 
     try {
       const { title, dateAddedTo, textBody, tag } = notePutData;

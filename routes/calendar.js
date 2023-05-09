@@ -507,19 +507,8 @@ async function getRightPaneItems(userId) {
     rightPaneItems[eventType] = response[eventType]
       .filter((x) => {
         return x.dateAddedTo === null;
-        // TODO separate this into a differnt function and a new card
-        //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
       })
       .sort((a, b) => {
-        // const dateA = dayjs(a.dateAddedTo);
-        // const dateB = dayjs(b.dateAddedTo);
-        // const dateDiff = dateA.diff(dateB);
-        // if (dateDiff > 0) {
-        //   return -1;
-        // }
-        // if (dateDiff < 0) {
-        //   return 1;
-        // }
         if (a.priority > b.priority) {
           return -1;
         }
@@ -605,10 +594,27 @@ async function getRightPaneItems(userId) {
     rightPaneItems.meetingCompletionProgress = Number.parseFloat(
       (
         ((totalMeetingsPending - rightPaneItems.pendingMeetingsCount) * 100) /
-        rightPaneItems.totalTasksAssigned
+        totalMeetingsPending
       ).toFixed(0)
     );
   }
+
+  let totalTasksComplete =
+    response?.tasks?.filter((x) => {
+      return x.checked && x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.totalTasksOnTime =
+    response?.tasks?.filter((x) => {
+      return x.checked && x.dateAddedTo !== null && x.onTime;
+    })?.length || 0;
+
+  rightPaneItems.onTimECompletionRate = 0;
+  if (totalTasksComplete !== 0) {
+    rightPaneItems.onTimECompletionRate = Number.parseFloat(
+      (rightPaneItems.totalTasksOnTime * 100) / totalTasksComplete
+    ).toFixed(0);
+  }
+
   return rightPaneItems;
 }
 export default router;
