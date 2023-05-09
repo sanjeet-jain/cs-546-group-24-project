@@ -1,17 +1,19 @@
 function validatelogin() {
-  let form = document.querySelector("#login-form");
+  let forms = document.querySelectorAll(".needs-validation");
 
-  form.addEventListener(
-    "submit",
-    function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      if (checkValidations(event)) {
-        event.target.submit();
-      }
-    },
-    false
-  );
+  Array.prototype.slice.call(forms).forEach(function (form) {
+    form.addEventListener(
+      "submit",
+      function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        checkValidations(event);
+
+        form.classList.add("was-validated");
+      },
+      false
+    );
+  });
 }
 
 function checkValidations(event) {
@@ -35,12 +37,8 @@ function checkValidations(event) {
     password_error.innerText = "";
     passwordInput.validity.patternMismatch = true;
   }
-  if (
-    passForm.checkValidity() &&
-    emailInput.checkValidity() &&
-    passwordInput.checkValidity()
-  ) {
-    return true;
+  if (emailInput.checkValidity() && passwordInput.checkValidity()) {
+    passForm.submit();
   }
   return true;
 }
