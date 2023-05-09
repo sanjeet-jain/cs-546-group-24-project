@@ -15,14 +15,15 @@
             {{#each displayItems}}
             {{#if (eq this.type "reminder")}}
             <button
-                class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventid="{{this._id}}"
-                data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
+                class="badge event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-reminder-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
                     class="bi-alarm">{{this.title}}</i></button>
             {{/if}}
             {{#if (eq this.type "task")}}
-            <div
-                class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} text-wrap text-center">
+            <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}} {{#if this.checked}}task-completed{{/if}} text-wrap text-center draggable-event-button"
+                draggable="true" data-bs-eventId="{{this._id}}" data-bs-userId="{{../session.user_id}}"
+                data-bs-event-type="{{this.type}}">
                 <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
                     data-bs-userId="{{../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox"
                     {{#if this.checked}}checked {{/if}}>
@@ -36,16 +37,16 @@
             {{/if}}
             {{#if (eq this.type "meeting")}}
             <button
-                class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventid="{{this._id}}"
-                data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
+                class="badge event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-meeting-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="meeting"><i
                     class="bi-calendar-event">{{this.title}}</i></button>
             {{/if}}
             {{#if (eq this.type "notes")}}
             <button
-                class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-                data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventid="{{this._id}}"
-                data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
+                class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-notes-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
                     class="bi-file-text">{{this.title}}</i></button>
             {{/if}}
             {{/each}}

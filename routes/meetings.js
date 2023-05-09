@@ -87,6 +87,15 @@ router
       meetingPutData.repeatingCounterIncrement,
       meetingPutData.repeatingIncrementBy
     );
+    let updateAll =
+      xss(meetingPutData.updateAll).trim() === ""
+        ? false
+        : xss(meetingPutData.updateAll).trim();
+    try {
+      updateAll = utils.validateBooleanInput(updateAll);
+    } catch (e) {
+      errorMessages.updateAll = e.message;
+    }
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
@@ -115,7 +124,8 @@ router
         tag,
         repeating,
         repeatingCounterIncrement,
-        repeatingIncrementBy
+        repeatingIncrementBy,
+        updateAll
       );
       return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {
@@ -240,68 +250,6 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .put(utils.validateUserId, async (req, res) => {
-    //code here for PUT
-    let userId = xss(req.params.userId);
-    let repeatingGroup = xss(req.params.repeatingGroup);
-    try {
-      utils.checkObjectIdString(userId);
-      userId = userId.trim();
-      utils.checkObjectIdString(repeatingGroup);
-      repeatingGroup = repeatingGroup.trim();
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
-
-    const meetingPutData = req.body;
-    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
-    }
-
-    meetingPutData.title = xss(meetingPutData.title);
-    meetingPutData.dateAddedTo = xss(meetingPutData.dateAddedTo);
-    meetingPutData.dateDueOn = xss(meetingPutData.dateDueOn);
-    meetingPutData.priority = xss(meetingPutData.priority);
-    meetingPutData.textBody = xss(meetingPutData.textBody);
-    meetingPutData.tag = xss(meetingPutData.tag);
-
-    let errorMessages = utils.validateMeetingCreateInputs(
-      meetingPutData.title,
-      meetingPutData.dateAddedTo,
-      meetingPutData.dateDueOn,
-      meetingPutData.priority,
-      meetingPutData.textBody,
-      meetingPutData.tag
-    );
-
-    if (Object.keys(errorMessages).length !== 0) {
-      return res.status(400).json({ errorMessages: errorMessages });
-    }
-    try {
-      const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
-        meetingPutData;
-      const updatedMeeting = await meetingsDataFunctions.updateAllRecurrences(
-        userId,
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeatingGroup
-      );
-      return res
-        .status(200)
-        .json({ userId: userId, repeatingGroup: repeatingGroup });
-    } catch (e) {
-      if (e === "Meeting Details havent Changed") {
-        return res.status(400).json({ error: e.message });
-      }
-      return res.status(500).json({ error: e.message });
-    }
-  })
   .delete(utils.validateUserId, async (req, res) => {
     let userId = xss(req.params.userId);
     let repeatingGroup = xss(req.params.repeatingGroup);
@@ -332,44 +280,48 @@ router
   });
 
 router
-  .route("/:userId/:meetingId/dateAddedto")
+  .route("/:userId/:meetingId/dateAddedTo")
   .put(utils.validateUserId, async (req, res) => {
     // If this function just populates date values and opens as modal u can just simply use put request with date and time fields
     let userId = xss(req.params.userId);
     let meetingId = xss(req.params.meetingId);
     try {
-      utils.checkObjectIdString(userId);
-      userId = userId.trim();
-      utils.checkObjectIdString(meetingId);
-      meetingId = meetingId.trim();
+      utils.checkObjectIdString(xss(req.params.meetingId));
+      utils.checkObjectIdString(xss(req.params.userId));
+      meetingId = xss(req.params.meetingId.trim());
+      userId = xss(req.params.userId.trim());
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    //TODO check if dateAddedTO is ever an empty stirng if it is then error
+    let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+    if (dateAddedTo === "") {
+      return res.status(400).json({ error: e.message });
+    }
+    dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    try {
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
-    meetingPutData.title = xss(meetingPutData.title);
-    meetingPutData.dateAddedTo = xss(meetingPutData.dateAddedTo);
-    meetingPutData.dateDueOn = xss(meetingPutData.dateDueOn);
-    meetingPutData.priority = xss(meetingPutData.priority);
-    meetingPutData.textBody = xss(meetingPutData.textBody);
-    meetingPutData.tag = xss(meetingPutData.tag);
-    meetingPutData.repeating = xss(meetingPutData.repeating);
-    meetingPutData.repeatingCounterIncrement = xss(
-      meetingPutData.repeatingCounterIncrement
-    );
-    meetingPutData.repeatingIncrementBy = xss(
-      meetingPutData.repeatingIncrementBy
-    );
-    // Always use date added to after validating the date TODO by Sanjeet
-    let dateAddedTo = dayjs(req?.body?.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    const previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
+    let previousDate = meetingPutData.dateAddedTo;
     meetingPutData.dateAddedTo = dateAddedTo;
-    meetingPutData.dateDueOn = dayjs(dateAddedTo)
-      .add(1, "hour")
-      .format("YYYY-MM-DDTHH:mm");
-    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
+    if (!previousDate) {
+      meetingPutData.dateDueOn = dayjs(dateAddedTo)
+        .add(30, "minute")
+        .format("YYYY-MM-DDTHH:mm");
+    } else {
+      previousDate = dayjs(previousDate).format("YYYY-M-D");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateDueOn)
+        .date(dayjs(dateAddedTo).date())
+        .month(dayjs(dateAddedTo).month())
+        .year(dayjs(dateAddedTo).year())
+        .add(
+          dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
+          "millisecond"
+        )
+        .format("YYYY-MM-DDTHH:mm");
     }
 
     //validation
@@ -389,30 +341,18 @@ router
       return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
-      const {
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeating,
-        repeatingCounterIncrement,
-        repeatingIncrementBy,
-      } = meetingPutData;
-      //TODO add user id to route
       const updatedMeeting = await meetingsDataFunctions.update(
         userId,
         meetingId,
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeating,
-        repeatingCounterIncrement,
-        repeatingIncrementBy
+        meetingPutData.title,
+        meetingPutData.dateAddedTo,
+        meetingPutData.dateDueOn,
+        meetingPutData.priority,
+        meetingPutData.textBody,
+        meetingPutData.tag,
+        meetingPutData.repeating,
+        meetingPutData.repeatingCounterIncrement,
+        meetingPutData.repeatingIncrementBy
       );
       return res
         .status(200)
