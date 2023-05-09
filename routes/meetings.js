@@ -112,7 +112,7 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy,
       } = meetingPutData;
-      //TODO add user id to route
+
       const updatedMeeting = await meetingsDataFunctions.update(
         userId,
         meetingId,

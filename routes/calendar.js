@@ -507,19 +507,8 @@ async function getRightPaneItems(userId) {
     rightPaneItems[eventType] = response[eventType]
       .filter((x) => {
         return x.dateAddedTo === null;
-        // TODO separate this into a differnt function and a new card
-        //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
       })
       .sort((a, b) => {
-        // const dateA = dayjs(a.dateAddedTo);
-        // const dateB = dayjs(b.dateAddedTo);
-        // const dateDiff = dateA.diff(dateB);
-        // if (dateDiff > 0) {
-        //   return -1;
-        // }
-        // if (dateDiff < 0) {
-        //   return 1;
-        // }
         if (a.priority > b.priority) {
           return -1;
         }

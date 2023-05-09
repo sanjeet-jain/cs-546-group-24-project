@@ -184,10 +184,13 @@ const utils = {
     dateDueOn = dateDueOn.trim();
     this.validateDate(dateAddedTo, "dateAddedTo");
     this.validateDate(dateDueOn, "dateDueOn");
-    //TODO check date as well ! not just time
-    if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
+
+    if (dayjs(dateAddedTo).diff(dayjs(dateDueOn)) > 0) {
       throw new Error("DateDueOn must be after DateAddedTo");
     }
+    // if (new Date(dateAddedTo).getTime() >= new Date(dateDueOn).getTime()) {
+    //   throw new Error("DateDueOn must be after DateAddedTo");
+    // }
   },
   validateMeetingCreateInputs(
     title,
@@ -360,14 +363,11 @@ const utils = {
 
   validateAge(dob, min_age, max_age) {
     this.validateDate(dob, "Date of Birth");
-    //TODO use dayjs
-    let today = new Date();
-    dob = new Date(dob);
-    let age = today.getFullYear() - dob.getFullYear();
-    let m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
+
+    let today = dayjs();
+    dob = dayjs(dob);
+    let age = today.diff(dob, "years");
+
     if (age < min_age || age > max_age) {
       throw new Error(
         `Age must be between ${min_age} and ${max_age} years old`
@@ -375,44 +375,6 @@ const utils = {
     }
   },
 
-  // /**
-  //  * YYYY-MM-DDTHH:mm
-  //  * @param {*} dateTimeString
-  //  */
-  // isValidDateString(dateTimeString) {
-  //   try {
-  //     this.validateStringInput(dateTimeString);
-  //     let strList = dateTimeString.split("T");
-  //     let dateStr = strList[0].split("-");
-  //     let timeStr = strList[1].split(":");
-  //     if (
-  //       !(dateStr.length === 3) ||
-  //       !(timeStr.length === 2) ||
-  //       !(dateStr[0].length === 4) ||
-  //       !(
-  //         dateStr[1].length === 2 &&
-  //         dateStr[1] >= "01" &&
-  //         dateStr[1] <= "12"
-  //       ) ||
-  //       !(
-  //         dateStr[2].length === 2 &&
-  //         dateStr[2] >= "01" &&
-  //         dateStr[2] <= "31"
-  //       ) ||
-  //       !(
-  //         timeStr[0].length === 2 &&
-  //         timeStr[0] >= "00" &&
-  //         timeStr[0] <= "23"
-  //       ) ||
-  //       !(timeStr[1].length === 2 && timeStr[1] >= "00" && timeStr[1] <= "59")
-  //     ) {
-  //       return false;
-  //     }
-  //   } catch (e) {
-  //     return false;
-  //   }
-  //   return true;
-  // },
   validateNotesInputs(title, dateAddedTo, textBody, tag) {
     let errorMessages = {};
     try {

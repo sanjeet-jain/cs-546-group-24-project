@@ -1796,7 +1796,7 @@ function deleteButton() {
           if (dataGlobal.type === "meeting") {
             deleteUrl = `/meeting/user/${userIdGlobal}/meetings/repeating/${dataGlobal.repeatingGroup}`;
           }
-          // TODO add delete URL for reminders
+
           if (dataGlobal.type === "reminder") {
             deleteUrl = `/reminder/${userIdGlobal}/reminders/${dataGlobal._id}`;
           }
