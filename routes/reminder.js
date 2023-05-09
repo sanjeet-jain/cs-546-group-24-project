@@ -72,11 +72,13 @@ router
       dateAddedTo = dayjs(reminder.dateAddedTo.trim()).format(
         "YYYY-MM-DDTHH:mm"
       );
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
         endDateTime = xss(reminder.endDateTime);
         utils.validateDate(endDateTime, "end time value");
         endDateTime = dayjs(endDateTime.trim()).format("YYYY-MM-DDTHH:mm");
+        utils.checkIfDateIsBeyondRange(endDateTime);
         repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       }
@@ -178,11 +180,13 @@ router
 
       utils.validateDate(dateAddedTo, "date time added to value");
       dateAddedTo = dayjs(dateAddedTo.trim()).format("YYYY-MM-DDTHH:mm");
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
       repeating = utils.validateBooleanInput(repeating);
       if (repeating) {
         endDateTime = xss(reminder.endDateTime);
         utils.validateDate(endDateTime, "end date value");
         endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+        utils.checkIfDateIsBeyondRange(endDateTime);
         repeatingIncrementBy = xss(reminder.repeatingIncrementBy);
         utils.validateRepeatingIncrementBy(repeatingIncrementBy);
       } else {

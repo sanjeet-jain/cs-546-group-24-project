@@ -208,6 +208,11 @@ export const updateReminder = async (
     reminderObj.endDateTime = null;
     reminderObj.repeatingIncrementBy = null;
     reminderObj.groupId = null;
+    if (dayjs(reminderObj.dateAddedTo).diff(dayjs()) > 0) {
+      reminderObj.expired = false;
+    } else {
+      reminderObj.expired = true;
+    }
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else if (repeating && !currReminder.repeating) {
     //delete the reminder event and add new recurrence
@@ -246,6 +251,11 @@ export const updateReminder = async (
     }
   } else if (repeating && currReminder.repeating && isUpdateAll === false) {
     reminderObj.groupId = currReminder.groupId;
+    if (dayjs(reminderObj.dateAddedTo).diff(dayjs()) > 0) {
+      reminderObj.expired = false;
+    } else {
+      reminderObj.expired = true;
+    }
     await updateReminderByReminderIdDAO(reminder_id, reminderObj);
   } else if (!repeating && currReminder.repeating && isUpdateAll === null) {
     await deleteAllRecurrences(user_id, reminder_id);
