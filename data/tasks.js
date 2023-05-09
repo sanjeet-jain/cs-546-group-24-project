@@ -222,6 +222,7 @@ const tasksDataFunctions = {
     }
     if (updatedTask.checked === true) {
       updatedTask.onTime = this.isTaskOnTime(updatedTask.dateAddedTo);
+      updatedTask.expired = true;
     }
     //dont allow task to be checked if no date assigned
     if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {
