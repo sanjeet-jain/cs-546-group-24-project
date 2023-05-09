@@ -194,7 +194,7 @@ function repeatingCheckBoxTogglerMeeting() {
   );
   repeating.addEventListener("change", (event) => {
     if (event.target.checked) {
-      if (dataGlobal.repeating) {
+      if (dataGlobal?.repeating) {
         toggleUpdateAllCheckbox(false, dataGlobal.type);
         repeatingIncrementBy.parentNode.hidden = false;
         repeatingCounterIncrement.parentNode.hidden = false;
@@ -209,7 +209,7 @@ function repeatingCheckBoxTogglerMeeting() {
           dataGlobal?.repeatingCounterIncrement || 1;
       }
     } else {
-      if (dataGlobal.repeating) {
+      if (dataGlobal?.repeating) {
         toggleUpdateAllCheckbox(true, dataGlobal.type);
         repeatingIncrementBy.parentNode.hidden = true;
         repeatingCounterIncrement.parentNode.hidden = true;
@@ -309,7 +309,7 @@ function enableMeetingFormEdit() {
       let repeatingCounterIncrement = event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       );
-      if (dataGlobal.repeating) {
+      if (dataGlobal?.repeating) {
         repeatingIncrementBy.disabled = true;
         repeatingCounterIncrement.disabled = true;
       }
