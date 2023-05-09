@@ -1,4 +1,4 @@
-function validateEdits() {
+function validateEdits(event) {
   // Fetch all the forms we want to apply custom Bootstrap validation styles to
   let forms = document.getElementById("edit-form");
 
@@ -75,9 +75,6 @@ function checkValidations(event) {
   let last_name_error = document.getElementById("last_name_error");
   let date_error = document.getElementById("date_error");
 
-  let profileForm = document.getElementById("edit-form");
-  let deleteButton = document.getElementById("delete-profile-button");
-
   first_name_error.innerText = "";
   last_name_error.innerText = "";
   date_error.innerText = "";
@@ -94,12 +91,15 @@ function checkValidations(event) {
     last_name_error.innerText = "Please enter a valid last name.";
     lastNameInput.setCustomValidity("error");
   }
-  if (dob.validity.valueMissing) {
-    date_error.textContent = "Please enter a date of birth.";
-  } else if (dob.validity.rangeUnderflow) {
-    date_error.textContent = "You cannot be more than 150 years old to signup!";
-  } else if (dob.validity.rangeOverflow) {
-    date_error.textContent = "You must be at least 13 years old to signup!";
+  if (dateInput.validity.valueMissing) {
+    date_error.innerText = "Please enter a date of birth.";
+    dateInput.setCustomValidity("error");
+  } else if (dateInput.validity.rangeUnderflow) {
+    date_error.innerText = "You cannot be more than 150 years old to signup!";
+    dateInput.setCustomValidity("error");
+  } else if (dateInput.validity.rangeOverflow) {
+    date_error.innerText = "You must be at least 13 years old to signup!";
+    dateInput.setCustomValidity("error");
   }
   if (passForm.checkValidity()) {
     return true;
@@ -108,6 +108,9 @@ function checkValidations(event) {
 }
 
 function validate_name(name) {
+  if (typeof name === "string" && name.trim().length === 0) {
+    return false;
+  }
   const nameRegex = /^(?=.{1,20}$)(?![\d])[\w\s]+$/;
   return nameRegex.test(name);
 }
