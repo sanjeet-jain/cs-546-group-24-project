@@ -7,7 +7,8 @@ function populateMeetingsModal(userId, meetingId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
-
+      hideShowDeleteButton(false);
+      toggleUpdateAllCheckbox(!dataGlobal.repeating);
       let event_modal = document.getElementById("modal-meeting-display");
 
       // event_modal.querySelector("#modal-meeting-label.modal-title").innerText =
@@ -62,6 +63,8 @@ function populateRemindersModal(userId, reminderId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
+      toggleUpdateAllCheckbox(!dataGlobal.repeating);
       let event_modal = document.getElementById("modal-reminder-display");
 
       // event_modal.querySelector("#modal-reminder-label.modal-title").innerText =
@@ -98,6 +101,7 @@ function populateTasksModal(userId, taskId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
 
       let event_modal = document.getElementById("modal-task-display");
 
@@ -127,6 +131,7 @@ function populateNotesModal(userId, notesId) {
     success: function (data) {
       dataGlobal = data;
       userIdGlobal = userId;
+      hideShowDeleteButton(false);
 
       let event_modal = document.getElementById("modal-notes-display");
 
@@ -146,16 +151,16 @@ function populateNotesModal(userId, notesId) {
   });
 }
 
-function repeatingCheckBoxTogglerMeeting() {
+function updateAllCheckBoxTogglerMeeting() {
   let event_modal = document.getElementById("modal-meeting-display");
-  let repeating = event_modal.querySelector("input#meeting_repeating");
+  let updateAll = event_modal.querySelector("input#meeting_updateAll");
   let repeatingIncrementBy = event_modal.querySelector(
     "select#meeting_repeatingIncrementBy"
   );
   let repeatingCounterIncrement = event_modal.querySelector(
     "input#meeting_repeatingCounterIncrement"
   );
-  repeating.addEventListener("change", (event) => {
+  updateAll.addEventListener("change", (event) => {
     if (event.target.checked) {
       event.target.value = true;
       repeatingIncrementBy.disabled = false;
@@ -163,7 +168,8 @@ function repeatingCheckBoxTogglerMeeting() {
       repeatingIncrementBy.setAttribute("required", "");
       repeatingIncrementBy.value = "day";
       repeatingCounterIncrement.setAttribute("required", "");
-      repeatingCounterIncrement.value = 0;
+      repeatingCounterIncrement.value =
+        dataGlobal?.repeatingCounterIncrement || 1;
     } else {
       repeatingIncrementBy.disabled = true;
       repeatingCounterIncrement.disabled = true;
@@ -177,7 +183,83 @@ function repeatingCheckBoxTogglerMeeting() {
     }
   });
 }
+function repeatingCheckBoxTogglerMeeting() {
+  let event_modal = document.getElementById("modal-meeting-display");
+  let repeating = event_modal.querySelector("input#meeting_repeating");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#meeting_repeatingIncrementBy"
+  );
+  let repeatingCounterIncrement = event_modal.querySelector(
+    "input#meeting_repeatingCounterIncrement"
+  );
+  repeating.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      if (dataGlobal?.repeating) {
+        toggleUpdateAllCheckbox(false, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = false;
+        repeatingCounterIncrement.parentNode.hidden = false;
+      } else {
+        event.target.value = true;
+        repeatingIncrementBy.disabled = false;
+        repeatingCounterIncrement.disabled = false;
+        repeatingIncrementBy.setAttribute("required", "");
+        repeatingIncrementBy.value = "day";
+        repeatingCounterIncrement.setAttribute("required", "");
+        repeatingCounterIncrement.value =
+          dataGlobal?.repeatingCounterIncrement || 1;
+      }
+    } else {
+      if (dataGlobal?.repeating) {
+        toggleUpdateAllCheckbox(true, dataGlobal.type);
+        repeatingIncrementBy.parentNode.hidden = true;
+        repeatingCounterIncrement.parentNode.hidden = true;
+      } else {
+        repeatingIncrementBy.disabled = true;
+        repeatingCounterIncrement.disabled = true;
+        repeatingIncrementBy.removeAttribute("required");
+        repeatingCounterIncrement.removeAttribute("required");
+        event_modal.querySelector("select#meeting_repeatingIncrementBy").value =
+          "";
+        event_modal.querySelector(
+          "input#meeting_repeatingCounterIncrement"
+        ).value = "";
+      }
+    }
+  });
+}
 
+function updateAllCheckBoxTogglerReminder() {
+  let event_modal = document.getElementById("modal-reminder-display");
+  let updateAll = event_modal.querySelector("input#reminder_updateAll");
+  let repeatingIncrementBy = event_modal.querySelector(
+    "select#reminder_repeatingIncrementBy"
+  );
+  let repeatingCounterIncrement = event_modal.querySelector(
+    "input#reminder_repeatingCounterIncrement"
+  );
+  updateAll.addEventListener("change", (event) => {
+    if (event.target.checked) {
+      event.target.value = true;
+      repeatingIncrementBy.disabled = false;
+      repeatingCounterIncrement.disabled = false;
+      repeatingIncrementBy.setAttribute("required", "");
+      repeatingIncrementBy.value = "day";
+      repeatingCounterIncrement.setAttribute("required", "");
+      repeatingCounterIncrement.value =
+        dataGlobal?.repeatingCounterIncrement || 1;
+    } else {
+      repeatingIncrementBy.disabled = true;
+      repeatingCounterIncrement.disabled = true;
+      repeatingIncrementBy.removeAttribute("required");
+      repeatingCounterIncrement.removeAttribute("required");
+      event_modal.querySelector("select#reminder_repeatingIncrementBy").value =
+        "";
+      event_modal.querySelector(
+        "input#reminder_repeatingCounterIncrement"
+      ).value = "";
+    }
+  });
+}
 function repeatingCheckBoxTogglerReminder() {
   let event_modal = document.getElementById("modal-reminder-display");
   let repeating = event_modal.querySelector("input#reminder_repeating");
@@ -195,7 +277,13 @@ function repeatingCheckBoxTogglerReminder() {
       repeatingIncrementBy.value = "day";
       endDateTime.setAttribute("required", "");
       endDateTime.value = "";
+      if (dataGlobal.repeating) {
+        toggleUpdateAllCheckbox(false);
+      }
     } else {
+      if (dataGlobal.repeating) {
+        toggleUpdateAllCheckbox(true);
+      }
       repeatingIncrementBy.disabled = true;
       endDateTime.disabled = true;
       repeatingIncrementBy.removeAttribute("required");
@@ -221,6 +309,10 @@ function enableMeetingFormEdit() {
       let repeatingCounterIncrement = event_modal.querySelector(
         "input#meeting_repeatingCounterIncrement"
       );
+      if (dataGlobal?.repeating) {
+        repeatingIncrementBy.disabled = true;
+        repeatingCounterIncrement.disabled = true;
+      }
       if (!repeating.checked) {
         repeating.value = false;
         repeatingIncrementBy.disabled = true;
@@ -454,9 +546,10 @@ function submitMeetingForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
-      if (jsonData["repeating"] === undefined) {
-        jsonData["repeating"] = false;
-      }
+
+      jsonData["repeating"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.updateAll.checked;
+
       let reqType = "PUT";
       let ajaxURL = `/meeting/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -603,9 +696,8 @@ function submitReminderForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
-      if (jsonData["repeating"] === undefined) {
-        jsonData["repeating"] = false;
-      }
+      jsonData["repeating"] = event.target.repeating.checked;
+      jsonData["updateAll"] = event.target.updateAll.checked;
       let reqType = "PUT";
       let ajaxURL = `/reminder/${userIdGlobal}/reminder/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -659,6 +751,7 @@ function submitTaskForm() {
       for (let [key, value] of formData.entries()) {
         jsonData[key] = value.trim();
       }
+      jsonData["checked"] = event.target.checked.checked;
       let reqType = "PUT";
       let ajaxURL = `/task/${userIdGlobal}/${dataGlobal?._id}`;
       if (dataGlobal === undefined) {
@@ -929,9 +1022,11 @@ function populateBasedOnEventType(target) {
   switch (typeOfEventPill) {
     case "meeting":
       populateMeetingsModal(userId, eventId);
+
       break;
     case "reminder":
       populateRemindersModal(userId, eventId);
+
       break;
     case "task":
       populateTasksModal(userId, eventId);
@@ -941,6 +1036,7 @@ function populateBasedOnEventType(target) {
       break;
     case "add-event":
       hideShowDeleteButton(true);
+      toggleUpdateAllCheckbox(true);
       dataGlobal = undefined;
       userIdGlobal = userId;
       break;
@@ -948,6 +1044,26 @@ function populateBasedOnEventType(target) {
       break;
   }
 }
+function toggleUpdateAllCheckbox(hide, eventType = dataGlobal?.type) {
+  let updateAllDivs;
+  if (eventType !== undefined) {
+    updateAllDivs = document.querySelectorAll(
+      `#${eventType}-form div.updateAll`
+    );
+  }
+  if (eventType === undefined) {
+    updateAllDivs = document.querySelectorAll(`div.updateAll`);
+  }
+  updateAllDivs.forEach((div) => {
+    div.hidden = hide;
+    let checkbox = div.querySelector("input");
+    checkbox.checked = false;
+    checkbox.hidden = hide;
+    div.hidden = hide;
+    checkbox.disabled = hide;
+  });
+}
+
 function hideShowDeleteButton(hide) {
   let deleteButtons = document.querySelectorAll(".btn-delete");
   deleteButtons.forEach((button) => {
@@ -1092,7 +1208,7 @@ function checkMeetingValidations(form) {
       meeting_dateAddedTo_error.innerText =
         "This field is mandatory in order to access the recurrence feature";
     }
-    if (form.repeatingCounterIncrement.value < 0) {
+    if (form.repeatingCounterIncrement.value <= 0) {
       meeting_repeatingCounterIncrement_error.innerText =
         "the counter needs to be greater than 0";
       form.repeatingCounterIncrement.setCustomValidity("error");
@@ -1478,12 +1594,14 @@ function loadLeftPaneCells(data) {
       "text-wrap",
       "text-center",
       "event-button"
+      // "draggable-event-button"
     );
     eventButton.setAttribute("data-bs-toggle", "modal");
     eventButton.setAttribute("data-bs-target", `#modal-${event.type}-display`);
     eventButton.setAttribute("data-bs-eventId", `${event._id}`);
     eventButton.setAttribute("data-bs-userId", `${data.userId}`);
     eventButton.setAttribute("data-bs-event-type", `${event.type}`);
+    // eventButton.setAttribute("draggable", "true");
     // logic for adding checkbox to task
 
     let logo = document.createElement("i");
@@ -1508,8 +1626,12 @@ function loadLeftPaneCells(data) {
         "border-0",
         buttonClass,
         "text-wrap",
-        "text-center"
+        "text-center",
+        "draggable-event-button"
       );
+      taskDiv.setAttribute("data-bs-eventId", `${event._id}`);
+      taskDiv.setAttribute("data-bs-userId", `${data.userId}`);
+      taskDiv.setAttribute("data-bs-event-type", `${event.type}`);
       let checkbox = document.createElement("input");
       checkbox.setAttribute("type", "checkbox");
       checkbox.classList.add("task-checkbox");
@@ -1519,6 +1641,7 @@ function loadLeftPaneCells(data) {
       checkbox.setAttribute("data-bs-userId", `${data.userId}`);
       checkbox.setAttribute("value", "true");
       checkbox.setAttribute("aria-label", "Task Checkbox");
+
       if (event.checked === true) {
         checkbox.checked = true;
         eventButton.classList.add("task-completed");
@@ -1528,13 +1651,18 @@ function loadLeftPaneCells(data) {
       }
       taskDiv.appendChild(checkbox);
       taskDiv.appendChild(eventButton);
+      taskDiv.setAttribute("draggable", "true");
+
       eventDiv.appendChild(taskDiv);
     } else {
+      eventButton.setAttribute("draggable", "true");
+      eventButton.classList.add("draggable-event-button");
       eventDiv.appendChild(eventButton);
     }
     display_current_items_div.appendChild(eventDiv);
   });
   CheckboxEventListener();
+  draggable_event_cells();
 }
 
 function miniCalendarLoader() {
@@ -1763,6 +1891,7 @@ function draggable_event_cells() {
   let buttonList = document.querySelectorAll(".draggable-event-button");
 
   buttonList.forEach((button) => {
+    button.removeEventListener("dragstart", () => {});
     button.addEventListener("dragstart", function (event) {
       let dataset = JSON.stringify(event.target.dataset);
       event.dataTransfer.setData("application/json", dataset);
@@ -1855,6 +1984,7 @@ miniCalendarLoader();
 
 clickableDateCells();
 
+updateAllCheckBoxTogglerMeeting();
 repeatingCheckBoxTogglerReminder();
 repeatingCheckBoxTogglerMeeting();
 

@@ -546,6 +546,16 @@ async function getRightPaneItems(userId) {
       return !x.expired && x.dateAddedTo !== null;
     }) || []
   );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.reminders?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.notes?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
   rightPaneItems.upcoming
     .sort((a, b) => {
       const dateA = dayjs(a.dateAddedTo);
@@ -566,6 +576,39 @@ async function getRightPaneItems(userId) {
       return 0;
     })
     .slice(0, 50);
+  rightPaneItems.totalTasksAssigned =
+    response?.tasks?.filter((x) => {
+      return x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.taskCompletionProgress = 0;
+  if (rightPaneItems.totalTasksAssigned !== 0) {
+    rightPaneItems.taskCompletionProgress = Number.parseFloat(
+      (
+        ((rightPaneItems.totalTasksAssigned -
+          rightPaneItems.backlogtasks.length) *
+          100) /
+        rightPaneItems.totalTasksAssigned
+      ).toFixed(0)
+    );
+  }
+
+  let totalMeetingsPending =
+    response?.meetings?.filter((x) => {
+      return x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.pendingMeetingsCount =
+    response?.meetings?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.meetingCompletionProgress = 0;
+  if (totalMeetingsPending !== 0) {
+    rightPaneItems.meetingCompletionProgress = Number.parseFloat(
+      (
+        ((totalMeetingsPending - rightPaneItems.pendingMeetingsCount) * 100) /
+        rightPaneItems.totalTasksAssigned
+      ).toFixed(0)
+    );
+  }
   return rightPaneItems;
 }
 export default router;

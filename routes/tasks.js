@@ -3,6 +3,8 @@ import tasksDataFunctions from "../data/tasks.js";
 import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
 import dayjs from "dayjs";
+import xss from "xss";
+
 const router = Router();
 
 router
@@ -207,13 +209,17 @@ router
       utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-      const previousDate = dayjs(taskPutData.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm"
-      );
-      taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm"
-      );
-
+      let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+      if (dateAddedTo === "") {
+        return res.status(400).json({ error: e.message });
+      }
+      dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
+      let previousDate = taskPutData.dateAddedTo;
+      taskPutData.dateAddedTo = dateAddedTo;
+      if (previousDate) {
+        previousDate = dayjs(previousDate).format("YYYY-M-D");
+      }
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)
