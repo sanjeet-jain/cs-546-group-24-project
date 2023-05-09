@@ -127,12 +127,19 @@ router
     let tag = xss(reminder.tag);
     let dateAddedTo = xss(reminder.dateAddedTo);
     let repeating = xss(reminder.repeating);
+    let isUpdateAll = xss(reminder.updateAll);
     repeating = repeating === "false" || !(repeating === "true") ? false : true;
+    isUpdateAll =
+      isUpdateAll === "false" || !(isUpdateAll === "true") ? false : true;
     let endDateTime;
+
     if (repeating) {
+      utils.validateBooleanInput(isUpdateAll);
       endDateTime = xss(reminder.endDateTime);
       utils.validateDate(endDateTime, "end time value");
       endDateTime = dayjs(endDateTime).format("YYYY-MM-DDTHH:mm");
+    } else {
+      isUpdateAll = null;
     }
     let repeatingIncrementBy;
     try {

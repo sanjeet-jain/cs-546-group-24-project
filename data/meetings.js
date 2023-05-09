@@ -182,12 +182,6 @@ const meetingsDataFunctions = {
         };
         meetingObjects.push(meeting);
       }
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        for (let j = 0; j < meetingObjects.length; j++) {
-          this.isTwoEventSameUpdate(allMeetingEvents[i], meetingObjects[j]);
-        }
-      }
       const result = await meetings.insertMany(meetingObjects);
       const insertedIds = Object.values(result.insertedIds);
       const users = await usersCollection();
@@ -198,10 +192,6 @@ const meetingsDataFunctions = {
       );
     }
     // was repeating before and isnt now
-    let allMeetingEvents = await this.getAll(userId);
-    for (let i = 0; i < allMeetingEvents.length; i++) {
-      this.isTwoEventSameUpdate(allMeetingEvents[i], updatedMeeting);
-    }
     if (
       !repeating &&
       updatedMeeting.repeatingGroup?.toString()?.trim() &&
@@ -379,10 +369,6 @@ const meetingsDataFunctions = {
       type: "meeting",
     };
     if (!repeating) {
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        this.isTwoEventSame(allMeetingEvents[i], meetingObj);
-      }
       if (
         (meetingObj.dateAddedTo === null && meetingObj.dateDueOn === null) ||
         dayjs(meetingObj.dateDueOn).diff(dayjs()) > 0
@@ -449,12 +435,6 @@ const meetingsDataFunctions = {
         }
         dateDueOnObject = newDateDueOn.clone();
         dateAddedToObject = newDateAddedTo.clone();
-      }
-      let allMeetingEvents = await this.getAll(userId);
-      for (let i = 0; i < allMeetingEvents.length; i++) {
-        for (let j = 0; j < meetingObjects.length; j++) {
-          this.isTwoEventSame(allMeetingEvents[i], meetingObjects[j]);
-        }
       }
       const result = await meetings.insertMany(meetingObjects);
       const insertedIds = Object.values(result.insertedIds);
@@ -611,76 +591,6 @@ const meetingsDataFunctions = {
   async getDistinctTags() {
     const meetings = await meetingsCollection();
     return meetings.distinct("tag");
-  },
-
-  isTwoEventSame(event1, event2) {
-    if (event1["title"].toLowerCase() === event2["title"].toLowerCase()) {
-      if (
-        event1["dateAddedTo"] !== null &&
-        event2["dateAddedTo"] !== null &&
-        dayjs(event1["dateAddedTo"]).year() ===
-          dayjs(event2["dateAddedTo"]).year() &&
-        dayjs(event1["dateAddedTo"]).month() ===
-          dayjs(event2["dateAddedTo"]).month() &&
-        dayjs(event1["dateAddedTo"]).date() ===
-          dayjs(event2["dateAddedTo"]).date() &&
-        dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
-        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"]) > 0
-      ) {
-        throw new Error(
-          "Two Meetings have the same title and a date time clash"
-        );
-      } else if (
-        event1["dateAddedTo"] === null &&
-        event2["dateAddedTo"] === null
-      ) {
-        throw new Error(
-          "There cannot be two meetings of same title that is waiting to be scheduled"
-        );
-      }
-    }
-  },
-  isTwoEventSameUpdate(event1, event2) {
-    let event1RepeatGrpId = event1["repeatingGroup"];
-    let event2RepeatGrpId = event2["repeatingGroup"];
-    if (event1RepeatGrpId !== null) {
-      event1RepeatGrpId = event1["repeatingGroup"].toString();
-    }
-    if (event2RepeatGrpId !== null) {
-      event2RepeatGrpId = event2["repeatingGroup"].toString();
-    }
-    if (
-      event1["title"].toLowerCase() === event2["title"].toLowerCase() &&
-      !(
-        event1RepeatGrpId != null &&
-        event2RepeatGrpId != null &&
-        event1RepeatGrpId === event2RepeatGrpId
-      )
-    ) {
-      if (
-        event1["dateAddedTo"] !== null &&
-        event2["dateAddedTo"] !== null &&
-        dayjs(event1["dateAddedTo"]).year() ===
-          dayjs(event2["dateAddedTo"]).year() &&
-        dayjs(event1["dateAddedTo"]).month() ===
-          dayjs(event2["dateAddedTo"]).month() &&
-        dayjs(event1["dateAddedTo"]).date() ===
-          dayjs(event2["dateAddedTo"]).date() &&
-        dayjs(event1["dateDueOn"]).diff(event2["dateAddedTo"]) > 0 &&
-        dayjs(event2["dateDueOn"]).diff(event1["dateAddedTo"]) > 0
-      ) {
-        throw new Error(
-          "Two Meetings have the same title and a date time clash"
-        );
-      } else if (
-        event1["dateAddedTo"] === null &&
-        event2["dateAddedTo"] === null
-      ) {
-        throw new Error(
-          "There cannot be two meetings of same title that is waiting to be scheduled"
-        );
-      }
-    }
   },
 };
 export default meetingsDataFunctions;
