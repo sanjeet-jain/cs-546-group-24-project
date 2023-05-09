@@ -221,8 +221,8 @@ const tasksDataFunctions = {
       updatedTaskData.tag = "tasks";
     }
     if (updatedTask.checked === true) {
-      updatedTask.onTime = this.isTaskOnTime(updatedTask.dateAddedTo);
-      updatedTask.expired = true;
+      updatedTaskData.onTime = this.isTaskOnTime(updatedTask.dateAddedTo);
+      updatedTaskData.expired = true;
     }
     //dont allow task to be checked if no date assigned
     if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {

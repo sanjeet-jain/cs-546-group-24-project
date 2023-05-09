@@ -258,7 +258,7 @@
   <div class="progress" role="progressbar" aria-label="Animated striped example"
     aria-valuenow="{{rightPaneItems.taskCompletionProgress}}" aria-valuemin="0"
     aria-valuemax="{{rightPaneItems.totalTasksAssigned}}">
-    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-success"
+    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-danger"
       style="width: {{rightPaneItems.taskCompletionProgress}}%"></div>
   </div>
 </div>
@@ -272,6 +272,19 @@
     aria-valuemax="{{rightPaneItems.pendingMeetingsCount}}">
     <div class="progress-bar progress-bar-striped progress-bar-animated  bg-primary"
       style="width: {{rightPaneItems.meetingCompletionProgress}}%"></div>
+  </div>
+</div>
+<br />
+
+<div id="onTimeTaskProgressBar">
+  <div class="body">
+    On Time Tasks: {{rightPaneItems.totalTasksOnTime}}
+  </div>
+  <div class="progress" role="progressbar" aria-label="Animated striped example"
+    aria-valuenow="{{rightPaneItems.onTimECompletionRate}}" aria-valuemin="0"
+    aria-valuemax="{{rightPaneItems.totalTasksOnTime}}">
+    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-success"
+      style="width: {{rightPaneItems.onTimECompletionRate}}%"></div>
   </div>
 </div>
 

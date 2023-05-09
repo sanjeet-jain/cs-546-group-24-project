@@ -594,10 +594,27 @@ async function getRightPaneItems(userId) {
     rightPaneItems.meetingCompletionProgress = Number.parseFloat(
       (
         ((totalMeetingsPending - rightPaneItems.pendingMeetingsCount) * 100) /
-        rightPaneItems.totalMeetingsPending
+        totalMeetingsPending
       ).toFixed(0)
     );
   }
+
+  let totalTasksComplete =
+    response?.tasks?.filter((x) => {
+      return x.checked && x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.totalTasksOnTime =
+    response?.tasks?.filter((x) => {
+      return x.checked && x.dateAddedTo !== null && x.onTime;
+    })?.length || 0;
+
+  rightPaneItems.onTimECompletionRate = 0;
+  if (totalTasksComplete !== 0) {
+    rightPaneItems.onTimECompletionRate = Number.parseFloat(
+      (rightPaneItems.totalTasksOnTime * 100) / totalTasksComplete
+    ).toFixed(0);
+  }
+
   return rightPaneItems;
 }
 export default router;
