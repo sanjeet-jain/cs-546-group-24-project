@@ -218,7 +218,7 @@ router
       let previousDate = taskPutData.dateAddedTo;
       taskPutData.dateAddedTo = dateAddedTo;
       if (previousDate) {
-        previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
+        previousDate = dayjs(previousDate).format("YYYY-M-D");
       }
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res

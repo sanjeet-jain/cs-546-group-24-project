@@ -282,7 +282,7 @@ router
         .add(30, "minute")
         .format("YYYY-MM-DDTHH:mm");
     } else {
-      previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
+      previousDate = dayjs(previousDate).format("YYYY-M-D");
       meetingPutData.dateDueOn = dayjs(meetingPutData.dateDueOn)
         .date(dayjs(dateAddedTo).date())
         .month(dayjs(dateAddedTo).month())
