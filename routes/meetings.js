@@ -277,12 +277,22 @@ router
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
     let previousDate = meetingPutData.dateAddedTo;
     meetingPutData.dateAddedTo = dateAddedTo;
-    if (previousDate) {
+    if (!previousDate) {
+      meetingPutData.dateDueOn = dayjs(dateAddedTo)
+        .add(30, "minute")
+        .format("YYYY-MM-DDTHH:mm");
+    } else {
       previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateDueOn)
+        .date(dayjs(dateAddedTo).date())
+        .month(dayjs(dateAddedTo).month())
+        .year(dayjs(dateAddedTo).year())
+        .add(
+          dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
+          "millisecond"
+        )
+        .format("YYYY-MM-DDTHH:mm");
     }
-    meetingPutData.dateDueOn = dayjs(dateAddedTo)
-      .add(30, "minute")
-      .format("YYYY-MM-DDTHH:mm");
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(

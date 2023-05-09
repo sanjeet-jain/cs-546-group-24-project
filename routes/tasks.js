@@ -217,17 +217,8 @@ router
       utils.checkIfDateIsBeyondRange(dateAddedTo);
       let previousDate = taskPutData.dateAddedTo;
       taskPutData.dateAddedTo = dateAddedTo;
-      if (!previousDate) {
-        taskPutData.dateDueOn = dayjs(dateAddedTo)
-          .add(1, "hour")
-          .format("YYYY-MM-DDTHH:mm");
-      } else {
+      if (previousDate) {
         previousDate = dayjs(taskPutData.dateAddedTo).format("YYYY-M-D");
-        taskPutData.dateDueOn = dayjs(taskPutData.dateDueOn)
-          .date(dayjs(dateAddedTo).date())
-          .month(dayjs(dateAddedTo).month())
-          .year(dayjs(dateAddedTo).year())
-          .format("YYYY-MM-DDTHH:mm");
       }
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res

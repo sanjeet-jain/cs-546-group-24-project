@@ -275,17 +275,8 @@ router
     }
     let previousDate = notePutData.dateAddedTo;
     notePutData.dateAddedTo = dateAddedTo;
-    if (!previousDate) {
-      notePutData.dateDueOn = dayjs(dateAddedTo)
-        .add(1, "hour")
-        .format("YYYY-MM-DDTHH:mm");
-    } else {
+    if (previousDate) {
       previousDate = dayjs(notePutData.dateAddedTo).format("YYYY-M-D");
-      notePutData.dateDueOn = dayjs(notePutData.dateDueOn)
-        .date(dayjs(dateAddedTo).date())
-        .month(dayjs(dateAddedTo).month())
-        .year(dayjs(dateAddedTo).year())
-        .format("YYYY-MM-DDTHH:mm");
     }
 
     try {
