@@ -594,7 +594,7 @@ async function getRightPaneItems(userId) {
     rightPaneItems.meetingCompletionProgress = Number.parseFloat(
       (
         ((totalMeetingsPending - rightPaneItems.pendingMeetingsCount) * 100) /
-        rightPaneItems.totalTasksAssigned
+        rightPaneItems.totalMeetingsPending
       ).toFixed(0)
     );
   }
