@@ -116,6 +116,7 @@ app.use(
 app.use((req, res, next) => {
   if (req.session.user) {
     res.locals.session = req.session.user;
+    //todo extend cookie
     var hour = 1800000;
     req.session.cookie.expires = dayjs().add(30, "minute").toDate();
     req.session.cookie.maxAge = hour;
