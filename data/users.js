@@ -14,7 +14,6 @@ import meetingsDataFunctions from "./meetings.js";
     last_name: String,
     email: String,
     password: String,
-    Disability:boolean,
     Dob:date,
     Consent:boolean
     taskIds: [ObjectId],
@@ -25,23 +24,12 @@ import meetingsDataFunctions from "./meetings.js";
 */
 
 const exportedMethods = {
-  async create(
-    first_name,
-    last_name,
-    email,
-    password,
-    disability,
-    dob,
-    consent
-  ) {
+  async create(first_name, last_name, email, password, dob, consent) {
     //field validation
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
     utils.validateEmail(email, "Email");
     utils.validatePassword(password, "Password");
-    if (disability) {
-      utils.validateBooleanInput(disability, "Disability");
-    }
     utils.validateDate(dob, "Date of Birth");
     utils.validateBooleanInput(consent, "Consent");
 
@@ -63,7 +51,6 @@ const exportedMethods = {
       last_name: last_name.trim(),
       email: email,
       password: hashPW,
-      disability: disability === "true" ? true : false,
       dob: dob,
       consent: consent === "true" ? true : false,
       taskIds: [],
@@ -87,13 +74,10 @@ const exportedMethods = {
     const user = await users.findOne({ _id: new ObjectId(id) });
     return user;
   },
-  async updateUser(id, { first_name, last_name, disability, dob }) {
+  async updateUser(id, { first_name, last_name, dob }) {
     utils.checkObjectIdString(id);
     utils.validateName(first_name, "First name");
     utils.validateName(last_name, "Last name");
-    if (disability) {
-      utils.validateBooleanInput(disability, "Disability");
-    }
 
     utils.validateDate(dob, "Date of Birth");
     id = id.trim();
@@ -108,7 +92,6 @@ const exportedMethods = {
       last_name: last_name,
       email: currUser.email,
       password: currUser.password,
-      disability: disability,
       dob: dob,
       consent: currUser.consent,
       taskIds: currUser.taskIds,

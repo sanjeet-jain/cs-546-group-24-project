@@ -51,7 +51,7 @@ function validateEmail(email) {
 
 function validatePassword(password) {
   const passwordRegex =
-    /^(?=.*\p{Lu})(?=.*\d)(?=.*[!@#$%^&_=+./?<>])[\p{L}\d!@#$%^&_=+./?<>]{8,}$/u;
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$/;
   return passwordRegex.test(password);
 }
 

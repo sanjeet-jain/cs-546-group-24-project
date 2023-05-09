@@ -35,7 +35,6 @@ router
     let email = xss(req?.body?.email);
     let password = xss(req?.body?.password);
     const reEnterPassword = xss(req?.body?.reEnterPassword);
-    const disability = xss(req?.body?.disability);
     const dob = xss(req?.body?.dob);
     const consent = xss(req?.body?.consent);
 
@@ -80,13 +79,7 @@ router
     if (password !== reEnterPassword) {
       errorMessages.reEnterPassword = "Passwords do not match.";
     }
-    if (disability) {
-      try {
-        utils.validateBooleanInput(disability, "Disability");
-      } catch (e) {
-        errorMessages.disability = e.message;
-      }
-    }
+
     try {
       utils.validateDate(dob, "Date of Birth");
     } catch (e) {
@@ -121,7 +114,6 @@ router
         last_name,
         email,
         password,
-        disability,
         dob,
         consent
       );
@@ -265,7 +257,6 @@ router
       const id = req.session.user.user_id;
       let first_name = xss(req?.body?.first_name);
       let last_name = xss(req?.body?.last_name);
-      const disability = xss(req?.body?.disability);
       const dob = xss(req?.body?.dob);
 
       first_name = first_name.trim();
@@ -281,14 +272,6 @@ router
       } catch (e) {
         errorMessages.last_name = e.message;
       }
-      if (disability) {
-        try {
-          utils.validateBooleanInput(disability, "Disability");
-        } catch (e) {
-          errorMessages.disability = e.message;
-        }
-      }
-
       try {
         utils.validateDate(dob, "Date of Birth");
       } catch (e) {
@@ -313,7 +296,6 @@ router
         await usersFunctions.updateUser(id, {
           first_name,
           last_name,
-          disability,
           dob,
         });
       } catch (e) {
