@@ -332,6 +332,18 @@ const utils = {
       } catch (error) {
         errorMessages.repeatingIncrementBy = error.message;
       }
+
+      try {
+        // check if the counter is exceeding the max allowed dates of the application
+        let temp = dayjs(dateAddedTo)
+          .add(Number.parseInt(repeatingCounterIncrement), repeatingIncrementBy)
+          .format("YYYY-MM-DDTHH:mm");
+        this.checkIfDateIsBeyondRange(temp);
+      } catch (error) {
+        errorMessages.repeatingCounterIncrement =
+          error.message +
+          " Please adjust the repeating counter to be within this date ";
+      }
     }
     if (dateAddedTo?.trim().length > 0 && dateDueOn?.trim().length > 0) {
       try {
@@ -441,7 +453,7 @@ const utils = {
     }
   },
   checkIfDateIsBeyondRange(date) {
-    if (!date === "" && !date === null && date !== undefined) {
+    if (date !== "" && date !== null && date !== undefined) {
       let dayjsDate = dayjs(
         date,
         ["YYYY-MM-DDTHH:mm", "YYYY-MM-DDTHH", "YYYY-MM-DD", "YYYY-M-D"],
@@ -456,7 +468,7 @@ const utils = {
           `Please give a validate Date between  ${dayjs()
             .year(constants.yearRange[0])
             .startOf("year")
-            .format("YYYY-MMMM-DD")} - ${dayjs()
+            .format("YYYY-MMMM-DD")} to ${dayjs()
             .year(constants.yearRange[constants.yearRange.length - 1])
             .endOf("year")
             .format("YYYY-MMMM-DD")}`
