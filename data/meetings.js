@@ -155,8 +155,8 @@ const meetingsDataFunctions = {
             newDateAddedTo = dateAddedToObject.add(1, "day");
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = dateDueOnObject.add(1, "week");
+            newDateAddedTo = dateAddedToObject.add(1, "week");
             break;
           case "month":
             newDateDueOn = dateDueOnObject.add(1, "month");
@@ -214,24 +214,97 @@ const meetingsDataFunctions = {
       dateAddedTo !== null &&
       dateDueOn !== null
     ) {
-      await this.updateAllRecurrences(
-        userId,
-        updatedMeeting.title,
-        updatedMeeting.dateAddedTo,
-        updatedMeeting.dateDueOn,
-        updatedMeeting.priority,
-        updatedMeeting.textBody,
-        updatedMeeting.tag,
-        updatedMeeting.repeatingGroup.toString()
-      );
-      await meetings.updateOne(
-        { _id: new ObjectId(meetingId) },
-        { $set: updatedMeeting }
-      );
-      let result = await meetings.findOne({
-        _id: new ObjectId(meetingId),
-      });
-      return result;
+      // check if date changed or repeating counter changed or repeating by changed
+      if (
+        oldMeeting.dateAddedTo !== updatedMeeting.dateAddedTo ||
+        oldMeeting.dateDueOn !== updatedMeeting.dateDueOn ||
+        oldMeeting.repeatingCounterIncrement !==
+          updatedMeeting.repeatingCounterIncrement ||
+        oldMeeting.repeatingIncrementBy !== updatedMeeting.repeatingIncrementBy
+      ) {
+        // this deletes other recurrences and creates a new once based on the updatedMeeting as the first recurrence
+        await this.deleteAllRecurrences(
+          userId,
+          updatedMeeting.repeatingGroup.toString().trim(),
+          meetingId // which meeting to skip
+        );
+        let dateAddedToObject = dayjs(dateAddedTo);
+        let dateDueOnObject = dayjs(dateDueOn);
+        const meetingObjects = [];
+        let newDateDueOn;
+        let newDateAddedTo;
+        for (let i = 0; i < repeatingCounterIncrement; i++) {
+          switch (repeatingIncrementBy) {
+            case "day":
+              newDateDueOn = dateDueOnObject.add(1, "day");
+              newDateAddedTo = dateAddedToObject.add(1, "day");
+              break;
+            case "week":
+              newDateDueOn = dateDueOnObject.add(1, "week");
+              newDateAddedTo = dateAddedToObject.add(1, "week");
+              break;
+            case "month":
+              newDateDueOn = dateDueOnObject.add(1, "month");
+              newDateAddedTo = dateAddedToObject.add(1, "month");
+              break;
+            case "year":
+              newDateDueOn = dateDueOnObject.add(1, "year");
+              newDateAddedTo = dateAddedToObject.add(1, "year");
+              break;
+            default:
+              throw new Error("Invalid repeatingIncrementBy value");
+          }
+          dateDueOnObject = newDateDueOn.clone();
+          dateAddedToObject = newDateAddedTo.clone();
+          let dateCreated = dayjs().format("YYYY-MM-DDTHH:mm");
+          const meeting = {
+            ...updatedMeeting,
+            dateCreated: dateCreated,
+            dateAddedTo: newDateAddedTo.format("YYYY-MM-DDTHH:mm"),
+            dateDueOn: newDateDueOn.format("YYYY-MM-DDTHH:mm"),
+            repeatingGroup: updatedMeeting.repeatingGroup,
+          };
+          meetingObjects.push(meeting);
+        }
+
+        const insertManyResult = await meetings.insertMany(meetingObjects);
+        const insertedIds = Object.values(insertManyResult.insertedIds);
+        const users = await usersCollection();
+
+        await users.updateOne(
+          { _id: new ObjectId(userId) },
+          { $push: { meetingIds: { $each: insertedIds } } }
+        );
+
+        let result = await meetings.findOne({
+          _id: new ObjectId(meetingId),
+        });
+        return result;
+      } else {
+        // since no recurring parameters changed we just update the text fields
+        const users = await usersCollection();
+        const user = await users.findOne({ _id: new ObjectId(userId) });
+        const meetingIdList = user.meetingIds;
+        const meetings = await meetingsCollection();
+        const result = await meetings.updateMany(
+          {
+            _id: { $in: meetingIdList },
+            repeatingGroup: new ObjectId(
+              updatedMeeting.repeatingGroup.toString()
+            ),
+          },
+          {
+            $set: {
+              title: title,
+              // dateAddedTo: dateAddedTo,
+              // dateDueOn: dateDueOn,
+              priority: priority,
+              textBody: textBody,
+              tag: tag,
+            },
+          }
+        );
+      }
     }
     // if theres no change in repeating status means normal update
     else {
@@ -429,8 +502,8 @@ const meetingsDataFunctions = {
             newDateAddedTo = dateAddedToObject.add(1, "day");
             break;
           case "week":
-            newDateDueOn = dateDueOnObject.add(7, "week");
-            newDateAddedTo = dateAddedToObject.add(7, "week");
+            newDateDueOn = dateDueOnObject.add(1, "week");
+            newDateAddedTo = dateAddedToObject.add(1, "week");
             break;
           case "month":
             newDateDueOn = dateDueOnObject.add(1, "month");
@@ -497,73 +570,7 @@ const meetingsDataFunctions = {
       throw new Error("repeatingGroup of meetings not found");
     }
   },
-  async updateAllRecurrences(
-    userId,
-    title,
-    dateAddedTo,
-    dateDueOn,
-    priority,
-    textBody,
-    tag,
-    repeatingGroup
-  ) {
-    utils.checkObjectIdString(userId.trim());
-    utils.checkObjectIdString(repeatingGroup.toString().trim());
 
-    let errorMessages = utils.validateMeetingCreateInputs(
-      title,
-      dateAddedTo,
-      dateDueOn,
-      priority,
-      textBody,
-      tag
-    );
-    if (Object.keys(errorMessages).length !== 0) {
-      throw errorMessages;
-    }
-
-    userId = userId.trim();
-    title = title.trim();
-    dateAddedTo = dateAddedTo.trim();
-    dateDueOn = dateDueOn.trim();
-    tag = tag.trim().toLowerCase();
-    repeatingGroup = repeatingGroup.trim();
-
-    const users = await usersCollection();
-    const user = await users.findOne({ _id: new ObjectId(userId) });
-    const meetingIdList = user.meetingIds;
-    const meetings = await meetingsCollection();
-    const result = await meetings.updateMany(
-      {
-        _id: { $in: meetingIdList },
-        repeatingGroup: new ObjectId(repeatingGroup),
-      },
-      {
-        $set: {
-          title: title,
-          // dateAddedTo: dateAddedTo,
-          // dateDueOn: dateDueOn,
-          priority: priority,
-          textBody: textBody,
-          tag: tag,
-        },
-      }
-    );
-
-    if (result.acknowledged === true) {
-      const updatedMeetings = await this.getAllRecurrences(
-        userId,
-        repeatingGroup
-      );
-      return updatedMeetings;
-    } else {
-      if (result.matchedCount == 0) throw new Error("Meetings not found");
-      if (result.modifiedCount == 0)
-        throw new Error("Meetings Details havent Changed");
-      if (result.acknowledged !== true)
-        throw new Error("Meetings update wasnt successfull");
-    }
-  },
   async deleteAllRecurrences(userId, repeatingGroup, meetingIdToSkip = "") {
     utils.checkObjectIdString(userId.trim());
     utils.checkObjectIdString(repeatingGroup.trim());
@@ -586,12 +593,10 @@ const meetingsDataFunctions = {
       repeatingGroup: new ObjectId(repeatingGroup),
     });
 
-    if (result.deletedCount > 0 && result.acknowledged === true) {
+    if (result.acknowledged === true) {
       return result;
     } else {
-      if (result.deletedCount == 0) throw new Error("Meetings not found");
-      if (result.acknowledged !== true)
-        throw new Error("Meetings delete was not successful");
+      throw new Error("Meetings delete was not successful");
     }
   },
 

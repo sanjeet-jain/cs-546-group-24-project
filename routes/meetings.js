@@ -220,60 +220,7 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .put(utils.validateUserId, async (req, res) => {
-    //code here for PUT
-    let userId = "";
-    let repeatingGroup = "";
-    try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
 
-    const meetingPutData = req.body;
-    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
-    }
-    let errorMessages = utils.validateMeetingCreateInputs(
-      meetingPutData.title,
-      meetingPutData.dateAddedTo,
-      meetingPutData.dateDueOn,
-      meetingPutData.priority,
-      meetingPutData.textBody,
-      meetingPutData.tag
-    );
-
-    if (Object.keys(errorMessages).length !== 0) {
-      return res.status(400).json({ errorMessages: errorMessages });
-    }
-    try {
-      const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
-        meetingPutData;
-      const updatedMeeting = await meetingsDataFunctions.updateAllRecurrences(
-        userId,
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeatingGroup
-      );
-      return res
-        .status(200)
-        .json({ userId: userId, repeatingGroup: repeatingGroup });
-    } catch (e) {
-      if (e === "Meeting Details havent Changed") {
-        return res.status(400).json({ error: e.message });
-      }
-      return res.status(500).json({ error: e.message });
-    }
-  })
   .delete(utils.validateUserId, async (req, res) => {
     let userId = "";
     let repeatingGroup = "";
