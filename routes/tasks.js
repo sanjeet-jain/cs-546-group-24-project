@@ -241,6 +241,10 @@ router
       if (dateAddedTo === "") {
         return res.status(400).json({ error: e.message });
       }
+      let isMonthView = false;
+      if (dayjs(dateAddedTo, "YYYY-M-D", true).isValid()) {
+        isMonthView = true;
+      }
       dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
       utils.checkIfDateIsBeyondRange(dateAddedTo);
       let previousDate = taskPutData.dateAddedTo;
@@ -248,6 +252,7 @@ router
         previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
       }
       if (
+        isMonthView &&
         dayjs(dateAddedTo).hour() === 0 &&
         dayjs(dateAddedTo).minute() === 0 &&
         previousDate
