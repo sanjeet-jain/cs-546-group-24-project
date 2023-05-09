@@ -323,15 +323,18 @@ router
         .format("YYYY-MM-DDTHH:mm");
     } else {
       previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
-      let temp = dayjs(meetingPutData.dateAddedTo).add(
-        dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
-        "millisecond"
-      );
-      //no overflow
-      if (temp.date() !== dayjs(dateAddedTo).date()) {
-        temp = temp.endOf("day");
-      }
-      meetingPutData.dateDueOn = temp.format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateAddedTo)
+        .add(
+          dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
+          "millisecond"
+        )
+        .format("YYYY-MM-DDTHH:mm");
+    }
+    //no overflow
+    if (dayjs(meetingPutData.dateDueOn).date() !== dayjs(dateAddedTo).date()) {
+      meetingPutData.dateDueOn = meetingPutData.dateDueOn
+        .endOf("day")
+        .format("YYYY-MM-DDTHH:mm");
     }
 
     //validation
