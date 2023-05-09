@@ -5,15 +5,6 @@ import eventDataFunctions from "../data/events.js";
 import utils from "../utils/utils.js";
 import dayjs from "dayjs";
 
-/**
- *
- */
-const filter = {
-  eventTypes: constants.eventTypes,
-  tags: [],
-  eventTypeSelected: [],
-  tagsSelected: [],
-};
 router.route("/month").get(async (req, res) => {
   try {
     const {
@@ -24,10 +15,10 @@ router.route("/month").get(async (req, res) => {
       prevYear,
       nextMonth,
       nextYear,
-    } = await getWeeksData(req);
+    } = await getWeeksData(req, req?.query?.selectedDateCell);
     const userId = req?.session?.user?.user_id.trim();
     utils.checkObjectIdString(userId);
-    let today = dayjs().format("YYYY-MM-DD");
+    let today = dayjs().format("MMMM DD YYYY");
     let todayItems = await getSelectedDayItems(userId, today);
 
     // render the calendarv2 template with the calendar data and navigation links
@@ -44,7 +35,7 @@ router.route("/month").get(async (req, res) => {
       prevYear: prevYear,
       nextMonth: nextMonth,
       nextYear: nextYear,
-      filter: filter,
+      filter: req.session.user.filter,
       todayItems: todayItems,
       today: today,
       rightPaneItems: await getRightPaneItems(userId),
@@ -58,6 +49,13 @@ router.route("/month").get(async (req, res) => {
 });
 
 router.route("/week").get(async (req, res) => {
+  let requestedWeek = dayjs(
+    req?.query?.week || req?.query?.selectedDateCell
+  ).toDate();
+  if (requestedWeek === "Invalid Date") {
+    requestedWeek = undefined;
+  }
+
   const {
     now,
     month,
@@ -67,7 +65,7 @@ router.route("/week").get(async (req, res) => {
     // prevYear,
     // nextMonth,
     // nextYear,
-  } = await getWeeksData(req);
+  } = await getWeeksData(req, requestedWeek);
 
   let week = modalsData.weeks.find((week) => {
     return week.find((day) => {
@@ -78,10 +76,22 @@ router.route("/week").get(async (req, res) => {
       );
     });
   });
+  let prevWeekStart = dayjs(now).subtract(1, "week").format("YYYY-MM-DD");
+  let nextWeekStart = dayjs(now).add(1, "week").format("YYYY-MM-DD");
+
+  let displayString =
+    dayjs(requestedWeek).startOf("week").format("MMMM DD YYYY") +
+    " - " +
+    dayjs(requestedWeek).endOf("week").format("MMMM DD YYYY");
+
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
-  let todayItems = await getSelectedDayItems(userId, today);
+  let todayItems = await getSelectedDayItems(
+    userId,
+    today,
+    req.session.user.filter
+  );
   res.render("calendar/calendarv2", {
     title: "Calendar",
     weekdays: constants.weekdays,
@@ -89,16 +99,22 @@ router.route("/week").get(async (req, res) => {
     currentMonth: month,
     currYear: year,
     timeslots: constants.timeslots,
-    filter: filter,
+    filter: req.session.user.filter,
     todayItems: todayItems,
     today: today,
     rightPaneItems: await getRightPaneItems(userId),
+    prevWeekStart,
+    nextWeekStart,
+    displayString,
   });
 });
 
 router.route("/day/:selectedDate?").get(async (req, res) => {
   let currentDate;
-  let selectedDate = req.params?.selectedDate?.trim();
+  let selectedDate =
+    req.params?.selectedDate?.trim() ||
+    req?.query?.date?.trim() ||
+    req?.query?.selectedDateCell?.trim();
   try {
     selectedDate = dayjs(selectedDate).format("YYYY-MM-DD");
     utils.validateDate(selectedDate, "Date of Birth");
@@ -137,23 +153,37 @@ router.route("/day/:selectedDate?").get(async (req, res) => {
   });
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
-  let displayItems = await getSelectedDayItems(userId, selectedDate);
+  let displayItems = await getSelectedDayItems(
+    userId,
+    selectedDate,
+    req.session.user.filter
+  );
   selectedDate = dayjs(selectedDate).format("MMMM DD YYYY");
 
   utils.checkObjectIdString(userId);
   let today = dayjs().format("YYYY-MM-DD");
-  let todayItems = await getSelectedDayItems(userId, today);
+  let todayItems = await getSelectedDayItems(
+    userId,
+    today,
+    req.session.user.filter
+  );
+
+  let prevDate = dayjs(now).subtract(1, "day").format("YYYY-MM-DD");
+  let nextDate = dayjs(now).add(1, "day").format("YYYY-MM-DD");
+
   res.render("calendar/calendarv2", {
     title: "Calendar",
     day: day,
     weekdays: [constants.weekdays[week.indexOf(day)]],
     timeslots: constants.timeslots,
-    filter: filter,
+    filter: req.session.user.filter,
     displayItems: displayItems,
     selectedDate: selectedDate,
     todayItems: todayItems,
     today: today,
     rightPaneItems: await getRightPaneItems(userId),
+    prevDate,
+    nextDate,
   });
 });
 
@@ -177,11 +207,11 @@ router.route("/filter").post((req, res) => {
   try {
     utils.isStrArrValid(eventTypeSelected);
     eventTypeSelected.forEach((selected) => {
-      if (!filter.eventTypes.includes(selected.trim())) {
+      if (!req.session.user.filter.eventTypes.includes(selected.trim())) {
         throw new Error();
       }
     });
-    filter.eventTypeSelected = eventTypeSelected;
+    req.session.user.filter.eventTypeSelected = eventTypeSelected;
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
@@ -189,11 +219,11 @@ router.route("/filter").post((req, res) => {
   try {
     utils.isStrArrValid(tagsSelected);
     tagsSelected.forEach((selected) => {
-      if (!filter.tags.includes(selected.trim())) {
+      if (!req.session.user.filter.tags.includes(selected.trim())) {
         throw new Error();
       }
     });
-    filter.tagsSelected = tagsSelected;
+    req.session.user.filter.tagsSelected = tagsSelected;
   } catch (e) {
     return res.status(400).json({ error: "eventType selected in not valid" });
   }
@@ -209,17 +239,32 @@ router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
   } catch (e) {
     selectedDate = dayjs().toDate();
   }
+  utils.checkIfDateIsBeyondRange(dayjs(selectedDate).format("YYYY-MM-DD"));
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
-  const selectedDayItems = await getSelectedDayItems(userId, selectedDate);
+  const selectedDayItems = await getSelectedDayItems(
+    userId,
+    selectedDate,
+    req.session.user.filter
+  );
   res.status(200).json({ selectedDayItems, userId });
 });
 async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
-  const now = currentDate || dayjs().toDate();
-  const month = req.query.month ? parseInt(req.query.month) : now.getMonth();
-  const year = req.query.year ? parseInt(req.query.year) : now.getFullYear();
-
+  if (currentDate === "null") {
+    currentDate = undefined;
+  }
+  let now;
+  if (currentDate) {
+    now = dayjs(currentDate).toDate();
+  } else {
+    now = dayjs();
+    const { month = now.month(), year = now.year() } = req.query;
+    now = now.set("month", month).set("year", year).toDate();
+  }
+  const month = now.getMonth();
+  const year = now.getFullYear();
+  utils.checkIfDateIsBeyondRange(dayjs(now).format("YYYY-MM-DD"));
   // calculate the previous and next month and year
   let prevMonth = month === 0 ? 11 : month - 1;
   let prevYear = year - 1;
@@ -245,7 +290,12 @@ async function getWeeksData(req, currentDate = undefined) {
   const userId = req?.session?.user?.user_id.trim();
   utils.checkObjectIdString(userId);
 
-  const modalsData = await getModalData(weeks, userId, now);
+  const modalsData = await getModalData(
+    weeks,
+    userId,
+    now,
+    req.session.user.filter
+  );
   // set global weeks data
 
   return {
@@ -339,7 +389,7 @@ function getCalendar(month, year, prevMonth, prevYear, nextMonth, nextYear) {
   return weeks;
 }
 
-async function getModalData(weeks, userId, now) {
+async function getModalData(weeks, userId, now, filter) {
   try {
     const response = await eventDataFunctions.getAllEvents(userId, filter);
     weeks.forEach((week) => {
@@ -418,7 +468,7 @@ function getTimeSlot(dateString) {
   return time;
 }
 
-async function getSelectedDayItems(userId, selectedDate) {
+async function getSelectedDayItems(userId, selectedDate, filter) {
   const now = dayjs(selectedDate).toDate();
   const response = await eventDataFunctions.getAllEvents(userId, filter);
 
@@ -461,15 +511,15 @@ async function getRightPaneItems(userId) {
         //|| dayjs(x.dateAddedTo).diff(dayjs()) > 0;
       })
       .sort((a, b) => {
-        const dateA = dayjs(a.dateAddedTo);
-        const dateB = dayjs(b.dateAddedTo);
-        const dateDiff = dateA.diff(dateB);
-        if (dateDiff > 0) {
-          return -1;
-        }
-        if (dateDiff < 0) {
-          return 1;
-        }
+        // const dateA = dayjs(a.dateAddedTo);
+        // const dateB = dayjs(b.dateAddedTo);
+        // const dateDiff = dateA.diff(dateB);
+        // if (dateDiff > 0) {
+        //   return -1;
+        // }
+        // if (dateDiff < 0) {
+        //   return 1;
+        // }
         if (a.priority > b.priority) {
           return -1;
         }
@@ -482,9 +532,83 @@ async function getRightPaneItems(userId) {
   }
 
   rightPaneItems.backlogtasks =
+    response?.tasks
+      ?.filter((x) => {
+        return !x.checked && x.expired && x.dateAddedTo !== null;
+      })
+      .slice(0, 50) || [];
+  rightPaneItems.upcoming =
     response?.tasks?.filter((x) => {
-      return !x.checked && x.expired;
+      return !x.checked && !x.expired && x.dateAddedTo !== null;
     }) || [];
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.meetings?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.reminders?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming = rightPaneItems.upcoming.concat(
+    response?.notes?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    }) || []
+  );
+  rightPaneItems.upcoming
+    .sort((a, b) => {
+      const dateA = dayjs(a.dateAddedTo);
+      const dateB = dayjs(b.dateAddedTo);
+      const dateDiff = dateA.diff(dateB);
+      if (dateDiff > 0) {
+        return -1;
+      }
+      if (dateDiff < 0) {
+        return 1;
+      }
+      if (a.priority > b.priority) {
+        return -1;
+      }
+      if (a.priority < b.priority) {
+        return 1;
+      }
+      return 0;
+    })
+    .slice(0, 50);
+  rightPaneItems.totalTasksAssigned =
+    response?.tasks?.filter((x) => {
+      return x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.taskCompletionProgress = 0;
+  if (rightPaneItems.totalTasksAssigned !== 0) {
+    rightPaneItems.taskCompletionProgress = Number.parseFloat(
+      (
+        ((rightPaneItems.totalTasksAssigned -
+          rightPaneItems.backlogtasks.length) *
+          100) /
+        rightPaneItems.totalTasksAssigned
+      ).toFixed(0)
+    );
+  }
+
+  let totalMeetingsPending =
+    response?.meetings?.filter((x) => {
+      return x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.pendingMeetingsCount =
+    response?.meetings?.filter((x) => {
+      return !x.expired && x.dateAddedTo !== null;
+    })?.length || 0;
+  rightPaneItems.meetingCompletionProgress = 0;
+  if (totalMeetingsPending !== 0) {
+    rightPaneItems.meetingCompletionProgress = Number.parseFloat(
+      (
+        ((totalMeetingsPending - rightPaneItems.pendingMeetingsCount) * 100) /
+        rightPaneItems.totalTasksAssigned
+      ).toFixed(0)
+    );
+  }
   return rightPaneItems;
 }
 export default router;

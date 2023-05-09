@@ -3,6 +3,8 @@ import tasksDataFunctions from "../data/tasks.js";
 import utils from "../utils/utils.js";
 import constants from "../constants/constants.js";
 import dayjs from "dayjs";
+import xss from "xss";
+
 const router = Router();
 
 router
@@ -207,38 +209,22 @@ router
       utils.checkObjectIdString(req.params.taskId);
       const taskId = req.params.taskId.trim();
       const taskPutData = await tasksDataFunctions.getTaskById(taskId, userId);
-
-      taskPutData.dateAddedTo = dayjs(req?.body?.dateAddedTo).format(
-        "YYYY-MM-DDTHH:mm"
-      );
-      let { title, textBody, dateAddedTo, priority, tag, checked } =
-        taskPutData;
+      let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+      if (dateAddedTo === "") {
+        return res.status(400).json({ error: e.message });
+      }
+      dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
+      let previousDate = taskPutData.dateAddedTo;
+      taskPutData.dateAddedTo = dateAddedTo;
+      if (previousDate) {
+        previousDate = dayjs(previousDate).format("YYYY-M-D");
+      }
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)
           .json({ error: "There are no fields in the request body" });
       }
-      utils.validateStringInputWithMaxLength(
-        title,
-        "title",
-        constants.stringLimits["title"]
-      );
-      utils.validateStringInputWithMaxLength(
-        textBody,
-        "textBody",
-        constants.stringLimits["textBody"]
-      );
-      utils.validateDate(dateAddedTo, "dateAddedTo");
-      utils.validatePriority(priority);
-      utils.validateStringInputWithMaxLength(
-        tag,
-        "tag",
-        constants.stringLimits["tag"]
-      );
-      if (typeof checked === "undefined") {
-        checked = false;
-      }
-      taskPutData.checked = utils.validateBooleanInput(checked, "checked");
 
       const updatedTask = await tasksDataFunctions.updateTask(
         taskId,
@@ -246,7 +232,11 @@ router
         userId
       );
 
-      res.json({ userId: userId, taskId: updatedTask._id });
+      res.json({
+        userId: userId,
+        taskId: updatedTask._id,
+        previousDate,
+      });
     } catch (e) {
       res.status(400).json({ error: e.message });
     }
@@ -262,7 +252,11 @@ router
       let checked = req.params.isChecked.trim();
       checked = utils.validateBooleanInput(checked, "checked");
       const task = await tasksDataFunctions.getTaskById(taskId, userId);
+      //dont allow task to be checked if no date assigned
 
+      if (checked && task.dateAddedTo == null) {
+        throw new Error("Add a date to mark this task completed");
+      }
       const taskPutData = {
         title: task.title,
         checked: checked,

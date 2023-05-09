@@ -18,7 +18,7 @@
       </div>
 
       <fieldset id="reminder-form-enabler" disabled>
-        <div class="modal-body">
+        <div class="modal-body overflow-scroll-y">
           <form id="reminder-form" class="needs-validation" novalidate>
             {{! title }}
             <div class="mb-3">
@@ -80,6 +80,16 @@
                 Please check if you need the event to repeat. if it is already
                 checked and you uncheck it it will cause deletion of all other
                 recurrences</small>
+            </div>
+            {{!-- updateAll --}}
+            <div class="form-check updateAll">
+              <input class="form-check-input " type="checkbox" name="updateAll" id="reminder_updateAll"
+                aria-describedby="reminder_updateAll_help_id" />
+              <label class="form-label" for="reminder_updateAll">
+                Do you want to update all recurrences ?
+              </label>
+              <small id="reminder_updateAll_help_id" class="form-text text-muted">
+                Please check if you need to update title, description, tag for all Recurrences</small>
             </div>
             {{! repeatingIncrementBy }}
             <div class="mb-3">

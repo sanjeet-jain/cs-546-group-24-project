@@ -220,6 +220,10 @@ const tasksDataFunctions = {
     } else {
       updatedTaskData.tag = "tasks";
     }
+    //dont allow task to be checked if no date assigned
+    if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {
+      throw new Error("Add a date to mark this task completed");
+    }
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (
       updatedTaskData.title === task.title &&

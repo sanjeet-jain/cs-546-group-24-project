@@ -23,8 +23,8 @@ cron.schedule("0 0 * * *", async () => {
   const tasksCollection = await collections.tasksCollection();
   const updateResultmeetings = await meetingsCollection.updateMany(
     {
-      dateAddedTo: { $ne: null, $ne: undefined },
-      dateAddedTo: { $lte: currentDate },
+      dateDueOn: { $ne: null, $ne: undefined },
+      dateDueOn: { $lte: currentDate },
       expired: { $ne: true },
     },
     { $set: { expired: true } }
