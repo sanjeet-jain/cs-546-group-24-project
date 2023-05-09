@@ -52,17 +52,6 @@
       </div>
     </div>
 
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="disability" id="disability"
-        aria-describedby="disability_help_id" value="true" {{#if errorContent.disability}} checked {{else}} {{!-- this
-        should come from the back as boolean but it goes into the API as a string --}} {{#if currUser.disability}}
-        checked {{/if}} {{/if}} />
-      <label class="form-label" for="disability">
-        Disability CheckBox
-      </label>
-      <small id="disability_help_id" class="form-text text-muted">
-        Please check if you need accesibilty Features</small>
-    </div>
 
     <button class="w-100 btn btn-lg btn-primary" type="submit">Save Changes</button>
     <div class="my-3"></div>

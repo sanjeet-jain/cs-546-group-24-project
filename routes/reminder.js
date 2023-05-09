@@ -263,6 +263,10 @@ router
       if (dateAddedTo === "") {
         return res.status(400).json({ error: e.message });
       }
+      let isMonthView = false;
+      if (dayjs(dateAddedTo, "YYYY-M-D", true).isValid()) {
+        isMonthView = true;
+      }
       dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
       try {
         utils.checkIfDateIsBeyondRange(dateAddedTo);
@@ -276,6 +280,7 @@ router
       previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
       // if coming from month view the hours and mins are zero so we need to map them else timeslots are present in week and day
       if (
+        isMonthView &&
         dayjs(dateAddedTo).hour() === 0 &&
         dayjs(dateAddedTo).minute() === 0
       ) {

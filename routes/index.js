@@ -32,6 +32,11 @@ const constructorMethod = (app) => {
       title: "About Us",
     });
   });
+  app.get("/forgot", (req, res) => {
+    res.render("forgot", {
+      title: "Forgot Password",
+    });
+  });
   app.get("/", (req, res) => {
     res.render("aboutUs", {
       title: "About Us",

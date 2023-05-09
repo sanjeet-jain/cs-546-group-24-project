@@ -3,6 +3,10 @@ const router = Router();
 import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat.js";
+
+dayjs.extend(customParseFormat);
+
 import xss from "xss";
 router
   .route("/:userId/:meetingId")
@@ -298,6 +302,10 @@ router
     if (dateAddedTo === "") {
       return res.status(400).json({ error: e.message });
     }
+    let isMonthView = false;
+    if (dayjs(dateAddedTo, "YYYY-M-D", true).isValid()) {
+      isMonthView = true;
+    }
     dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
     try {
       utils.checkIfDateIsBeyondRange(dateAddedTo);
@@ -307,6 +315,7 @@ router
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
     let previousDate = meetingPutData.dateAddedTo;
     if (
+      isMonthView &&
       dayjs(dateAddedTo).hour() === 0 &&
       dayjs(dateAddedTo).minute() === 0 &&
       previousDate
