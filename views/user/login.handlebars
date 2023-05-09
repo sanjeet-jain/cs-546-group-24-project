@@ -23,8 +23,8 @@
     <div>
       <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
-        minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$" aria-describedby="password_help_id"
-        value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
+        minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
+        aria-describedby="password_help_id" value="{{#if errorContent.password}}{{errorContent.password}}{{/if}}" />
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">

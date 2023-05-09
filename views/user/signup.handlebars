@@ -46,8 +46,9 @@
     <div>
       <label for="password">Password</label>
       <input required type="password" class="form-control" name="password" id="password" placeholder="Password"
-        minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$" aria-describedby="password_help_id"
-        value="" />
+        minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
+        aria-describedby="password_help_id" value="" />
+      <label for="password">Password</label>
       <small id="password_help_id" class="form-text text-muted">
         Please Enter Password Here</small>
       <div id="password_error" class="invalid-feedback">
@@ -58,7 +59,7 @@
     <div>
       <label for="reEnterPassword">Re-Enter Password</label>
       <input required type="password" class="form-control" name="reEnterPassword" id="reEnterPassword"
-        placeholder="Password" minlength="8" pattern="^(?=.*\p{Lu})(?=.*\d)(?=.*\p{P})[\p{L}\d\p{P}]{8,}$"
+        placeholder="Password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
         aria-describedby="reEnterPassword_help_id" />
       <small id="reEnterPassword_help_id" class="form-text text-muted">
         Please Re-Enter Password Here</small>
@@ -79,15 +80,6 @@
       </div>
     </div>
 
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="disability" id="disability"
-        aria-describedby="disability_help_id" value="true" />
-      <label class="form-check-label" for="disability">
-        Disability CheckBox
-      </label>
-      <small id="disability_help_id" class="form-text text-muted">
-        Please check if you need accesibilty Features</small>
-    </div>
     <br />
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="consent" id="consent" aria-describedby="consent_help_id"

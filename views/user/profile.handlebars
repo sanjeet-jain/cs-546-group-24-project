@@ -1,28 +1,44 @@
-<div id="profile-div" class="container w-100">
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1>User Profile</h1>
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <label class="col-md-4 col-form-label text-md-right">Email:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext">{{currUser.email}}</p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-form-label text-md-right">First Name:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext">{{currUser.first_name}}</p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-form-label text-md-right">Last Name:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext">{{currUser.last_name}}</p>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-4 col-form-label text-md-right">Date of Birth:</label>
+            <div class="col-md-6">
+              <p class="form-control-plaintext">{{currUser.dob}}</p>
+            </div>
+          </div>
 
-  <h1>User Profile</h1>
-  <div>
-    <h2>Email: {{currUser.email}}</h2>
+          <div class="form-group row mb-0">
+            <div class="col-md-6 offset-md-4">
+              <a class="btn btn-danger" href="/user/password">Change Password</a>
+              <a class="btn btn-danger" href="/user/edit">Edit Profile</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div>
-    <h2>First name: {{currUser.first_name}}</h2>
-  </div>
-  <div>
-    <h2>Last name: {{currUser.last_name}}</h2>
-  </div>
-  <div>
-    <h2>Date of birth: {{currUser.dob}}</h2>
-  </div>
-  <div>
-    <h2>Disability: {{#if currUser.disability}}{{currUser.disability}}
-      {{else}}False{{/if}}</h2>
-  </div>
-
-  <br />
-  <div>
-    <a class="changePass btn btn-danger" aria-current="page" href="/user/password" target="_self">Change Password</a>
-  </div>
-  <br />
-  <a class="editProfile btn btn-danger" aria-current="page" href="/user/edit" target="_self">Edit Profile</a>
-
 </div>
