@@ -88,11 +88,11 @@ function checkValidations(event) {
 
   if (!validate_name(firstNameInput.value)) {
     first_name_error.innerText = "Please enter a valid first name.";
-    firstNameInput.setCustomValidity("Invalid name");
+    firstNameInput.setCustomValidity("error");
   }
   if (!validate_name(lastNameInput.value)) {
     last_name_error.innerText = "Please enter a valid last name.";
-    lastNameInput.setCustomValidity("Invalid name");
+    lastNameInput.setCustomValidity("error");
   }
   if (dob.validity.valueMissing) {
     date_error.textContent = "Please enter a date of birth.";
