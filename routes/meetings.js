@@ -306,6 +306,16 @@ router
     }
     const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
     let previousDate = meetingPutData.dateAddedTo;
+    if (
+      dayjs(dateAddedTo).hour() === 0 &&
+      dayjs(dateAddedTo).minute() === 0 &&
+      previousDate
+    ) {
+      dateAddedTo = dayjs(dateAddedTo)
+        .hour(dayjs(previousDate).hour())
+        .minute(dayjs(previousDate).minute())
+        .format("YYYY-MM-DDTHH:mm");
+    }
     meetingPutData.dateAddedTo = dateAddedTo;
     if (!previousDate) {
       meetingPutData.dateDueOn = dayjs(dateAddedTo)

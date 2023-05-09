@@ -244,10 +244,20 @@ router
       dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
       utils.checkIfDateIsBeyondRange(dateAddedTo);
       let previousDate = taskPutData.dateAddedTo;
-      taskPutData.dateAddedTo = dateAddedTo;
       if (previousDate) {
         previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
       }
+      if (
+        dayjs(dateAddedTo).hour() === 0 &&
+        dayjs(dateAddedTo).minute() === 0 &&
+        previousDate
+      ) {
+        dateAddedTo = dayjs(dateAddedTo)
+          .hour(dayjs(previousDate).hour())
+          .minute(dayjs(previousDate).minute())
+          .format("YYYY-MM-DDTHH:mm");
+      }
+      taskPutData.dateAddedTo = dateAddedTo;
       if (!taskPutData || Object.keys(taskPutData).length === 0) {
         return res
           .status(400)

@@ -270,9 +270,16 @@ router
       let previousDate = reminder.dateAddedTo;
       reminder.dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
       previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
-      reminder.dateAddedTo = dayjs(dateAddedTo)
-        .hour(dayjs(previousDate).hour())
-        .minute(dayjs(previousDate).minute());
+      // if coming from month view the hours and mins are zero so we need to map them else timeslots are present in week and day
+      if (
+        dayjs(dateAddedTo).hour() === 0 &&
+        dayjs(dateAddedTo).minute() === 0
+      ) {
+        reminder.dateAddedTo = dayjs(dateAddedTo)
+          .hour(dayjs(previousDate).hour())
+          .minute(dayjs(previousDate).minute())
+          .format("YYYY-MM-DDTHH:mm");
+      }
       await reminderManager.updateReminder(
         userId,
         reminder_id,
