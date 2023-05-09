@@ -220,6 +220,10 @@ const tasksDataFunctions = {
     } else {
       updatedTaskData.tag = "tasks";
     }
+    if (updatedTask.checked === true) {
+      updatedTaskData.onTime = this.isTaskOnTime(updatedTask.dateAddedTo);
+      updatedTaskData.expired = true;
+    }
     //dont allow task to be checked if no date assigned
     if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {
       throw new Error("Add a date to mark this task completed");
@@ -320,6 +324,17 @@ const tasksDataFunctions = {
     if (flag) {
       throw new Error("Trying to update same event value");
     }
+  },
+  isTaskOnTime(dayAddedTo) {
+    if (
+      (dayjs(dayAddedTo).year() === dayjs().year() &&
+        dayjs(dayAddedTo).month() === dayjs().month() &&
+        dayjs(dayAddedTo).date() === dayjs().date()) ||
+      dayjs(dayAddedTo).diff(dayjs()) > 0
+    ) {
+      return true;
+    }
+    return false;
   },
 };
 

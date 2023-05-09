@@ -1,27 +1,27 @@
 <div id="signup-form-div" class="container w-50">
   <form action="/user/signup" id="signup-form" method="POST" class="needs-validation" novalidate>
-    <h1 class="h3 mb-3 fw-normal">
+    <h1 class="h3  fw-normal">
       <i class="bi-calendar-check-fill"></i>
       Create an Account
     </h1>
 
     <br />
-    <div class=" mb-3">
+    <div>
+      <label for="first_name" class="form-label">First Name</label>
       <input required type="text" class="form-control" name="first_name" id="first_name"
         aria-describedby="first_name_help_id" placeholder="First Name" maxlength="20"
         pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$" value="" />
-      <label for="first_name" class="form-label">First Name</label>
       <small id="first_name_help_id" class="form-text text-muted">
         Please Enter First Name Here</small>
       <div id="first_name_error" class="invalid-feedback">
 
       </div>
     </div>
-    <div class=" mb-3">
+    <div>
+      <label for="last_name" class="form-label">Last Name</label>
       <input required type="text" class="form-control" name="last_name" id="last_name"
         aria-describedby="last_name_help_id" placeholder="Last Name" maxlength="20"
         pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$" value="" />
-      <label for="last_name" class="form-label">Last Name</label>
       <small id="last_name_help_id" class="form-text text-muted">
         Please Enter Last Name Here</small>
       <div id="last_name_error" class="invalid-feedback">
@@ -29,11 +29,11 @@
       </div>
     </div>
 
-    <div class=" mb-3">
+    <div>
+      <label for="email">Email address</label>
       <input required type="email" class="form-control" name="email" id="email" placeholder="abc@mail.com"
         aria-describedby="email_help_id" pattern="^[a-zA-Z]+[\._%+\-]*[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,}$"
         value="" />
-      <label for="email">Email address</label>
       <small id="email_help_id" class="form-text text-muted">
         Please Enter Email Here. This will also be used as your login id
       </small>
@@ -56,24 +56,22 @@
       </div>
     </div>
 
-    <div class="form-floating">
+    <div>
+      <label for="reEnterPassword">Re-Enter Password</label>
       <input required type="password" class="form-control" name="reEnterPassword" id="reEnterPassword"
         placeholder="Password" minlength="8" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&_=+.])[a-zA-Z\d!@#$%^&_=+.]{8,}$"
         aria-describedby="reEnterPassword_help_id" />
-      <label for="reEnterPassword">Re-Enter Password</label>
       <small id="reEnterPassword_help_id" class="form-text text-muted">
         Please Re-Enter Password Here</small>
       <div id="reEnter_error" class="invalid-feedback">
 
       </div>
     </div>
-    <br />
 
-
-    <div class="form-floating mb-3">
+    <div>
+      <label for="dob" class="form-label">Date Of Birth</label>
       <input required type="date" class="form-control" name="dob" id="dob" aria-describedby="dob_help_id"
         max="{{minDobDate}}" min="{{maxDobDate}}" value="" />
-      <label for="dob" class="form-label">Date Of Birth</label>
       <small id="dob_help_id" class="form-text text-muted">Please Enter Date Of
         Birth</small>
       <div id="date_error" class="invalid-feedback">

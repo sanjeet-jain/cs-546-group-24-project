@@ -13,7 +13,7 @@
         Calendar Helper
       </button>
     </span>
-    <div id="collapseHelpAccordion" class="accordion-collapse collapse show "
+    <div id="collapseHelpAccordion" class="accordion-collapse collapse {{#if session.firstTimeLogin }}show{{/if}} "
       data-bs-parent="#rightPaneUnassignedAndBacklogAccordion">
       <div class="accordion-body">
         <ul>
@@ -41,7 +41,7 @@
         data-bs-target="#collapseUnassignedMeetings" aria-expanded="false" aria-controls="collapseUnassignedMeetings">
         Unassigned Meetings
         <span
-          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger unassigned-meetings-counter">
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-primary unassigned-meetings-counter">
           {{{rightPaneItems.meetings.length}}}
           <span class="visually-hidden">Unassigned Meetings</span>
         </span>
@@ -184,7 +184,7 @@
         aria-controls="collapseUpcomingItemsAccordion">
         Upcoming Items
         <span
-          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-danger upcoming-items-counter">
+          class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-secondary upcoming-items-counter">
           {{{rightPaneItems.upcoming.length}}}
           <span class="visually-hidden">Upcoming Items</span>
 
@@ -199,6 +199,19 @@
           <div class="card-body">
             <div class="d-grid gap-1 overflow-scroll-y" id="top50_upcoming_items">
               {{#each rightPaneItems.upcoming}}
+              {{#if (eq this.type "notes")}}
+              <button
+                class="badge event-pill bg-success{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-notes-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="notes"><i
+                  class="bi-file-text">{{this.title}}</i></button>
+              {{/if}}
+              {{#if (eq this.type "reminder")}}
+              <button class="badge event-pill swatch-indigo  text-wrap  text-center event-button draggable-event-button"
+                draggable="true" data-bs-toggle="modal" data-bs-target="#modal-reminder-display"
+                data-bs-eventid="{{this._id}}" data-bs-userid="{{../session.user_id}}" data-bs-event-type="reminder"><i
+                  class="bi-alarm">{{this.title}}</i></button>
+              {{/if}}
               {{#if (eq this.type "meeting") }}
               <button draggable="true"
                 class="badge event-pill swatch-cyan text-wrap  text-center event-button draggable-event-button"
@@ -237,6 +250,43 @@
   </div>
 </div>
 
+<br />
+<div id="taskProgressBar">
+  <div class="body">
+    Tasks Remaining: {{rightPaneItems.backlogtasks.length}}
+  </div>
+  <div class="progress" role="progressbar" aria-label="Animated striped example"
+    aria-valuenow="{{rightPaneItems.taskCompletionProgress}}" aria-valuemin="0"
+    aria-valuemax="{{rightPaneItems.totalTasksAssigned}}">
+    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-danger"
+      style="width: {{rightPaneItems.taskCompletionProgress}}%"></div>
+  </div>
+</div>
+<br />
+<div id="meetingProgressBar">
+  <div class="body">
+    Meetings Pending: {{rightPaneItems.pendingMeetingsCount}}
+  </div>
+  <div class="progress" role="progressbar" aria-label="Animated striped example"
+    aria-valuenow="{{rightPaneItems.meetingCompletionProgress}}" aria-valuemin="0"
+    aria-valuemax="{{rightPaneItems.pendingMeetingsCount}}">
+    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-primary"
+      style="width: {{rightPaneItems.meetingCompletionProgress}}%"></div>
+  </div>
+</div>
+<br />
+
+<div id="onTimeTaskProgressBar">
+  <div class="body">
+    On Time Tasks: {{rightPaneItems.totalTasksOnTime}}
+  </div>
+  <div class="progress" role="progressbar" aria-label="Animated striped example"
+    aria-valuenow="{{rightPaneItems.onTimECompletionRate}}" aria-valuemin="0"
+    aria-valuemax="{{rightPaneItems.totalTasksOnTime}}">
+    <div class="progress-bar progress-bar-striped progress-bar-animated  bg-success"
+      style="width: {{rightPaneItems.onTimECompletionRate}}%"></div>
+  </div>
+</div>
 
 {{/if}}
 {{/if}}

@@ -23,8 +23,8 @@
       {{#if (eq this.timeslotStart ../../this)}}
 
       <button
-        class="badge  border-0 event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}} text-wrap  text-center event-button"
-        data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
+        class="badge  border-0 event-pill swatch-cyan{{#if this.expired}}-subtle{{/if}} text-wrap  text-center event-button draggable-event-button"
+        draggable="true" data-bs-toggle="modal" data-bs-target="#modal-meeting-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-calendar-event"></i>
         {{{this.title}}}</button>
@@ -35,8 +35,8 @@
       {{#if this.modalData.notes.length}}
       {{#each this.modalData.notes}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <button class="badge  border-0 event-pill bg-success  text-wrap  text-center event-button" data-bs-toggle="modal"
-        data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}"
+      <button class="badge  border-0 event-pill bg-success  text-wrap  text-center event-button draggable-event-button"
+        draggable="true" data-bs-toggle="modal" data-bs-target="#modal-notes-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-file-text"></i>
         {{{this.title}}}</button>
@@ -54,8 +54,8 @@
       {{#each this.modalData.reminders}}
       {{#if (eq this.timeslotStart ../../this)}}
       <button
-        class="badge  border-0 event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button"
-        data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
+        class="badge  border-0 event-pill swatch-indigo{{#if this.expired}}-subtle{{/if}}  text-wrap  text-center event-button draggable-event-button"
+        draggable="true" data-bs-toggle="modal" data-bs-target="#modal-reminder-display" data-bs-eventId="{{this._id}}"
         data-bs-userId="{{../../../session.user_id}}" data-bs-event-type="{{this.type}}">
         <i class="bi-alarm"></i>
         {{{this.title}}}</button>
@@ -66,7 +66,10 @@
       {{#if this.modalData.tasks.length}}
       {{#each this.modalData.tasks}}
       {{#if (eq this.timeslotStart ../../this)}}
-      <div class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap text-center">
+      <div
+        class="badge border-0 bg-danger{{#if this.expired}}-subtle{{/if}}  text-wrap text-center draggable-event-button"
+        draggable="true" data-bs-eventId="{{this._id}}" data-bs-userId="{{../../../session.user_id}}"
+        data-bs-event-type="{{this.type}}">
         <input name="taskCheckBox" class="task-checkbox" data-bs-eventId="{{this._id}}"
           data-bs-userId="{{../../../session.user_id}}" type="checkbox" value="true" aria-label="Task Checkbox" {{#if
           this.checked}}checked{{/if}}>

@@ -33,7 +33,7 @@ function drag_end_date_time_cell() {
       //   .querySelector(`[data-bs-eventid='${buttonData.bsEventid}']`);
       $.ajax({
         method: "PUT",
-        url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedto`,
+        url: `/${buttonData.bsEventType}/${buttonData.bsUserid}/${buttonData.bsEventid}/dateAddedTo`,
         data: { dateAddedTo: dateTime },
         success: function (data) {
           setPageUrlForSelectedDateCell(td.dataset.bsDay);

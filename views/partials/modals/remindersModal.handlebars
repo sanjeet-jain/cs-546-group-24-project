@@ -81,6 +81,16 @@
                 checked and you uncheck it it will cause deletion of all other
                 recurrences</small>
             </div>
+            {{!-- updateAll --}}
+            <div class="form-check updateAll">
+              <input class="form-check-input " type="checkbox" name="updateAll" id="reminder_updateAll"
+                aria-describedby="reminder_updateAll_help_id" />
+              <label class="form-label" for="reminder_updateAll">
+                Do you want to update all recurrences ?
+              </label>
+              <small id="reminder_updateAll_help_id" class="form-text text-muted">
+                Please check if you need to update title, description, tag for all Recurrences</small>
+            </div>
             {{! repeatingIncrementBy }}
             <div class="mb-3">
               <label for="reminder_repeatingIncrementBy" class="form-label">repeatingIncrementBy</label>
@@ -96,7 +106,7 @@
             </div>
 
             {{! add more fields for other events }}
-            {{! dateAddedTo }}
+            {{! endDateTime }}
             <div class=" mb-3">
               <label for="reminder_endDateTime" class="form-label">End Date Time
                 of Last Recurrence

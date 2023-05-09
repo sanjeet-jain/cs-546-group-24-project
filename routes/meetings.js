@@ -3,14 +3,17 @@ const router = Router();
 import utils from "../utils/utils.js";
 import meetingsDataFunctions from "../data/meetings.js";
 import dayjs from "dayjs";
+import xss from "xss";
 router
   .route("/:userId/:meetingId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = req.params.userId.trim();
-    let meetingId = "";
+    let userId = xss(req.params.userId);
+    let meetingId = xss(req.params.meetingId);
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      meetingId = req.params.meetingId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(meetingId);
+      meetingId = meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -22,12 +25,13 @@ router
     }
   })
   .delete(utils.validateUserId, async (req, res) => {
-    let meetingId = "";
-    let userId = req.params.userId.trim();
-
+    let userId = xss(req.params.userId);
+    let meetingId = xss(req.params.meetingId);
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      meetingId = req.params.meetingId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(meetingId);
+      meetingId = meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -40,23 +44,36 @@ router
   })
   .put(utils.validateUserId, async (req, res) => {
     //code here for PUT
-    let meetingId = "";
-    let userId = "";
+    let userId = xss(req.params.userId);
+    let meetingId = xss(req.params.meetingId);
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      utils.checkObjectIdString(req.params.userId);
-      meetingId = req.params.meetingId.trim();
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(meetingId);
+      meetingId = meetingId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-
     const meetingPutData = req.body;
     if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
       return res
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+
+    meetingPutData.title = xss(meetingPutData.title);
+    meetingPutData.dateAddedTo = xss(meetingPutData.dateAddedTo);
+    meetingPutData.dateDueOn = xss(meetingPutData.dateDueOn);
+    meetingPutData.priority = xss(meetingPutData.priority);
+    meetingPutData.textBody = xss(meetingPutData.textBody);
+    meetingPutData.tag = xss(meetingPutData.tag);
+    meetingPutData.repeating = xss(meetingPutData.repeating);
+    meetingPutData.repeatingCounterIncrement = xss(
+      meetingPutData.repeatingCounterIncrement
+    );
+    meetingPutData.repeatingIncrementBy = xss(
+      meetingPutData.repeatingIncrementBy
+    );
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
@@ -70,6 +87,15 @@ router
       meetingPutData.repeatingCounterIncrement,
       meetingPutData.repeatingIncrementBy
     );
+    let updateAll =
+      xss(meetingPutData.updateAll).trim() === ""
+        ? false
+        : xss(meetingPutData.updateAll).trim();
+    try {
+      updateAll = utils.validateBooleanInput(updateAll);
+    } catch (e) {
+      errorMessages.updateAll = e.message;
+    }
 
     if (Object.keys(errorMessages).length !== 0) {
       return res.status(400).json({ errorMessages: errorMessages });
@@ -86,7 +112,7 @@ router
         repeatingCounterIncrement,
         repeatingIncrementBy,
       } = meetingPutData;
-      //TODO add user id to route
+
       const updatedMeeting = await meetingsDataFunctions.update(
         userId,
         meetingId,
@@ -98,7 +124,8 @@ router
         tag,
         repeating,
         repeatingCounterIncrement,
-        repeatingIncrementBy
+        repeatingIncrementBy,
+        updateAll
       );
       return res.status(200).json({ userId: userId, meetingId: meetingId });
     } catch (e) {
@@ -109,10 +136,10 @@ router
 router
   .route("/user/:userId")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = "";
+    let userId = xss(req.params.userId);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -124,10 +151,10 @@ router
     }
   })
   .post(utils.validateUserId, async (req, res) => {
-    let userId = "";
+    let userId = xss(req.params.userId);
     try {
       utils.checkObjectIdString(req.params.userId);
-      userId = req.params.userId.trim();
+      userId = userId.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -137,6 +164,20 @@ router
         .status(400)
         .json({ error: "There are no fields in the request body" });
     }
+
+    meetingPostData.title = xss(meetingPostData.title);
+    meetingPostData.dateAddedTo = xss(meetingPostData.dateAddedTo);
+    meetingPostData.dateDueOn = xss(meetingPostData.dateDueOn);
+    meetingPostData.priority = xss(meetingPostData.priority);
+    meetingPostData.textBody = xss(meetingPostData.textBody);
+    meetingPostData.tag = xss(meetingPostData.tag);
+    meetingPostData.repeating = xss(meetingPostData.repeating);
+    meetingPostData.repeatingCounterIncrement = xss(
+      meetingPostData.repeatingCounterIncrement
+    );
+    meetingPostData.repeatingIncrementBy = xss(
+      meetingPostData.repeatingIncrementBy
+    );
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
       meetingPostData.title,
@@ -189,13 +230,13 @@ router
 router
   .route("/user/:userId/meetings/repeating/:repeatingGroup")
   .get(utils.validateUserId, async (req, res) => {
-    let userId = "";
-    let repeatingGroup = "";
+    let userId = xss(req.params.userId);
+    let repeatingGroup = xss(req.params.repeatingGroup);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(repeatingGroup);
+      repeatingGroup = repeatingGroup.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -209,68 +250,14 @@ router
       return res.status(500).json({ error: e.message });
     }
   })
-  .put(utils.validateUserId, async (req, res) => {
-    //code here for PUT
-    let userId = "";
-    let repeatingGroup = "";
-    try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
-    } catch (e) {
-      return res.status(400).json({ error: e.message });
-    }
-
-    const meetingPutData = req.body;
-    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
-    }
-    let errorMessages = utils.validateMeetingCreateInputs(
-      meetingPutData.title,
-      meetingPutData.dateAddedTo,
-      meetingPutData.dateDueOn,
-      meetingPutData.priority,
-      meetingPutData.textBody,
-      meetingPutData.tag
-    );
-
-    if (Object.keys(errorMessages).length !== 0) {
-      return res.status(400).json({ errorMessages: errorMessages });
-    }
-    try {
-      const { title, dateAddedTo, dateDueOn, priority, textBody, tag } =
-        meetingPutData;
-      const updatedMeeting = await meetingsDataFunctions.updateAllRecurrences(
-        userId,
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeatingGroup
-      );
-      return res
-        .status(200)
-        .json({ userId: userId, repeatingGroup: repeatingGroup });
-    } catch (e) {
-      if (e === "Meeting Details havent Changed") {
-        return res.status(400).json({ error: e.message });
-      }
-      return res.status(500).json({ error: e.message });
-    }
-  })
   .delete(utils.validateUserId, async (req, res) => {
-    let userId = "";
-    let repeatingGroup = "";
+    let userId = xss(req.params.userId);
+    let repeatingGroup = xss(req.params.repeatingGroup);
     try {
-      utils.checkObjectIdString(req.params.userId);
-      utils.checkObjectIdString(req.params.repeatingGroup);
-      userId = req.params.userId.trim();
-      repeatingGroup = req.params.repeatingGroup.trim();
+      utils.checkObjectIdString(userId);
+      userId = userId.trim();
+      utils.checkObjectIdString(repeatingGroup);
+      repeatingGroup = repeatingGroup.trim();
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
@@ -293,30 +280,58 @@ router
   });
 
 router
-  .route("/:userId/:meetingId/dateAddedto")
+  .route("/:userId/:meetingId/dateAddedTo")
   .put(utils.validateUserId, async (req, res) => {
-    let meetingId = "";
-    let userId = "";
+    // If this function just populates date values and opens as modal u can just simply use put request with date and time fields
+    let userId = xss(req.params.userId);
+    let meetingId = xss(req.params.meetingId);
     try {
-      utils.checkObjectIdString(req.params.meetingId);
-      utils.checkObjectIdString(req.params.userId);
-      meetingId = req.params.meetingId.trim();
-      userId = req.params.userId.trim();
+      utils.checkObjectIdString(xss(req.params.meetingId));
+      utils.checkObjectIdString(xss(req.params.userId));
+      meetingId = xss(req.params.meetingId.trim());
+      userId = xss(req.params.userId.trim());
     } catch (e) {
       return res.status(400).json({ error: e.message });
     }
-    let dateAddedTo = dayjs(req?.body?.dateAddedTo).format("YYYY-MM-DDTHH:mm");
-    const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
-    const previousDate = dayjs(meetingPutData.dateAddedTo).format("YYYY-M-D");
-    meetingPutData.dateAddedTo = dateAddedTo;
-    meetingPutData.dateDueOn = dayjs(dateAddedTo)
-      .add(1, "hour")
-      .format("YYYY-MM-DDTHH:mm");
-    if (!meetingPutData || Object.keys(meetingPutData).length === 0) {
-      return res
-        .status(400)
-        .json({ error: "There are no fields in the request body" });
+    //TODO check if dateAddedTO is ever an empty stirng if it is then error
+    let dateAddedTo = xss(req?.body?.dateAddedTo).trim();
+    if (dateAddedTo === "") {
+      return res.status(400).json({ error: e.message });
     }
+    dateAddedTo = dayjs(dateAddedTo).format("YYYY-MM-DDTHH:mm");
+    try {
+      utils.checkIfDateIsBeyondRange(dateAddedTo);
+    } catch (e) {
+      return res.status(400).json({ error: e.message });
+    }
+    const meetingPutData = await meetingsDataFunctions.get(userId, meetingId);
+    let previousDate = meetingPutData.dateAddedTo;
+    if (
+      dayjs(dateAddedTo).hour() === 0 &&
+      dayjs(dateAddedTo).minute() === 0 &&
+      previousDate
+    ) {
+      dateAddedTo = dayjs(dateAddedTo)
+        .hour(dayjs(previousDate).hour())
+        .minute(dayjs(previousDate).minute())
+        .format("YYYY-MM-DDTHH:mm");
+    }
+    meetingPutData.dateAddedTo = dateAddedTo;
+    if (!previousDate) {
+      meetingPutData.dateDueOn = dayjs(dateAddedTo).add(30, "minute");
+    } else {
+      previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateAddedTo).add(
+        dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
+        "millisecond"
+      );
+    }
+    //no overflow
+    if (dayjs(meetingPutData.dateDueOn).date() !== dayjs(dateAddedTo).date()) {
+      meetingPutData.dateDueOn = meetingPutData.dateDueOn.endOf("day");
+    }
+    meetingPutData.dateDueOn =
+      meetingPutData.dateDueOn.format("YYYY-MM-DDTHH:mm");
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
@@ -335,30 +350,18 @@ router
       return res.status(400).json({ errorMessages: errorMessages });
     }
     try {
-      const {
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeating,
-        repeatingCounterIncrement,
-        repeatingIncrementBy,
-      } = meetingPutData;
-      //TODO add user id to route
       const updatedMeeting = await meetingsDataFunctions.update(
         userId,
         meetingId,
-        title,
-        dateAddedTo,
-        dateDueOn,
-        priority,
-        textBody,
-        tag,
-        repeating,
-        repeatingCounterIncrement,
-        repeatingIncrementBy
+        meetingPutData.title,
+        meetingPutData.dateAddedTo,
+        meetingPutData.dateDueOn,
+        meetingPutData.priority,
+        meetingPutData.textBody,
+        meetingPutData.tag,
+        meetingPutData.repeating,
+        meetingPutData.repeatingCounterIncrement,
+        meetingPutData.repeatingIncrementBy
       );
       return res
         .status(200)
