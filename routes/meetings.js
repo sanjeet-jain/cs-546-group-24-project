@@ -318,24 +318,20 @@ router
     }
     meetingPutData.dateAddedTo = dateAddedTo;
     if (!previousDate) {
-      meetingPutData.dateDueOn = dayjs(dateAddedTo)
-        .add(30, "minute")
-        .format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = dayjs(dateAddedTo).add(30, "minute");
     } else {
       previousDate = dayjs(previousDate).format("YYYY-MM-DDTHH:mm");
-      meetingPutData.dateDueOn = dayjs(meetingPutData.dateAddedTo)
-        .add(
-          dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
-          "millisecond"
-        )
-        .format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = dayjs(meetingPutData.dateAddedTo).add(
+        dayjs(meetingPutData.dateDueOn).diff(dayjs(previousDate)),
+        "millisecond"
+      );
     }
     //no overflow
     if (dayjs(meetingPutData.dateDueOn).date() !== dayjs(dateAddedTo).date()) {
-      meetingPutData.dateDueOn = meetingPutData.dateDueOn
-        .endOf("day")
-        .format("YYYY-MM-DDTHH:mm");
+      meetingPutData.dateDueOn = meetingPutData.dateDueOn.endOf("day");
     }
+    meetingPutData.dateDueOn =
+      meetingPutData.dateDueOn.format("YYYY-MM-DDTHH:mm");
 
     //validation
     let errorMessages = utils.validateMeetingCreateInputs(
