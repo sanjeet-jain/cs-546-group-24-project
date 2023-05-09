@@ -19,7 +19,7 @@
 
       <fieldset id="notes-form-enabler" disabled>
         <div class="modal-body overflow-scroll-y">
-          <form id="notes-form" class="needs-validation" novalidate>
+          <form id="notes-form" class="needs-validation was-validated" novalidate>
             {{! title }}
             <div class="mb-3">
               <label for="notes_title" class="form-label">Title</label>
@@ -57,9 +57,14 @@
             <div class=" mb-3">
               <label for="notes_dateAddedTo" class="form-label">Date to Add event to
               </label>
-              <input required type="datetime-local" class="form-control" name="dateAddedTo" id="notes_dateAddedTo"
-                value="" />
+              <input required type="datetime-local" max="{{maxAllowedDate}}" min="{{minAllowedDate}}"
+                class="form-control" name="dateAddedTo" id="notes_dateAddedTo" value="" />
               <div id="notes_dateAddedTo_error" class="invalid-feedback">
+                <p>
+                  Please enter a date Range between
+                  <br>
+                  {{minAllowedDate}} to {{maxAllowedDate}}
+                </p>
               </div>
             </div>
 
