@@ -84,6 +84,12 @@ npm install
 
 ## Usage
 
+To seed the project, use the following command:
+
+```
+npm run seed
+```
+
 To run the project, use the following command:
 
 ```
