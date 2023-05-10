@@ -580,7 +580,7 @@ function submitMeetingForm() {
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateMeetingsModal(data.userId, data.meetingId);
-            setTimeout(location.reload.bind(location), 1500);
+            setTimeout(location.reload.bind(location), 0);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -731,7 +731,7 @@ function submitReminderForm() {
               "Reminder Updated Successfully! Page will refresh automatically";
             resultDiv.classList.add("alert", "alert-success");
 
-            setTimeout(location.reload.bind(location), 1500);
+            setTimeout(location.reload.bind(location), 0);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -788,7 +788,7 @@ function submitTaskForm() {
             resultDiv.classList.add("alert", "alert-success");
             // if status code 200 update modal
             //populateTasksModal(data.userId, data.taskId);
-            setTimeout(location.reload.bind(location), 1500);
+            setTimeout(location.reload.bind(location), 0);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -872,7 +872,7 @@ function submitNotesForm() {
             // if status code 200 update modal
             // populateNotesModal(data.userId, data.notesId);
 
-            setTimeout(location.reload.bind(location), 1500);
+            setTimeout(location.reload.bind(location), 0);
           },
           error: function (data) {
             submitbutton.disabled = false;
@@ -1918,7 +1918,7 @@ function deleteButton() {
               resultDiv.classList.add("alert", "alert-success");
               event.target.disabled = false;
               event.target.innerHTML = oldHtml;
-              setTimeout(location.reload.bind(location), 1500);
+              setTimeout(location.reload.bind(location), 0);
             },
             error: function (data) {
               let resultDiv = document.getElementById(
@@ -1971,7 +1971,7 @@ function deleteButton() {
             resultDiv.classList.add("alert", "alert-success");
             event.target.disabled = false;
             event.target.innerHTML = oldHtml;
-            setTimeout(location.reload.bind(location), 1500);
+            setTimeout(location.reload.bind(location), 0);
           },
           error: function (data) {
             let resultDiv = document.getElementById(

@@ -113,9 +113,9 @@ const exportedMethods = {
   async changePassword(id, oldPassword, newPassword, reEnterNewPassword) {
     try {
       utils.checkObjectIdString(id);
-
-      utils.validateStringInput(oldPassword);
-      utils.validateStringInput(reEnterNewPassword);
+      utils.validatePassword(newPassword);
+      utils.validatePassword(oldPassword);
+      utils.validatePassword(reEnterNewPassword);
     } catch (e) {
       throw new Error(e);
     }
