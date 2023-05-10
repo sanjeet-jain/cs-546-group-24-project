@@ -45,10 +45,7 @@ const utils = {
     this.validateStringInput(input, inputName);
     if (
       inputName === "tag" &&
-      !input
-        .trim()
-        .toLowerCase()
-        .match(/^[a-zA-Z0-9_]+$/g)
+      !/(^$)|(^[a-zA-Z0-9_]+$)/.test(input.trim().toLowerCase())
     ) {
       throw new Error(
         `${inputName} can not have spaces and contains only letters numbers with underscores`

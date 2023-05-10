@@ -1132,9 +1132,10 @@ function checkMeetingValidations(form) {
   }
   if (
     form.tag.value.trim().length > 0 &&
-    !form.tag.value.match(/^[a-zA-Z]+$/)
+    !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
-    meeting_tag_error.innerText = "tag has only letters with no spaces";
+    meeting_tag_error.innerText =
+      "tag has only letters numbers and _ with no spaces or can be left empty";
     form.tag.setCustomValidity("error");
   }
 
@@ -1336,9 +1337,10 @@ function checkNotesValidations(form) {
   if (
     typeof form.tag.value === "string" &&
     form.tag.value.trim().length > 0 &&
-    !form.tag.value.match(/^[a-zA-Z0-9_]+$/)
+    !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
-    notes_tag_error.innerText = "tag has only letters with no spaces";
+    notes_tag_error.innerText =
+      "tag has only letters numbers and _ with no spaces or can be left empty";
     form.tag.setCustomValidity("error");
   }
 
@@ -1483,12 +1485,13 @@ function checkReminderValidations(form) {
     form.tag.setCustomValidity("error");
   }
   if (
-    typeof form.tag.value === "String" &&
+    typeof form.tag.value === "string" &&
     form.tag.value.trim().length > 0 &&
-    !form.tag.value.match(/^[a-zA-Z]+$/)
+    !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
     if (form.tag.checkValidity()) {
-      reminder_tag_error.innerText = "tag has only letters with no spaces";
+      reminder_tag_error.innerText =
+        "tag has only letters numbers and _ with no spaces or can be left empty";
       form.tag.setCustomValidity("error");
     }
   }
@@ -1614,6 +1617,18 @@ function checkTaskValidations(form) {
 
   if (typeof form.tag.value === "string" && form.tag.value.trim().length > 20) {
     task_tag_error.innerText = "Tag can't be longer than 20 characters";
+  }
+
+  if (
+    typeof form.tag.value === "String" &&
+    form.tag.value.trim().length > 0 &&
+    !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
+  ) {
+    if (form.tag.checkValidity()) {
+      reminder_tag_error.innerText =
+        "tag has only letters numbers and _ with no spaces or can be left empty";
+      form.tag.setCustomValidity("error");
+    }
   }
 
   if (!/^(1|2|3)$/.test(form.priority.value) && form.tag.checkValidity()) {
