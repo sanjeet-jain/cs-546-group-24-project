@@ -1134,7 +1134,8 @@ function checkMeetingValidations(form) {
     form.tag.value.trim().length > 0 &&
     !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
-    meeting_tag_error.innerText = "tag has only letters with no spaces";
+    meeting_tag_error.innerText =
+      "tag has only letters numbers and _ with no spaces or can be left empty";
     form.tag.setCustomValidity("error");
   }
 
@@ -1338,7 +1339,8 @@ function checkNotesValidations(form) {
     form.tag.value.trim().length > 0 &&
     !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
-    notes_tag_error.innerText = "tag has only letters with no spaces";
+    notes_tag_error.innerText =
+      "tag has only letters numbers and _ with no spaces or can be left empty";
     form.tag.setCustomValidity("error");
   }
 
@@ -1483,12 +1485,13 @@ function checkReminderValidations(form) {
     form.tag.setCustomValidity("error");
   }
   if (
-    typeof form.tag.value === "String" &&
+    typeof form.tag.value === "string" &&
     form.tag.value.trim().length > 0 &&
     !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
     if (form.tag.checkValidity()) {
-      reminder_tag_error.innerText = "tag has only letters with no spaces";
+      reminder_tag_error.innerText =
+        "tag has only letters numbers and _ with no spaces or can be left empty";
       form.tag.setCustomValidity("error");
     }
   }
@@ -1622,7 +1625,8 @@ function checkTaskValidations(form) {
     !/(^$)|(^[a-zA-Z0-9_]+$)/.test(form.tag.value)
   ) {
     if (form.tag.checkValidity()) {
-      reminder_tag_error.innerText = "tag has only letters with no spaces";
+      reminder_tag_error.innerText =
+        "tag has only letters numbers and _ with no spaces or can be left empty";
       form.tag.setCustomValidity("error");
     }
   }
