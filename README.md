@@ -70,10 +70,10 @@ To clone and install the project, follow these steps:
 git clone https://github.com/your-username/your-project.git
 ```
 
-2. Navigate to the project directory:
+2. Navigate to the project directory root:
 
 ```
-cd your-project
+cd <wherever the project is cloned into>
 ```
 
 3. Install the dependencies:
@@ -104,6 +104,10 @@ This will start the Express server and make the application available at `http:/
 - [Bootstrap](https://getbootstrap.com/)
 - [Handlebars](https://handlebarsjs.com/)
 - [Node.js](https://nodejs.org/)
+
+## Application Live Demo
+
+[application demo](https://timewise.herokuapp.com/)
 
 ## Contributing
 
