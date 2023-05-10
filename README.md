@@ -1,6 +1,6 @@
 # Group project for cs 546 Stevens Institute of Technology
 
-## TimeWise 1.0
+## TimeWise Calendare
 
 ### Code owners :
 
@@ -11,176 +11,71 @@ Sanjeet Vinod Jain
 Sunderamurthy
 ```
 
-### Feature set :
+A brief description of the project goes here.
 
-- Calendar can be customised according to us
-- make TODO list of items using a drag drop feature into specific dates
-- journal entries for specific dates ( can be personal and shareable?)
-- notes for specific dates and lectures on that date? ( make it shareable?)
-- can set goals and targets ( with a from and uptill date )
-- gives reminder/alert of tasks and targets ( like a progress checker )
-- based on select keywords it gives different notifications also sets them into a category as well
-- different visualizations for on time/ late/ done
-- allow collaborations with other users if permitt optional?
-- integration with amazon, walmart, etc for estimated delivery dates ? and notify about the same
-- Integration of canvas calendar to our web app
+## Table of Contents
 
-types of events :
-events ( generic term ), TODO items / Tasks , reminders, and notes, meeting
+- [Installation](#installation)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
 
-types =["task","reminder","note","meeting"]
+## Installation
 
-Task Collection Fields : {
-title : string
-type : string
-DateCreated : Date time stamp
+To clone and install the project, follow these steps:
 
-dateAddedTo:
-monthAddedTo:
-yearAddedTo:
-timeAddedTo:
+1. Clone the repository to your local machine:
 
-dateDueOn:
-monthDueOn:
-yearDueOn:
-timeDueOn:
+```
+git clone https://github.com/your-username/your-project.git
+```
 
-priority :
+2. Navigate to the project directory:
 
-textBody: string
+```
+cd your-project
+```
 
-tag: string treat as a custom type for filter
+3. Install the dependencies:
 
-checked/ done/ completed flag ? : boolean
-}
+```
+npm install
+```
 
-Reminder Collection Fields : {
-title : string
-type : string
-DateCreated : Date time stamp
+## Usage
 
-dateAddedTo:
-monthAddedTo:
-yearAddedTo:
-timeAddedTo:
+To run the project, use the following command:
 
-dateDueOn:
-monthDueOn:
-yearDueOn:
-timeDueOn:
+```
+npm run start
+```
 
-priority :
+if you want to run it in developer mode to restart the app on file changes then
 
-textBody: string
+```
+npm run dev
+```
 
-tag: string treat as a custom type for filter
+This will start the Express server and make the application available at `http://localhost:3000/`.
 
-repeating : boolean
-repeatingCounter? increment? : increments in days, weekly , monthly, yearly
+## Technologies Used
 
-}
+- [Express](https://expressjs.com/)
+- [Bootstrap](https://getbootstrap.com/)
+- [Handlebars](https://handlebarsjs.com/)
+- [Node.js](https://nodejs.org/)
 
-Notes Collection Fields : {
-title : string
-type : string
-DateCreated : Date time stamp
+## Contributing
 
-dateAddedTo:
-monthAddedTo:
-yearAddedTo:
-timeAddedTo:
+If you would like to contribute to the project, please follow these steps:
 
-textBody: string
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them with descriptive commit messages.
+4. Push your changes to your fork.
+5. Submit a pull request.
 
-tag: string treat as a custom type for filter
+## License
 
-documentLink : (used by notes)
-
-}
-
-Meeting Collection Fields : {
-title : string
-type : string
-DateCreated : Date time stamp
-
-dateAddedTo:
-monthAddedTo:
-yearAddedTo:
-timeAddedTo:
-
-date :
-month :
-year:
-timeStart :
-duration :
-
-priority :
-
-textBody: string
-
-tag: string treat as a custom type for filter
-
-repeating : boolean
-repeatingCounter? increment? : increments in days, weekly , monthly, yearly
-}
-
-Display Attributes for each object type {
-color =
-badge =
-type/tag =
-}
-
-User Collection {
-first name
-last name
-email id
-date of birth
-consent to data collection
-disabilities :boolean  
-}
-
-<!-- **/node_modules, **/bootstrap , **/bootstrap-icons, **/jquery -->
-
-# Route: /meeting/:meetingId
-
-HTTP Method: GET
-
-Functionality: Retrieves a meeting by its ID
-
-Input: meetingId as a URL parameter
-
-Output: Returns a JSON object containing the meeting details, or an error message if the meeting ID is invalid or not found.
-
-HTTP Method: DELETE
-
-Functionality: Deletes a meeting by its ID
-
-Input: meetingId as a URL parameter
-
-Output: Returns a JSON object containing the deleted meeting details, or an error message if the meeting ID is invalid or not found.
-
-HTTP Method: PUT
-
-Functionality: Updates a meeting by its ID
-
-Input: meetingId as a URL parameter, and the updated meeting data in the request body as a JSON object.
-
-Output: Returns a JSON object containing the updated meeting details, or an error message if the meeting ID is invalid, the request body is empty, or the update input fields are invalid.
-
-# Route: /user/meetings/:userId
-
-HTTP Method: GET
-
-Functionality: Retrieves all meetings belonging to a user
-
-Input: userId as a URL parameter
-
-Output: Returns a JSON array containing all meetings belonging to the user, or an error message if the user ID is invalid or if there is a server error.
-
-HTTP Method: POST
-
-Functionality: Creates a new meeting for a user
-
-Input: userId as a URL parameter, and the meeting data in the request body as a JSON object.
-
-Output: Returns a JSON object containing the new meeting details, or an error message if the user ID is invalid, the request body is empty, or the input fields are invalid.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
