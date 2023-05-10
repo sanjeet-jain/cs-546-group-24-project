@@ -109,7 +109,6 @@ function checkValidations(event) {
     newPassInput.setCustomValidity("passwords can't match");
   }
   if (passwordForm.checkValidity()) {
-    //todo convert to ajax to show backend messages
     return true;
   }
   return false;

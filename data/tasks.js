@@ -94,13 +94,14 @@ const tasksDataFunctions = {
     } else {
       checked = true;
     }
-    let expired = utils.validateBooleanInput(checked, "checked");
+    checked = utils.validateBooleanInput(checked, "checked");
 
     const users = await usersCollection();
     const user = await users.findOne({ _id: new ObjectId(userId) });
     if (!user) {
       throw new Error("User not found.");
     }
+
     const newTask = {
       title: title,
       textBody: textBody,
@@ -110,13 +111,24 @@ const tasksDataFunctions = {
       tag: tag,
       checked: checked,
       type: "task",
-      expired: expired,
     };
 
-    let taskEvents = await this.getAllTasks(userId);
-    for (let i = 0; i < taskEvents.length; i++) {
-      this.isTwoTaskEventsSame(taskEvents[i], newTask);
+    if (checked === true) {
+      newTask.expired = true;
+      newTask.onTime = true;
+    } else {
+      if (dayjs(dateAddedTo).diff(dayjs()) < 0) {
+        newTask.expired = true;
+        newTask.onTime = false;
+      } else {
+        newTask.expired = false;
+      }
     }
+
+    // let taskEvents = await this.getAllTasks(userId);
+    // for (let i = 0; i < taskEvents.length; i++) {
+    //   this.isTwoTaskEventsSame(taskEvents[i], newTask);
+    // }
 
     const tasks = await tasksCollection();
     const insertInfo = await tasks.insertOne(newTask);
@@ -165,8 +177,6 @@ const tasksDataFunctions = {
       updatedTask.checked,
       "checked"
     );
-
-    updatedTaskData.expired = updatedTask.checked;
 
     utils.validateStringInputWithMaxLength(
       updatedTask.title,
@@ -220,14 +230,26 @@ const tasksDataFunctions = {
     } else {
       updatedTaskData.tag = "tasks";
     }
-    if (updatedTask.checked === true) {
-      updatedTaskData.onTime = this.isTaskOnTime(updatedTask.dateAddedTo);
-      updatedTaskData.expired = true;
-    }
+
     //dont allow task to be checked if no date assigned
-    if (updatedTaskData.checked && updatedTaskData.dateAddedTo == null) {
+    if (updatedTaskData.checked && updatedTaskData.dateAddedTo === null) {
       throw new Error("Add a date to mark this task completed");
     }
+
+    if (updatedTaskData.checked === true) {
+      updatedTaskData.expired = true;
+      if (dayjs(updatedTaskData.dateAddedTo).diff(dayjs()) > 0) {
+        updatedTaskData.onTime = true;
+      }
+    } else {
+      if (dayjs(updatedTaskData.dateAddedTo).diff(dayjs()) < 0) {
+        updatedTaskData.expired = true;
+        updatedTaskData.onTime = false;
+      } else {
+        updatedTaskData.expired = false;
+      }
+    }
+
     //Added this to pre check if there are any changes made to the task without making unnecessary DB call
     if (
       updatedTaskData.title === task.title &&

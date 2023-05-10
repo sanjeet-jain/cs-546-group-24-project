@@ -1138,7 +1138,10 @@ function checkMeetingValidations(form) {
     form.tag.setCustomValidity("error");
   }
 
-  if (form.title.value.length < 1) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length < 1
+  ) {
     meeting_title_error.innerText = "Title cannot be left empty";
     form.title.setCustomValidity("error");
   }
@@ -1329,6 +1332,7 @@ function checkNotesValidations(form) {
     notes_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
+
   if (
     typeof form.tag.value === "string" &&
     form.tag.value.trim().length > 0 &&
@@ -1338,13 +1342,19 @@ function checkNotesValidations(form) {
     form.tag.setCustomValidity("error");
   }
 
-  if (form.title.value.length < 1) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length < 1
+  ) {
     notes_title_error.innerText =
       "Title should have atleast 1 character which is not space";
     form.title.setCustomValidity("error");
   }
 
-  if (form.title.value.length > 100) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length > 100
+  ) {
     notes_title_error.innerText = "Title cant be longer than 100 characters";
     form.title.setCustomValidity("error");
   }
@@ -1440,12 +1450,18 @@ function checkReminderValidations(form) {
   reminder_repeatingIncrementBy_error.innerText = "";
   form.repeatingIncrementBy.setCustomValidity("");
 
-  if (form.title.value.length < 1) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length < 1
+  ) {
     reminder_title_error.innerText = "Title cannot be left empty";
     form.title.setCustomValidity("error");
   }
 
-  if (form.title.value.length > 100) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length > 100
+  ) {
     if (form.title.checkValidity()) {
       reminder_title_error.innerText =
         "Title cant be longer than 100 characters";
@@ -1453,13 +1469,16 @@ function checkReminderValidations(form) {
     }
   }
 
-  if (form.textBody.value.length > 200) {
+  if (
+    typeof form.textBody.value === "string" &&
+    form.textBody.value.trim().length > 200
+  ) {
     reminder_textBody_error.innerText =
       "TextBody cant be longer than 200 characters";
     form.textBody.setCustomValidity("error");
   }
 
-  if (form.tag.value.length > 20) {
+  if (typeof form.tag.value === "string" && form.tag.value.trim().length > 20) {
     reminder_tag_error.innerText = "tag cant be longer than 20 characters";
     form.tag.setCustomValidity("error");
   }
@@ -1570,19 +1589,30 @@ function checkTaskValidations(form) {
   form.checked.setCustomValidity("");
   task_checked_error.innerText = "";
 
-  if (form.title.value.length < 1) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length < 1
+  ) {
     task_title_error.innerText = "Title can't be empty";
+    form.title.setCustomValidity("error");
   }
 
-  if (form.title.value.length > 100 && form.title.checkValidity()) {
+  if (
+    typeof form.title.value === "string" &&
+    form.title.value.trim().length > 100 &&
+    form.title.checkValidity()
+  ) {
     task_title_error.innerText = "Title can't be longer than 100 characters";
   }
 
-  if (form.textBody.value.length > 200) {
-    task_textBody_error.innerText = "Text can't be longer than 100 characters";
+  if (
+    typeof form.textBody.value === "string" &&
+    form.textBody.value.trim().length > 200
+  ) {
+    task_textBody_error.innerText = "Text can't be longer than 200 characters";
   }
 
-  if (form.tag.value.length > 20) {
+  if (typeof form.tag.value === "string" && form.tag.value.trim().length > 20) {
     task_tag_error.innerText = "Tag can't be longer than 20 characters";
   }
 
@@ -1623,6 +1653,9 @@ function checkTaskValidations(form) {
 let selectedDateCell = new URLSearchParams(window.location.search).get(
   "selectedDateCell"
 );
+if (selectedDateCell === null || selectedDateCell === "null") {
+  selectedDateCell = dayjs().format("YYYY-M-D");
+}
 function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {
@@ -1822,7 +1855,6 @@ function filterForm() {
         filter.tagsSelected.push(value);
       }
     }
-    console.log(filter);
     $.ajax({
       method: "POST",
       url: `${event.target.action}`,
@@ -2029,7 +2061,6 @@ function simulateTdCellClick() {
 
   // Get the td element by its ID
   const td = document.querySelector(`[data-bs-day="${tdClass}"]`);
-  console.log(td);
   // Simulate a click event on the td element
   if (td) {
     td.dispatchEvent(new MouseEvent("click", { bubbles: true }));

@@ -10,10 +10,8 @@
         <input required type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name"
           minlength="1" maxlength="20" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.first_name}}{{errorContent.first_name}}{{else}}{{currUser.first_name}}{{/if}}" />
-      </div>
-      <div class="col-auto ">
         <div id="first_name_error" class="invalid-feedback">
-          {{errorMessages.first_name}}
+          {{errorMessages.first_name_error}}
         </div>
       </div>
     </div>
@@ -21,16 +19,14 @@
 
     <div class="row g-3 align-items-center">
       <div class="col-auto ">
-        <label for="first_name" class="col-form-label">Last Name: </label>
+        <label for="last_name" class="col-form-label">Last Name: </label>
       </div>
       <div class="col-auto ">
         <input required type="text" class="form-control" name="last_name" id="last_name" aria-label="Last Name"
-          placeholder="Last Name" minlength="0" maxlength="20" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
+          placeholder="Last Name" minlength="1" maxlength="20" pattern="^(?=.{1,20}$)(?![\d])[\w\s]+$"
           value="{{#if errorContent.last_name}}{{errorContent.last_name}}{{else}}{{currUser.last_name}}{{/if}}" />
-      </div>
-      <div class="col-auto ">
         <div id="last_name_error" class="invalid-feedback">
-          {{errorMessages.last_name}}
+          {{errorMessages.last_name_error}}
         </div>
       </div>
     </div>
@@ -43,10 +39,14 @@
         <input required type="date" class="form-control" name="dob" id="dob" placeholder="MM/DD/YYYY"
           max="{{minDobDate}}" min="{{maxDobDate}}"
           value="{{#if errorContent.dob}}{{errorContent.dob}}{{else}}{{currUser.dob}}{{/if}}" />
-      </div>
-      <div class="col-auto ">
+
         <div id="date_error" class="invalid-feedback">
-          {{errorMessages.dob}}
+          {{errorMessages.date_error}}
+          <p>
+            Please enter a date Range between
+            <br>
+            {{minDobDate}} to {{maxDobDate}}
+          </p>
         </div>
       </div>
     </div>

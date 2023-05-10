@@ -30,7 +30,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResultmeetings);
   const updateResultreminders = await remindersCollection.updateMany(
     {
       dateAddedTo: { $ne: null, $ne: undefined },
@@ -39,7 +38,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResultreminders);
 
   const updateResulttasks = await tasksCollection.updateMany(
     {
@@ -49,7 +47,6 @@ cron.schedule("*/10 * * * * *", async () => {
     },
     { $set: { expired: true } }
   );
-  // console.log(updateResulttasks);
 
   console.log("events updated as of ", dayjs().format("YYYY-MM-DDTHH:mm:ss"));
 });
@@ -71,14 +68,10 @@ const handlebarsInstance = exphbs.create({
       );
     },
     minDobDate: function () {
-      return dayjs(new Date(new Date().getFullYear() - 14, 0, 1)).format(
-        "YYYY-MM-DD"
-      );
+      return dayjs().subtract(13, "year").format("YYYY-MM-DD");
     },
     maxDobDate: function () {
-      return dayjs(new Date(new Date().getFullYear() - 100, 0, 1)).format(
-        "YYYY-MM-DD"
-      );
+      return dayjs().subtract(150, "year").format("YYYY-MM-DD");
     },
     json: function (context) {
       return JSON.stringify(context);
