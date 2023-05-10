@@ -20,7 +20,7 @@
 
       <fieldset id="task-form-enabler" disabled>
         <div class="modal-body overflow-scroll-y">
-          <form id="task-form" class="needs-validation" novalidate>
+          <form id="task-form" class="needs-validation was-validated" novalidate>
             {{! title }}
             <div class="mb-3">
               <label for="task_title" class="form-label">Title</label>
@@ -65,10 +65,15 @@
               <label for="task_dateAddedTo" class="form-label">Date to Add
                 event to
               </label>
-              <input type="datetime-local" class="form-control" name="dateAddedTo" id="task_dateAddedTo" value="" />
+              <input type="datetime-local" max="{{maxAllowedDate}}" min="{{minAllowedDate}}" class="form-control"
+                name="dateAddedTo" id="task_dateAddedTo" value="" />
 
               <div id="task_dateAddedTo_error" class="invalid-feedback">
-
+                <p>
+                  Please enter a date Range between
+                  <br>
+                  {{minAllowedDate}} to {{maxAllowedDate}}
+                </p>
               </div>
             </div>
             {{! add more fields for other events }}

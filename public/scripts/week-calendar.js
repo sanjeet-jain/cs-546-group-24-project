@@ -1179,6 +1179,22 @@ function checkMeetingValidations(form) {
     meeting_dateDueOn_error.innerText = "The date time value passed is invalid";
     form.dateDueOn.setCustomValidity("invalid date");
   }
+  if (form.dateAddedTo.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+    } catch (error) {
+      meeting_dateAddedTo_error.innerText = error.message;
+      form.dateAddedTo.setCustomValidity("invalid date");
+    }
+  }
+  if (form.dateDueOn.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateDueOn.value.trim());
+    } catch (error) {
+      meeting_dateDueOn_error.innerText = error.message;
+      form.dateDueOn.setCustomValidity("invalid date");
+    }
+  }
 
   //dateAdded to passed dateDue on not passed
   if (form.dateAddedTo.value !== "" && form.dateDueOn.value === "") {
@@ -1200,7 +1216,7 @@ function checkMeetingValidations(form) {
     form.dateAddedTo.checkValidity() &&
     form.dateDueOn.checkValidity()
   ) {
-    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) < 0) {
+    if (dayjs(form.dateDueOn.value).diff(dayjs(form.dateAddedTo.value)) <= 0) {
       form.dateAddedTo.setCustomValidity("invalid_range");
       form.dateDueOn.setCustomValidity("invalid_range");
       meeting_dateDueOn_error.innerText =
@@ -1249,6 +1265,36 @@ function checkMeetingValidations(form) {
       meeting_repeatingIncrementBy_error.innerText =
         "the counter needs to be greater a value from the drop down!";
       form.repeatingIncrementBy.setCustomValidity("error");
+    }
+
+    if (
+      form.dateAddedTo.value &&
+      form.dateAddedTo.checkValidity() &&
+      form.dateDueOn.value &&
+      form.dateDueOn.checkValidity()
+    ) {
+      try {
+        // check if the counter is exceeding the max allowed dates of the application
+        let temp = dayjs(form.dateAddedTo.value.trim())
+          .add(
+            Number.parseInt(form.repeatingCounterIncrement.value),
+            form.repeatingIncrementBy.value
+          )
+          .format("YYYY-MM-DDTHH:mm");
+        checkIfDateIsBeyondRange(temp);
+      } catch (error) {
+        meeting_repeatingCounterIncrement_error.innerText =
+          error.message +
+          " Please adjust the repeating counter to be within this date ";
+        form.repeatingCounterIncrement.setCustomValidity("invalid");
+      }
+    } else {
+      meeting_repeatingIncrementBy_error.innerText =
+        "Date Added to and Date Due on must be given to use this";
+      form.repeatingIncrementBy.setCustomValidity("error");
+      meeting_repeatingCounterIncrement_error.innerText =
+        "Date Added to and Date Due on must be given to use this";
+      form.repeatingCounterIncrement.setCustomValidity("invalid");
     }
   }
   let resultDiv = document.getElementById(`meeting-update-result`);
@@ -1313,13 +1359,17 @@ function checkNotesValidations(form) {
     form.title.setCustomValidity("error");
   }
 
-  if (
-    typeof form.textBody.value === "string" &&
-    form.textBody.value.trim().length > 200
-  ) {
-    notes_editor_error.innerText =
-      "TextBody cant be longer than 200 characters";
-    form.textBody.setCustomValidity("error");
+  if (!validateDateTime(form.dateAddedTo.value)) {
+    notes_dateAddedTo_error.innerText = "The date time value passed is invalid";
+    form.dateAddedTo.setCustomValidity("error");
+  }
+  if (form.dateAddedTo.checkValidity()) {
+    try {
+      checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+    } catch (error) {
+      notes_dateAddedTo_error.innerText = error.message;
+      form.dateAddedTo.setCustomValidity("invalid date");
+    }
   }
 
   const parser = new DOMParser();
@@ -1329,10 +1379,12 @@ function checkNotesValidations(form) {
   );
 
   if (parsedHtml.body.textContent.trim().length === 0) {
-    notes_editor_error.classList.add("alert", "alert-danger");
-
-    notes_editor_error.innerText = "TextBody cant be empty";
-    form.textBody.setCustomValidity("underflow");
+    if (parsedHtml.querySelectorAll("img").length === 0) {
+      // The editor does not contain any images
+      notes_editor_error.classList.add("alert", "alert-danger");
+      notes_editor_error.innerText = "TextBody cant be empty";
+      form.textBody.setCustomValidity("underflow");
+    }
   }
 
   if (parsedHtml.body.textContent.trim() > 200) {
@@ -1453,11 +1505,26 @@ function checkReminderValidations(form) {
     form.dateAddedTo.setCustomValidity("invalid date");
   }
 
+  try {
+    checkIfDateIsBeyondRange(form.dateAddedTo.value.trim());
+  } catch (error) {
+    reminder_dateAddedTo_error.innerText = error.message;
+    form.dateAddedTo.setCustomValidity("invalid date");
+  }
+
   if (form.repeating.value === "true") {
     if (!validateDateTime(form.endDateTime.value)) {
       reminder_endDateTime_error.innerText =
         "The end recurrence date should be valid";
       form.endDateTime.setCustomValidity("Error");
+    }
+    if (form.endDateTime.checkValidity()) {
+      try {
+        checkIfDateIsBeyondRange(form.endDateTime.value.trim());
+      } catch (error) {
+        reminder_endDateTime_error.innerText = error.message;
+        form.endDateTime.setCustomValidity("invalid date");
+      }
     }
     if (
       validateDateTime(form.dateAddedTo.value) &&
@@ -2020,6 +2087,44 @@ function setPageUrlForSelectedDateCell(
     window.location.href = newUrl;
   } else {
     history.pushState(null, "", newUrl);
+  }
+}
+
+function checkIfDateIsBeyondRange(date) {
+  // same array in public/scripts/scripts.js
+  let yeaRangeRef = new Date().getFullYear();
+
+  const constants = {
+    yearRange: [
+      yeaRangeRef - 2,
+      yeaRangeRef - 1,
+      yeaRangeRef,
+      yeaRangeRef + 1,
+      yeaRangeRef + 2,
+    ],
+  };
+
+  if (date !== "" && date !== null && date !== undefined) {
+    let dayjsDate = dayjs(
+      date,
+      ["YYYY-MM-DDTHH:mm", "YYYY-MM-DDTHH", "YYYY-MM-DD", "YYYY-M-D"],
+      true
+    );
+    if (
+      !dayjsDate.isValid() ||
+      dayjsDate.year() < constants.yearRange[0] ||
+      dayjsDate.year() > constants.yearRange[constants.yearRange.length - 1]
+    ) {
+      throw new Error(
+        `Please give a validate Date between  ${dayjs()
+          .year(constants.yearRange[0])
+          .startOf("year")
+          .format("YYYY-MMMM-DD")} to ${dayjs()
+          .year(constants.yearRange[constants.yearRange.length - 1])
+          .endOf("year")
+          .format("YYYY-MMMM-DD")}`
+      );
+    }
   }
 }
 
