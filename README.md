@@ -1,6 +1,6 @@
 # Group project for cs 546 Stevens Institute of Technology
 
-## TimeWise Calendare
+## TimeWise Calendar
 
 ### Code owners :
 
