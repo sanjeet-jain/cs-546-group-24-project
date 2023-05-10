@@ -265,22 +265,22 @@ router
       try {
         utils.validateName(first_name, "First name");
       } catch (e) {
-        errorMessages.first_name = e.message;
+        errorMessages.first_name_error = e.message;
       }
       try {
         utils.validateName(last_name, "Last name");
       } catch (e) {
-        errorMessages.last_name = e.message;
+        errorMessages.last_name_error = e.message;
       }
       try {
         utils.validateDate(dob, "Date of Birth");
       } catch (e) {
-        errorMessages.dob = "Please enter a valid date of birth.";
+        errorMessages.date_error = "Please enter a valid date of birth.";
       }
       try {
         utils.validateAge(dob, constants.min_age, constants.max_age);
       } catch (e) {
-        errorMessages.dob = e.message;
+        errorMessages.date_error = e.message;
       }
 
       if (Object.keys(errorMessages).length !== 0) {

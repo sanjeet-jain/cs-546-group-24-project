@@ -59,9 +59,7 @@ function drag_end_date_cell() {
       let buttonData = JSON.parse(
         event.dataTransfer.getData("application/json")
       );
-      console.log(
-        "Button " + buttonData.bsEventid + " dropped into cell " + cellId
-      );
+
       // let buttonList = document.querySelectorAll(
       //   `button[data-bs-eventid='${buttonData.bsEventid}']`
       // );
