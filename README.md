@@ -47,7 +47,7 @@ planning effectively.
 12. The middle pane is the calendar with different view modes i.e daily, weekly, and monthly modes with
     basic navigation.
 13. TODO items appear with checkboxes on the calendar and on the right pane.
-Optional Features we included from our initial proposal
+    Optional Features we included from our initial proposal
 14. This will also have a progress bar showing on the left side below the event for events with a begin and
     end
 15. Theme functionality for the calendar
@@ -114,6 +114,7 @@ This will start the Express server and make the application available at `http:/
 ## Application Live Demo
 
 [application demo](https://timewise.herokuapp.com/)
+[application demo walkthrough ](https://www.youtube.com/watch?v=PUucsGUEUDY&ab_channel=SanjeetJain)
 
 ## Contributing
 
