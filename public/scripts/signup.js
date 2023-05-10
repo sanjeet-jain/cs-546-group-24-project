@@ -164,25 +164,29 @@ function checkValidations(event) {
     reEnter_error.innerText = "Passwords do not match.";
     passwordReEnterInput.setCustomValidity("error");
   }
-  if (
-    dob.validity.valueMissing ||
-    dob.value === "" ||
-    dob.value === undefined ||
-    dob.value === null
-  ) {
-    date_error.textContent = "Please enter a date of birth.";
-    dob.setCustomValidity("error");
-  } else if (dob.validity.rangeUnderflow) {
+
+  if (!validateDate(dob.value)) {
+    if (dob.value.trim().length === 0) {
+      date_error.textContent = "Please enter a date of birth.";
+      dob.setCustomValidity("error");
+    } else if (!dayjs(dob, "YYYY-MM-DD", true).isValid()) {
+      date_error.textContent = "Please a valid date as date of birth";
+      dob.setCustomValidity("error");
+    }
+  }
+
+  if (dayjs(dob.value).diff(dayjs(maxDOB())) < 0) {
     date_error.textContent = "You cannot be more than 150 years old to signup!";
     dob.setCustomValidity("error");
-  } else if (dob.validity.rangeOverflow) {
+  }
+
+  if (dayjs(dob.value).diff(dayjs(minDOB())) > 0) {
     date_error.textContent = "You must be at least 13 years old to signup!";
     dob.setCustomValidity("error");
   }
   if (passForm.checkValidity()) {
     return true; //passForm.submit();
   }
-
   return false;
 }
 
@@ -209,6 +213,34 @@ function confirmPassword(password, reEnter) {
   } else {
     return true;
   }
+}
+
+function validateStringInput(input, inputName) {
+  if (input && typeof input !== "string") {
+    throw new Error(`${inputName} must be a string`);
+  } else if (input.trim().length === 0) {
+    throw new Error(`${inputName} cannot be an empty string`);
+  }
+}
+
+function validateDate(date) {
+  try {
+    validateStringInput(date);
+  } catch (e) {
+    return false;
+  }
+  if (!dayjs(date, "YYYY-MM-DD", true).isValid()) {
+    return false;
+  }
+  return true;
+}
+
+function minDOB() {
+  return dayjs().subtract(13, "year").format("YYYY-MM-DD");
+}
+
+function maxDOB() {
+  return dayjs().subtract(150, "year").format("YYYY-MM-DD");
 }
 
 validatesignup();
