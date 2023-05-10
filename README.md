@@ -67,7 +67,7 @@ To clone and install the project, follow these steps:
 1. Clone the repository to your local machine:
 
 ```
-git clone https://github.com/your-username/your-project.git
+git clone https://github.com/sanjeet-jain/cs-546-group-24-project
 ```
 
 2. Navigate to the project directory root:
