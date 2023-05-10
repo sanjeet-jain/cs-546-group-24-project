@@ -55,6 +55,8 @@ export async function runSetup(datestring, user) {
   // ideally use the CRUD functions in data/ to initialise and seed all the data we have !
 
   // Seed Meetings
+
+  //repeating meeting
   const sampleMeeting = {
     title: "Weekly Team Meeting repeating",
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
@@ -83,6 +85,7 @@ export async function runSetup(datestring, user) {
     sampleMeeting.repeatingCounterIncrement,
     sampleMeeting.repeatingIncrementBy
   );
+  // single meeting
   const sampleMeeting2 = {
     title: "Weekly Team Meeting non repeating",
     dateCreated: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
@@ -111,6 +114,7 @@ export async function runSetup(datestring, user) {
     sampleMeeting2.repeatingIncrementBy
   );
 
+  // create multiple non repeating
   for (let i = 0; i < 10; i++) {
     await meetingsDataFunctions.create(
       user._id.toString(),
@@ -129,6 +133,7 @@ export async function runSetup(datestring, user) {
 
   // Seed tasks
 
+  //unchecked task
   const sampleTask = {
     title: "Finish project report",
     textBody:
@@ -150,6 +155,8 @@ export async function runSetup(datestring, user) {
     sampleTask.tag,
     sampleTask.checked
   );
+
+  // checked task
   const sampleTask2 = {
     title: "Buy groceries",
     textBody: "Buy milk, eggs, bread, and fruits from the supermarket.",
@@ -157,7 +164,7 @@ export async function runSetup(datestring, user) {
     dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
     priority: 3,
     tag: "personal",
-    checked: false,
+    checked: true,
     type: "task",
   };
 
@@ -171,6 +178,7 @@ export async function runSetup(datestring, user) {
     sampleTask2.checked
   );
 
+  // create checked tasks
   for (let i = 0; i < 10; i++) {
     await tasksDataFunctions.createTask(
       user._id.toString(),
@@ -183,9 +191,49 @@ export async function runSetup(datestring, user) {
     );
     j += 1;
   }
+  // create unchecked tasks
+  for (let i = 0; i < 10; i++) {
+    await tasksDataFunctions.createTask(
+      user._id.toString(),
+      sampleTask.title + " " + j.toString(),
+      sampleTask.textBody,
+      sampleTask.dateAddedTo,
+      sampleTask.priority,
+      sampleTask.tag,
+      sampleTask.checked
+    );
+    j += 1;
+  }
 
   // Seed reminders
+
+  //repeating reminder
   const sampleReminder = {
+    title: "reminder title",
+    textBody: "important reminder",
+    priority: 3,
+    tag: "rem",
+    repeating: true,
+    dateAddedTo: dayjs(dt).format("YYYY-MM-DDTHH:mm"),
+    endDateTime: dayjs(dt).add(4, "day").format("YYYY-MM-DDTHH:mm"),
+    repeatingIncrementBy: "day",
+    type: "reminder",
+  };
+
+  await reminderDataFunctions.createReminder(
+    user._id.toString(),
+    sampleReminder.title,
+    sampleReminder.textBody,
+    sampleReminder.priority,
+    sampleReminder.tag,
+    sampleReminder.repeating,
+    sampleReminder.endDateTime,
+    sampleReminder.repeatingIncrementBy,
+    sampleReminder.dateAddedTo
+  );
+
+  // single reminder
+  const sampleReminder2 = {
     title: "reminder title",
     textBody: "important reminder",
     priority: 3,
@@ -197,17 +245,34 @@ export async function runSetup(datestring, user) {
     type: "reminder",
   };
 
-  const insertedReminder = await reminderDataFunctions.createReminder(
+  await reminderDataFunctions.createReminder(
     user._id.toString(),
-    sampleReminder.title,
-    sampleReminder.textBody,
-    sampleReminder.priority,
-    sampleReminder.tag,
-    sampleReminder.repeating,
-    sampleReminder.endDateTime,
-    sampleReminder.repeatingIncrementBy,
-    sampleReminder.dateAddedTo
+    sampleReminder2.title,
+    sampleReminder2.textBody,
+    sampleReminder2.priority,
+    sampleReminder2.tag,
+    sampleReminder2.repeating,
+    sampleReminder2.endDateTime,
+    sampleReminder2.repeatingIncrementBy,
+    sampleReminder2.dateAddedTo
   );
+
+  // create many single reminders
+
+  for (let i = 0; i < 10; i++) {
+    await reminderDataFunctions.createReminder(
+      user._id.toString(),
+      sampleReminder2.title + " " + j.toString(),
+      sampleReminder2.textBody,
+      sampleReminder2.priority,
+      sampleReminder2.tag,
+      sampleReminder2.repeating,
+      sampleReminder2.endDateTime,
+      sampleReminder2.repeatingIncrementBy,
+      sampleReminder2.dateAddedTo
+    );
+    j += 1;
+  }
 
   // Seed notes
   const sampleNote = {
@@ -318,10 +383,13 @@ export async function seed() {
   const db = await dbConnection();
   // await db.dropDatabase();
   const user = await createUser("sampleuser@gmail.com");
-  await runSetup("2023-04-22", user);
+  await runSetup(dayjs().subtract(1, "day").format(), user);
   await runSetup(undefined, user);
+  await runSetup(dayjs().add(1, "day").format(), user);
+  await runSetup("2023-04-22", user);
   const user2 = await createUser("sampleuser2@gmail.com");
-  await runSetup("2023-04-22", user2);
+  await runSetup(dayjs().subtract(1, "day").format(), user2);
   await runSetup(undefined, user2);
+  await runSetup(dayjs().add(1, "day").format(), user2);
   await closeConnection();
 }
