@@ -47,7 +47,7 @@ planning effectively.
 12. The middle pane is the calendar with different view modes i.e daily, weekly, and monthly modes with
     basic navigation.
 13. TODO items appear with checkboxes on the calendar and on the right pane.
-
+Optional Features we included from our initial proposal
 14. This will also have a progress bar showing on the left side below the event for events with a begin and
     end
 15. Theme functionality for the calendar
@@ -83,6 +83,12 @@ npm install
 ```
 
 ## Usage
+
+To seed the project, use the following command:
+
+```
+npm run seed
+```
 
 To run the project, use the following command:
 
