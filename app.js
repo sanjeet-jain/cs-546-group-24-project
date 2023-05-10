@@ -67,14 +67,10 @@ const handlebarsInstance = exphbs.create({
       );
     },
     minDobDate: function () {
-      return dayjs(new Date(new Date().getFullYear() - 14, 0, 1)).format(
-        "YYYY-MM-DD"
-      );
+      return dayjs().subtract(13, "year").format("YYYY-MM-DD");
     },
     maxDobDate: function () {
-      return dayjs(new Date(new Date().getFullYear() - 100, 0, 1)).format(
-        "YYYY-MM-DD"
-      );
+      return dayjs().subtract(150, "year").format("YYYY-MM-DD");
     },
     json: function (context) {
       return JSON.stringify(context);
