@@ -1653,6 +1653,9 @@ function checkTaskValidations(form) {
 let selectedDateCell = new URLSearchParams(window.location.search).get(
   "selectedDateCell"
 );
+if (selectedDateCell === null || selectedDateCell === "null") {
+  selectedDateCell = dayjs().format("YYYY-M-D");
+}
 function clickableDateCells() {
   let dateCells = document.querySelectorAll("td.date-cell");
   dateCells.forEach((date) => {

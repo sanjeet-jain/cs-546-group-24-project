@@ -251,7 +251,12 @@ router.route("/getSelectedDayItems/:selectedDate?").get(async (req, res) => {
 });
 async function getWeeksData(req, currentDate = undefined) {
   // get the current month and year
-  if (currentDate === "null") {
+  if (
+    currentDate === "null" ||
+    currentDate === null ||
+    currentDate === "Invalid Date" ||
+    dayjs(currentDate) === "Invalid Date"
+  ) {
     currentDate = undefined;
   }
   let now;
