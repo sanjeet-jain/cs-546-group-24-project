@@ -116,6 +116,13 @@ This will start the Express server and make the application available at `http:/
 [application demo](https://timewise.herokuapp.com/)
 [application demo walkthrough ](https://www.youtube.com/watch?v=PUucsGUEUDY&ab_channel=SanjeetJain)
 
+# Documents and relative links
+
+- https://www.youtube.com/watch?v=o209sK6-WPA&ab_channel=Jain_S
+- https://www.youtube.com/watch?v=PUucsGUEUDY&ab_channel=Jain_S
+- https://timewise.herokuapp.com/
+- https://github.com/sanjeet-jain/cs-546-group-24-project
+
 ## Contributing
 
 If you would like to contribute to the project, please follow these steps:
